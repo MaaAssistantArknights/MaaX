@@ -35,14 +35,14 @@ const lightTheme = createTheme({
 const darkTheme = createTheme({
   palette: {
     themePrimary: '#daf1e1',
-    themeLighterAlt: '#c2d8c9',
-    themeLighter: '#aabdb0',
-    themeLight: '#92a297',
+    themeDarkAlt: '#c2d8c9',
+    themeDarker: '#aabdb0',
+    themeDark: '#92a297',
     themeTertiary: '#7a887e',
     themeSecondary: '#626d65',
-    themeDarkAlt: '#4a524d',
-    themeDark: '#323834',
-    themeDarker: '#1a1d1b',
+    themeLighterAlt: '#4a524d',
+    themeLight: '#323834',
+    themeLighter: '#1a1d1b',
     neutralLighterAlt: '#0a0a0a',
     neutralLighter: '#0a0a0a',
     neutralLight: '#090909',
@@ -57,6 +57,7 @@ const darkTheme = createTheme({
     black: '#f8f8f8',
     white: '#0a0a0a',
   },
+  isInverted: true,
 });
 
 const themeQuery = () =>
@@ -77,7 +78,7 @@ const onBrowserThemeChanged = (callback: (theme: string) => void) => {
 };
 
 const useBrowserTheme = ({ children, ...props }: ThemeProviderProps) => {
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState('');
 
   useEffect(() => {
     if (theme === '') {
