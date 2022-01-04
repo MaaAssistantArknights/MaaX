@@ -1,0 +1,41 @@
+/*
+ * @NOTE: Prepend a `~` to css file paths that are in your node_modules
+ *        See https://github.com/webpack-contrib/sass-loader#imports
+ */
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --theme-color: #64619a;
+    --background-color: #f4f4f4;
+    --text-color: #000;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --theme-color: #daf1e1;
+    --background-color: #0a0a0a;
+    --text-color: #fff;
+  }
+}
+
+body {
+  position: relative;
+  width: 100vw;
+  font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI',
+    -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif;
+  overflow-y: hidden;
+  display: flex;
+  justify-content: center;
+  margin: 0;
+}
+
+#root,
+.app {
+  width: 100%;
+}
+
+.app {
+  padding: 8px 10px;
+  min-height: 100vh;
+}

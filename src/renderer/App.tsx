@@ -1,34 +1,16 @@
-import { Routes, Route, Link } from 'react-router-dom';
+import { useRoutes } from 'react-router-dom';
+import routes from 'renderer/routes';
 
-import './App.css';
+import NavBar from './layouts/NavBar';
 
-const Hello = () => {
-  return (
-    <div>
-      <span>hello</span>
-    </div>
-  );
-};
-
-function NoMatch() {
-  return (
-    <div>
-      <h2>Nothing to see here!</h2>
-      <p>
-        <Link to="/">Go to the home page</Link>
-      </p>
-    </div>
-  );
-}
+import './App.scss';
 
 export default function App() {
+  const route = useRoutes(routes);
   return (
-    <div>
-      <span>routes</span>
-      <Routes location="/">
-        <Route path="/" element={<Hello />} />
-        <Route path="*" element={<NoMatch />} />
-      </Routes>
+    <div className="app">
+      <NavBar />
+      {route}
     </div>
   );
 }

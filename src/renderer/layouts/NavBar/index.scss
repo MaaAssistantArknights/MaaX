@@ -1,0 +1,27 @@
+.nav {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  .nav-link {
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    padding: 8px 0;
+    margin: 0 8px;
+    &::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 8px;
+      right: 8px;
+      height: 2px;
+      background-color: var(--theme-color);
+      transition: left 0.267s cubic-bezier(0.1, 0.25, 0.75, 0.9) 0s,
+        right 0.267s cubic-bezier(0.1, 0.25, 0.75, 0.9) 0s;
+    }
+    &:hover::before {
+      left: 0;
+      right: 0;
+    }
+  }
+}
