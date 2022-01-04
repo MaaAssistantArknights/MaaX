@@ -3,7 +3,7 @@ import routes from 'renderer/routes';
 
 import NavBar from './layouts/NavBar';
 
-import './App.scss';
+import './App.less';
 
 export default function App() {
   const route = useRoutes(routes);
