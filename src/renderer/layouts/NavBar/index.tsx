@@ -20,8 +20,8 @@ function NavLink({ children, to, ...props }: LinkProps) {
 export default function NavBar() {
   return (
     <div className="nav">
-      <NavLink to="/">Home</NavLink>
-      <NavLink to="/settings">Settings</NavLink>
+      <NavLink to="/">一键长草</NavLink>
+      <NavLink to="/settings">设置</NavLink>
     </div>
   );
 }

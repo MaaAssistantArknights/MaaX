@@ -36,6 +36,11 @@ body {
 }
 
 .app {
+  max-width: calc(100vw - 20px);
   padding: 8px 10px;
   min-height: 100vh;
+}
+
+.page {
+  margin-top: 20px;
 }
