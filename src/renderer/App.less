@@ -3,21 +3,9 @@
  *        See https://github.com/webpack-contrib/sass-loader#imports
  */
 
-@media (prefers-color-scheme: light) {
-  :root {
-    --theme-color: #64619a;
-    --background-color: #f4f4f4;
-    --text-color: #000;
-  }
-}
+@import '~antd/dist/antd.less';
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --theme-color: #daf1e1;
-    --background-color: #0a0a0a;
-    --text-color: #fff;
-  }
-}
+@import 'assets/variables.less';
 
 body {
   position: relative;

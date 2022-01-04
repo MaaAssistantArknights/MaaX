@@ -1,7 +1,7 @@
 import { Link, useMatch, useResolvedPath } from 'react-router-dom';
 import type { LinkProps } from 'react-router-dom';
 
-import './index.scss';
+import './index.less';
 
 function NavLink({ children, to, ...props }: LinkProps) {
   const resolved = useResolvedPath(to);

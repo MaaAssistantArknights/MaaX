@@ -1,11 +1,9 @@
-import { Label } from '@fluentui/react';
-
-import './index.scss';
+import './index.less';
 
 export default function Settings() {
   return (
     <div>
-      <Label>Settings</Label>
+      <span>Settings</span>
     </div>
   );
 }

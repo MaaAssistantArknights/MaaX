@@ -1,43 +1,34 @@
-import { Checkbox, Stack, PrimaryButton, TextField } from '@fluentui/react';
+import { Checkbox, Space, Button, InputNumber } from 'antd';
 
-import './index.scss';
-
-const customCheckboxLabel = () => {
-  return (
-    <span>
-      吃理智药
-      <TextField style={{ display: 'inline-block' }} inlist />个
-    </span>
-  );
-};
+import './index.less';
 
 export default function Home() {
   return (
     <div className="home page">
-      <Stack tokens={{ childrenGap: 20 }}>
-        <Stack.Item>
-          <Stack tokens={{ childrenGap: 10 }} className="tasks">
-            <Checkbox label="开始唤醒" />
-            <Checkbox label="刷理智" />
-            <Checkbox label="自动公招" />
-            <Checkbox label="基建换班" />
-            <Checkbox label="访问好友" />
-            <Checkbox label="收取信用及购物" />
-            <Checkbox label="领取日常奖励" />
-          </Stack>
-        </Stack.Item>
-        <Stack.Item align="center">
-          <Checkbox label="自动关机" />
-        </Stack.Item>
-        <Stack.Item align="center">
-          <PrimaryButton>Link Start!</PrimaryButton>
-        </Stack.Item>
-      </Stack>
-      <Stack tokens={{ childrenGap: 20 }}>
-        <Stack.Item>
-          <Checkbox onRenderLabel={customCheckboxLabel} />
-        </Stack.Item>
-      </Stack>
+      <Space direction="vertical" align="center">
+        <Checkbox.Group>
+          <Space direction="vertical" className="tasks">
+            <Checkbox value="awake">开始唤醒</Checkbox>
+            <Checkbox value="clear sanity">刷理智</Checkbox>
+            <Checkbox value="auto recruits">自动公招</Checkbox>
+            <Checkbox value="shift scheduling">基建换班</Checkbox>
+            <Checkbox value="visit friends">访问好友</Checkbox>
+            <Checkbox value="shopping">收取信用及购物</Checkbox>
+            <Checkbox value="receive rewards">领取日常奖励</Checkbox>
+          </Space>
+        </Checkbox.Group>
+        <Checkbox>自动关机</Checkbox>
+        <Button type="primary">Link Start!</Button>
+      </Space>
+      <Space direction="vertical">
+        <Checkbox>
+          <Space>
+            <span>吃理智药</span>
+            <InputNumber controls={false} size="small" defaultValue={0} />
+            <span>个</span>
+          </Space>
+        </Checkbox>
+      </Space>
     </div>
   );
 }
