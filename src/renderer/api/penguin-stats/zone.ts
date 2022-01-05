@@ -1,6 +1,6 @@
 import request from 'renderer/utils/request/penguin-stats';
 
-type ZoneType = {
+export type ZoneType = {
   zoneId: string;
   zoneIndex: number;
   type: 'ACTIVITY' | 'WEEKLY' | 'MAINLINE' | 'ACTIVITY_PERMANENT' | 'GACHABOX';

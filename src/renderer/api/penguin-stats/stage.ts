@@ -1,6 +1,6 @@
 import request from 'renderer/utils/request/penguin-stats';
 
-type StageType = {
+export type StageType = {
   stageType: string;
   stageId: string;
   zoneId: string;
