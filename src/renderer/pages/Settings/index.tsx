@@ -1,9 +1,8 @@
 import './index.less';
 
 export default function Settings() {
-  console.log('settings');
   return (
-    <div>
+    <div className="page">
       <span>Settings</span>
     </div>
   );
