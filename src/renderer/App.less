@@ -9,13 +9,12 @@
 
 body {
   position: relative;
-  width: 100vw;
   font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI',
     -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif;
-  overflow-y: hidden;
   display: flex;
   justify-content: center;
   margin: 0;
+  padding: 0;
 }
 
 #root,
@@ -24,11 +23,11 @@ body {
 }
 
 .app {
-  max-width: calc(100vw - 20px);
-  padding: 8px 10px;
+  max-width: 100vw;
   min-height: 100vh;
 }
 
 .page {
-  margin: 20px 40px;
+  padding: 20px 40px;
+  width: 100%;
 }
