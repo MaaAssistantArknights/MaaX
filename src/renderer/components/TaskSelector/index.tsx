@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Checkbox } from 'antd';
+import { Checkbox, Progress } from 'antd';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import type {
   DropResult,
@@ -12,21 +12,43 @@ import './index.less';
 type TaskType = {
   label: string;
   value: string;
+  status: 'normal' | 'success' | 'exception';
+  progress: number;
 };
 
-// TODO: 添加tasks Checkbox.Group的state、外部组件数据交互
+// TODO: 外部组件数据交互
 type TaskSelectorState = {
   tasks: Array<TaskType>;
 };
 
 const defaultTasks: Array<TaskType> = [
-  { label: '开始唤醒', value: 'awake' },
-  { label: '刷理智', value: 'clear sanity' },
-  { label: '自动公招', value: 'auto recruits' },
-  { label: '基建换班', value: 'shift scheduling' },
-  { label: '访问好友', value: 'visit friends' },
-  { label: '收取信用及购物', value: 'shopping' },
-  { label: '领取日常奖励', value: 'receive rewards' },
+  { label: '开始唤醒', value: 'awake', status: 'success', progress: 100 },
+  { label: '刷理智', value: 'clear sanity', status: 'success', progress: 100 },
+  {
+    label: '自动公招',
+    value: 'auto recruits',
+    status: 'exception',
+    progress: 20,
+  },
+  {
+    label: '基建换班',
+    value: 'shift scheduling',
+    status: 'normal',
+    progress: 60,
+  },
+  { label: '访问好友', value: 'visit friends', status: 'normal', progress: 70 },
+  {
+    label: '收取信用及购物',
+    value: 'shopping',
+    status: 'normal',
+    progress: 80,
+  },
+  {
+    label: '领取日常奖励',
+    value: 'receive rewards',
+    status: 'normal',
+    progress: 90,
+  },
 ];
 
 function reorder<T>(
@@ -83,6 +105,7 @@ class TaskSelector extends React.Component<
         <Droppable droppableId="task-selector-droppable">
           {(provided, snapshot) => (
             <Checkbox.Group>
+              <h3 style={{ textAlign: 'center' }}>任务设置</h3>
               <div
                 className="tasks"
                 // eslint-disable-next-line react/jsx-props-no-spreading
@@ -107,7 +130,17 @@ class TaskSelector extends React.Component<
                           provided_.draggableProps.style
                         )}
                       >
-                        <Checkbox value={task.value}>{task.label}</Checkbox>
+                        <div className="task-item">
+                          <Checkbox value={task.value}>{task.label}</Checkbox>
+                          <Progress
+                            type="circle"
+                            width={20}
+                            percent={task.progress}
+                            status={task.status}
+                            showInfo={task.status === 'success'}
+                            strokeWidth={12}
+                          />
+                        </div>
                       </div>
                     )}
                   </Draggable>
