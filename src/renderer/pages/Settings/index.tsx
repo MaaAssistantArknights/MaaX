@@ -18,7 +18,6 @@ type SettingsProps = Record<string, never>;
 
 type SettingsState = {
   configuration: ConfigurationType;
-  anchorOffset: number | null;
 };
 
 const storage = window.$storage;
