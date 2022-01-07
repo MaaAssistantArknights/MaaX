@@ -128,8 +128,8 @@ class TaskSelector extends React.Component<
     return (
       <DragDropContext onDragEnd={this.onDragEnd}>
         <Droppable droppableId="task-selector-droppable">
-          {(provided, snapshot) => (
-            <Checkbox.Group>
+          {(provided) => (
+            <div>
               <h3 style={{ textAlign: 'center' }}>任务设置</h3>
               <div
                 className="tasks"
@@ -159,7 +159,7 @@ class TaskSelector extends React.Component<
                           <Checkbox
                             checked={task.enabled}
                             onChange={(e) => {
-                              tasks[index].enabled = e.target.checked;
+                              task.enabled = e.target.checked;
                               this.setState({ tasks });
                             }}
                           >
@@ -180,7 +180,7 @@ class TaskSelector extends React.Component<
                 ))}
                 {provided.placeholder}
               </div>
-            </Checkbox.Group>
+            </div>
           )}
         </Droppable>
       </DragDropContext>
