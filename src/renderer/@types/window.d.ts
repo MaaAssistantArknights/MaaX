@@ -1,7 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// import { StorageType } from 'common/storage/index.d';
+
 interface IpcRenderer {
-  on: (channel: string, func: (...args: unknown[]) => void) => void;
-  once: (channel: string, func: (...args: unknown[]) => void) => void;
-  send: (channel: string, ...args: unknown[]) => void;
+  on: (channel: string, func: (...args: any[]) => void) => void;
+  once: (channel: string, func: (...args: any[]) => void) => void;
+  send: (channel: string, ...args: any[]) => void;
+  sendSync: (channel: string, ...args: any[]) => any;
 }
 
 interface Storage {

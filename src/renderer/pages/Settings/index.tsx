@@ -8,19 +8,6 @@ type SettingsProps = Record<string, never>;
 type SettingsState = Record<string, never>;
 
 const storage = window.$storage;
-const SettingCheckbox = (props: { settingKey: string; label: string }) => {
-  const { settingKey, label } = props;
-  return (
-    <Checkbox
-      checked={storage.get(settingKey)}
-      onChange={(event) => {
-        storage.set(settingKey, event.target.checked);
-      }}
-    >
-      {label}
-    </Checkbox>
-  );
-};
 
 class Settings extends React.Component<SettingsProps, SettingsState> {
   constructor(props: SettingsProps) {
@@ -49,6 +36,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                   ...Object.entries(configuration.infrastructure.enable).map(
                     (structure) => (
                       <Checkbox
+                        key={structure[0]}
                         checked={Boolean(structure[1])}
                         onChange={(event) => {
                           storage.set(
