@@ -1,23 +1,25 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
-contextBridge.exposeInMainWorld('electron', {
-  ipcRenderer: {
-    on(channel, func) {
-      const validChannels = ['ipc-example'];
-      if (validChannels.includes(channel)) {
-        // Deliberately strip event as it includes `sender`
-        ipcRenderer.on(channel, (event, ...args) => func(...args));
-      }
-    },
-    once(channel, func) {
-      const validChannels = ['ipc-example'];
-      if (validChannels.includes(channel)) {
-        // Deliberately strip event as it includes `sender`
-        ipcRenderer.once(channel, (event, ...args) => func(...args));
-      }
-    },
-    send(channel, ...args) {
-      ipcRenderer.send(channel, ...args);
-    },
+contextBridge.exposeInMainWorld('$ipcRenderer', {
+  on(channel, func) {
+    ipcRenderer.on(channel, (event, ...args) => func(...args));
+  },
+  once(channel, func) {
+    ipcRenderer.once(channel, (event, ...args) => func(...args));
+  },
+  send(channel, ...args) {
+    ipcRenderer.send(channel, ...args);
+  },
+});
+
+contextBridge.exposeInMainWorld('$storage', {
+  get(key) {
+    return ipcRenderer.sendSync('electron-store-get', key);
+  },
+  set(key, val) {
+    ipcRenderer.send('electron-store-set', key, val);
+  },
+  has(key) {
+    ipcRenderer.sendSync('electron-store-has', key);
   },
 });
