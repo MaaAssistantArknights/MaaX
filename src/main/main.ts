@@ -17,7 +17,7 @@ import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
-import './ipcMain';
+import storage from '../common/storage';
 
 export default class AppUpdater {
   constructor() {
@@ -89,6 +89,10 @@ const createWindow = async () => {
     if (!mainWindow) {
       throw new Error('"mainWindow" is not defined');
     }
+    // 初始化storage
+    // storage本身自带错误处理
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    storage;
     if (process.env.START_MINIMIZED) {
       mainWindow.minimize();
     } else {

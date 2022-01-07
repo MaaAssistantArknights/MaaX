@@ -10,6 +10,9 @@ contextBridge.exposeInMainWorld('$ipcRenderer', {
   send(channel, ...args) {
     ipcRenderer.send(channel, ...args);
   },
+  sendSync(channel, ...args) {
+    return ipcRenderer.sendSync(channel, ...args);
+  },
 });
 
 contextBridge.exposeInMainWorld('$storage', {
@@ -20,6 +23,6 @@ contextBridge.exposeInMainWorld('$storage', {
     ipcRenderer.send('electron-store-set', key, val);
   },
   has(key) {
-    ipcRenderer.sendSync('electron-store-has', key);
+    return ipcRenderer.sendSync('electron-store-has', key);
   },
 });
