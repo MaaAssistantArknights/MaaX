@@ -32,6 +32,7 @@ export type Type = {
   UseExpeditedPlan: boolean;
   MaximumNumberOfRecruitments: number;
   recognitions: {
+    [props: string]: boolean;
     '3 Stars': boolean;
     '4 Stars': boolean;
     '5 Stars': boolean;

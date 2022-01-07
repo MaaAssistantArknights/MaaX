@@ -34,6 +34,7 @@ export default schema;
 
 export type Type = {
   enable: {
+    [props: string]: boolean;
     ManufacturingStation: boolean;
     TradingStation: boolean;
     ControlCenter: boolean;

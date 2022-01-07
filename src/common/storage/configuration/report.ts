@@ -1,7 +1,7 @@
 const schema = {
   type: 'object',
   properties: {
-    id: { type: 'integer' },
+    id: { type: 'string' },
   },
   additionalProperties: false,
 };
@@ -9,5 +9,5 @@ const schema = {
 export default schema;
 
 export type Type = {
-  id?: number;
+  id?: string;
 };
