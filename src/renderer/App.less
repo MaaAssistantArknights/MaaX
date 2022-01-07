@@ -7,6 +7,36 @@
 
 @import 'assets/variables.less';
 
+body::-webkit-scrollbar {
+  display: none;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+  position: fixed;
+  right: 0;
+}
+
+::-webkit-scrollbar-button {
+  width: 4px;
+  height: 0;
+}
+
+::-webkit-scrollbar-track {
+  background: none;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background: rgb(100, 100, 100);
+  -webkit-transition: 0.3s;
+  transition: 0.3s;
+  &:hover,
+  &:active {
+    background-color: rgb(50, 50, 50);
+  }
+}
+
 body {
   position: relative;
   font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI',
@@ -28,6 +58,6 @@ body {
 }
 
 .page {
-  padding: 20px 40px;
+  padding: 0 40px 40px 40px;
   width: 100%;
 }

@@ -25,7 +25,7 @@ class Home extends React.Component<HomeProps, HomeState> {
         <Space direction="vertical" align="center">
           <TaskSelector />
           <Checkbox
-            value={autoShutdown}
+            checked={autoShutdown}
             onChange={(event) => {
               this.setState({ autoShutdown: event.target.checked });
             }}

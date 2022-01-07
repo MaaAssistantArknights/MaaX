@@ -1,7 +1,7 @@
-import { message, Modal, Typography } from 'antd';
 import { useRoutes } from 'react-router-dom';
 import routes from 'renderer/routes';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { message, Modal, Typography } from 'antd';
 
 import NavBar from './layouts/NavBar';
 

@@ -16,6 +16,7 @@ type TaskType = {
   value: string;
   status: 'normal' | 'success' | 'exception';
   progress: number;
+  enabled: boolean;
 };
 
 // TODO: 外部组件数据交互
@@ -24,32 +25,54 @@ type TaskSelectorState = {
 };
 
 const defaultTasks: Array<TaskType> = [
-  { label: '开始唤醒', value: 'awake', status: 'success', progress: 100 },
-  { label: '刷理智', value: 'clear sanity', status: 'success', progress: 100 },
+  {
+    label: '开始唤醒',
+    value: 'awake',
+    status: 'success',
+    progress: 100,
+    enabled: true,
+  },
+  {
+    label: '刷理智',
+    value: 'clear sanity',
+    status: 'success',
+    progress: 100,
+    enabled: true,
+  },
   {
     label: '自动公招',
     value: 'auto recruits',
     status: 'exception',
     progress: 20,
+    enabled: true,
   },
   {
     label: '基建换班',
     value: 'shift scheduling',
     status: 'normal',
     progress: 60,
+    enabled: true,
   },
-  { label: '访问好友', value: 'visit friends', status: 'normal', progress: 70 },
+  {
+    label: '访问好友',
+    value: 'visit friends',
+    status: 'normal',
+    progress: 70,
+    enabled: true,
+  },
   {
     label: '收取信用及购物',
     value: 'shopping',
     status: 'normal',
     progress: 80,
+    enabled: true,
   },
   {
     label: '领取日常奖励',
     value: 'receive rewards',
     status: 'normal',
     progress: 90,
+    enabled: true,
   },
 ];
 
@@ -133,7 +156,15 @@ class TaskSelector extends React.Component<
                         )}
                       >
                         <div className="task-item">
-                          <Checkbox value={task.value}>{task.label}</Checkbox>
+                          <Checkbox
+                            checked={task.enabled}
+                            onChange={(e) => {
+                              tasks[index].enabled = e.target.checked;
+                              this.setState({ tasks });
+                            }}
+                          >
+                            {task.label}
+                          </Checkbox>
                           <Progress
                             type="circle"
                             width={20}
