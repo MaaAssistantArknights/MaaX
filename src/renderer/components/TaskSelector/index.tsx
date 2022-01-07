@@ -9,6 +9,8 @@ import type {
 
 import './index.less';
 
+type TaskSelectorProps = Record<string, never>;
+
 type TaskType = {
   label: string;
   value: string;
@@ -74,10 +76,10 @@ const getItemStyle = (
 });
 
 class TaskSelector extends React.Component<
-  Record<string, never>,
+  TaskSelectorProps,
   TaskSelectorState
 > {
-  constructor(props: Record<string, never>) {
+  constructor(props: TaskSelectorProps) {
     super(props);
     this.state = {
       tasks: defaultTasks,

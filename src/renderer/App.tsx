@@ -1,4 +1,4 @@
-import { useRoutes } from 'react-router-dom';
+import { useRoutes, Navigate } from 'react-router-dom';
 import routes from 'renderer/routes';
 
 import NavBar from './layouts/NavBar';

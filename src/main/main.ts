@@ -11,11 +11,13 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, shell } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+
+import './ipcMain';
 
 export default class AppUpdater {
   constructor() {
@@ -27,11 +29,11 @@ export default class AppUpdater {
 
 let mainWindow: BrowserWindow | null = null;
 
-ipcMain.on('ipc-example', async (event, arg) => {
-  const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
-  console.log(msgTemplate(arg));
-  event.reply('ipc-example', msgTemplate('pong'));
-});
+// ipcMain.on('ipc-example', async (event, arg) => {
+//   const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
+//   console.log(msgTemplate(arg));
+//   event.reply('ipc-example', msgTemplate('pong'));
+// });
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');

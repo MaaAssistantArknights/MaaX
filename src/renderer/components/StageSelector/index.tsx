@@ -17,7 +17,9 @@ import {
   Typography,
 } from 'antd';
 
-type TaskType = {
+type StageSelectorProps = Record<string, never>;
+
+type StageTaskType = {
   stageId: string;
   zoneName: string;
   stageName: string;
@@ -29,24 +31,24 @@ type StageSelectorState = {
   rawZoneData: ZoneType[];
   rawStageData: StageType[];
   stageOptions: DefaultOptionType[];
-  tasks: Array<TaskType>;
-  selectedTask: TaskType | null;
+  tasks: Array<StageTaskType>;
+  selectedTask: StageTaskType | null;
   animation: AnimObjectOrArray | null;
 };
 
 const animationDuration = 500;
 
-const getTotalSanityCost = (tasks: Array<TaskType>): number => {
+const getTotalSanityCost = (tasks: Array<StageTaskType>): number => {
   return tasks.reduce((acc, task) => {
     return acc + task.times * task.sanityCost;
   }, 0);
 };
 
 class StageSelector extends React.Component<
-  Record<string, never>,
+  StageSelectorProps,
   StageSelectorState
 > {
-  constructor(props: Record<string, never>) {
+  constructor(props: StageSelectorProps) {
     super(props);
     TweenOne.plugins.push(Children);
     this.state = {
@@ -228,7 +230,7 @@ class StageSelector extends React.Component<
             添加
           </Button>
         </Space>
-        <Space direction="vertical" align="start">
+        <div>
           <Space>
             <Checkbox>可用理智液</Checkbox>
             <Radio.Group>
@@ -237,7 +239,7 @@ class StageSelector extends React.Component<
             </Radio.Group>
           </Space>
           <Checkbox>可用源石</Checkbox>
-        </Space>
+        </div>
         <Space style={{ color: '#aaa' }}>
           <h3 style={{ margin: 0 }}>关卡列表</h3>
           <span>消耗理智：</span>
