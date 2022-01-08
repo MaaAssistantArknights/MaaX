@@ -10,6 +10,7 @@ import {
   Typography,
 } from 'antd';
 import * as React from 'react';
+import _ from 'lodash';
 import { Type as ConfigurationType } from 'common/storage/configuration';
 
 import './index.less';
@@ -23,16 +24,22 @@ type SettingsState = {
 const storage = window.$storage;
 
 class Settings extends React.Component<SettingsProps, SettingsState> {
+  saveConfiguration: _.DebouncedFunc<() => void>;
+
   constructor(props: SettingsProps) {
     super(props);
     this.state = {
       configuration: storage.get('configuration'),
     };
+
+    this.saveConfiguration = _.debounce(() => {
+      const { configuration } = this.state;
+      storage.set('configuration', configuration);
+    }, 500);
   }
 
   componentDidUpdate() {
-    const { configuration } = this.state;
-    storage.set('configuration', configuration);
+    this.saveConfiguration();
   }
 
   render() {
@@ -216,7 +223,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
               </span>
               <Input
                 value={configuration.report.id}
-                onBlur={(e) => {
+                onChange={(e) => {
                   configuration.report.id = e.target.value;
                   this.setState({ configuration });
                 }}
@@ -236,7 +243,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                 <Typography.Text>自定义地址</Typography.Text>
                 <Input
                   value={configuration.connection.address}
-                  onBlur={(e) => {
+                  onChange={(e) => {
                     configuration.connection.address = e.target.value;
                     this.setState({ configuration });
                   }}
@@ -250,7 +257,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                 </Typography.Text>
                 <Input
                   value={configuration.connection['Filepath of bluestack.conf']}
-                  onBlur={(e) => {
+                  onChange={(e) => {
                     configuration.connection['Filepath of bluestack.conf'] =
                       e.target.value;
                     this.setState({ configuration });
@@ -275,7 +282,7 @@ class Settings extends React.Component<SettingsProps, SettingsState> {
                 <Typography.Text>Proxy</Typography.Text>
                 <Input
                   value={configuration.update.proxy}
-                  onBlur={(e) => {
+                  onChange={(e) => {
                     configuration.update.proxy = e.target.value;
                     this.setState({ configuration });
                   }}
