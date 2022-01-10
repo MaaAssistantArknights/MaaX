@@ -13,6 +13,9 @@
     "link-modules": "node -r ts-node/register ../../.erb/scripts/link-modules.ts",
     "postinstall": "npm run electron-rebuild && npm run link-modules"
   },
-  "dependencies": {},
+  "dependencies": {
+    "ffi-napi": "^4.0.3",
+    "ref-array-napi": "^1.2.2"
+  },
   "license": "MIT"
 }
