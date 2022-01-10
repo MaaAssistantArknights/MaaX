@@ -1660,6 +1660,11 @@ aggregate-error@^3.0.0:
     clean-stack "^2.0.0"
     indent-string "^4.0.0"
 
+ajv-errors@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.npmmirror.com/ajv-errors/download/ajv-errors-3.0.0.tgz#e54f299f3a3d30fe144161e5f0d8d51196c527bc"
+  integrity sha1-5U8pnzo9MP4UQWHl8NjVEZbFJ7w=
+
 ajv-formats@^2.1.1:
   version "2.1.1"
   resolved "https://registry.npmmirror.com/ajv-formats/download/ajv-formats-2.1.1.tgz"
@@ -1692,6 +1697,16 @@ ajv@^6.10.0, ajv@^6.12.0, ajv@^6.12.4, ajv@^6.12.5:
 ajv@^8.0.0, ajv@^8.6.3, ajv@^8.8.0:
   version "8.8.2"
   resolved "https://registry.npmmirror.com/ajv/download/ajv-8.8.2.tgz"
+  integrity sha512-x9VuX+R/jcFj1DHo/fCp99esgGDWiHENrKxaCENuCxpoMCmAt/COCGVDwA7kleEpEzJjDnvh3yGoOuLu0Dtllw==
+  dependencies:
+    fast-deep-equal "^3.1.1"
+    json-schema-traverse "^1.0.0"
+    require-from-string "^2.0.2"
+    uri-js "^4.2.2"
+
+ajv@^8.8.2:
+  version "8.8.2"
+  resolved "https://registry.npmmirror.com/ajv/download/ajv-8.8.2.tgz#01b4fef2007a28bf75f0b7fc009f62679de4abbb"
   integrity sha512-x9VuX+R/jcFj1DHo/fCp99esgGDWiHENrKxaCENuCxpoMCmAt/COCGVDwA7kleEpEzJjDnvh3yGoOuLu0Dtllw==
   dependencies:
     fast-deep-equal "^3.1.1"
@@ -3539,7 +3554,7 @@ electron-localshortcut@^3.1.0:
 
 electron-log@^4.4.4:
   version "4.4.4"
-  resolved "https://registry.npmmirror.com/electron-log/download/electron-log-4.4.4.tgz"
+  resolved "https://registry.npmmirror.com/electron-log/download/electron-log-4.4.4.tgz#df893ae9ae8c21781a585eea50ce7836ac3e0fe7"
   integrity sha512-jcNtrVmKXG+CHchLo/jnjjQ9K4/ORguWD23H2nqApTwisQ4Qo3IRQtLiorubajX0Uxg76Xm/Yt+eNfQMoHVr5w==
 
 electron-notarize@^1.1.1:

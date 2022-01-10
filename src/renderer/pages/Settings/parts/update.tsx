@@ -1,6 +1,6 @@
 import * as React from 'react';
 import _ from 'lodash';
-import type { Type as UpdateType } from 'common/storage/configuration/update';
+import type { Type as UpdateType } from 'main/storage/configuration/update';
 import { Divider, Space, Typography, Input, Checkbox } from 'antd';
 
 type ReportProps = {

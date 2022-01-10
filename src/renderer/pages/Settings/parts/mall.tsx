@@ -1,5 +1,5 @@
 import * as React from 'react';
-import type { Type as MallType } from 'common/storage/configuration/mall';
+import type { Type as MallType } from 'main/storage/configuration/mall';
 import _ from 'lodash';
 import { Divider, Checkbox, Typography } from 'antd';
 

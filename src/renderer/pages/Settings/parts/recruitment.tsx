@@ -1,5 +1,5 @@
 import * as React from 'react';
-import type { Type as RecruitmentType } from 'common/storage/configuration/recruitment';
+import type { Type as RecruitmentType } from 'main/storage/configuration/recruitment';
 import _ from 'lodash';
 import { Divider, Space, Checkbox, Typography, InputNumber } from 'antd';
 

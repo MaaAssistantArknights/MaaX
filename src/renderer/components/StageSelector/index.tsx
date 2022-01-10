@@ -1,8 +1,6 @@
 import * as React from 'react';
-
-import PenguinStatsApi from 'renderer/api/penguin-stats';
-import { StageType } from 'renderer/api/penguin-stats/stage';
-import { ZoneType } from 'renderer/api/penguin-stats/zone';
+import _ from 'lodash';
+import PenguinStatsApi, { PenguinStatsTypes } from 'renderer/api/penguin-stats';
 import { DefaultOptionType } from 'antd/lib/select';
 import TweenOne, { AnimObjectOrArray } from 'rc-tween-one';
 import Children from 'rc-tween-one/lib/plugin/ChildrenPlugin';
@@ -19,7 +17,7 @@ import {
 
 type StageSelectorProps = Record<string, never>;
 
-type StageTaskType = {
+type StageType = {
   stageId: string;
   zoneName: string;
   stageName: string;
@@ -28,17 +26,17 @@ type StageTaskType = {
 };
 
 type StageSelectorState = {
-  rawZoneData: ZoneType[];
-  rawStageData: StageType[];
+  rawZoneData: PenguinStatsTypes['ZoneType'][];
+  rawStageData: PenguinStatsTypes['StageType'][];
   stageOptions: DefaultOptionType[];
-  tasks: Array<StageTaskType>;
-  selectedTask: StageTaskType | null;
+  stages: Array<StageType>;
+  selectedStage: StageType | null;
   animation: AnimObjectOrArray | null;
 };
 
 const animationDuration = 500;
 
-const getTotalSanityCost = (tasks: Array<StageTaskType>): number => {
+const getTotalSanityCost = (tasks: Array<StageType>): number => {
   return tasks.reduce((acc, task) => {
     return acc + task.times * task.sanityCost;
   }, 0);
@@ -55,12 +53,14 @@ class StageSelector extends React.Component<
       rawZoneData: [],
       rawStageData: [],
       stageOptions: [],
-      tasks: [],
-      selectedTask: null,
+      stages: [],
+      selectedStage: null,
       animation: null,
     };
     this.onStageSelectorChanged = this.onStageSelectorChanged.bind(this);
     this.onAddTaskBtnClicked = this.onAddTaskBtnClicked.bind(this);
+    this.onDeleteTaskBtnClicked = this.onDeleteTaskBtnClicked.bind(this);
+    this.onTimesInputChanged = this.onTimesInputChanged.bind(this);
   }
 
   componentDidMount() {
@@ -79,7 +79,7 @@ class StageSelector extends React.Component<
     const theStage = rawStageData.find((stage) => stage.stageId === stageId);
     if (theStage && theZone) {
       this.setState({
-        selectedTask: {
+        selectedStage: {
           stageId: theStage.stageId,
           zoneName: theZone.zoneName,
           stageName: theStage.code,
@@ -89,13 +89,13 @@ class StageSelector extends React.Component<
       });
     } else {
       this.setState({
-        selectedTask: null,
+        selectedStage: null,
       });
     }
   }
 
   onAddTaskBtnClicked() {
-    const { tasks, selectedTask } = this.state;
+    const { stages: tasks, selectedStage: selectedTask } = this.state;
     if (selectedTask) {
       const theTask = tasks.find(
         (task) => task.stageId === selectedTask.stageId
@@ -106,7 +106,7 @@ class StageSelector extends React.Component<
         tasks.push(selectedTask);
       }
       this.setState({
-        tasks,
+        stages: tasks,
         animation: {
           Children: {
             value: getTotalSanityCost(tasks),
@@ -119,11 +119,11 @@ class StageSelector extends React.Component<
   }
 
   onDeleteTaskBtnClicked(index: number) {
-    const { tasks } = this.state;
+    const { stages: tasks } = this.state;
     if (tasks.at(index)) {
       tasks.splice(index, 1);
       this.setState({
-        tasks,
+        stages: tasks,
         animation: {
           Children: {
             value: getTotalSanityCost(tasks),
@@ -140,12 +140,12 @@ class StageSelector extends React.Component<
     if (times <= 0) {
       return;
     }
-    const { tasks } = this.state;
+    const { stages: tasks } = this.state;
     const theTask = tasks.at(index);
     if (theTask) {
       theTask.times = times;
       this.setState({
-        tasks,
+        stages: tasks,
         animation: {
           Children: {
             value: getTotalSanityCost(tasks),
@@ -214,7 +214,7 @@ class StageSelector extends React.Component<
   }
 
   render() {
-    const { stageOptions, tasks, animation } = this.state;
+    const { stageOptions, stages: tasks, animation } = this.state;
     return (
       <Space direction="vertical" align="center" style={{ flex: 1 }}>
         <h3>关卡选择</h3>
@@ -233,7 +233,7 @@ class StageSelector extends React.Component<
         <div className="addition-sanity-options">
           <Space>
             <Checkbox>可用理智液</Checkbox>
-            <Radio.Group>
+            <Radio.Group defaultValue="time">
               <Radio value="time">过期时间优先</Radio>
               <Radio value="restore">理智回复量优先</Radio>
             </Radio.Group>
