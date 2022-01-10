@@ -6,11 +6,10 @@
       "type": "node",
       "request": "launch",
       "protocol": "inspector",
-      "runtimeExecutable": "npm",
+      "runtimeExecutable": "yarn",
       "runtimeArgs": [
-        "run start:main --inspect=5858 --remote-debugging-port=9223"
+        "start", "--inspect=5858","--remote-debugging-port=9223"
       ],
-      "preLaunchTask": "Start Webpack Dev"
     },
     {
       "name": "Electron: Renderer",
