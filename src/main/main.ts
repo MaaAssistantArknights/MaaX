@@ -17,7 +17,7 @@ import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
-import storage from '../common/storage';
+import storage from './storage';
 
 export default class AppUpdater {
   constructor() {

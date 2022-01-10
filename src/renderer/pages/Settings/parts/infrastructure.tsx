@@ -9,7 +9,7 @@ import {
   InputNumber,
 } from 'antd';
 
-import type { Type as InfrastructureType } from 'common/storage/configuration/infrastructure';
+import type { Type as InfrastructureType } from 'main/storage/configuration/infrastructure';
 import _ from 'lodash';
 
 type InfrastructureProps = {

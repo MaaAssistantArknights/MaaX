@@ -1,6 +1,6 @@
 import * as React from 'react';
 import _ from 'lodash';
-import type { Type as ConnectionType } from 'common/storage/configuration/connection';
+import type { Type as ConnectionType } from 'main/storage/configuration/connection';
 import { Divider, Space, Typography, Input } from 'antd';
 
 type ConnectionProps = {

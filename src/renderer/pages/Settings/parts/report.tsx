@@ -1,6 +1,6 @@
 import * as React from 'react';
 import _ from 'lodash';
-import type { Type as ReportType } from 'common/storage/configuration/report';
+import type { Type as ReportType } from 'main/storage/configuration/report';
 import { Divider, Space, Typography, Input } from 'antd';
 
 type ReportProps = {

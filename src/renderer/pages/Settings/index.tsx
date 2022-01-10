@@ -1,7 +1,7 @@
 import { Anchor } from 'antd';
 import * as React from 'react';
 import _ from 'lodash';
-import type { Type as ConfigurationType } from 'common/storage/configuration';
+import type { Type as ConfigurationType } from 'main/storage/configuration';
 
 import './index.less';
 import Infrastructure from './parts/infrastructure';

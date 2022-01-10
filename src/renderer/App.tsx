@@ -15,16 +15,20 @@ let noticed = false;
 
 export default function App() {
   const route = useRoutes(routes);
-  const isStorageReset = window.$ipcRenderer.sendSync('electron-store-reset');
-  if (isStorageReset && !noticed) {
+  const status = window.$ipcRenderer.sendSync('electron-store-error');
+  if (status && !noticed) {
     noticed = true;
     Modal.warning({
       title: <Typography.Text strong>警告</Typography.Text>,
       icon: <ExclamationCircleOutlined />,
       content: (
         <div>
-          <p>你的配置文件已经被重置，请不要自己修改config.json。</p>
-          <p>出现错误的文件已被保存到config.json.backup。</p>
+          <p>配置文件出错，{status}。</p>
+          {status === 'reset' ? (
+            <p>出现错误的文件已被保存到config.json.backup。</p>
+          ) : (
+            <p />
+          )}
         </div>
       ),
       okText: '知道了',
