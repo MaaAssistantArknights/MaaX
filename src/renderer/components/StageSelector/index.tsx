@@ -230,7 +230,7 @@ class StageSelector extends React.Component<
             添加
           </Button>
         </Space>
-        <div>
+        <div className="addition-sanity-options">
           <Space>
             <Checkbox>可用理智液</Checkbox>
             <Radio.Group>
@@ -238,7 +238,9 @@ class StageSelector extends React.Component<
               <Radio value="restore">理智回复量优先</Radio>
             </Radio.Group>
           </Space>
-          <Checkbox>可用源石</Checkbox>
+          <div>
+            <Checkbox>可用源石</Checkbox>
+          </div>
         </div>
         <Space style={{ color: '#aaa' }}>
           <h3 style={{ margin: 0 }}>关卡列表</h3>
