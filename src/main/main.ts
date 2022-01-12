@@ -14,10 +14,13 @@ import path from 'path';
 import { app, BrowserWindow, shell } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+import { is } from 'electron-util';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
 import storage from './storage';
+
+import interfaceTest from './interface/sample';
 
 export default class AppUpdater {
   constructor() {
@@ -133,6 +136,13 @@ app.on('window-all-closed', () => {
 app
   .whenReady()
   .then(() => {
+    console.log = log.log;
+    console.error = log.error;
+
+    log.transports.file.resolvePath = () =>
+      path.join(app.getPath('userData'), 'main.log');
+    log.transports.file.level = is.development ? 'verbose' : 'info';
+    interfaceTest();
     createWindow();
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the
