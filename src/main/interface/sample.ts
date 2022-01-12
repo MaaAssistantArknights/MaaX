@@ -1,29 +1,34 @@
-import { Assistant, voidPointer } from './inferface';
+import path from 'path';
+import { is } from 'electron-util';
+import { Assistant, voidPointer } from '.';
 
-function cb(msg: number, detail: string, custom_arg: any) {
-  console.log(msg);
-  console.log(JSON.parse(detail));
-}
+export default () => {
+  function cb(msg: number, detail: string, custom_arg: any) {
+    console.log(msg);
+    console.log(JSON.parse(detail));
+  }
 
-const asst = new Assistant(
-  'C:\\Users\\bakashigure\\Desktop\\MeoAssistance_v2.5.0\\'
-);
-const ax = asst.CreateEx(cb, voidPointer());
-// asst.CatchDefault()
-if (asst.CatchCustom('127.0.0.1:5555')) {
-  console.log('连接成功');
-} else {
-  console.log('连接失败');
-}
-// asst.AppendMall(ax,true)
-// asst.AppendVisit(ax)
-// asst.AppendInfrast(ax,1,["Mfg","Trade"],2,"Money",0.3)
-// asst.AppendInfrast(ax,1,["Control"],1,"_NotUse",0.4)
+  const dllPath = is.development
+    ? path.join(process.cwd(), 'assets')
+    : path.join(process.resourcesPath, 'assets');
 
-asst.AppendRecruit(1, [3, 4, 5], 3, [3, 4, 5], 3, true);
-asst.AppendAward(ax);
+  const asst = new Assistant(dllPath);
+  const ax = asst.CreateEx(cb, voidPointer());
+  // asst.CatchDefault()
+  if (asst.CatchCustom('127.0.0.1:5555')) {
+    console.log('连接成功');
+    // asst.AppendMall(ax,true)
+    // asst.AppendVisit(ax)
+    // asst.AppendInfrast(ax,1,["Mfg","Trade"],2,"Money",0.3)
+    // asst.AppendInfrast(ax,1,["Control"],1,"_NotUse",0.4)
 
-// asst.StartRecruitCalc(ax,[4,5,6],3,true)
-asst.Start(ax);
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-setInterval(() => {}, 100);
+    asst.AppendRecruit(1, [3, 4, 5], 3, [3, 4, 5], 3, true);
+    asst.AppendAward(ax);
+
+    // asst.StartRecruitCalc(ax,[4,5,6],3,true)
+    asst.Start(ax);
+  } else {
+    console.log('连接失败');
+  }
+  asst.Destroy(ax);
+};

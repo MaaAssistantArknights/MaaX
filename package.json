@@ -35,6 +35,12 @@
     "appId": "com.misteo.assistant-arknights",
     "asar": true,
     "asarUnpack": "**\\*.{node,dll}",
+    "extraResources": [
+      {
+        "from": "./assets",
+        "to": "./assets"
+      }
+    ],
     "files": [
       "dist",
       "node_modules",
@@ -75,10 +81,7 @@
       "app": "release/app",
       "buildResources": "assets",
       "output": "release/build"
-    },
-    "extraResources": [
-      "./assets/**"
-    ]
+    }
   },
   "repository": {
     "type": "git",
@@ -136,7 +139,7 @@
     "@types/ffi-napi": "^4.0.5",
     "@types/jest": "^27.0.3",
     "@types/lodash": "^4.14.178",
-    "@types/node": "17.0.5",
+    "@types/node": "^17.0.8",
     "@types/prop-types": "^15.7.4",
     "@types/react": "^17.0.38",
     "@types/react-beautiful-dnd": "^13.1.2",
@@ -214,6 +217,7 @@
     "electron-redux": "^1.5.4",
     "electron-store": "^8.0.1",
     "electron-updater": "^4.6.4",
+    "electron-util": "^0.17.2",
     "history": "^5.2.0",
     "react": "^17.0.2",
     "react-beautiful-dnd": "^13.1.0",

@@ -10,6 +10,7 @@
       "runtimeArgs": [
         "start", "--inspect=5858","--remote-debugging-port=9223"
       ],
+      "cwd": "${workspaceFolder}"
     },
     {
       "name": "Electron: Renderer",

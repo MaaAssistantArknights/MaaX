@@ -953,6 +953,15 @@
     "@types/qs" "*"
     "@types/serve-static" "*"
 
+"@types/ffi-napi@^4.0.5":
+  version "4.0.5"
+  resolved "https://registry.npmmirror.com/@types/ffi-napi/download/@types/ffi-napi-4.0.5.tgz#0b2dc2d549361947a117d55156ff34fd9632c3df"
+  integrity sha512-WDPpCcHaPhHmP1FIw3ds/+OLt8bYQ/h3SO7o+8kH771PL21kHVzTwii7+WyMBXMQrBsR6xVU2y7w+h+9ggpaQw==
+  dependencies:
+    "@types/node" "*"
+    "@types/ref-napi" "*"
+    "@types/ref-struct-di" "*"
+
 "@types/fs-extra@^9.0.11":
   version "9.0.13"
   resolved "https://registry.npmmirror.com/@types/fs-extra/download/@types/fs-extra-9.0.13.tgz?cache=0&sync_timestamp=1637265615958&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2F%40types%2Ffs-extra%2Fdownload%2F%40types%2Ffs-extra-9.0.13.tgz"
@@ -1064,7 +1073,7 @@
   resolved "https://registry.npmmirror.com/@types/ms/download/@types/ms-0.7.31.tgz?cache=0&sync_timestamp=1637268125428&other_urls=https%3A%2F%2Fregistry.npmmirror.com%2F%40types%2Fms%2Fdownload%2F%40types%2Fms-0.7.31.tgz"
   integrity sha1-MbfKZAcSij0rvCf+LSGzRTl/YZc=
 
-"@types/node@*", "@types/node@17.0.5":
+"@types/node@*":
   version "17.0.5"
   resolved "https://registry.npmmirror.com/@types/node/download/@types/node-17.0.5.tgz"
   integrity sha512-w3mrvNXLeDYV1GKTZorGJQivK6XLCoGwpnyJFbJVK/aTBQUxOCaa/GlFAAN3OTDFcb7h5tiFG+YXCO2By+riZw==
@@ -1073,6 +1082,11 @@
   version "14.18.4"
   resolved "https://registry.npmmirror.com/@types/node/download/@types/node-14.18.4.tgz"
   integrity sha512-swe3lD4izOJWHuxvsZdDFRq6S9i6koJsXOnQKYekhSO5JTizMVirUFgY/bUsaOJQj8oSD4oxmRYPBM/0b6jpdw==
+
+"@types/node@^17.0.8":
+  version "17.0.8"
+  resolved "https://registry.npmmirror.com/@types/node/download/@types/node-17.0.8.tgz#50d680c8a8a78fe30abe6906453b21ad8ab0ad7b"
+  integrity sha512-YofkM6fGv4gDJq78g4j0mMuGMkZVxZDgtU0JRdx6FgiJDG+0fY0GKVolOV8WqVmEhLCXkQRjwDdKyPxJp/uucg==
 
 "@types/plist@^3.0.1":
   version "3.0.2"
@@ -1141,6 +1155,20 @@
     "@types/prop-types" "*"
     "@types/scheduler" "*"
     csstype "^3.0.2"
+
+"@types/ref-napi@*":
+  version "3.0.4"
+  resolved "https://registry.npmmirror.com/@types/ref-napi/download/@types/ref-napi-3.0.4.tgz#d7edc063b244c85767867ce1167ec2d7051728a1"
+  integrity sha1-1+3AY7JEyFdnhnzhFn7C1wUXKKE=
+  dependencies:
+    "@types/node" "*"
+
+"@types/ref-struct-di@*":
+  version "1.1.6"
+  resolved "https://registry.npmmirror.com/@types/ref-struct-di/download/@types/ref-struct-di-1.1.6.tgz#9775753b24ba5bf248dd66d79d4fdb7cebef6e95"
+  integrity sha512-+Sa2H3ynDYo2ungR3d5kmNetlkAYNqQVjJvs1k7i6zvo7Zu/qb+OsrXU54RuiOYJCwY9piN+hOd4YRRaiEOqgw==
+  dependencies:
+    "@types/ref-napi" "*"
 
 "@types/responselike@*", "@types/responselike@^1.0.0":
   version "1.0.0"
@@ -1694,17 +1722,7 @@ ajv@^6.10.0, ajv@^6.12.0, ajv@^6.12.4, ajv@^6.12.5:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
-ajv@^8.0.0, ajv@^8.6.3, ajv@^8.8.0:
-  version "8.8.2"
-  resolved "https://registry.npmmirror.com/ajv/download/ajv-8.8.2.tgz"
-  integrity sha512-x9VuX+R/jcFj1DHo/fCp99esgGDWiHENrKxaCENuCxpoMCmAt/COCGVDwA7kleEpEzJjDnvh3yGoOuLu0Dtllw==
-  dependencies:
-    fast-deep-equal "^3.1.1"
-    json-schema-traverse "^1.0.0"
-    require-from-string "^2.0.2"
-    uri-js "^4.2.2"
-
-ajv@^8.8.2:
+ajv@^8.0.0, ajv@^8.6.3, ajv@^8.8.0, ajv@^8.8.2:
   version "8.8.2"
   resolved "https://registry.npmmirror.com/ajv/download/ajv-8.8.2.tgz#01b4fef2007a28bf75f0b7fc009f62679de4abbb"
   integrity sha512-x9VuX+R/jcFj1DHo/fCp99esgGDWiHENrKxaCENuCxpoMCmAt/COCGVDwA7kleEpEzJjDnvh3yGoOuLu0Dtllw==
@@ -3644,6 +3662,14 @@ electron-updater@^4.6.4:
     lodash.escaperegexp "^4.1.2"
     lodash.isequal "^4.5.0"
     semver "^7.3.5"
+
+electron-util@^0.17.2:
+  version "0.17.2"
+  resolved "https://registry.nlark.com/electron-util/download/electron-util-0.17.2.tgz#6b0fe798ae0154585e7e0e96a707bfeae592be05"
+  integrity sha1-aw/nmK4BVFhefg6Wpwe/6uWSvgU=
+  dependencies:
+    electron-is-dev "^1.1.0"
+    new-github-issue-url "^0.2.1"
 
 electron@^16.0.5:
   version "16.0.6"
@@ -6673,6 +6699,11 @@ neo-async@^2.6.2:
   version "2.6.2"
   resolved "https://registry.nlark.com/neo-async/download/neo-async-2.6.2.tgz"
   integrity sha1-tKr7k+OustgXTKU88WOrfXMIMF8=
+
+new-github-issue-url@^0.2.1:
+  version "0.2.1"
+  resolved "https://registry.npmmirror.com/new-github-issue-url/download/new-github-issue-url-0.2.1.tgz#e17be1f665a92de465926603e44b9f8685630c1d"
+  integrity sha1-4Xvh9mWpLeRlkmYD5EufhoVjDB0=
 
 no-case@^3.0.4:
   version "3.0.4"

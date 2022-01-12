@@ -1,8 +1,9 @@
-import ffi = require('ffi-napi');
-import ref = require('ref-napi');
-import ArrayType = require('ref-array-napi');
-import fs = require('fs');
-import path = require('path');
+import ffi from 'ffi-napi';
+import ref from 'ref-napi';
+import ArrayType from 'ref-array-napi';
+import path from 'path';
+
+import { is } from 'electron-util';
 
 const CallBack = ffi.Function(ref.types.void, [
   ref.types.int,
@@ -64,25 +65,24 @@ class Assistant {
     this.lib_others = path.resolve(lib_others);
     console.log(this.lib_others);
     this.lib_asst = path.resolve(lib_asst);
-    const { platform } = process;
 
-    if (platform === 'linux') {
+    if (is.linux) {
       this.lib_main = 'libMeoAssistant.so';
       this.suffix = '^(?!Meo|libmeo).*?.so$';
-    } else if (process.platform === 'darwin') {
-      this.lib_main = '??';
-      this.suffix = '??';
+    } else if (is.macos) {
+      this.lib_main = 'libMeoAssistant.dylib';
+      this.suffix = '^(?!Meo|libmeo).*?.dylib$';
     }
 
-    const files = fs.readdirSync(this.lib_others);
-    files.forEach((filename) => {
-      if (filename.match(this.suffix)) {
-        console.log(`load file ${filename}`);
-        ffi.Library(path.join(lib_others, filename));
-      }
-    });
+    // const files = fs.readdirSync(resourcesPath);
+    // files.forEach((filename) => {
+    //   if (filename.match(this.suffix)) {
+    //     console.log(`load file ${filename}`);
+    //     ffi.Library(path.join(lib_others, filename));
+    //   }
+    // });
 
-    this.MeoAsst = ffi.Library(path.join(lib_asst, this.lib_main), {
+    this.MeoAsst = ffi.Library(path.join(this.lib_others, this.lib_main), {
       /* AsstCallback:[ref.refType(ref.types.void),[ref.types.int,'string',ref.refType(ref.types.void)]], */
       AsstCreate: [AsstPtr, ['string']],
       AsstCreateEx: [AsstPtr, ['string', 'pointer', CustomArgs]],
@@ -116,6 +116,10 @@ class Assistant {
 
       AsstGetVersion: ['string', []],
     });
+
+    // this.MeoAsst = new ffi.DynamicLibrary(
+    //   path.join(this.lib_others, this.lib_main)
+    // );
   }
 
   /**
@@ -124,6 +128,13 @@ class Assistant {
    * @returns 实例指针{ref.Pointer}
    */
   Create(dirname: string) {
+    // const asstCreate = ffi.ForeignFunction(
+    //   this.MeoAsst.get('AsstCreate'),
+    //   AsstPtr,
+    //   ['string'],
+    //   ffi.FFI_STDCALL
+    // );
+    // this.MeoAsstPtr = asstCreate(dirname);
     this.MeoAsstPtr = this.MeoAsst.AsstCreate(dirname);
 
     return this.MeoAsstPtr;
