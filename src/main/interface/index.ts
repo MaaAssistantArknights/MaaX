@@ -3,8 +3,6 @@ import ref from 'ref-napi';
 import ArrayType from 'ref-array-napi';
 import path from 'path';
 
-import { is } from 'electron-util';
-
 const CallBack = ffi.Function(ref.types.void, [
   ref.types.int,
   'string',
@@ -42,14 +40,26 @@ function ffiArray(array: any[]) {
   return StringPtrArray(stringArray);
 }
 
+const dependences: Record<string, Array<string>> = {
+  win32: [
+    'libiomp5md',
+    'mklml',
+    'mkldnn',
+    'opencv_world453',
+    'paddle_inference',
+    'ppocr',
+    'penguin-stats-recognize',
+  ],
+  linux: [],
+  darwin: [],
+};
+
 class Assistant {
   lib_others: string;
 
   lib_asst: string;
 
-  lib_main = 'MeoAssistant.dll';
-
-  suffix = '^(?!Meo|libmeo).*?.dll$'; // 去掉Meo或者libmeo开头的链接库，同时后缀满足dll
+  lib_main = 'MeoAssistant';
 
   MeoAsst;
 
@@ -63,24 +73,11 @@ class Assistant {
    */
   constructor(lib_others: string, lib_asst: string = lib_others) {
     this.lib_others = path.resolve(lib_others);
-    console.log(this.lib_others);
     this.lib_asst = path.resolve(lib_asst);
 
-    if (is.linux) {
-      this.lib_main = 'libMeoAssistant.so';
-      this.suffix = '^(?!Meo|libmeo).*?.so$';
-    } else if (is.macos) {
-      this.lib_main = 'libMeoAssistant.dylib';
-      this.suffix = '^(?!Meo|libmeo).*?.dylib$';
-    }
-
-    // const files = fs.readdirSync(resourcesPath);
-    // files.forEach((filename) => {
-    //   if (filename.match(this.suffix)) {
-    //     console.log(`load file ${filename}`);
-    //     ffi.Library(path.join(lib_others, filename));
-    //   }
-    // });
+    dependences[process.platform].forEach((lib) => {
+      ffi.Library(path.join(this.lib_others, lib));
+    });
 
     this.MeoAsst = ffi.Library(path.join(this.lib_others, this.lib_main), {
       /* AsstCallback:[ref.refType(ref.types.void),[ref.types.int,'string',ref.refType(ref.types.void)]], */
