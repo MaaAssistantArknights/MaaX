@@ -1,7 +1,11 @@
 import { existsSync, readFileSync } from 'fs';
+import { resolve } from 'path';
 
 function bluestackPort(path: string): string | null {
+  // eslint-disable-next-line no-param-reassign
+  path = resolve(path);
   if (!existsSync(path)) {
+    console.log('path not exist!');
     return null;
   }
   const conf = readFileSync(path, 'utf-8');
@@ -9,6 +13,7 @@ function bluestackPort(path: string): string | null {
   if (address != null) {
     return address[1];
   }
+  console.log('no port in file');
   return null;
 }
 
