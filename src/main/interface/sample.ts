@@ -12,10 +12,10 @@ export default () => {
     ? path.join(process.cwd(), 'assets')
     : path.join(process.resourcesPath, 'assets');
 
-  const asst = new Assistant(dllPath);
+  const asst = Assistant.getInstance(dllPath);
   const ax = asst.CreateEx(cb, voidPointer());
   // asst.CatchDefault()
-  if (asst.CatchCustom('127.0.0.1:5555')) {
+  if (asst.CatchCustom('127.0.0.1:7625')) {
     console.log('successfully connected');
     // asst.AppendMall(ax,true)
     // asst.AppendVisit(ax)
@@ -30,5 +30,7 @@ export default () => {
   } else {
     console.log('failed to connect');
   }
-  asst.Destroy(ax);
+  asst.AppendMall(true);
+  asst.AppendAward();
+  asst.Start();
 };
