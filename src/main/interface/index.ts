@@ -51,7 +51,7 @@ const dependences: Record<string, Array<string>> = {
     'penguin-stats-recognize',
   ],
   linux: [],
-  darwin: [],
+  darwin: ['libpaddle_inference'],
 };
 
 class Assistant {
