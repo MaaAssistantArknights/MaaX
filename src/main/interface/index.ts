@@ -79,6 +79,8 @@ class Assistant {
       ffi.Library(path.join(this.lib_others, lib));
     });
 
+    console.log(this.lib_others);
+    console.log(this.lib_main);
     this.MeoAsst = ffi.Library(path.join(this.lib_others, this.lib_main), {
       /* AsstCallback:[ref.refType(ref.types.void),[ref.types.int,'string',ref.refType(ref.types.void)]], */
       AsstCreate: [AsstPtr, ['string']],
