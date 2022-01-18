@@ -6,12 +6,13 @@ import type {
   DraggingStyle,
   NotDraggingStyle,
 } from 'react-beautiful-dnd';
+import _ from 'lodash';
 
 import './index.less';
 
-type TaskSelectorProps = Record<string, never>;
+import { Type as TasksType } from 'main/storage/task';
 
-type TaskType = {
+type TaskRunningType = {
   label: string;
   value: string;
   status: 'normal' | 'success' | 'exception';
@@ -19,62 +20,21 @@ type TaskType = {
   enabled: boolean;
 };
 
-// TODO: 外部组件数据交互
+type TaskSelectorProps = Record<string, never>;
+
 type TaskSelectorState = {
-  tasks: Array<TaskType>;
+  tasks: Array<TaskRunningType>;
 };
 
-const defaultTasks: Array<TaskType> = [
-  {
-    label: '开始唤醒',
-    value: 'awake',
-    status: 'success',
-    progress: 100,
-    enabled: true,
-  },
-  {
-    label: '刷理智',
-    value: 'clear sanity',
-    status: 'success',
-    progress: 100,
-    enabled: true,
-  },
-  {
-    label: '自动公招',
-    value: 'auto recruits',
-    status: 'exception',
-    progress: 20,
-    enabled: true,
-  },
-  {
-    label: '基建换班',
-    value: 'shift scheduling',
-    status: 'normal',
-    progress: 60,
-    enabled: true,
-  },
-  {
-    label: '访问好友',
-    value: 'visit friends',
-    status: 'normal',
-    progress: 70,
-    enabled: true,
-  },
-  {
-    label: '收取信用及购物',
-    value: 'shopping',
-    status: 'normal',
-    progress: 80,
-    enabled: true,
-  },
-  {
-    label: '领取日常奖励',
-    value: 'receive rewards',
-    status: 'normal',
-    progress: 90,
-    enabled: true,
-  },
-];
+const storage = window.$storage;
+
+const storageTasks: TasksType = storage.get('task');
+
+const defaultTasks: Array<TaskRunningType> = storageTasks.map((v) => ({
+  status: 'normal',
+  progress: 0,
+  ...v,
+}));
 
 function reorder<T>(
   list: Iterable<T> | ArrayLike<T>,
@@ -102,12 +62,25 @@ class TaskSelector extends React.Component<
   TaskSelectorProps,
   TaskSelectorState
 > {
+  saveTaskStorage: _.DebouncedFunc<() => void>;
+
   constructor(props: TaskSelectorProps) {
     super(props);
     this.state = {
       tasks: defaultTasks,
     };
+    this.saveTaskStorage = _.debounce(() => {
+      const { tasks } = this.state;
+      storage.set(
+        'task',
+        tasks.map((v) => _.pick(v, ['label', 'value', 'enabled']))
+      );
+    }, 500);
     this.onDragEnd = this.onDragEnd.bind(this);
+  }
+
+  componentDidUpdate() {
+    this.saveTaskStorage();
   }
 
   onDragEnd(result: DropResult) {

@@ -5,14 +5,17 @@ import Ajv from 'ajv';
 import AjvErrors from 'ajv-errors';
 import _ from 'lodash';
 import { StorageType } from './index.d';
-import configuration from './configuration';
 import defaults from './storage.default';
+
+import configuration from './configuration';
+import task from './task';
 
 const schema = {
   type: 'object',
-  required: ['configuration'],
+  required: ['configuration', 'task'],
   properties: {
     configuration,
+    task,
   },
   additionalProperties: false,
 };
