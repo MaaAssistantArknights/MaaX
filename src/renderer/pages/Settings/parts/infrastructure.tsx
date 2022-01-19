@@ -80,7 +80,7 @@ class Infrastructure extends React.PureComponent<InfrastructureProps> {
               >
                 <Slider
                   min={0}
-                  max={1}
+                  max={0.9}
                   step={0.1}
                   style={{ width: '100%', maxWidth: '450px' }}
                   value={config.MoodLimit}
@@ -91,7 +91,7 @@ class Infrastructure extends React.PureComponent<InfrastructureProps> {
                 />
                 <InputNumber
                   min={0.0}
-                  max={1}
+                  max={0.9}
                   step={0.1}
                   value={config.MoodLimit}
                   onChange={(value) => {
