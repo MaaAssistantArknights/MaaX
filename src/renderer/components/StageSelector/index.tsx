@@ -14,6 +14,7 @@ import {
   Space,
   Typography,
 } from 'antd';
+import { lastBattle, cuttentStage, customZone } from './custom';
 
 type StageSelectorProps = Record<string, never>;
 
@@ -162,12 +163,14 @@ class StageSelector extends React.Component<
     /**
      * * 关卡过滤&排序
      * * 关卡仅会显示以下类型，且按照此顺序排序
-     * 1. 活动关卡
-     * 2. 资源关卡（周轮换）
-     * 3. 主线关卡
-     * 4. 插曲/别传
+     * 1. 自定义关卡
+     * 2. 活动关卡
+     * 3. 资源关卡（周轮换）
+     * 4. 主线关卡
+     * 5. 插曲/别传
      */
     const zoneTypeOrder = [
+      'CUSTOM',
       'ACTIVITY',
       'WEEKLY',
       'MAINLINE',
@@ -187,6 +190,7 @@ class StageSelector extends React.Component<
       .sort(
         (a, b) => zoneTypeOrder.indexOf(a.type) - zoneTypeOrder.indexOf(b.type)
       );
+    zones.unshift(customZone);
     const stages = (await PenguinStatsApi.Stage.GetAllStages()).filter(
       (stage) =>
         stage.existence &&
@@ -196,6 +200,7 @@ class StageSelector extends React.Component<
         (!stage.existence.CN.closeTime ||
           stage.existence.CN.closeTime >= timestamp)
     );
+    stages.push(lastBattle, cuttentStage);
     if (zones.length && stages.length) {
       const options = zones.map((zone) => ({
         label: zone.zoneName,

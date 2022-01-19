@@ -3,7 +3,13 @@ import request from 'renderer/utils/request/penguin-stats';
 export type ZoneType = {
   zoneId: string;
   zoneIndex: number;
-  type: 'ACTIVITY' | 'WEEKLY' | 'MAINLINE' | 'ACTIVITY_PERMANENT' | 'GACHABOX';
+  type:
+    | 'CUSTOM'
+    | 'ACTIVITY'
+    | 'WEEKLY'
+    | 'MAINLINE'
+    | 'ACTIVITY_PERMANENT'
+    | 'GACHABOX';
   subType?: string;
   zoneName: string;
   existence?: {
