@@ -24,7 +24,7 @@ const schema = {
       additionalProperties: false,
     },
     DroneUsage: { enum: ['Manufacturing Station', 'Trading Station'] },
-    MoodLimit: { type: 'integer', minimum: 0, exclusiveMaximum: 24 },
+    MoodLimit: { type: 'number', minimum: 0, exclusiveMaximum: 1 },
   },
   required: ['enable', 'DroneUsage', 'MoodLimit'],
   additionalProperties: false,

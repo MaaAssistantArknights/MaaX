@@ -14,7 +14,7 @@ const defaults: StorageType = {
         Dormitory: true,
       },
       DroneUsage: 'Trading Station',
-      MoodLimit: 5,
+      MoodLimit: 0.3,
     },
     mall: {
       enable: true,
