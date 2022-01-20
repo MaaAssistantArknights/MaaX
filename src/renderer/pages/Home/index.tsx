@@ -10,12 +10,23 @@ type HomeProps = Record<string, never>;
 type HomeState = {
   autoShutdown: boolean;
 };
+
+function cb(msg: number, detail: string) {
+  console.log(msg);
+  console.log(detail);
+}
 class Home extends React.Component<HomeProps, HomeState> {
   constructor(props: HomeProps) {
     super(props);
     this.state = {
       autoShutdown: false,
     };
+    this.onLinkstartBtnClicked = this.onLinkstartBtnClicked.bind(this);
+  }
+
+  onLinkstartBtnClicked() {
+    window.$ipcRenderer.sendSync('linkstart');
+    console.log(this.state);
   }
 
   render() {
@@ -32,7 +43,10 @@ class Home extends React.Component<HomeProps, HomeState> {
           >
             自动关机
           </Checkbox>
-          <Button type="primary">Link Start!</Button>
+          <Button type="primary" onClick={this.onLinkstartBtnClicked}>
+            Link Start!
+          </Button>
+          <Button type="primary">停止</Button>
         </Space>
         <StageSelector />
       </div>

@@ -23,15 +23,26 @@ class Recruitment extends React.PureComponent<RecruitmentProps> {
           }}
         >
           <Space direction="vertical">
-            <Checkbox
-              checked={config.NormalTagRefreshing}
-              onChange={(e) => {
-                config.NormalTagRefreshing = e.target.checked;
-                onChange(config);
-              }}
-            >
-              自动刷新3星Tags
-            </Checkbox>
+            <Space direction="vertical" style={{ textAlign: 'start' }}>
+              <Checkbox
+                checked={config.NormalTagRefreshing}
+                onChange={(e) => {
+                  config.NormalTagRefreshing = e.target.checked;
+                  onChange(config);
+                }}
+              >
+                自动刷新3星Tags
+              </Checkbox>
+              <Checkbox
+                checked={config.UseExpeditedPlan}
+                onChange={(e) => {
+                  config.UseExpeditedPlan = e.target.checked;
+                  onChange(config);
+                }}
+              >
+                自动使用加急许可
+              </Checkbox>
+            </Space>
             <Space>
               <Typography.Text>
                 每次执行时
@@ -44,6 +55,7 @@ class Recruitment extends React.PureComponent<RecruitmentProps> {
                   config.MaximumNumberOfRecruitments = value;
                   onChange(config);
                 }}
+                min={0}
               />
             </Space>
           </Space>
