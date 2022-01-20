@@ -64,9 +64,13 @@ class Infrastructure extends React.PureComponent<InfrastructureProps> {
             <Space direction="vertical">
               <Typography.Text>无人机用途：</Typography.Text>
               <Select defaultValue="none" style={{ minWidth: '160px' }}>
-                <Option value="none">不使用无人机</Option>
-                <Option value="Trading Station">贸易站</Option>
-                <Option value="Manufacturing Station">制造站</Option>
+                <Option value="None">不使用无人机</Option>
+                <Option value="LMD">龙门币</Option>
+                <Option value="Orundum">合成玉</Option>
+                <Option value="Battle Record">作战记录</Option>
+                <Option value="Pure Gold">赤金</Option>
+                <Option value="Originium Shard">源石碎片</Option>
+                <Option value="Chip">芯片</Option>
               </Select>
             </Space>
             <div>
