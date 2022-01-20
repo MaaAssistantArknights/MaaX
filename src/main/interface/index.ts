@@ -61,6 +61,8 @@ class Assistant {
 
   lib_main = 'MeoAssistant';
 
+  private static singleton?: Assistant;
+
   MeoAsst;
 
   MeoAsstPtr!: ref.Pointer<void>;
@@ -71,13 +73,15 @@ class Assistant {
    * @params lib_asst 本体路径
    *
    */
-  constructor(lib_others: string, lib_asst: string = lib_others) {
+  private constructor(lib_others: string, lib_asst: string = lib_others) {
     this.lib_others = path.resolve(lib_others);
     this.lib_asst = path.resolve(lib_asst);
 
-    dependences[process.platform].forEach((lib) => {
-      ffi.Library(path.join(this.lib_others, lib));
-    });
+    // dependences[process.platform].forEach((lib) => {
+    //   ffi.Library(path.join(this.lib_others, lib));
+    // });
+
+    process.env.PATH = `${process.env.PATH}${path.delimiter}${lib_others}`;
 
     this.MeoAsst = ffi.Library(path.join(this.lib_others, this.lib_main), {
       /* AsstCallback:[ref.refType(ref.types.void),[ref.types.int,'string',ref.refType(ref.types.void)]], */
@@ -111,12 +115,28 @@ class Assistant {
 
       AsstSetPenguinId: [Bool, [AsstPtr, 'int']],
 
+      // AsstCtrlerClick: [Bool, [AsstPtr, 'int', 'int', Bool]],
       AsstGetVersion: ['string', []],
     });
 
     // this.MeoAsst = new ffi.DynamicLibrary(
     //   path.join(this.lib_others, this.lib_main)
     // );
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  callback(msg: number, detail: string, _custom_arg: any) {
+    // console.log('---- cb start ----');
+    console.log(msg);
+    console.log(JSON.parse(detail));
+    // console.log('---- cb end ----');
+  }
+
+  public static getInstance(resourcesPath: string): Assistant {
+    if (!this.singleton) {
+      this.singleton = new Assistant(resourcesPath, resourcesPath);
+    }
+    return this.singleton;
   }
 
   /**
@@ -145,7 +165,7 @@ class Assistant {
    * @returns  实例指针{ref.Pointer}
    */
   CreateEx(
-    callback: CallbackFunc,
+    callback: any,
     custom_arg: any,
     dirname: string = this.lib_asst
   ): ref.Pointer<void> {
@@ -161,7 +181,7 @@ class Assistant {
       }
     );
 
-    this.MeoAsstPtr = this.MeoAsst.AsstCreateEx(dirname, cb, custom_arg);
+    this.MeoAsstPtr = this.MeoAsst.AsstCreateEx(dirname, callback, custom_arg);
 
     return this.MeoAsstPtr;
   }
@@ -375,6 +395,24 @@ class Assistant {
   }
 
   /**
+   * 发送点击
+   * @param p_asst 实例指针
+   * @param x x坐标
+   * @param y y坐标
+   * @param block 是否阻塞，true会阻塞直到点击完成才返回，false异步返回
+   * @returns
+   */
+  /*
+  CtrlerClick(
+    p_asst: ref.Pointer<void> = this.MeoAsstPtr,
+    x: number,
+    y: number,
+    block: boolean
+  ): boolean {
+    return this.MeoAsst.AsstCtrlerClick(p_asst, x, y, block);
+  }
+*/
+  /**
    * 主程序版本
    * @returns 版本{string}
    *
@@ -392,4 +430,13 @@ function voidPointer() {
   return ref.alloc(ref.types.void);
 }
 
-export { Assistant, voidPointer };
+const cb = ffi.Callback(
+  'void',
+  ['int', 'string', ref.refType(ref.types.void)],
+  (msg, detail, custom_args) => {
+    console.log(msg);
+    console.log(JSON.parse(detail as string));
+  }
+);
+
+export { Assistant, voidPointer, cb };
