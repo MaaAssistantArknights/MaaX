@@ -1,7 +1,8 @@
 import { existsSync, readFileSync } from 'fs';
 import { resolve } from 'path';
 
-function bluestackPort(path: string): string | null {
+function bluestackPort(path: string | null): string | null {
+  if (!path) return null;
   // eslint-disable-next-line no-param-reassign
   path = resolve(path);
   if (!existsSync(path)) {
