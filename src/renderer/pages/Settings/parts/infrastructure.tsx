@@ -8,13 +8,19 @@ import {
   Slider,
   InputNumber,
 } from 'antd';
-
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import type { DropResult } from 'react-beautiful-dnd';
 import type { Type as InfrastructureType } from 'main/storage/configuration/infrastructure';
+import { reorder, getItemStyle } from 'renderer/utils/draggable';
 import _ from 'lodash';
 
 type InfrastructureProps = {
   conf: InfrastructureType;
   onChange: (conf: InfrastructureType) => void;
+};
+
+type InfrastructureState = {
+  config: InfrastructureType;
 };
 
 const structureNicename: Record<string, string> = {
@@ -27,11 +33,37 @@ const structureNicename: Record<string, string> = {
   Dormitory: '宿舍',
 };
 
-class Infrastructure extends React.PureComponent<InfrastructureProps> {
+class Infrastructure extends React.Component<
+  InfrastructureProps,
+  InfrastructureState
+> {
+  constructor(props: InfrastructureProps) {
+    super(props);
+    this.state = {
+      config: _.cloneDeep(props.conf),
+    };
+    this.onDragEnd = this.onDragEnd.bind(this);
+  }
+
+  onDragEnd(result: DropResult) {
+    if (!result.destination) {
+      return;
+    }
+    const { config } = this.state;
+    const { onChange } = this.props;
+    config.facilities = reorder(
+      config.facilities,
+      result.source.index,
+      result.destination.index
+    );
+    onChange(config);
+    this.setState({ config });
+  }
+
   render() {
     const { Option } = Select;
-    const { conf, onChange } = this.props;
-    const config = _.cloneDeep(conf);
+    const { config } = this.state;
+    const { onChange } = this.props;
     return (
       <div id="infrastructure" className="setting-catetory">
         <Divider>基建设置</Divider>
@@ -42,28 +74,63 @@ class Infrastructure extends React.PureComponent<InfrastructureProps> {
             justifyContent: 'space-around',
           }}
         >
-          <Space
-            direction="vertical"
-            className="container"
-            style={{ textAlign: 'start' }}
-          >
-            {Object.keys(config.enable).map((structure) => (
-              <Checkbox
-                key={structure}
-                checked={config.enable[structure]}
-                onChange={(e) => {
-                  config.enable[structure] = e.target.checked;
-                  onChange(config);
-                }}
-              >
-                {structureNicename[structure]}
-              </Checkbox>
-            ))}
-          </Space>
+          <DragDropContext onDragEnd={this.onDragEnd}>
+            <Droppable droppableId="setting-infrastructure-droppable">
+              {(provided) => (
+                <div
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                  style={{
+                    textAlign: 'start',
+                  }}
+                >
+                  {config.facilities.map((structure, index) => (
+                    <Draggable
+                      key={structure.name}
+                      draggableId={structure.name}
+                      index={index}
+                    >
+                      {(provided_, snapshot_) => (
+                        <div
+                          ref={provided_.innerRef}
+                          {...provided_.draggableProps}
+                          {...provided_.dragHandleProps}
+                          style={getItemStyle(
+                            snapshot_.isDragging,
+                            provided_.draggableProps.style
+                          )}
+                        >
+                          <Checkbox
+                            key={structure.name}
+                            checked={structure.enabled}
+                            onChange={(e) => {
+                              structure.enabled = e.target.checked;
+                              onChange(config);
+                            }}
+                          >
+                            {structureNicename[structure.name]}
+                          </Checkbox>
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+
           <Space direction="vertical" style={{ flex: 1 }}>
             <Space direction="vertical">
               <Typography.Text>无人机用途：</Typography.Text>
-              <Select defaultValue="none" style={{ minWidth: '160px' }}>
+              <Select
+                value={config.DroneUsage}
+                style={{ minWidth: '160px' }}
+                onChange={(value) => {
+                  config.DroneUsage = value;
+                  onChange(config);
+                }}
+              >
                 <Option value="None">不使用无人机</Option>
                 <Option value="LMD">龙门币</Option>
                 <Option value="Orundum">合成玉</Option>

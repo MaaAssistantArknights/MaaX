@@ -80,6 +80,7 @@ class Storage {
         if (!validator(Storage.singleton?.store)) {
           Storage.singleton?.set(key, backup);
           console.error(`storage.set(${key}, ${JSON.stringify(val)})`);
+          console.error(Storage.ajv.errorsText(validator.errors));
           event.reply(
             'electron-store-set-error',
             '你的设置将不会被保存，请验证设置是否正确'

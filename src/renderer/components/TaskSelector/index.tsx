@@ -1,11 +1,8 @@
 import * as React from 'react';
 import { Checkbox, Progress } from 'antd';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import type {
-  DropResult,
-  DraggingStyle,
-  NotDraggingStyle,
-} from 'react-beautiful-dnd';
+import type { DropResult } from 'react-beautiful-dnd';
+import { reorder, getItemStyle } from 'renderer/utils/draggable';
 import _ from 'lodash';
 
 import './index.less';
@@ -35,28 +32,6 @@ const defaultTasks: Array<TaskRunningType> = storageTasks.map((v) => ({
   progress: 0,
   ...v,
 }));
-
-function reorder<T>(
-  list: Iterable<T> | ArrayLike<T>,
-  startIndex: number,
-  endIndex: number
-) {
-  const result = Array.from(list);
-  const [removed] = result.splice(startIndex, 1);
-  result.splice(endIndex, 0, removed);
-
-  return result;
-}
-
-const getItemStyle = (
-  isDragging: boolean,
-  draggableStyle: DraggingStyle | NotDraggingStyle | undefined
-) => ({
-  userSelects: 'none',
-  padding: '2px 0',
-  filter: `opacity(${isDragging ? 0.5 : 1})`,
-  ...draggableStyle,
-});
 
 class TaskSelector extends React.Component<
   TaskSelectorProps,

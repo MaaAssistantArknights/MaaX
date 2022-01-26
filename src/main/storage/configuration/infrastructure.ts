@@ -1,48 +1,46 @@
 const schema = {
   type: 'object',
   properties: {
-    enable: {
-      type: 'object',
-      properties: {
-        ManufacturingStation: { type: 'boolean' },
-        TradingStation: { type: 'boolean' },
-        ControlCenter: { type: 'boolean' },
-        PowerStation: { type: 'boolean' },
-        MeetingRoom: { type: 'boolean' },
-        Office: { type: 'boolean' },
-        Dormitory: { type: 'boolean' },
+    facilities: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          name: {
+            type: 'string',
+            pattern:
+              '[(ManufacturingStation)|(TradingStation)|(ControlCenter)|(PowerStation)|(MeetingRoom)|(Office)|(Dormitory)]',
+          },
+          enabled: { type: 'boolean' },
+        },
+        required: ['name', 'enabled'],
       },
-      required: [
-        'ManufacturingStation',
-        'TradingStation',
-        'ControlCenter',
-        'PowerStation',
-        'MeetingRoom',
-        'Office',
-        'Dormitory',
-      ],
-      additionalProperties: false,
+      uniqueItems: true,
     },
-    DroneUsage: { enum: ['Manufacturing Station', 'Trading Station'] },
+    DroneUsage: {
+      enum: [
+        'None',
+        'LMD',
+        'Orumdum',
+        'Battle Record',
+        'Pure Gold',
+        'Originium Shared',
+        'Chip',
+      ],
+    },
     MoodLimit: { type: 'number', minimum: 0, exclusiveMaximum: 1 },
   },
-  required: ['enable', 'DroneUsage', 'MoodLimit'],
+  required: ['facilities', 'DroneUsage', 'MoodLimit'],
   additionalProperties: false,
 };
 
 export default schema;
 
 export type Type = {
-  enable: {
-    [props: string]: boolean;
-    ManufacturingStation: boolean;
-    TradingStation: boolean;
-    ControlCenter: boolean;
-    PowerStation: boolean;
-    MeetingRoom: boolean;
-    Office: boolean;
-    Dormitory: boolean;
-  };
-  DroneUsage: 'Manufacturing Station' | 'Trading Station';
+  facilities: Array<{
+    name: string;
+    enabled: boolean;
+  }>;
+  DroneUsage: string;
   MoodLimit: number;
 };
