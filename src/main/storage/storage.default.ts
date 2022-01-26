@@ -4,15 +4,15 @@ const defaults: StorageType = {
   configuration: {
     connection: {},
     infrastructure: {
-      enable: {
-        ManufacturingStation: true,
-        TradingStation: true,
-        ControlCenter: true,
-        PowerStation: true,
-        MeetingRoom: true,
-        Office: true,
-        Dormitory: true,
-      },
+      facilities: [
+        { name: 'ManufacturingStation', enabled: true },
+        { name: 'TradingStation', enabled: true },
+        { name: 'ControlCenter', enabled: true },
+        { name: 'PowerStation', enabled: true },
+        { name: 'MeetingRoom', enabled: true },
+        { name: 'Office', enabled: true },
+        { name: 'Dormitory', enabled: true },
+      ],
       DroneUsage: 'Trading Station',
       MoodLimit: 0.3,
     },
