@@ -7,7 +7,7 @@ import NavBar from './layouts/NavBar';
 
 import './App.less';
 
-window.$ipcRenderer.on('electron-store-set-error', (msg) => {
+window.$ipcRenderer.on('storage:error', (msg) => {
   message.error(String(msg));
 });
 
@@ -15,7 +15,7 @@ let noticed = false;
 
 export default function App() {
   const route = useRoutes(routes);
-  const status = window.$ipcRenderer.sendSync('electron-store-error');
+  const status = window.$ipcRenderer.sendSync('storage:error');
   if (status && !noticed) {
     noticed = true;
     Modal.warning({
@@ -24,7 +24,7 @@ export default function App() {
       content: (
         <div>
           <p>配置文件出错，{status}。</p>
-          {status === 'reset' ? (
+          {status === '已重置' ? (
             <p>出现错误的文件已被保存到config.json.backup。</p>
           ) : (
             <p />

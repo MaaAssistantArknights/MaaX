@@ -1,4 +1,4 @@
-import { StorageType } from './index.d';
+import { StorageType } from '../../common/@types/storage';
 
 const defaults: StorageType = {
   configuration: {

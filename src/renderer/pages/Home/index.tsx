@@ -11,10 +11,6 @@ type HomeState = {
   autoShutdown: boolean;
 };
 
-function cb(msg: number, detail: string) {
-  console.log(msg);
-  console.log(detail);
-}
 class Home extends React.Component<HomeProps, HomeState> {
   constructor(props: HomeProps) {
     super(props);
@@ -25,7 +21,7 @@ class Home extends React.Component<HomeProps, HomeState> {
   }
 
   onLinkstartBtnClicked() {
-    window.$ipcRenderer.sendSync('linkstart');
+    window.$ipcRenderer.sendSync('asst:linkstart');
     console.log(this.state);
   }
 

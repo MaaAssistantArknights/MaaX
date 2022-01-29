@@ -1,5 +1,4 @@
 import type { RouteObject } from 'react-router-dom';
-
 import Home from 'renderer/pages/Home';
 import Settings from 'renderer/pages/Settings';
 
