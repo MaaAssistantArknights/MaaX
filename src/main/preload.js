@@ -17,12 +17,12 @@ contextBridge.exposeInMainWorld('$ipcRenderer', {
 
 contextBridge.exposeInMainWorld('$storage', {
   get(key) {
-    return ipcRenderer.sendSync('electron-store-get', key);
+    return ipcRenderer.sendSync('storage:get', key);
   },
   set(key, val) {
-    ipcRenderer.send('electron-store-set', key, val);
+    ipcRenderer.send('storage:set', key, val);
   },
   has(key) {
-    return ipcRenderer.sendSync('electron-store-has', key);
+    return ipcRenderer.sendSync('storage:has', key);
   },
 });

@@ -9,14 +9,6 @@ import './index.less';
 
 import { Type as TasksType } from 'main/storage/task';
 
-type TaskRunningType = {
-  label: string;
-  value: string;
-  status: 'normal' | 'success' | 'exception';
-  progress: number;
-  enabled: boolean;
-};
-
 type TaskSelectorProps = Record<string, never>;
 
 type TaskSelectorState = {
@@ -81,7 +73,6 @@ class TaskSelector extends React.Component<
               <h3 style={{ textAlign: 'center' }}>任务设置</h3>
               <div
                 className="tasks"
-                // eslint-disable-next-line react/jsx-props-no-spreading
                 {...provided.droppableProps}
                 ref={provided.innerRef}
               >
@@ -94,9 +85,7 @@ class TaskSelector extends React.Component<
                     {(provided_, snapshot_) => (
                       <div
                         ref={provided_.innerRef}
-                        // eslint-disable-next-line react/jsx-props-no-spreading
                         {...provided_.draggableProps}
-                        // eslint-disable-next-line react/jsx-props-no-spreading
                         {...provided_.dragHandleProps}
                         style={getItemStyle(
                           snapshot_.isDragging,

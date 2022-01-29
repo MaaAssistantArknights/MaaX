@@ -1,5 +1,4 @@
 import * as React from 'react';
-import _ from 'lodash';
 import PenguinStatsApi, { PenguinStatsTypes } from 'renderer/api/penguin-stats';
 import { DefaultOptionType } from 'antd/lib/select';
 import TweenOne, { AnimObjectOrArray } from 'rc-tween-one';
@@ -14,17 +13,10 @@ import {
   Space,
   Typography,
 } from 'antd';
+
 import { lastBattle, cuttentStage, customZone } from './custom';
 
 type StageSelectorProps = Record<string, never>;
-
-type StageType = {
-  stageId: string;
-  zoneName: string;
-  stageName: string;
-  times: number;
-  sanityCost: number;
-};
 
 type StageSelectorState = {
   rawZoneData: PenguinStatsTypes['ZoneType'][];
