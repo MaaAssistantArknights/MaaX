@@ -3,55 +3,42 @@ import { Checkbox, Progress } from 'antd';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import type { DropResult } from 'react-beautiful-dnd';
 import { reorder, getItemStyle } from 'renderer/utils/draggable';
+
+import { connect } from 'react-redux';
+import type { RootState } from 'renderer/store';
+import { bindActionCreators } from 'redux';
+import type { Dispatch, AnyAction } from 'redux';
+import { setTasks } from 'renderer/store/slices/tasks';
+import type { ActionCreatorWithPayload } from '@reduxjs/toolkit';
+
 import _ from 'lodash';
 
 import './index.less';
-
-import { Type as TasksType } from 'main/storage/task';
-
-type TaskSelectorProps = Record<string, never>;
 
 type TaskSelectorState = {
   tasks: Array<TaskRunningType>;
 };
 
-const storage = window.$storage;
-
-const storageTasks: TasksType = storage.get('task');
-
-const defaultTasks: Array<TaskRunningType> = storageTasks.map((v) => ({
-  status: 'normal',
-  progress: 0,
-  ...v,
-}));
+type TaskSelectorProps = {
+  tasks: Array<TaskRunningType>;
+  action: ActionCreatorWithPayload<Array<TaskRunningType>>;
+};
 
 class TaskSelector extends React.Component<
   TaskSelectorProps,
   TaskSelectorState
 > {
-  saveTaskStorage: _.DebouncedFunc<() => void>;
-
   constructor(props: TaskSelectorProps) {
     super(props);
     this.state = {
-      tasks: defaultTasks,
+      tasks: _.cloneDeep(props.tasks),
     };
-    this.saveTaskStorage = _.debounce(() => {
-      const { tasks } = this.state;
-      storage.set(
-        'task',
-        tasks.map((v) => _.pick(v, ['label', 'value', 'enabled']))
-      );
-    }, 500);
     this.onDragEnd = this.onDragEnd.bind(this);
-  }
-
-  componentDidUpdate() {
-    this.saveTaskStorage();
   }
 
   onDragEnd(result: DropResult) {
     let { tasks } = this.state;
+    const { action } = this.props;
     if (!result.destination) {
       return;
     }
@@ -61,10 +48,12 @@ class TaskSelector extends React.Component<
     this.setState({
       tasks,
     });
+    action(tasks);
   }
 
   render() {
     const { tasks } = this.state;
+    const { action } = this.props;
     return (
       <DragDropContext onDragEnd={this.onDragEnd}>
         <Droppable droppableId="task-selector-droppable">
@@ -98,6 +87,7 @@ class TaskSelector extends React.Component<
                             onChange={(e) => {
                               task.enabled = e.target.checked;
                               this.setState({ tasks });
+                              action(tasks);
                             }}
                           >
                             {task.label}
@@ -125,4 +115,10 @@ class TaskSelector extends React.Component<
   }
 }
 
-export default TaskSelector;
+const mapStateToProps = (state: RootState) => ({ tasks: state.tasks });
+
+const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => ({
+  action: bindActionCreators(setTasks, dispatch),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(TaskSelector);
