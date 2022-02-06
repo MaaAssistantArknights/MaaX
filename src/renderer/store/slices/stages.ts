@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from '..';
 
 export interface StagesState {
   stages: Array<StageType | DynamicStageType>;
@@ -22,5 +23,7 @@ export const stagesSlice = createSlice({
 });
 
 export const { setStages } = stagesSlice.actions;
+
+export const getStages = (state: RootState) => state.stages;
 
 export default stagesSlice.reducer;
