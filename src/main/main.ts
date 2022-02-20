@@ -11,11 +11,11 @@
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import path from 'path';
-import { app, BrowserWindow, shell } from 'electron';
+import { app, shell } from 'electron';
+import { BrowserWindow } from 'electron-acrylic-window';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import { is } from 'electron-util';
-import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
 import './hooks';
@@ -28,21 +28,14 @@ export default class AppUpdater {
   }
 }
 
-function reply(event: Electron.IpcMainEvent, msg: string) {
-  event.sender.send('asynchronous-reply', msg);
-}
-
 let mainWindow: BrowserWindow | null = null;
 
-if (process.env.NODE_ENV === 'production') {
+if (!is.development) {
   const sourceMapSupport = require('source-map-support');
   sourceMapSupport.install();
 }
 
-const isDevelopment =
-  process.env.NODE_ENV === 'development' || process.env.DEBUG_PROD === 'true';
-
-if (isDevelopment) {
+if (is.development) {
   require('electron-debug')();
 }
 
@@ -64,7 +57,7 @@ const RESOURCES_PATH = app.isPackaged
   : path.join(__dirname, '../../assets');
 
 const createWindow = async () => {
-  if (isDevelopment) {
+  if (is.development) {
     await installExtensions();
   }
 
@@ -77,6 +70,10 @@ const createWindow = async () => {
     width: 1024,
     height: 728,
     icon: getAssetPath('icon.png'),
+    titleBarStyle: 'hidden',
+    transparent: true,
+    vibrancy: 'appearance-based',
+    frame: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       sandbox: true,
@@ -86,7 +83,7 @@ const createWindow = async () => {
 
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
-  mainWindow.on('ready-to-show', () => {
+  mainWindow.on('ready-to-show', async () => {
     if (!mainWindow) {
       throw new Error('"mainWindow" is not defined');
     }
@@ -100,9 +97,6 @@ const createWindow = async () => {
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
-
-  const menuBuilder = new MenuBuilder(mainWindow);
-  menuBuilder.buildMenu();
 
   // Open urls in the user's browser
   mainWindow.webContents.on('new-window', (event, url) => {

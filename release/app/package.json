@@ -14,6 +14,7 @@
     "postinstall": "npm run electron-rebuild && npm run link-modules"
   },
   "dependencies": {
+    "electron-acrylic-window": "^0.5.11",
     "ffi-napi": "^4.0.3",
     "ref-array-napi": "^1.2.2",
     "ref-napi": "^3.0.3"
