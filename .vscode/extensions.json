@@ -1,3 +1,7 @@
 {
-  "recommendations": ["dbaeumer.vscode-eslint", "EditorConfig.EditorConfig"]
+  "recommendations": [
+    "stylelint.vscode-stylelint",
+    "bradlc.vscode-tailwindcss",
+    "johnsoncodehk.volar"
+  ]
 }
