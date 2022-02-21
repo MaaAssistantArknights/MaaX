@@ -4,7 +4,7 @@
   "main": "dist/main/index.cjs",
   "author": "_ChingC <chingc.ccmail@gmail.com>",
   "templateBy": "草鞋没号 <308487730@qq.com>",
-  "license": "Apache-3.0",
+  "license": "AGPL-3.0-or-later",
   "scripts": {
     "dev": "node scripts/watch.mjs",
     "prebuild": "vue-tsc --project packages/renderer/tsconfig.json --noEmit && node scripts/build.mjs",
@@ -35,6 +35,7 @@
     "vite-plugin-resolve": "^1.4.4",
     "vite-svg-loader": "^3.1.2",
     "vue": "^3.2.31",
+    "vue-router": "4",
     "vue-tsc": "^0.31.4"
   },
   "env": {

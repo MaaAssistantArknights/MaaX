@@ -4,18 +4,37 @@
 
 @font-face {
   font-family: "Cera Round Pro";
-  src: url("./fonts/TypeMates  Cera Round Pro Bold.otf")
-    url("./fonts/TypeMates  Cera Round Pro Black.otf")
-    url("./fonts/TypeMates  Cera Round Pro Light.otf")
-    url("./fonts/TypeMates  Cera Round Pro Medium.otf")
-    url("./fonts/TypeMates  Cera Round Pro Regular.otf")
-    url("./fonts/TypeMates  Cera Round Pro Thin.otf");
+  src: url("@/assets/fonts/TypeMates Cera Round Pro Bold.otf"),
+    url("@/assets/fonts/TypeMates Cera Round Pro Black.otf"),
+    url("@/assets/fonts/TypeMates Cera Round Pro Light.otf"),
+    url("@/assets/fonts/TypeMates Cera Round Pro Medium.otf"),
+    url("@/assets/fonts/TypeMates Cera Round Pro Regular.otf"),
+    url("@/assets/fonts/TypeMates Cera Round Pro Thin.otf");
+}
+
+@font-face {
+  font-family: PingFang;
+  src: url("@/assets/fonts/PingFang Bold.ttf"),
+    url("@/assets/fonts/PingFang ExtraLight.ttf"),
+    url("@/assets/fonts/PingFang Heavy.ttf"),
+    url("@/assets/fonts/PingFang Light.ttf"),
+    url("@/assets/fonts/PingFang Medium.ttf"),
+    url("@/assets/fonts/PingFang Regular.ttf");
 }
 
 :root {
   background: none;
+  font-family: "Cera Round Pro", PingFang, Avenir, Helvetica, Arial, sans-serif;
 }
 
 .container {
   padding-top: 60px;
+}
+
+svg {
+  fill: hsla(var(--bc) / var(--tw-text-opacity, 1));
+}
+
+.side-bar {
+  @apply pt-8 px-4;
 }

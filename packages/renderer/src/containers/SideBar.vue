@@ -1,13 +1,9 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
-  <div class="size-bar container"></div>
+  <router-view class="side-bar" name="SideBar" />
 </template>
 
 <style lang="less" scoped>
-.size-bar {
+.side-bar {
   @apply min-h-screen w-64;
 }
 </style>
