@@ -1,9 +1,10 @@
 {
-  "name": "electron-vue-vite",
+  "name": "meo-assistant-arknights",
   "version": "1.0.0",
   "main": "dist/main/index.cjs",
-  "author": "草鞋没号 <308487730@qq.com>",
-  "license": "MIT",
+  "author": "_ChingC <chingc.ccmail@gmail.com>",
+  "templateBy": "草鞋没号 <308487730@qq.com>",
+  "license": "Apache-3.0",
   "scripts": {
     "dev": "node scripts/watch.mjs",
     "prebuild": "vue-tsc --project packages/renderer/tsconfig.json --noEmit && node scripts/build.mjs",
@@ -44,7 +45,8 @@
     "vite",
     "electron",
     "vue3",
-    "rollup"
+    "rollup",
+    "arknights"
   ],
   "dependencies": {
     "electron-acrylic-window": "^0.5.11",
