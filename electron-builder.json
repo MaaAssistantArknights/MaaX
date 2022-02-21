@@ -14,11 +14,7 @@
     "dist"
   ],
   "mac": {
-    "target": "zip",
-    "arch": [
-      "x64",
-      "arm64"
-    ]
+    "target": "zip"
   },
   "win": {
     "target": [
