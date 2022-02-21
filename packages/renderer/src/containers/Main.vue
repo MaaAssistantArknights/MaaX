@@ -1,5 +1,5 @@
 <template>
-  <router-view class="main container" />
+  <router-view class="main" />
 </template>
 
 <style lang="less" scoped>
