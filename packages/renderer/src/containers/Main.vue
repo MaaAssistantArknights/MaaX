@@ -1,10 +1,11 @@
-<template>
-  <router-view class="main" />
-</template>
+<script setup lang="ts">
+import { NScrollbar, useThemeVars } from 'naive-ui'
 
-<style lang="less" scoped>
-.main {
-  @apply flex-1 min-h-screen;
-  background-color: hsla(var(--b1) / var(--tw-bg-opacity, 1));
-}
-</style>
+const themeVars = useThemeVars();
+</script>
+
+<template>
+  <NScrollbar class="main" :style="{ backgroundColor: themeVars.bodyColor }">
+    <router-view name="Main" />
+  </NScrollbar>
+</template>

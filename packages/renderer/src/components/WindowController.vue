@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, Ref } from "vue";
+import { NButton, NSpace, NIcon } from 'naive-ui';
 
 import IconWindowMinimize from "@/assets/icons/window-minimize.svg?component";
 import IconClose from "@/assets/icons/close.svg?component";
@@ -30,38 +31,70 @@ window.ipcRenderer.on('window:update-maximized', (_, maximized) => {
 
 <template>
   <div class="window-controller">
-    <div class="placeholder-bar w-64"></div>
+    <div class="placeholder-bar"></div>
     <div class="drag-bar"></div>
-    <button class="btn btn-error traffic-light" @click="onClose">
-      <IconClose width="12" height="12" style="zoom: 75%;" />
-    </button>
-    <button class="btn btn-success traffic-light" @click="onToggleMaximized">
-      <IconScaleExtend width="12" height="12" v-if="!isMaximized" />
-      <IconScaleContract width="12" height="12" v-if="isMaximized" />
-    </button>
-    <button class="btn btn-warning traffic-light" @click="onMinimize">
-      <IconWindowMinimize width="12" height="12" />
-    </button>
+    <NSpace class="traffic-lights">
+      <NButton @click="onClose" circle type="error" size="tiny" class="traffic-light">
+        <template #icon>
+          <NIcon class="traffic-light-icon" color="#000">
+            <IconClose />
+          </NIcon>
+        </template>
+      </NButton>
+      <NButton @click="onToggleMaximized" circle type="success" size="tiny" class="traffic-light">
+        <template #icon>
+          <NIcon class="traffic-light-icon" color="#000">
+            <IconScaleExtend v-if="!isMaximized" />
+            <IconScaleContract v-if="isMaximized" />
+          </NIcon>
+        </template>
+      </NButton>
+      <NButton @click="onMinimize" circle type="warning" size="tiny" class="traffic-light">
+        <template #icon>
+          <NIcon class="traffic-light-icon" color="#000">
+            <IconWindowMinimize />
+          </NIcon>
+        </template>
+      </NButton>
+    </NSpace>
   </div>
 </template>
 
 <style lang="less" scoped>
 .window-controller {
-  @apply flex fixed z-50 top-0 justify-end items-center w-screen pr-6 pointer-events-none;
+  display: flex;
+  position: fixed;
+  z-index: 50;
+  top: 0;
+  justify-content: end;
+  align-items: center;
+  width: 100vw;
+  padding-right: 24px;
+  pointer-events: none;
   height: 60px;
 }
 
+.placeholder-bar {
+  width: 256px;
+}
+
 .drag-bar {
-  @apply h-full flex-1;
+  height: 100%;
+  flex: 1;
   -webkit-app-region: drag;
 }
 
+.traffic-lights {
+  margin-right: 24px;
+  pointer-events: auto;
+}
+
 .traffic-light {
-  @apply ml-2 flex rounded-full justify-center items-center p-0 min-h-fit pointer-events-auto;
-  width: 18px;
-  height: 18px;
-  & svg {
-    fill: #000;
+  .traffic-light-icon {
+    opacity: 0;
+  }
+  &:hover .traffic-light-icon {
+    opacity: 1;
   }
 }
 </style>

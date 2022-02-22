@@ -1,23 +1,25 @@
 <script setup lang="ts">
 import IconSettings from '@/assets/icons/settings.svg?component';
+import { NIcon, useThemeVars } from 'naive-ui';
+
+const themeVars = useThemeVars();
 
 </script>
 
 <template>
-  <div class="index-side-bar">
+  <div>
     <router-link class="router" to="/settings">
-      <IconSettings width="24" height="24" />
+      <NIcon size="24px" :color="themeVars.textColor1">
+        <IconSettings />
+      </NIcon>
     </router-link>
-    <h3>当前连接的设备</h3>
+    <h2>当前连接的设备</h2>
   </div>
 </template>
 
 <style lang="less" scoped>
-.index-side-bar {
-  @apply text-left;
-}
-
 .router {
-  @apply mb-2 block;
+  display: block;
+  margin-bottom: 8px;
 }
 </style>

@@ -1,7 +1,5 @@
 {
   "recommendations": [
-    "stylelint.vscode-stylelint",
-    "bradlc.vscode-tailwindcss",
     "johnsoncodehk.volar"
   ]
 }

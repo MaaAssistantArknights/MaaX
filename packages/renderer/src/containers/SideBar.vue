@@ -1,9 +1,9 @@
-<template>
-  <router-view class="side-bar" name="SideBar" />
-</template>
+<script setup lang="ts">
+import { NScrollbar } from 'naive-ui'
+</script>
 
-<style lang="less" scoped>
-.side-bar {
-  @apply min-h-screen w-64;
-}
-</style>
+<template>
+<NScrollbar class="side-bar">
+  <router-view name="SideBar" />
+</NScrollbar>
+</template>

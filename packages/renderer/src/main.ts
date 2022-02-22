@@ -1,6 +1,5 @@
 import { createApp } from "vue"
 import { createPinia } from "pinia"
-import useTheme from "./utils/theme"
 import router from "./router"
 
 import "./App.less"
@@ -12,4 +11,9 @@ createApp(App)
   .mount("#app")
   .$nextTick(window.removeLoading)
 
-useTheme()
+// debug only
+// router.replace({ path: "/settings" })
+
+window.onclick = (event) => {
+  console.log('you clicked: ', event.target);
+}

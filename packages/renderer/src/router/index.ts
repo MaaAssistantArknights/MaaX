@@ -1,4 +1,4 @@
-import { createWebHashHistory, createRouter, RouteRecordRaw } from "vue-router"
+import { createMemoryHistory, createRouter, RouteRecordRaw } from "vue-router"
 
 import SideBarIndex from "@/layouts/sidebars/Index.vue"
 import PageIndex from "@/layouts/pages/Index.vue"
@@ -13,28 +13,28 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/",
     components: {
-      default: PageIndex,
+      Main: PageIndex,
       SideBar: SideBarIndex,
     },
   },
   {
     path: "/settings",
     components: {
-      default: PageSetting,
+      Main: PageSetting,
       SideBar: SideBarSetting,
     },
   },
   {
     path: "/start",
     components: {
-      default: PageStart,
+      Main: PageStart,
       SideBar: SideBarStart,
     },
   },
 ]
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createMemoryHistory(),
   routes,
 })
 
