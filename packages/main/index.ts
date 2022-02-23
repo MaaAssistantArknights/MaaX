@@ -26,6 +26,8 @@ async function createWindow() {
     transparent: true,
     frame: false,
     vibrancy: is.macos ? "under-window" : "appearance-based",
+    width: 1024,
+    height: 768,
     minWidth: 800,
     minHeight: 600,
     webPreferences: {

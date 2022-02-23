@@ -4,9 +4,29 @@ import Main from './containers/Main.vue';
 import SideBar from './containers/SideBar.vue';
 
 import { ref } from 'vue';
-import { NGlobalStyle, NConfigProvider, GlobalThemeOverrides, darkTheme } from 'naive-ui';
+import { NGlobalStyle, NConfigProvider, GlobalThemeOverrides, darkTheme, ThemeCommonVars } from 'naive-ui';
+import useThemeStore from './store/theme';
 
-const theme = ref('maa-light');
+const themeStore = useThemeStore();
+
+const commonThemeOverrides: Partial<ThemeCommonVars> = {
+  infoColor: '#66c7ff',
+  infoColorHover: '#8ad4ff',
+  infoColorPressed: '#42baff',
+  infoColorSuppl: '#8ad4ff',
+  successColor: '#87cf3a',
+  successColorHover: '#b2e080',
+  successColorPressed: '#7ac02f',
+  successColorSuppl: '#b2e080',
+  warningColor: '#e1d460',
+  warningColorHover: '#ece399',
+  warningColorPressed: '#dccd45',
+  warningColorSuppl: '#ece399',
+  errorColor: '#ff6b6b',
+  errorColorHover: '#ff8f8f',
+  errorColorPressed: '#ff4747',
+  errorColorSuppl: '#ff8f8f'
+}
 
 const lightThemeOverrides: GlobalThemeOverrides = {
   common: {
@@ -15,22 +35,7 @@ const lightThemeOverrides: GlobalThemeOverrides = {
     primaryColorHover: '#8380b0',
     primaryColorPressed: '#5a578b',
     primaryColorSuppl: '#8380b0',
-    infoColor: '#66c7ff',
-    infoColorHover: '#8ad4ff',
-    infoColorPressed: '#42baff',
-    infoColorSuppl: '#8ad4ff',
-    successColor: '#87cf3a',
-    successColorHover: '#b2e080',
-    successColorPressed: '#7ac02f',
-    successColorSuppl: '#b2e080',
-    warningColor: '#e1d460',
-    warningColorHover: '#ece399',
-    warningColorPressed: '#dccd45',
-    warningColorSuppl: '#ece399',
-    errorColor: '#ff6b6b',
-    errorColorHover: '#ff8f8f',
-    errorColorPressed: '#ff4747',
-    errorColorSuppl: '#ff8f8f'
+    ...commonThemeOverrides
   },
 }
 
@@ -41,36 +46,21 @@ const darkThemeOverrides: GlobalThemeOverrides = {
     primaryColorHover: '#b9e4c6',
     primaryColorPressed: '#80cf98',
     primaryColorSuppl: '#b9e4c6',
-    infoColor: '#66c7ff',
-    infoColorHover: '#8ad4ff',
-    infoColorPressed: '#42baff',
-    infoColorSuppl: '#8ad4ff',
-    successColor: '#87cf3a',
-    successColorHover: '#b2e080',
-    successColorPressed: '#7ac02f',
-    successColorSuppl: '#b2e080',
-    warningColor: '#e1d460',
-    warningColorHover: '#ece399',
-    warningColorPressed: '#dccd45',
-    warningColorSuppl: '#ece399',
-    errorColor: '#ff6b6b',
-    errorColorHover: '#ff8f8f',
-    errorColorPressed: '#ff4747',
-    errorColorSuppl: '#ff8f8f'
+    ...commonThemeOverrides
   },
 }
 
 window.ipcRenderer.on("theme:update", (_, updatedTheme) => {
   console.log('theme changed: ', updatedTheme)
-  theme.value = updatedTheme;
+  themeStore.updateTheme(updatedTheme);
 });
 </script>
 
 <template>
   <NConfigProvider
     class="app-provider"
-    :theme="theme === 'maa-light' ? null : darkTheme"
-    :theme-overrides="theme === 'maa-light' ? lightThemeOverrides : darkThemeOverrides"
+    :theme="themeStore.theme === 'maa-light' ? null : darkTheme"
+    :theme-overrides="themeStore.theme === 'maa-light' ? lightThemeOverrides : darkThemeOverrides"
   >
     <NGlobalStyle />
     <WindowController />

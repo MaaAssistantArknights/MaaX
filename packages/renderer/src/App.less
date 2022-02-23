@@ -28,6 +28,10 @@
     Ubuntu, Cantarell, "Open Sans", sans-serif;
 }
 
+::-webkit-scrollbar {
+  display: none;
+}
+
 body {
   min-height: 100vh;
   overflow: hidden;
@@ -39,10 +43,11 @@ body {
 .main {
   flex: 1;
   min-height: 100vh;
-  max-height: 100vh;
-  padding: 0 30px;
+  // 底部预留20px空间，side-bar与main相同
+  max-height: calc(100vh - 60px - 20px);
+  padding: 0 32px;
   & > .n-scrollbar-container {
-    padding-top: 60px;
+    margin: 60px 0;
   }
 }
 
@@ -50,9 +55,9 @@ body {
   text-align: left;
   padding: 0 16px;
   min-height: 100vh;
-  max-height: 100vh;
+  max-height: calc(100vh - 32px - 20px);
   width: 256px;
-  .n-scrollbar-container {
-    padding-top: 32px;
+  & > .n-scrollbar-container {
+    margin: 32px 0;
   }
 }

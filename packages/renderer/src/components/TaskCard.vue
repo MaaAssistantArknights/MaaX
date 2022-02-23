@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { NProgress, NSwitch, NCollapse, NCollapseItem, NScrollbar, NSpace, useThemeVars } from 'naive-ui';
+import useThemeStore from '@/store/theme';
 import Timer from './Timer.vue';
 
 const themeVars = useThemeVars();
+const themeStore = useThemeStore();
 
 const props = defineProps<{
   isCollapsed: boolean,
@@ -38,7 +40,12 @@ const processBarColor = (taskStatus: 'idle' | 'processing' | 'success' | 'except
     <template #arrow>
       <span></span>
     </template>
-    <NCollapseItem class="task-card-inner" :class="props.isCollapsed ? 'collapsed' : ''" name="1">
+    <NCollapseItem
+      class="task-card-inner"
+      :class="props.isCollapsed ? 'collapsed' : ''"
+      name="1"
+      :style="{ border: themeStore.theme === 'maa-dark' ? `1px solid ${themeVars.primaryColor}` : '' }"
+    >
       <template #header>
         <div style="width: 100%;">
           <div class="card-header">
@@ -83,11 +90,15 @@ const processBarColor = (taskStatus: 'idle' | 'processing' | 'success' | 'except
 </template>
 
 <style lang="less" scoped>
+.task-card {
+  transition: width .3s var(--n-bezier);
+}
 .task-card-inner {
-  overflow: auto;
+  overflow: hidden;
   background: rgba(0, 0, 0, 0.05);
   box-shadow: 0 2px 6px 0 rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.1);
   border-radius: 12px;
+  float: none;
   &.collapsed {
     border-radius: 12px 12px 0 0;
   }
@@ -101,6 +112,7 @@ const processBarColor = (taskStatus: 'idle' | 'processing' | 'success' | 'except
   justify-content: space-between;
   align-items: center;
   padding: 8px 12px;
+  height: 22px;
 }
 
 .card-progress-hint {
