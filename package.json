@@ -15,12 +15,15 @@
     "node": ">=14.17.0"
   },
   "devDependencies": {
-    "@tailwindcss/typography": "^0.5.2",
+    "@typescript-eslint/eslint-plugin": "^5.12.1",
+    "@typescript-eslint/parser": "^5.12.1",
     "@vitejs/plugin-vue": "^2.2.2",
     "axios": "^0.26.0",
     "electron": "^17.0.1",
     "electron-builder": "^22.14.13",
     "electron-devtools-installer": "^3.2.0",
+    "eslint": "^8.9.0",
+    "eslint-plugin-vue": "^8.5.0",
     "less": "^4.1.2",
     "lodash": "^4.17.21",
     "naive-ui": "^2.25.2",

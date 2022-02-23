@@ -4,9 +4,9 @@ import Main from './containers/Main.vue';
 import SideBar from './containers/SideBar.vue';
 
 import { ref } from 'vue';
-import { NGlobalStyle, NConfigProvider, GlobalThemeOverrides, darkTheme } from 'naive-ui'
+import { NGlobalStyle, NConfigProvider, GlobalThemeOverrides, darkTheme } from 'naive-ui';
 
-const theme = ref('maa-light')
+const theme = ref('maa-light');
 
 const lightThemeOverrides: GlobalThemeOverrides = {
   common: {
@@ -22,13 +22,13 @@ const lightThemeOverrides: GlobalThemeOverrides = {
     successColor: '#87cf3a',
     successColorHover: '#b2e080',
     successColorPressed: '#7ac02f',
-    successColorSuppl:'#b2e080',
+    successColorSuppl: '#b2e080',
     warningColor: '#e1d460',
     warningColorHover: '#ece399',
     warningColorPressed: '#dccd45',
     warningColorSuppl: '#ece399',
     errorColor: '#ff6b6b',
-    errorColorHover:'#ff8f8f',
+    errorColorHover: '#ff8f8f',
     errorColorPressed: '#ff4747',
     errorColorSuppl: '#ff8f8f'
   },
@@ -48,13 +48,13 @@ const darkThemeOverrides: GlobalThemeOverrides = {
     successColor: '#87cf3a',
     successColorHover: '#b2e080',
     successColorPressed: '#7ac02f',
-    successColorSuppl:'#b2e080',
+    successColorSuppl: '#b2e080',
     warningColor: '#e1d460',
     warningColorHover: '#ece399',
     warningColorPressed: '#dccd45',
     warningColorSuppl: '#ece399',
     errorColor: '#ff6b6b',
-    errorColorHover:'#ff8f8f',
+    errorColorHover: '#ff8f8f',
     errorColorPressed: '#ff4747',
     errorColorSuppl: '#ff8f8f'
   },

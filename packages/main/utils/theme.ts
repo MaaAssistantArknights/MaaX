@@ -6,9 +6,7 @@ export default function useTheme(window: BrowserWindow) {
     const isDark = nativeTheme.shouldUseDarkColors;
     window.webContents.send("theme:update", isDark ? "maa-dark" : "maa-light");
     if (is.windows) {
-      const {
-        setVibrancy
-      } = require("electron-acrylic-window");
+      const { setVibrancy } = require("electron-acrylic-window");
       setVibrancy(window, {
         theme: isDark ? "dark" : "light",
         effect: "blur",

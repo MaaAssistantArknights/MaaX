@@ -16,7 +16,7 @@ const onClose = () => {
 const onToggleMaximized = () => {
   const result = window.ipcRenderer.sendSync('window:toggle-maximized');
   if (result instanceof Error) {
-
+    console.log()
   }
 }
 
@@ -85,11 +85,13 @@ window.ipcRenderer.on('window:update-maximized', (_, maximized) => {
 }
 
 .traffic-lights {
-  margin-right: 24px;
+  margin-right: 48px;
   pointer-events: auto;
+  zoom: 50%;
 }
 
 .traffic-light {
+  border: 1px solid #aaa;
   .traffic-light-icon {
     opacity: 0;
   }

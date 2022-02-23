@@ -1,5 +1,3 @@
-
-
 /**
  * https://tobiasahlin.com/spinkit
  * https://connoratherton.com/loaders
@@ -7,7 +5,7 @@
  * https://matejkustec.github.io/SpinThatShit
  */
 export function useLoading() {
-  const className = `loaders-css__square-spin`
+  const className = `loaders-css__square-spin`;
   const styleContent = `
 @keyframes square-spin {
   25% { transform: perspective(100px) rotateX(180deg) rotateY(0); }
@@ -34,23 +32,23 @@ export function useLoading() {
   background: #282c34;
   z-index: 9;
 }
-    `
-  const oStyle = document.createElement('style')
-  const oDiv = document.createElement('div')
+    `;
+  const oStyle = document.createElement("style");
+  const oDiv = document.createElement("div");
 
-  oStyle.id = 'app-loading-style'
-  oStyle.innerHTML = styleContent
-  oDiv.className = 'app-loading-wrap'
-  oDiv.innerHTML = `<div class="${className}"><div></div></div>`
+  oStyle.id = "app-loading-style";
+  oStyle.innerHTML = styleContent;
+  oDiv.className = "app-loading-wrap";
+  oDiv.innerHTML = `<div class="${className}"><div></div></div>`;
 
   return {
     appendLoading() {
-      document.head.appendChild(oStyle)
-      document.body.appendChild(oDiv)
+      document.head.appendChild(oStyle);
+      document.body.appendChild(oDiv);
     },
     removeLoading() {
-      document.head.removeChild(oStyle)
-      document.body.removeChild(oDiv)
+      document.head.removeChild(oStyle);
+      document.body.removeChild(oDiv);
     },
-  }
+  };
 }

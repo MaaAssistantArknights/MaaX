@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import IconChevronLeft from '@/assets/icons/chevron-left.svg?component'
+import IconChevronLeft from '@/assets/icons/chevron-left.svg?component';
 import { NButton, NIcon, NAnchor, NAnchorLink } from 'naive-ui';
 </script>
 
