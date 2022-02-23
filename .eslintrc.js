@@ -4,7 +4,8 @@ module.exports = {
   env: {
     browser: true,
     es2021: true,
-    node: true
+    node: true,
+    "vue/setup-compiler-macros": true
   },
   parserOptions: {
     ecmaVersion: 12,
@@ -21,6 +22,7 @@ module.exports = {
   ],
   rules: {
     // override/add rules settings here, such as:
-    // 'vue/no-unused-vars': 'error'
+    'vue/no-unused-vars': 'warning',
+    "vue/multi-word-component-names": 'off'
   }
 }

@@ -1,19 +1,20 @@
 <script setup lang="ts">
 import IconSettings from '@/assets/icons/settings.svg?component';
-import { NIcon, useThemeVars } from 'naive-ui';
-
-const themeVars = useThemeVars();
+import { NIcon, NSpace, NButton } from 'naive-ui';
 
 </script>
 
 <template>
   <div>
-    <router-link class="router" to="/settings">
-      <NIcon size="24px" :color="themeVars.textColor1">
+    <NButton text style="font-size: 24px" @click="$router.push({ path: '/settings' })">
+      <NIcon>
         <IconSettings />
       </NIcon>
-    </router-link>
-    <h2>当前连接的设备</h2>
+    </NButton>
+    <NSpace justify="space-between" align="center">
+      <h2>当前连接的设备</h2>
+      <NIcon></NIcon>
+    </NSpace>
   </div>
 </template>
 
