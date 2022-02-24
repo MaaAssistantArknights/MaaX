@@ -2,23 +2,17 @@
 import { NProgress, NSwitch, NCollapse, NCollapseItem, NScrollbar, NSpace, useThemeVars } from 'naive-ui';
 import useThemeStore from '@/store/theme';
 import Timer from './Timer.vue';
+import TaskConfiguration from './TaskConfiguration.vue';
 
 const themeVars = useThemeVars();
 const themeStore = useThemeStore();
 
 const props = defineProps<{
   isCollapsed: boolean,
-  info: {
-    title: string,
-    status: 'idle' | 'processing' | 'success' | 'exception',
-    enable: boolean,
-    startTime?: number,
-    endTime?: number,
-    progress?: number,
-  }
+  taskInfo: Task
 }>()
 
-const processBarColor = (taskStatus: 'idle' | 'processing' | 'success' | 'exception') => {
+const processBarColor = (taskStatus: TaskStatus) => {
   switch (taskStatus) {
     case 'idle':
     case 'processing':
@@ -35,7 +29,7 @@ const processBarColor = (taskStatus: 'idle' | 'processing' | 'success' | 'except
   <NCollapse
     :expanded-names="props.isCollapsed ? null : '1'"
     class="task-card"
-    :class="props.info.status === 'idle' ? '' : 'undraggable'"
+    :class="props.taskInfo.status === 'idle' ? '' : 'undraggable'"
   >
     <template #arrow>
       <span></span>
@@ -50,15 +44,15 @@ const processBarColor = (taskStatus: 'idle' | 'processing' | 'success' | 'except
         <div style="width: 100%;">
           <div class="card-header">
             <NSpace>
-              <span class="card-title">{{ props.info.title || '' }}</span>
+              <span class="card-title">{{ props.taskInfo.title || '' }}</span>
               <span class="card-progress-hint" :style="{ color: themeVars.primaryColor }">
                 {{
                   (() => {
-                    switch (props.info.status) {
+                    switch (props.taskInfo.status) {
                       case 'idle':
                         return '';
                       case 'processing':
-                        return `进行中 ${props.info.progress ?? 0}%`;
+                        return `进行中 ${props.taskInfo.progress ?? 0}%`;
                       case 'success':
                         return '已完成';
                       case 'exception':
@@ -68,12 +62,16 @@ const processBarColor = (taskStatus: 'idle' | 'processing' | 'success' | 'except
                 }}
               </span>
             </NSpace>
-            <NSwitch v-if="props.info.status === 'idle'" v-model:value="props.info.enable" />
-            <Timer v-else :start-time="props.info.startTime" :end-time="props.info.endTime" />
+            <NSwitch v-if="props.taskInfo.status === 'idle'" v-model:value="props.taskInfo.enable" />
+            <Timer
+              v-else
+              :start-time="props.taskInfo.startTime"
+              :end-time="props.taskInfo.endTime"
+            />
           </div>
           <NProgress
-            :percentage="props.info.progress"
-            :color="processBarColor(props.info.status)"
+            :percentage="props.taskInfo.progress"
+            :color="processBarColor(props.taskInfo.status)"
             :border-radius="0"
             :height="4"
             :show-indicator="false"
@@ -82,7 +80,9 @@ const processBarColor = (taskStatus: 'idle' | 'processing' | 'success' | 'except
       </template>
       <div class="card-content">
         <NScrollbar style="height: 100px;">
-          <slot></slot>
+          <TaskConfiguration>
+            <slot></slot>
+          </TaskConfiguration>
         </NScrollbar>
       </div>
     </NCollapseItem>
@@ -91,7 +91,7 @@ const processBarColor = (taskStatus: 'idle' | 'processing' | 'success' | 'except
 
 <style lang="less" scoped>
 .task-card {
-  transition: width .3s var(--n-bezier);
+  transition: width 0.3s var(--n-bezier);
 }
 .task-card-inner {
   overflow: hidden;

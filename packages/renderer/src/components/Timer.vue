@@ -1,7 +1,7 @@
 <script lang="ts">
 import { computed, defineComponent, getCurrentInstance, h, Ref, ref, watch, PropType } from "vue";
 
-type Time = {
+interface Time {
   hours: number;
   minutes: number;
   seconds: number;

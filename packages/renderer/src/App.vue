@@ -3,9 +3,11 @@ import WindowController from './components/WindowController.vue';
 import Main from './containers/Main.vue';
 import SideBar from './containers/SideBar.vue';
 
-import { ref } from 'vue';
 import { NGlobalStyle, NConfigProvider, GlobalThemeOverrides, darkTheme, ThemeCommonVars } from 'naive-ui';
-import useThemeStore from './store/theme';
+import useThemeStore from '@/store/theme';
+
+import { initHook } from './hooks';
+initHook();
 
 const themeStore = useThemeStore();
 
@@ -49,11 +51,6 @@ const darkThemeOverrides: GlobalThemeOverrides = {
     ...commonThemeOverrides
   },
 }
-
-window.ipcRenderer.on("theme:update", (_, updatedTheme) => {
-  console.log('theme changed: ', updatedTheme)
-  themeStore.updateTheme(updatedTheme);
-});
 </script>
 
 <template>

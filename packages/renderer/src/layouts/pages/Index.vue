@@ -6,6 +6,10 @@ import TaskCard from '@/components/TaskCard.vue';
 import IconList from '@/assets/icons/list.svg?component';
 import IconGrid from '@/assets/icons/grid.svg?component';
 
+import useTaskStore from '@/store/tasks';
+
+const taskStore = useTaskStore();
+
 const isGrid = ref<boolean>(false);
 const cardsRef: Ref<HTMLElement | null> = ref(null);
 onMounted(() => {
@@ -23,24 +27,9 @@ onMounted(() => {
   }
 })
 
-// @ts-expect-error
 // Demo only
-const tasksDemo: Ref<Array<{
-  title: string,
-  status: 'idle' | 'processing' | 'success' | 'exception',
-  enable: boolean,
-  startTime?: number,
-  endTime?: number,
-  progress?: number,
-}>> = ref([
-  { title: '开始唤醒', status: 'processing', progress: 50, startTime: Date.now(), enable: true },
-  { title: '刷理智', status: 'idle', enable: true },
-  { title: '自动公招', status: 'idle', enable: true },
-  { title: '基建换班', status: 'idle', enable: true },
-  { title: '访问好友', status: 'idle', enable: true },
-  { title: '收取信用及购物', status: 'idle', enable: true },
-  { title: '领取日常奖励', status: 'idle', enable: true },
-])
+const demoDeviceUuid = '12345678-90abcdefg';
+const tasksDemo = taskStore.deviceTasks[demoDeviceUuid];
 
 </script>
 
@@ -77,7 +66,7 @@ const tasksDemo: Ref<Array<{
         :is-collapsed="!isGrid"
         v-for="(task, index) in tasksDemo"
         :key="index"
-        :info="task"
+        :task-info="task"
       >
         <!-- Demo only -->
         <!-- 200px使其可滚动 -->
