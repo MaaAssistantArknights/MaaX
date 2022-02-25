@@ -1,28 +1,37 @@
 <script setup lang="ts">
-import { NProgress, NSwitch, NCollapse, NCollapseItem, NScrollbar, NSpace, useThemeVars } from 'naive-ui';
-import useThemeStore from '@/store/theme';
-import Timer from './Timer.vue';
-import TaskConfiguration from './TaskConfiguration.vue';
+import {
+  NProgress,
+  NSwitch,
+  NCollapse,
+  NCollapseItem,
+  NScrollbar,
+  NSpace,
+  useThemeVars,
+} from "naive-ui";
+import useThemeStore from "@/store/theme";
+import Timer from "./Timer.vue";
 
 const themeVars = useThemeVars();
 const themeStore = useThemeStore();
 
 const props = defineProps<{
-  isCollapsed: boolean,
-  taskInfo: Task
-}>()
+  isCollapsed: boolean;
+  taskInfo: Task;
+}>();
+
+defineEmits(['update:enable'])
 
 const processBarColor = (taskStatus: TaskStatus) => {
   switch (taskStatus) {
-    case 'idle':
-    case 'processing':
+    case "idle":
+    case "processing":
       return themeVars.value.primaryColor;
-    case 'success':
+    case "success":
       return themeVars.value.successColor;
-    case 'exception':
+    case "exception":
       return themeVars.value.errorColor;
   }
-}
+};
 </script>
 
 <template>
@@ -38,31 +47,43 @@ const processBarColor = (taskStatus: TaskStatus) => {
       class="task-card-inner"
       :class="props.isCollapsed ? 'collapsed' : ''"
       name="1"
-      :style="{ border: themeStore.theme === 'maa-dark' ? `1px solid ${themeVars.primaryColor}` : '' }"
+      :style="{
+        border:
+          themeStore.theme === 'maa-dark'
+            ? `1px solid ${themeVars.primaryColor}`
+            : '',
+      }"
     >
       <template #header>
-        <div style="width: 100%;">
+        <div style="width: 100%">
           <div class="card-header">
             <NSpace>
-              <span class="card-title">{{ props.taskInfo.title || '' }}</span>
-              <span class="card-progress-hint" :style="{ color: themeVars.primaryColor }">
+              <span class="card-title">{{ props.taskInfo.title || "" }}</span>
+              <span
+                class="card-progress-hint"
+                :style="{ color: themeVars.primaryColor }"
+              >
                 {{
                   (() => {
                     switch (props.taskInfo.status) {
-                      case 'idle':
-                        return '';
-                      case 'processing':
+                      case "idle":
+                        return "";
+                      case "processing":
                         return `进行中 ${props.taskInfo.progress ?? 0}%`;
-                      case 'success':
-                        return '已完成';
-                      case 'exception':
-                        return '任务出错';
+                      case "success":
+                        return "已完成";
+                      case "exception":
+                        return "任务出错";
                     }
                   })()
                 }}
               </span>
             </NSpace>
-            <NSwitch v-if="props.taskInfo.status === 'idle'" v-model:value="props.taskInfo.enable" />
+            <NSwitch
+              v-if="props.taskInfo.status === 'idle'"
+              :value="props.taskInfo.enable"
+              @update:value="enabled => $emit('update:enable', enabled)"
+            />
             <Timer
               v-else
               :start-time="props.taskInfo.startTime"
@@ -79,10 +100,8 @@ const processBarColor = (taskStatus: TaskStatus) => {
         </div>
       </template>
       <div class="card-content">
-        <NScrollbar style="height: 100px;">
-          <TaskConfiguration>
-            <slot></slot>
-          </TaskConfiguration>
+        <NScrollbar style="height: 100px">
+          <slot></slot>
         </NScrollbar>
       </div>
     </NCollapseItem>
@@ -91,7 +110,11 @@ const processBarColor = (taskStatus: TaskStatus) => {
 
 <style lang="less" scoped>
 .task-card {
+  user-select: none;
   transition: width 0.3s var(--n-bezier);
+  & :deep(.n-collapse-item__content-wrapper .n-collapse-item__content-inner) {
+    padding-top: 0px;
+  }
 }
 .task-card-inner {
   overflow: hidden;
@@ -121,6 +144,6 @@ const processBarColor = (taskStatus: TaskStatus) => {
 
 .card-content {
   max-width: 100%;
-  padding: 8px 12px;
+  padding: 0 12px;
 }
 </style>

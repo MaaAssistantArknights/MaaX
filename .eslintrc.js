@@ -21,8 +21,13 @@ module.exports = {
     'plugin:vue/vue3-essential'
   ],
   rules: {
-    // override/add rules settings here, such as:
-    'vue/no-unused-vars': 'warning',
+    "no-undef": 'off', // 让ts检查undefined
+    'no-unused-vars': 'off',
+    'vue/max-len': ['error', {
+      code: 100,
+      template: 80
+    }],
+    'vue/no-unused-vars': 'warn',
     "vue/multi-word-component-names": 'off'
   }
 }

@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import _ from "lodash";
 
 export interface TaskState {
   deviceTasks: Record<string, Task[]>;
@@ -11,6 +12,8 @@ export interface TaskAction {
     status: TaskStatus,
     progress: number
   ): void;
+  changeTaskOrder(uuid: string, from: number, to: number): void;
+  updateTask(uuid: string, tasks: Task[]): void;
 }
 
 // Demo only
@@ -30,7 +33,10 @@ const taskDemo: Task[] = [
     status: "idle",
     enable: true,
     configurations: {
-      "可用理智液": true
+      medicine: true,
+      expiration_first: true,
+      originite_prime: true,
+      levels: [],
     },
   },
   {
@@ -38,14 +44,54 @@ const taskDemo: Task[] = [
     title: "自动公招",
     status: "idle",
     enable: true,
-    configurations: {},
+    configurations: {
+      refresh_normal_tags: true,
+      use_expedited_plan: false,
+      maximum_times_of_recruitments: 6,
+      recognitions: {
+        "3 Stars": true,
+        "4 Stars": true,
+        "5 Stars": true,
+      },
+    },
   },
   {
     id: "infrast",
     title: "基建换班",
     status: "idle",
     enable: true,
-    configurations: {},
+    configurations: {
+      facilities: [
+        {
+          name: "ManufacturingStation",
+          enabled: true,
+        },
+        {
+          name: "TradingStation",
+          enabled: true,
+        },
+        {
+          name: "ControlCenter",
+          enabled: true,
+        },
+        {
+          name: "PowerStation",
+          enabled: true,
+        },
+        {
+          name: "MeetingRoom",
+          enabled: true,
+        },
+        {
+          name: "Office",
+          enabled: true,
+        },
+        {
+          name: "Dormitory",
+          enabled: true,
+        },
+      ],
+    },
   },
   {
     id: "visit",
@@ -87,6 +133,18 @@ const useTaskStore = defineStore<"tasks", TaskState, {}, TaskAction>("tasks", {
         task.status = status;
         task.progress = progress;
       }
+    },
+    changeTaskOrder(uuid, from, to) {
+      const { deviceTasks } = this;
+      const origin = deviceTasks[uuid];
+      if (origin) {
+        const item = origin.splice(from, 1);
+        origin.splice(to, 0, item[0]);
+      }
+    },
+    updateTask(uuid, tasks) {
+      const { deviceTasks } = this;
+      deviceTasks[uuid] = tasks;
     },
   },
 });

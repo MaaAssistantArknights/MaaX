@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { onMounted, ref, Ref } from 'vue';
 import { NSpace, NButton, NSwitch, NIcon, NTooltip } from 'naive-ui';
+import _ from 'lodash';
 import Sortable from 'sortablejs';
 import TaskCard from '@/components/TaskCard.vue';
 import IconList from '@/assets/icons/list.svg?component';
 import IconGrid from '@/assets/icons/grid.svg?component';
+import Configuration from '@/components/configurations/Index.vue';
 
 import useTaskStore from '@/store/tasks';
 
@@ -12,24 +14,37 @@ const taskStore = useTaskStore();
 
 const isGrid = ref<boolean>(false);
 const cardsRef: Ref<HTMLElement | null> = ref(null);
+
+// Demo only
+const demoDeviceUuid = '12345678-90abcdefg';
+const tasksDemo = taskStore.deviceTasks[demoDeviceUuid];
+
 onMounted(() => {
   if (cardsRef.value) {
     new Sortable(cardsRef.value, {
       swapThreshold: 1,
       animation: 150,
       filter: '.undraggable',
+      store: {
+        get() {
+          return tasksDemo.map(task => task.id);
+        },
+        set(sortable) {
+          const sort = sortable.toArray();
+          taskStore.updateTask(
+            demoDeviceUuid, 
+            _.sortBy(tasksDemo, task => sort.findIndex(v => v === task.id))
+          );
+        }
+      },
       onMove: (event) => {
         if (event.related.classList.contains('undraggable')) {
           return false;
         }
-      }
+      },
     });
   }
 })
-
-// Demo only
-const demoDeviceUuid = '12345678-90abcdefg';
-const tasksDemo = taskStore.deviceTasks[demoDeviceUuid];
 
 </script>
 
@@ -67,10 +82,10 @@ const tasksDemo = taskStore.deviceTasks[demoDeviceUuid];
         v-for="(task, index) in tasksDemo"
         :key="index"
         :task-info="task"
+        @update:enable="enabled => task.enable = enabled"
+        :data-id="task.id"
       >
-        <!-- Demo only -->
-        <!-- 200px使其可滚动 -->
-        <div style="height: 200px;">{{ task.title }}</div>
+        <Configuration :taskId="task.id" />
       </TaskCard>
     </div>
   </div>
