@@ -79,8 +79,8 @@ onMounted(() => {
     <div class="cards" :class="isGrid ? 'cards-grid' : ''" ref="cardsRef">
       <TaskCard
         :is-collapsed="!isGrid"
-        v-for="(task, index) in tasksDemo"
-        :key="index"
+        v-for="(task) in tasksDemo"
+        :key="task.id"
         :task-info="task"
         @update:enable="enabled => task.enable = enabled"
         :data-id="task.id"

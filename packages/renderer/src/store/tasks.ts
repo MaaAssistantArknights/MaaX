@@ -1,8 +1,8 @@
-import { defineStore } from "pinia";
-import _ from "lodash";
+import { defineStore } from "pinia"
+import _ from "lodash"
 
 export interface TaskState {
-  deviceTasks: Record<string, Task[]>;
+  deviceTasks: Record<string, Task[]>
 }
 
 export interface TaskAction {
@@ -11,9 +11,9 @@ export interface TaskAction {
     taskId: string,
     status: TaskStatus,
     progress: number
-  ): void;
-  changeTaskOrder(uuid: string, from: number, to: number): void;
-  updateTask(uuid: string, tasks: Task[]): void;
+  ): void
+  changeTaskOrder(uuid: string, from: number, to: number): void
+  updateTask(uuid: string, tasks: Task[]): void
 }
 
 // Demo only
@@ -91,6 +91,8 @@ const taskDemo: Task[] = [
           enabled: true,
         },
       ],
+      drone_usage: "None",
+      mood_limit: 6,
     },
   },
   {
@@ -114,7 +116,7 @@ const taskDemo: Task[] = [
     enable: true,
     configurations: {},
   },
-];
+]
 
 const useTaskStore = defineStore<"tasks", TaskState, {}, TaskAction>("tasks", {
   state: () => {
@@ -122,31 +124,31 @@ const useTaskStore = defineStore<"tasks", TaskState, {}, TaskAction>("tasks", {
       deviceTasks: {
         "12345678-90abcdefg": taskDemo,
       },
-    };
+    }
   },
   actions: {
     updateTaskStatus(uuid, taskId, status, progress) {
-      const { deviceTasks } = this;
-      const origin = deviceTasks[uuid];
-      const task = origin?.find((task) => task.id === taskId);
+      const { deviceTasks } = this
+      const origin = deviceTasks[uuid]
+      const task = origin?.find((task) => task.id === taskId)
       if (task) {
-        task.status = status;
-        task.progress = progress;
+        task.status = status
+        task.progress = progress
       }
     },
     changeTaskOrder(uuid, from, to) {
-      const { deviceTasks } = this;
-      const origin = deviceTasks[uuid];
+      const { deviceTasks } = this
+      const origin = deviceTasks[uuid]
       if (origin) {
-        const item = origin.splice(from, 1);
-        origin.splice(to, 0, item[0]);
+        const item = origin.splice(from, 1)
+        origin.splice(to, 0, item[0])
       }
     },
     updateTask(uuid, tasks) {
-      const { deviceTasks } = this;
-      deviceTasks[uuid] = tasks;
+      const { deviceTasks } = this
+      deviceTasks[uuid] = tasks
     },
   },
-});
+})
 
-export default useTaskStore;
+export default useTaskStore

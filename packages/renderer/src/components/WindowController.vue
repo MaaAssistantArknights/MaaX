@@ -87,7 +87,7 @@ window.ipcRenderer.on('window:update-maximized', (_, maximized) => {
 .traffic-lights {
   margin-right: 48px;
   pointer-events: auto;
-  zoom: 50%;
+  zoom: 65%;
 }
 
 .traffic-light {
