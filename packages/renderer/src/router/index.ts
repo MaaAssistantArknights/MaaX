@@ -11,7 +11,7 @@ import PageStart from "@/layouts/pages/Start.vue";
 
 const routes: RouteRecordRaw[] = [
   {
-    path: "/",
+    path: "/device/:uuid",
     components: {
       Main: PageIndex,
       SideBar: SideBarIndex,

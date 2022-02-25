@@ -32,6 +32,7 @@ const commonThemeOverrides: Partial<ThemeCommonVars> = {
 
 const lightThemeOverrides: GlobalThemeOverrides = {
   common: {
+    hoverColor: 'rgba(243,243,245,.6)',
     bodyColor: '#f0f0f0',
     primaryColor: '#64619a',
     primaryColorHover: '#8380b0',
@@ -57,7 +58,8 @@ const darkThemeOverrides: GlobalThemeOverrides = {
   <NConfigProvider
     class="app-provider"
     :theme="themeStore.theme === 'maa-light' ? null : darkTheme"
-    :theme-overrides="themeStore.theme === 'maa-light' ? lightThemeOverrides : darkThemeOverrides"
+    :theme-overrides="themeStore.theme === 'maa-light' ? 
+      lightThemeOverrides : darkThemeOverrides"
   >
     <NGlobalStyle />
     <WindowController />

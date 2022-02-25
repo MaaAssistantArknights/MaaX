@@ -16,7 +16,7 @@ const devicesDemo: Device[] = [
   {
     uuid: "12345678-90abcdefg",
     connectionString: "127.0.0.1",
-    status: "tasking",
+    status: "connecting",
   },
 ];
 

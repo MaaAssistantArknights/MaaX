@@ -47,6 +47,7 @@ const processBarColor = (taskStatus: TaskStatus) => {
       class="task-card-inner"
       :class="props.isCollapsed ? 'collapsed' : ''"
       name="1"
+      :display-directive="'show'"
       :style="{
         border:
           themeStore.theme === 'maa-dark'

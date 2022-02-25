@@ -23,7 +23,7 @@ interface Device {
    * @connecting 正在连接设备
    * @connected 已连接设备
    * @tasking 连接设备且正在执行任务
-   * @disconnect 因为某些原因与设备断开
+   * @disconnected 因为某些原因与设备断开
    */
   status: DeviceStatus;
 }

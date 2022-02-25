@@ -10,14 +10,15 @@ import Configuration from '@/components/configurations/Index.vue';
 
 import useTaskStore from '@/store/tasks';
 
+import router from '@/router';
+
 const taskStore = useTaskStore();
 
 const isGrid = ref<boolean>(false);
 const cardsRef: Ref<HTMLElement | null> = ref(null);
 
-// Demo only
-const demoDeviceUuid = '12345678-90abcdefg';
-const tasksDemo = taskStore.deviceTasks[demoDeviceUuid];
+const uuid = router.currentRoute.value.params.uuid as string;
+const tasks = taskStore.deviceTasks[uuid];
 
 onMounted(() => {
   if (cardsRef.value) {
@@ -27,13 +28,13 @@ onMounted(() => {
       filter: '.undraggable',
       store: {
         get() {
-          return tasksDemo.map(task => task.id);
+          return tasks.map(task => task.id);
         },
         set(sortable) {
           const sort = sortable.toArray();
           taskStore.updateTask(
-            demoDeviceUuid, 
-            _.sortBy(tasksDemo, task => sort.findIndex(v => v === task.id))
+            uuid,
+            _.sortBy(tasks, task => sort.findIndex(v => v === task.id))
           );
         }
       },
@@ -76,10 +77,11 @@ onMounted(() => {
         </NButton>
       </NSpace>
     </NSpace>
+
     <div class="cards" :class="isGrid ? 'cards-grid' : ''" ref="cardsRef">
       <TaskCard
         :is-collapsed="!isGrid"
-        v-for="(task) in tasksDemo"
+        v-for="(task) in tasks"
         :key="task.id"
         :task-info="task"
         @update:enable="enabled => task.enable = enabled"
