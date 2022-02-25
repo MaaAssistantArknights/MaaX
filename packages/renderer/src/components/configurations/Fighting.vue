@@ -54,7 +54,7 @@ const showModal = ref(false);
       >过期时间优先</NButton>
     </NFormItem>
     <NFormItem label="可用源石">
-      <NCheckbox :checked="configuration.originite_prime" />
+      <NCheckbox v-model:checked="configuration.originite_prime" />
     </NFormItem>
     <NFormItem>
       <NButton
