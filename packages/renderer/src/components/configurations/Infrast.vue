@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, Ref } from 'vue';
-import { NInputNumber, NCheckbox, NForm, NFormItem, NSelect, NSlider } from 'naive-ui';
+import { NCheckbox, NForm, NFormItem, NSelect, NSlider } from 'naive-ui';
 import useTaskStore from '@/store/tasks';
 import _ from 'lodash';
 import Sortable from 'sortablejs';
@@ -127,10 +127,21 @@ onMounted(() => {
       </div>
     </NFormItem>
     <div class="infra-left">
-      <NFormItem label="无人机用途" :show-label="true" :label-style="{ justifyContent: 'center' }">
-        <NSelect v-model:value="configuration.drone_usage" :options="droneUsageOptions" />
+      <NFormItem
+        label="无人机用途"
+        :show-label="true"
+        :label-style="{ justifyContent: 'center' }"
+      >
+        <NSelect
+          v-model:value="configuration.drone_usage"
+          :options="droneUsageOptions"
+        />
       </NFormItem>
-      <NFormItem label="进驻宿舍理智阈值" :show-label="true" :label-style="{ justifyContent: 'center' }">
+      <NFormItem
+        label="进驻宿舍理智阈值"
+        :show-label="true"
+        :label-style="{ justifyContent: 'center' }"
+      >
         <NSlider v-model:value="configuration.mood_limit" :max="23" :min="0" />
       </NFormItem>
     </div>

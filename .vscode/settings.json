@@ -1,4 +1,5 @@
 {
   "css.validate": false,
-  "less.validate": false
+  "less.validate": false,
+  "volar.formatting.printWidth": 80
 }
