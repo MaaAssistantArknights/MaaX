@@ -34,14 +34,26 @@ window.ipcRenderer.on('window:update-maximized', (_, maximized) => {
     <div class="placeholder-bar"></div>
     <div class="drag-bar"></div>
     <NSpace class="traffic-lights">
-      <NButton @click="onClose" circle type="error" size="tiny" class="traffic-light">
+      <NButton
+        @click="onClose"
+        circle
+        type="error"
+        size="tiny"
+        class="traffic-light"
+      >
         <template #icon>
           <NIcon class="traffic-light-icon" color="#000">
             <IconClose />
           </NIcon>
         </template>
       </NButton>
-      <NButton @click="onToggleMaximized" circle type="success" size="tiny" class="traffic-light">
+      <NButton
+        @click="onToggleMaximized"
+        circle
+        type="success"
+        size="tiny"
+        class="traffic-light"
+      >
         <template #icon>
           <NIcon class="traffic-light-icon" color="#000">
             <IconScaleExtend v-if="!isMaximized" />
@@ -49,7 +61,13 @@ window.ipcRenderer.on('window:update-maximized', (_, maximized) => {
           </NIcon>
         </template>
       </NButton>
-      <NButton @click="onMinimize" circle type="warning" size="tiny" class="traffic-light">
+      <NButton
+        @click="onMinimize"
+        circle
+        type="warning"
+        size="tiny"
+        class="traffic-light"
+      >
         <template #icon>
           <NIcon class="traffic-light-icon" color="#000">
             <IconWindowMinimize />

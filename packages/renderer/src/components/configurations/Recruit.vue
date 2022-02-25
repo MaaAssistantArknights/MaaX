@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { NInputNumber, NCheckbox, NForm, NFormItem } from 'naive-ui';
 import useTaskStore from '@/store/tasks';
+import router from '@/router';
 
 const taskStore = useTaskStore();
 
@@ -15,10 +16,9 @@ interface RecruitConfiguration {
   };
 }
 
-// Demo only
-const demoDeviceUuid = '12345678-90abcdefg';
+const routeUuid = router.currentRoute.value.params.uuid as string;
 
-const task = taskStore.deviceTasks[demoDeviceUuid].find(task => task.id === 'recruit');
+const task = taskStore.deviceTasks[routeUuid].find(task => task.id === 'recruit');
 const configuration = task?.configurations as unknown as RecruitConfiguration;
 
 </script>

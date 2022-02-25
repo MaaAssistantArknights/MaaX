@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { NButton, NSwitch, NCheckbox, NModal, NForm, NFormItem } from 'naive-ui';
 import LevelChoose from '../LevelChoose.vue';
 import useTaskStore from '@/store/tasks';
+import router from '@/router';
 
 const taskStore = useTaskStore();
 
@@ -12,11 +13,9 @@ interface FightingConfiguration {
   originite_prime: boolean
   levels: []
 }
+const routeUuid = router.currentRoute.value.params.uuid as string;
 
-// Demo only
-const demoDeviceUuid = '12345678-90abcdefg';
-
-const task = taskStore.deviceTasks[demoDeviceUuid].find(task => task.id === 'fight');
+const task = taskStore.deviceTasks[routeUuid].find(task => task.id === 'fight');
 const configuration = task?.configurations as unknown as FightingConfiguration;
 
 const showModal = ref(false);

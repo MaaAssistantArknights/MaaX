@@ -12,7 +12,7 @@ createApp(App)
   .$nextTick(() => {
     window.removeLoading()
     // debug only
-    router.replace({ path: "/device/12345678-90abcdefg" })
+    router.replace({ path: "/task/12345678-90abcdefg" })
     window.onclick = (event) => {
       console.log("you clicked: ", event.target)
     }

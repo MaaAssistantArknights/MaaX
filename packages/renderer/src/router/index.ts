@@ -1,20 +1,20 @@
 import { createMemoryHistory, createRouter, RouteRecordRaw } from "vue-router";
 
-import SideBarIndex from "@/layouts/sidebars/Index.vue";
-import PageIndex from "@/layouts/pages/Index.vue";
+import SideBarTask from "@/layouts/sidebars/Task.vue";
+import PageTask from "@/layouts/pages/Task.vue";
 
 import SideBarSetting from "@/layouts/sidebars/Setting.vue";
 import PageSetting from "@/layouts/pages/Setting.vue";
 
-import SideBarStart from "@/layouts/sidebars/Start.vue";
-import PageStart from "@/layouts/pages/Start.vue";
+import SideBarDevice from "@/layouts/sidebars/Device.vue";
+import PageDevice from "@/layouts/pages/Device.vue";
 
 const routes: RouteRecordRaw[] = [
   {
-    path: "/device/:uuid",
+    path: "/task/:uuid",
     components: {
-      Main: PageIndex,
-      SideBar: SideBarIndex,
+      Main: PageTask,
+      SideBar: SideBarTask,
     },
   },
   {
@@ -25,10 +25,10 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
-    path: "/start",
+    path: "/device",
     components: {
-      Main: PageStart,
-      SideBar: SideBarStart,
+      Main: PageDevice,
+      SideBar: SideBarDevice,
     },
   },
 ];

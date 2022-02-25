@@ -4,6 +4,7 @@ import { NCheckbox, NForm, NFormItem, NSelect, NSlider } from 'naive-ui';
 import useTaskStore from '@/store/tasks';
 import _ from 'lodash';
 import Sortable from 'sortablejs';
+import router from '@/router';
 
 const taskStore = useTaskStore();
 const facilitiesRef: Ref<HTMLElement | null> = ref(null);
@@ -74,9 +75,8 @@ const droneUsageOptions = [
   },
 ]
 
-// Demo only
-const demoDeviceUuid = '12345678-90abcdefg';
-const task = taskStore.deviceTasks[demoDeviceUuid].find(task => task.id === 'infrast');
+const routeUuid = router.currentRoute.value.params.uuid as string;
+const task = taskStore.deviceTasks[routeUuid].find(task => task.id === 'infrast');
 const configuration = task?.configurations as unknown as InfrastConfiguration;
 
 function onFacilityEnableUpdate(name: string, enabled: boolean) {
