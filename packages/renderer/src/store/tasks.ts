@@ -123,6 +123,8 @@ const useTaskStore = defineStore<"tasks", TaskState, {}, TaskAction>("tasks", {
     return {
       deviceTasks: {
         "12345678-90abcdefg": taskDemo,
+        connected: taskDemo,
+        tasking: taskDemo,
       },
     }
   },

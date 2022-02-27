@@ -11,8 +11,8 @@ createApp(App)
   .mount("#app")
   .$nextTick(() => {
     window.removeLoading()
+    router.replace({ path: "/device" })
     // debug only
-    router.replace({ path: "/task/12345678-90abcdefg" })
     window.onclick = (event) => {
       console.log("you clicked: ", event.target)
     }

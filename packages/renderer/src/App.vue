@@ -3,7 +3,14 @@ import WindowController from './components/WindowController.vue';
 import Main from './containers/Main.vue';
 import SideBar from './containers/SideBar.vue';
 
-import { NGlobalStyle, NConfigProvider, GlobalThemeOverrides, darkTheme, ThemeCommonVars } from 'naive-ui';
+import {
+  NGlobalStyle,
+  NConfigProvider,
+  NMessageProvider,
+  GlobalThemeOverrides,
+  darkTheme,
+  ThemeCommonVars
+} from 'naive-ui';
 import useThemeStore from '@/store/theme';
 
 import { initHook } from './hooks';
@@ -58,13 +65,15 @@ const darkThemeOverrides: GlobalThemeOverrides = {
   <NConfigProvider
     class="app-provider"
     :theme="themeStore.theme === 'maa-light' ? null : darkTheme"
-    :theme-overrides="themeStore.theme === 'maa-light' ? 
-      lightThemeOverrides : darkThemeOverrides"
+    :theme-overrides="themeStore.theme === 'maa-light' ?
+    lightThemeOverrides : darkThemeOverrides"
   >
-    <NGlobalStyle />
-    <WindowController />
-    <SideBar />
-    <Main />
+    <NMessageProvider>
+      <NGlobalStyle />
+      <WindowController />
+      <SideBar />
+      <Main />
+    </NMessageProvider>
   </NConfigProvider>
 </template>
 

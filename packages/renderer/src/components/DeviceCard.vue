@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import IconDisconnect from '@/assets/icons/disconnect.svg?component';
-import { NButton, NTooltip, NIcon, useThemeVars } from 'naive-ui';
+import IconLink from '@/assets/icons/link.svg?component';
+import { NButton, NTooltip, NIcon, NSpace, NPopconfirm, useThemeVars, useMessage } from 'naive-ui';
 import useDeviceStore from '@/store/devices';
 import router from '@/router';
 
@@ -9,28 +10,57 @@ const props = defineProps<{
   uuid: string
 }>()
 
+const message = useMessage();
 const themeVars = useThemeVars();
 const deviceStore = useDeviceStore();
 const device = deviceStore.devices.find(device => device.uuid === props.uuid);
-const routeUuid = router.currentRoute.value.params.uuid as (string | undefined);
-const isCurrent = computed(() => routeUuid === props.uuid);
+const routeUuid = computed(() => router.currentRoute.value.params.uuid as (string | undefined));
+const isCurrent = computed(() => routeUuid.value === props.uuid);
+
+const connectedStatus: Set<DeviceStatus> = new Set(['connected', 'tasking']);
+const disconnectedStatus: Set<DeviceStatus> = new Set([
+  'available',
+  'disconnected',
+  'connecting',
+  'unknown'
+]);
+
+function disconnectDevice(uuid: string) {
+
+}
+
+function connectDevice(uuid: string) {
+
+}
 
 function handleJumpToTask() {
-  if (!isCurrent.value) router.push(`/task/${device?.uuid}`);
+  if (!connectedStatus.has(device?.status ?? 'unknown')) {
+    return;
+  }
+  if (!isCurrent.value)
+    router.push(`/task/${device?.uuid}`);
 }
 
 function handleDeviceDisconnect() {
-  if (device?.status === 'tasking') {
-    // confirm for disconnect
-  }
   // task stop
   // device disconnect
+  message.info(`${device?.connectionString}断开中... （此消息不会在正式版中出现）`);
 }
+
+function handleDeviceConnect() {
+  if (!disconnectedStatus.has(device?.status ?? 'unknown')) {
+    return;
+  }
+  message.info(`${device?.connectionString}连接中... （此消息不会在正式版中出现）`);
+}
+
+
 </script>
 
 <template>
   <div
     class="device-card"
+    v-if="device"
     :class="isCurrent ? 'current' : ''"
     :style="{
       backgroundColor:
@@ -40,6 +70,7 @@ function handleDeviceDisconnect() {
     <NButton
       class="device-info"
       @click="handleJumpToTask"
+      @dblclick="handleDeviceConnect"
       text
       :focusable="false"
     >
@@ -51,7 +82,7 @@ function handleDeviceDisconnect() {
           (() => {
             switch (device?.status) {
               case 'available':
-                return '点击连接设备';
+                return '点击右边按钮连接设备';
               case 'connected':
                 return '设备已连接';
               case 'connecting':
@@ -68,18 +99,41 @@ function handleDeviceDisconnect() {
       </NTooltip>
       <div class="device-name">{{ device?.connectionString }}</div>
     </NButton>
-    <div class="operations">
+    <NSpace :align="'center'">
+      <NPopconfirm
+        v-if="connectedStatus.has(device?.status ?? 'unknown')"
+        positive-text="确定"
+        negative-text="取消"
+        @positive-click="handleDeviceDisconnect"
+      >
+        <template #trigger>
+          <NButton
+            class="operation"
+            text
+            :focusable="false"
+            style="font-size: 24px;"
+          >
+            <NIcon>
+              <IconDisconnect />
+            </NIcon>
+          </NButton>
+        </template>
+        {{ (device?.status === 'tasking' ? '当前设备正在进行任务，' : '') + '确定断开连接？' }}
+      </NPopconfirm>
       <NButton
+        v-if="disconnectedStatus.has(device?.status ?? 'unknown')"
+        class="operation"
         text
         :focusable="false"
         style="font-size: 24px;"
-        @click="handleDeviceDisconnect"
+        :disabled="'connecting' === device?.status"
+        @click="handleDeviceConnect"
       >
         <NIcon>
-          <IconDisconnect />
+          <IconLink />
         </NIcon>
       </NButton>
-    </div>
+    </NSpace>
   </div>
 </template>
 
@@ -140,7 +194,11 @@ function handleDeviceDisconnect() {
     background-color: #66c7ff;
   }
   &[data-status="disconnected"]::before {
-    background-color: #e1d460;
+    background-color: #ff6b6b;
   }
+}
+
+.operation {
+  margin-top: 4px;
 }
 </style>

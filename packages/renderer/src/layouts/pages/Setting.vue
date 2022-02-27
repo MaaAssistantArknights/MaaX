@@ -1,16 +1,27 @@
 <script setup lang="ts">
-import { ref, Ref } from 'vue';
-import { NInput, NSpace, NIcon } from 'naive-ui';
+import { computed } from 'vue';
+import { NInput, NSpace, NIcon, NTooltip, NButton } from 'naive-ui';
 import IconBinary from '@/assets/icons/binary.svg?component';
 import IconWindowUi from '@/assets/icons/window-ui.svg?component';
 
-interface SettingState {
-  penguin: string
+import useSettingStore from '@/store/settings';
+
+const settingStore = useSettingStore();
+
+const versionCore = computed(() => settingStore.version.core);
+const versionUi = computed(() => settingStore.version.ui);
+
+function needUpdate(version: { current: string, latest: string }) {
+  return version.current !== version.latest;
 }
 
-const settings: Ref<SettingState> = ref({
-  penguin: ''
-})
+function versionString(version: { current: string, latest: string }) {
+  let str = version.current;
+  if (needUpdate(version)) {
+    str += ` -> ${version.latest}`;
+  }
+  return str;
+}
 
 </script>
 
@@ -23,20 +34,50 @@ const settings: Ref<SettingState> = ref({
           企鹅数据汇报ID
           <br />(仅数字部分)
         </span>
-        <n-input v-model:value="settings.penguin" placeholder=""/>
+        <n-input v-model:value="settingStore.reportId" :placeholder="''" />
       </NSpace>
     </div>
 
     <div id="version">
       <h2 class="title">当前版本</h2>
-      <NSpace justify="center" align="center">
-        <NIcon size="18px"><IconBinary /></NIcon>
-        <span>v3.0.1 -> v3.0.2</span>
-      </NSpace>
-      <NSpace justify="center" align="center">
-        <NIcon size="18px"><IconWindowUi /></NIcon>
-        <span>v1.0.0</span>
-      </NSpace>
+      <NTooltip :disabled="!needUpdate(versionCore)">
+        <template #trigger>
+          <div>
+            <NButton
+              quaternary
+              :focusable="false"
+              :type="needUpdate(versionCore) ? 'info' : 'default'"
+            >
+              <NSpace justify="center" align="center">
+                <NIcon size="18px">
+                  <IconBinary />
+                </NIcon>
+                <span>{{ versionString(versionCore) }}</span>
+              </NSpace>
+            </NButton>
+          </div>
+        </template>
+        {{ `Core可更新至${versionCore.latest}，点击以更新` }}
+      </NTooltip>
+      <NTooltip :disabled="!needUpdate(versionUi)">
+        <template #trigger>
+          <div>
+            <NButton
+              quaternary
+              :focusable="false"
+              :type="needUpdate(versionUi) ? 'info' : 'default'"
+            >
+              <NSpace justify="center" align="center">
+                <NIcon size="18px">
+                  <IconWindowUi />
+                </NIcon>
+                <span>{{ versionString(versionUi) }}</span>
+              </NSpace>
+            </NButton>
+          </div>
+        </template>
+        {{ `UI可更新至${versionUi.latest}，点击以更新` }}
+      </NTooltip>
     </div>
 
     <div id="develop">
