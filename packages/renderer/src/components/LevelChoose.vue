@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { } from 'naive-ui';
 defineProps<{
   levels: []
 }>()

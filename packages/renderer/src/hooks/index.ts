@@ -32,7 +32,6 @@ export function initHook() {
 
   const themeStore = useThemeStore();
   window.ipcRenderer.on("theme:update", (_, updatedTheme) => {
-    console.log("theme changed: ", updatedTheme);
     themeStore.updateTheme(updatedTheme);
   });
 }

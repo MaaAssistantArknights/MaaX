@@ -8,6 +8,8 @@ import useDebug from "./utils/debug";
 import WindowFactory from "./window/factory";
 import useController from "./window/control";
 
+import useHooks from "./hooks";
+
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith("6.1")) app.disableHardwareAcceleration();
 
@@ -47,6 +49,7 @@ async function createWindow() {
 
   useController(win);
   useTheme(win);
+  useHooks();
   if (is.development) useDebug(win);
 
   // Make all links open with the browser, not with the application
