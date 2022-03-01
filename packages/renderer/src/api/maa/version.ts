@@ -27,7 +27,7 @@ export default {
     return await service.get<{
       platform: Api.Maa.Platform;
       arch: Api.Maa.Arch;
-      versions: Array<Api.Maa.VersionMetadata>;
+      versions: Api.Maa.VersionMetadata[];
     }>(`/version/${platform}/${arch}/getVersion`, {
       params: {
         page,

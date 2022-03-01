@@ -1,1 +1,5 @@
-import {} from "./maa";
+import maa from "./maa";
+
+export default {
+  maa
+}
