@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { NButton, NSwitch, NCheckbox, NModal, NForm, NFormItem } from 'naive-ui';
-import LevelChoose from '../LevelChoose.vue';
+import LevelChoose from '../LevelChooseModal.vue';
 import useTaskStore from '@/store/tasks';
 import router from '@/router';
 
@@ -11,7 +11,11 @@ interface FightingConfiguration {
   medicine: boolean
   expiration_first: boolean
   originite_prime: boolean
-  levels: []
+  levels: Array<Level>
+  special: {
+    times: number;
+    type: 'current' | 'last'
+  }
 }
 const routeUuid = router.currentRoute.value.params.uuid as string;
 
@@ -69,7 +73,11 @@ const showModal = ref(false);
       role="dialog"
       aria-modal="true"
     >
-      <LevelChoose :levels="configuration.levels" />
+      <LevelChoose
+        :levels="configuration.levels"
+        :special="configuration.special"
+        @update:special_type="(type) => configuration.special.type = type"
+      />
     </NModal>
   </NForm>
 </template>

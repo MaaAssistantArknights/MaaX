@@ -1,8 +1,8 @@
-import { defineStore } from "pinia"
-import _ from "lodash"
+import { defineStore } from "pinia";
+import _ from "lodash";
 
 export interface TaskState {
-  deviceTasks: Record<string, Task[]>
+  deviceTasks: Record<string, Task[]>;
 }
 
 export interface TaskAction {
@@ -11,9 +11,9 @@ export interface TaskAction {
     taskId: string,
     status: TaskStatus,
     progress: number
-  ): void
-  changeTaskOrder(uuid: string, from: number, to: number): void
-  updateTask(uuid: string, tasks: Task[]): void
+  ): void;
+  changeTaskOrder(uuid: string, from: number, to: number): void;
+  updateTask(uuid: string, tasks: Task[]): void;
 }
 
 // Demo only
@@ -36,7 +36,63 @@ const taskDemo: Task[] = [
       medicine: true,
       expiration_first: true,
       originite_prime: true,
-      levels: [],
+      levels: [
+        {
+          stage: {
+            stage_metadata: {
+              stage_id: "main_00-01",
+              stage_type: "MAIN",
+              stage_code: "0-1",
+              stage_ap_cost: 6,
+            },
+            zone_metadata: {
+              zone_id: "main_0",
+              zone_name: "序章",
+              zone_type: "MAINLINE",
+            },
+            stage_i18n: {
+              zh: "0-1",
+              ko: "0-1",
+              ja: "0-1",
+              en: "0-1",
+            },
+            zone_i18n: {
+              zh: "序章",
+              ko: "프롤로그",
+              ja: "序章",
+              en: "Prologue",
+            },
+            existence: {
+              cn: {
+                exist: true,
+                open: null,
+                close: null,
+              },
+              jp: {
+                exist: true,
+                open: null,
+                close: null,
+              },
+              kr: {
+                exist: true,
+                open: null,
+                close: null,
+              },
+              us: {
+                exist: true,
+                open: null,
+                close: null,
+              },
+            },
+          },
+          times: 3
+        }
+        
+      ],
+      special: {
+        type: "current",
+        times: 3,
+      },
     },
   },
   {
@@ -116,7 +172,7 @@ const taskDemo: Task[] = [
     enable: true,
     configurations: {},
   },
-]
+];
 
 const useTaskStore = defineStore<"tasks", TaskState, {}, TaskAction>("tasks", {
   state: () => {
@@ -126,31 +182,31 @@ const useTaskStore = defineStore<"tasks", TaskState, {}, TaskAction>("tasks", {
         connected: taskDemo,
         tasking: taskDemo,
       },
-    }
+    };
   },
   actions: {
     updateTaskStatus(uuid, taskId, status, progress) {
-      const { deviceTasks } = this
-      const origin = deviceTasks[uuid]
-      const task = origin?.find((task) => task.id === taskId)
+      const { deviceTasks } = this;
+      const origin = deviceTasks[uuid];
+      const task = origin?.find((task) => task.id === taskId);
       if (task) {
-        task.status = status
-        task.progress = progress
+        task.status = status;
+        task.progress = progress;
       }
     },
     changeTaskOrder(uuid, from, to) {
-      const { deviceTasks } = this
-      const origin = deviceTasks[uuid]
+      const { deviceTasks } = this;
+      const origin = deviceTasks[uuid];
       if (origin) {
-        const item = origin.splice(from, 1)
-        origin.splice(to, 0, item[0])
+        const item = origin.splice(from, 1);
+        origin.splice(to, 0, item[0]);
       }
     },
     updateTask(uuid, tasks) {
-      const { deviceTasks } = this
-      deviceTasks[uuid] = tasks
+      const { deviceTasks } = this;
+      deviceTasks[uuid] = tasks;
     },
   },
-})
+});
 
-export default useTaskStore
+export default useTaskStore;
