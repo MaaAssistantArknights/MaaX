@@ -14,7 +14,7 @@ const defaultFormatter: Formatter = ({ hours, minutes, seconds }) => {
   const arr = [minutes, seconds];
   if (hours !== 0) arr.unshift(hours);
   return arr.map((x, index) => index === 0 ? String(x) : String(x).padStart(2, '0')).join(':');
-}
+};
 
 export default defineComponent({
   name: 'Timer',
@@ -56,7 +56,7 @@ export default defineComponent({
       diff = Math.floor(diff / 60);
       time.hours = diff;
       return time;
-    }
+    };
 
     watch(isActive, (newValue, oldValue) => {
       if (newValue === oldValue) return;
@@ -69,12 +69,12 @@ export default defineComponent({
       } else {
         window.clearInterval(interval.value);
       }
-    }, { immediate: true })
+    }, { immediate: true });
 
     const format = props.formatter || defaultFormatter;
 
     return () => h('div', format(timeDiff()));
   }
-})
+});
 
 </script>

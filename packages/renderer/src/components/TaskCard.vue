@@ -19,7 +19,7 @@ const props = defineProps<{
   taskInfo: Task;
 }>();
 
-defineEmits(['update:enable'])
+defineEmits(['update:enable']);
 
 const processBarColor = (taskStatus: TaskStatus) => {
   switch (taskStatus) {

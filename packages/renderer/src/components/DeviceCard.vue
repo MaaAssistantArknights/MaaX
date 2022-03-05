@@ -8,7 +8,7 @@ import router from '@/router';
 
 const props = defineProps<{
   uuid: string
-}>()
+}>();
 
 const message = useMessage();
 const themeVars = useThemeVars();

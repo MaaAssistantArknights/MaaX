@@ -4,12 +4,14 @@ import Fighting from "./Fighting.vue";
 import Infrast from "./Infrast.vue";
 import NoConfiguration from "./NoConfiguration.vue";
 import Recruit from "./Recruit.vue";
+import Rogue from './Rogue.vue';
 
 const components: Record<string, Component> = {
   fight: Fighting,
   recruit: Recruit,
-  infrast: Infrast
-}
+  infrast: Infrast,
+  rogue: Rogue
+};
 
 export default defineComponent({
   props: {
@@ -23,14 +25,14 @@ export default defineComponent({
     if (component) {
       return h(component);
     } else {
-      return h(NoConfiguration)
+      return h(NoConfiguration);
     }
   },
-})
+});
 </script>
 
 <style lang="less">
 .configuration-form {
-  padding: 8 2px;
+  padding: 8px 2px;
 }
 </style>

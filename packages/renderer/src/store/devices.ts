@@ -1,4 +1,4 @@
-import { defineStore } from "pinia"
+import { defineStore } from "pinia";
 
 export interface DeviceState {
   devices: Device[]
@@ -11,7 +11,7 @@ export interface DeviceAction {
 }
 
 // Demo only
-const lastUpdateDemo = Date.now()
+const lastUpdateDemo = Date.now();
 const allStatus: DeviceStatus[] = [
   "available",
   "connecting",
@@ -19,7 +19,7 @@ const allStatus: DeviceStatus[] = [
   "disconnected",
   "tasking",
   "unknown",
-]
+];
 const devicesDemo: Device[] = [
   {
     uuid: "12345678-90abcdefg",
@@ -27,7 +27,7 @@ const devicesDemo: Device[] = [
     status: "tasking",
   },
   ...allStatus.map((v) => ({ uuid: v, connectionString: v, status: v })),
-]
+];
 
 const useDeviceStore = defineStore<"device", DeviceState, {}, DeviceAction>(
   "device",
@@ -36,29 +36,29 @@ const useDeviceStore = defineStore<"device", DeviceState, {}, DeviceAction>(
       return {
         devices: devicesDemo,
         lastUpdate: lastUpdateDemo,
-      }
+      };
     },
     actions: {
       mergeSearchResult(devices) {
-        this.lastUpdate = Date.now()
+        this.lastUpdate = Date.now();
         for (const device of devices) {
-          const origin = this.devices.find((dev) => dev.uuid === device.uuid)
+          const origin = this.devices.find((dev) => dev.uuid === device.uuid);
           if (!origin) {
             this.devices.push({
               status: "available",
               ...device,
-            })
+            });
           }
         }
       },
       updateDeviceStatus(uuid, status) {
-        const origin = this.devices.find((dev) => dev.uuid === uuid)
+        const origin = this.devices.find((dev) => dev.uuid === uuid);
         if (origin) {
-          origin.status = status
+          origin.status = status;
         }
       },
     },
   }
-)
+);
 
-export default useDeviceStore
+export default useDeviceStore;

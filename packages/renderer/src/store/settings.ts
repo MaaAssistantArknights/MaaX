@@ -1,4 +1,4 @@
-import { defineStore } from "pinia"
+import { defineStore } from "pinia";
 
 export interface SettingState {
   reportId: string
@@ -35,15 +35,15 @@ const useSettingStore = defineStore<"setting", SettingState, {}, SettingAction>(
             latest: "v1.0.0",
           },
         },
-      }
+      };
     },
     actions: {
       checkUpdate() {},
       setReportId(reportId) {
-        this.reportId = reportId
+        this.reportId = reportId;
       },
     },
   }
 );
 
-export default useSettingStore
+export default useSettingStore;

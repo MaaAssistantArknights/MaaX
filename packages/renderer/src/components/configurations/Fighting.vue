@@ -65,7 +65,7 @@ const showModal = ref(false);
         type="primary"
         @click="showModal = true"
         :focusable="false"
-      >关卡选择</NButton>
+      >关卡选择...</NButton>
     </NFormItem>
     <NModal
       v-model:show="showModal"

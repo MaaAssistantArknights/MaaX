@@ -9,7 +9,7 @@ const props = defineProps<{
     times: number;
     type: 'current' | 'last'
   }
-}>()
+}>();
 
 const emit = defineEmits(['update:special_type']);
 

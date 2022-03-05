@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import _ from "lodash";
 
 export interface TaskState {
-  deviceTasks: Record<string, Task[]>;
+  deviceTasks: Record<string, Task[]>
 }
 
 export interface TaskAction {
@@ -11,9 +11,9 @@ export interface TaskAction {
     taskId: string,
     status: TaskStatus,
     progress: number
-  ): void;
-  changeTaskOrder(uuid: string, from: number, to: number): void;
-  updateTask(uuid: string, tasks: Task[]): void;
+  ): void
+  changeTaskOrder(uuid: string, from: number, to: number): void
+  updateTask(uuid: string, tasks: Task[]): void
 }
 
 // Demo only
@@ -85,9 +85,8 @@ const taskDemo: Task[] = [
               },
             },
           },
-          times: 3
-        }
-        
+          times: 3,
+        },
       ],
       special: {
         type: "current",
@@ -171,6 +170,16 @@ const taskDemo: Task[] = [
     status: "idle",
     enable: true,
     configurations: {},
+  },
+  {
+    id: "rogue",
+    title: "无限刷肉鸽",
+    status: "idle",
+    enable: true,
+    configurations: {
+      strategy: "ToTheEnd",
+      operators: [],
+    },
   },
 ];
 

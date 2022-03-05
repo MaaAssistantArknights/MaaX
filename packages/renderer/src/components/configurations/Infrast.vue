@@ -42,7 +42,7 @@ const infrastTranslation = {
   "MeetingRoom": "会客室",
   "Office": "办公室",
   "Dormitory": "宿舍",
-}
+};
 
 const droneUsageOptions = [
   {
@@ -73,7 +73,7 @@ const droneUsageOptions = [
     value: 'Chip',
     label: '制造站 - 芯片'
   },
-]
+];
 
 const routeUuid = router.currentRoute.value.params.uuid as string;
 const task = taskStore.deviceTasks[routeUuid].find(task => task.id === 'infrast');
@@ -98,12 +98,15 @@ onMounted(() => {
         set(sortable) {
           const sort = sortable.toArray();
           configuration.facilities =
-            _.sortBy(configuration.facilities, facility => sort.findIndex(v => facility.name === v))
+            _.sortBy(
+              configuration.facilities,
+              facility => sort.findIndex(v => facility.name === v)
+            );
         }
       },
-    })
+    });
   }
-})
+});
 </script>
 
 <template>
@@ -142,7 +145,11 @@ onMounted(() => {
         :show-label="true"
         :label-style="{ justifyContent: 'center' }"
       >
-        <NSlider v-model:value="configuration.mood_limit" :max="23" :min="0" />
+        <NSlider
+          v-model:value="configuration.mood_limit"
+          :max="23"
+          :min="0"
+        />
       </NFormItem>
     </div>
   </NForm>

@@ -11,22 +11,22 @@ const isMaximized: Ref<boolean> = ref(window.ipcRenderer.sendSync('window:is-max
 
 const onClose = () => {
   window.ipcRenderer.send('window:close');
-}
+};
 
 const onToggleMaximized = () => {
   const result = window.ipcRenderer.sendSync('window:toggle-maximized');
   if (result instanceof Error) {
-    console.log()
+    console.log();
   }
-}
+};
 
 const onMinimize = () => {
   window.ipcRenderer.send('window:minimize');
-}
+};
 
 window.ipcRenderer.on('window:update-maximized', (_, maximized) => {
   isMaximized.value = maximized;
-})
+});
 </script>
 
 <template>

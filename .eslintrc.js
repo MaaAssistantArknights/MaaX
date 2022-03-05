@@ -21,6 +21,7 @@ module.exports = {
     'plugin:vue/vue3-essential'
   ],
   rules: {
+    "semi": "error",
     "no-undef": 'off', // 让ts检查undefined
     'no-unused-vars': 'off',
     'vue/max-len': ['error', {
@@ -30,4 +31,4 @@ module.exports = {
     'vue/no-unused-vars': 'warn',
     "vue/multi-word-component-names": 'off'
   }
-}
+};
