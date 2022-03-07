@@ -25,7 +25,7 @@ module.exports = {
     "no-undef": 'off', // 让ts检查undefined
     'no-unused-vars': 'off',
     'vue/max-len': ['error', {
-      code: 100,
+      code: 200,
       template: 80
     }],
     'vue/no-unused-vars': 'warn',
