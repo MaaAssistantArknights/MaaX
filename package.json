@@ -50,6 +50,7 @@
     "arknights"
   ],
   "dependencies": {
+    "@types/ffi-napi": "^4.0.5",
     "electron-acrylic-window": "^0.5.11",
     "electron-log": "^4.4.6",
     "electron-store": "^8.0.1",

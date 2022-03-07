@@ -1,4 +1,7 @@
 import { app, ipcMain } from "electron";
+import { Assistant } from "./interface";
+
+Assistant.libPath = "D:\\MeoAsstElectronUI\\packages\\main\\core\\";
 
 export default function useVersionHooks() {
   ipcMain.on("version:ui", (event) => {
@@ -6,6 +9,6 @@ export default function useVersionHooks() {
   });
 
   ipcMain.on("version:core", (event) => {
-    event.returnValue = null;
+    event.returnValue = Assistant.getInstance().GetVersion();
   });
 }
