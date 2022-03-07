@@ -24,13 +24,19 @@ class WindowFactory {
         minWidth: 800,
         minHeight: 600,
         webPreferences: {
-          preload: join(__dirname, "../../preload/index.cjs"),
+          preload: join(__dirname, "../preload/index.cjs"),
           sandbox: true,
           contextIsolation: true,
         },
       });
     }
     return this.instance_;
+  }
+
+  static destory() {
+    if (this.instance_) {
+      this.instance_.destroy();
+    }
   }
 
   private static instance_: BrowserWindow | null = null;

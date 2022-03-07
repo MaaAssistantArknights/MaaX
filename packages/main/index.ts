@@ -21,10 +21,8 @@ if (!app.requestSingleInstanceLock()) {
   process.exit(0);
 }
 
-let win: BrowserWindow | null = null;
-
 async function createWindow() {
-  win = WindowFactory.getInstance();
+  const win = WindowFactory.getInstance();
   if (app.isPackaged || process.env["DEBUG"]) {
     win.loadFile(join(__dirname, "../renderer/index.html"));
   } else {
@@ -48,11 +46,13 @@ async function createWindow() {
 app.whenReady().then(createWindow);
 
 app.on("window-all-closed", () => {
-  win = null;
+  // const win = WindowFactory.getInstance();
+  // win = null;
   if (process.platform !== "darwin") app.quit();
 });
 
 app.on("second-instance", () => {
+  const win = WindowFactory.getInstance();
   if (win) {
     // Focus on the main window if the user tried to open another
     if (win.isMinimized()) win.restore();
