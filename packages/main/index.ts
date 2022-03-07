@@ -24,21 +24,7 @@ if (!app.requestSingleInstanceLock()) {
 let win: BrowserWindow | null = null;
 
 async function createWindow() {
-  win = WindowFactory.create({
-    transparent: true,
-    frame: false,
-    vibrancy: is.macos ? "under-window" : "appearance-based",
-    width: 1024,
-    height: 768,
-    minWidth: 800,
-    minHeight: 600,
-    webPreferences: {
-      preload: join(__dirname, "../preload/index.cjs"),
-      sandbox: true,
-      contextIsolation: true,
-    },
-  });
-
+  win = WindowFactory.getInstance();
   if (app.isPackaged || process.env["DEBUG"]) {
     win.loadFile(join(__dirname, "../renderer/index.html"));
   } else {
