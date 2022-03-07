@@ -5,6 +5,7 @@ export interface TaskState {
   deviceTasks: Record<string, Task[]>
 }
 
+// TODO 任务持久化处理以及为新设备创建默认task
 export interface TaskAction {
   updateTaskStatus(
     uuid: string,
@@ -14,16 +15,16 @@ export interface TaskAction {
   ): void
   changeTaskOrder(uuid: string, from: number, to: number): void
   updateTask(uuid: string, tasks: Task[]): void
+  newTask(uuid: string): void
 }
 
-// Demo only
-const taskDemo: Task[] = [
+export const defaultTask: Task[] = [
   {
     id: "startup",
     title: "开始唤醒",
-    status: "processing",
-    progress: 50,
-    startTime: Date.now(),
+    status: "idle",
+    //progress: 50,
+    //startTime: Date.now(),
     enable: true,
     configurations: {},
   },
@@ -36,61 +37,10 @@ const taskDemo: Task[] = [
       medicine: true,
       expiration_first: true,
       originite_prime: true,
-      levels: [
-        {
-          stage: {
-            stage_metadata: {
-              stage_id: "main_00-01",
-              stage_type: "MAIN",
-              stage_code: "0-1",
-              stage_ap_cost: 6,
-            },
-            zone_metadata: {
-              zone_id: "main_0",
-              zone_name: "序章",
-              zone_type: "MAINLINE",
-            },
-            stage_i18n: {
-              zh: "0-1",
-              ko: "0-1",
-              ja: "0-1",
-              en: "0-1",
-            },
-            zone_i18n: {
-              zh: "序章",
-              ko: "프롤로그",
-              ja: "序章",
-              en: "Prologue",
-            },
-            existence: {
-              cn: {
-                exist: true,
-                open: null,
-                close: null,
-              },
-              jp: {
-                exist: true,
-                open: null,
-                close: null,
-              },
-              kr: {
-                exist: true,
-                open: null,
-                close: null,
-              },
-              us: {
-                exist: true,
-                open: null,
-                close: null,
-              },
-            },
-          },
-          times: 3,
-        },
-      ],
+      levels: [],
       special: {
         type: "current",
-        times: 3,
+        times: 0,
       },
     },
   },
@@ -187,9 +137,7 @@ const useTaskStore = defineStore<"tasks", TaskState, {}, TaskAction>("tasks", {
   state: () => {
     return {
       deviceTasks: {
-        "12345678-90abcdefg": taskDemo,
-        connected: taskDemo,
-        tasking: taskDemo,
+
       },
     };
   },
@@ -215,6 +163,10 @@ const useTaskStore = defineStore<"tasks", TaskState, {}, TaskAction>("tasks", {
       const { deviceTasks } = this;
       deviceTasks[uuid] = tasks;
     },
+    newTask(uuid){
+      const { deviceTasks } = this;
+      deviceTasks[uuid] = defaultTask;
+    }
   },
 });
 

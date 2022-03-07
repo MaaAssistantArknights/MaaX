@@ -4,26 +4,32 @@ import Fighting from "./Fighting.vue";
 import Infrast from "./Infrast.vue";
 import NoConfiguration from "./NoConfiguration.vue";
 import Recruit from "./Recruit.vue";
-import Rogue from './Rogue.vue';
+import Rogue from "./Rogue.vue";
 
 const components: Record<string, Component> = {
   fight: Fighting,
   recruit: Recruit,
   infrast: Infrast,
-  rogue: Rogue
+  rogue: Rogue,
 };
 
 export default defineComponent({
   props: {
     taskId: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
+    configurations: {
+      type: Object,
+      required: true,
+    },
   },
   render() {
     const component = components[this.taskId];
+    const { configurations } = this;
     if (component) {
-      return h(component);
+      // @ts-ignore
+      return h(component, { configurations });
     } else {
       return h(NoConfiguration);
     }

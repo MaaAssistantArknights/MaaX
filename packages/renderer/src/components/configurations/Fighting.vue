@@ -1,29 +1,43 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { NButton, NSwitch, NCheckbox, NModal, NForm, NFormItem } from 'naive-ui';
-import LevelChoose from '../LevelChooseModal.vue';
-import useTaskStore from '@/store/tasks';
-import router from '@/router';
-
-const taskStore = useTaskStore();
+import { ref } from "vue";
+import {
+  NButton,
+  NSwitch,
+  NCheckbox,
+  NModal,
+  NForm,
+  NFormItem,
+} from "naive-ui";
+import LevelChoose from "../LevelChooseModal.vue";
+import _ from "lodash";
 
 interface FightingConfiguration {
-  medicine: boolean
-  expiration_first: boolean
-  originite_prime: boolean
-  levels: Array<Level>
+  medicine: boolean;
+  expiration_first: boolean;
+  originite_prime: boolean;
+  levels: Array<Level>;
   special: {
     times: number;
-    type: 'current' | 'last'
-  }
+    type: "current" | "last";
+  };
 }
-const routeUuid = router.currentRoute.value.params.uuid as string;
+// const routeUuid = router.currentRoute.value.params.uuid as string;
 
-const task = taskStore.deviceTasks[routeUuid].find(task => task.id === 'fight');
-const configuration = task?.configurations as unknown as FightingConfiguration;
+// const task = taskStore.deviceTasks[routeUuid].find(task => task.id === 'fight');
+// const configurations = task?.configurations as unknown as FightingConfiguration;
+
+const props = defineProps<{
+  configurations: FightingConfiguration;
+}>();
+
+// const configurations = toRefs(props.configurations);
 
 const showModal = ref(false);
 
+function handleConfigurationUpdate(key: string, value: any) {
+  // FIXME: 对props写入
+  _.set(props.configurations, key, value);
+}
 </script>
 
 <template>
@@ -36,28 +50,43 @@ const showModal = ref(false);
     :label-width="'auto'"
   >
     <NFormItem label="可用理智液">
-      <NCheckbox v-model:checked="configuration.medicine" />
+      <NCheckbox
+        :checked="props.configurations.medicine"
+        @update:checked="
+          (checked) => handleConfigurationUpdate('medicine', checked)
+        "
+      />
     </NFormItem>
     <NFormItem>
       <NButton
         quaternary
-        @click="configuration.expiration_first = false"
+        @click="() => handleConfigurationUpdate('expiration_first', false)"
         :focusable="false"
-        :disabled="!configuration.medicine"
-      >理智回复量优先</NButton>
+        :disabled="!props.configurations.medicine"
+        >理智回复量优先</NButton
+      >
       <NSwitch
-        v-model:value="configuration.expiration_first"
-        :disabled="!configuration.medicine"
+        :value="props.configurations.expiration_first"
+        @update:value="
+          (value) => handleConfigurationUpdate('expiration_first', value)
+        "
+        :disabled="!props.configurations.medicine"
       />
       <NButton
         quaternary
-        @click="configuration.expiration_first = true"
+        @click="() => handleConfigurationUpdate('expiration_first', true)"
         :focusable="false"
-        :disabled="!configuration.medicine"
-      >过期时间优先</NButton>
+        :disabled="!props.configurations.medicine"
+        >过期时间优先</NButton
+      >
     </NFormItem>
     <NFormItem label="可用源石">
-      <NCheckbox v-model:checked="configuration.originite_prime" />
+      <NCheckbox
+        :checked="props.configurations.originite_prime"
+        @update:checked="
+          (checked) => handleConfigurationUpdate('originite_prime', checked)
+        "
+      />
     </NFormItem>
     <NFormItem>
       <NButton
@@ -65,7 +94,8 @@ const showModal = ref(false);
         type="primary"
         @click="showModal = true"
         :focusable="false"
-      >关卡选择...</NButton>
+        >关卡选择...</NButton
+      >
     </NFormItem>
     <NModal
       v-model:show="showModal"
@@ -74,9 +104,11 @@ const showModal = ref(false);
       aria-modal="true"
     >
       <LevelChoose
-        :levels="configuration.levels"
-        :special="configuration.special"
-        @update:special_type="(type) => configuration.special.type = type"
+        :levels="props.configurations.levels"
+        :special="props.configurations.special"
+        @update:special_type="
+          (type) => handleConfigurationUpdate('special.type', type)
+        "
       />
     </NModal>
   </NForm>

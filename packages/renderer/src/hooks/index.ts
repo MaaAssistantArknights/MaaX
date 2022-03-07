@@ -34,4 +34,21 @@ export function initHook() {
   window.ipcRenderer.on("theme:update", (_, updatedTheme) => {
     themeStore.updateTheme(updatedTheme);
   });
+
+  // Connect hooks:
+  console.log('add connect hook!');
+  window.ipcRenderer.on("device:connectInfo", (event, arg) => {
+    console.log('ipcRender connectInfo');
+    
+    //const connectMessage = message.info()
+    switch (arg.what) {
+      case "UuidGetted": {
+        //message.success(`${arg.uuid}已连接`);
+        deviceStore.updateDeviceUuid(arg.address,arg.uuid);
+        deviceStore.updateDeviceStatus(arg.uuid,"connected");
+        window.ipcRenderer.sendSync("asst:setUUID", { address: arg.address, uuid: arg.uuid });
+      }
+    }
+  });
+
 }

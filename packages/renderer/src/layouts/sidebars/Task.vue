@@ -1,19 +1,18 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import IconSettings from '@/assets/icons/settings.svg?component';
-import IconDevices from '@/assets/icons/devices.svg?component';
-import { NIcon, NSpace, NButton, NTooltip } from 'naive-ui';
-import DeviceCard from '@/components/DeviceCard.vue';
+import { computed } from "vue";
+import IconSettings from "@/assets/icons/settings.svg?component";
+import IconDevices from "@/assets/icons/devices.svg?component";
+import { NIcon, NSpace, NButton, NTooltip } from "naive-ui";
+import DeviceCard from "@/components/DeviceCard.vue";
 
-import useDeviceStore from '@/store/devices';
+import useDeviceStore from "@/store/devices";
 
-const connectedStatus: Set<DeviceStatus> = new Set(['connected', 'tasking']);
+const connectedStatus: Set<DeviceStatus> = new Set(["connected", "tasking"]);
 const deviceStore = useDeviceStore();
 const { devices } = deviceStore;
 const connectedDevices = computed(() =>
-  devices.filter(device => connectedStatus.has(device.status))
+  devices.filter((device) => connectedStatus.has(device.status))
 );
-
 </script>
 
 <template>
@@ -33,7 +32,7 @@ const connectedDevices = computed(() =>
         <template #trigger>
           <NButton
             text
-            style="font-size: 24px;"
+            style="font-size: 24px"
             @click="$router.push({ path: '/device' })"
           >
             <NIcon>
@@ -46,7 +45,7 @@ const connectedDevices = computed(() =>
     </NSpace>
     <div class="connected-devices">
       <DeviceCard
-        v-for="(device) in connectedDevices"
+        v-for="device in connectedDevices"
         :uuid="device.uuid"
         :key="device.uuid"
       />
