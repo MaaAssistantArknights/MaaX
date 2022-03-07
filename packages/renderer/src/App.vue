@@ -9,7 +9,7 @@ import {
   NMessageProvider,
   GlobalThemeOverrides,
   darkTheme,
-  ThemeCommonVars
+  ThemeCommonVars,
 } from 'naive-ui';
 import useThemeStore from '@/store/theme';
 
