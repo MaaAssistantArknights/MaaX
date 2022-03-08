@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { NInput, NAlert, NButton, NIcon, NText, NForm, NFormItem,useMessage } from 'naive-ui';
-import IconLink from '@/assets/icons/link.svg?component';
+import { ref } from "vue";
+import { NInput, NAlert, NButton, NIcon, NText, NForm, NFormItem,useMessage } from "naive-ui";
+import IconLink from "@/assets/icons/link.svg?component";
 
 const message = useMessage();
-const connectionString = ref('');
+const connectionString = ref("");
 
 function handleCustomConnect(){
   // eslint-disable-next-line vue/max-len

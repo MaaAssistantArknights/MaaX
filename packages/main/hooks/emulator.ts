@@ -54,7 +54,7 @@ function getBlueStackInfo(e: Emulator) {
   const mainPathExp = `Get-WmiObject -Query "select ExecutablePath FROM Win32_Process where ProcessID=${e.pid}" | Select-Object -Property ExecutablePath | ConvertTo-Json`;
   const confPathExp = String.raw`Get-ItemProperty -Path Registry::HKEY_LOCAL_MACHINE\SOFTWARE\BlueStacks_nxt | Select-Object -Property UserDefinedDir | ConvertTo-Json`;
   const confPortExp = RegExp(
-    `bst.instance.Nougat64_?\\d?.status.adb_port="(\\d{4,6})"`,
+    "bst.instance.Nougat64_?\\d?.status.adb_port=\"(\\d{4,6})\"",
     "g"
   );
   e.config = "BlueStacks";
@@ -100,7 +100,7 @@ function getBlueStackInfo(e: Emulator) {
     }
     if (!success) {
       // 通过读注册表失败, 使用 netstat 抓一个5开头的端口充数
-      const regExp = `\\s*TCP\\s*127.0.0.1:(5\\d{3,4})\\s*`; // 提取端口
+      const regExp = "\\s*TCP\\s*127.0.0.1:(5\\d{3,4})\\s*"; // 提取端口
       const netstatExp = `netstat -ano | findstr ${e.pid}`;
       const port = exec(netstatExp).match(regExp);
       e.address = port ? `127.0.0.1:${port[1]}` : "127.0.0.1:5555";

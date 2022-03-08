@@ -37,7 +37,7 @@ export function initHook() {
 
 
   window.ipcRenderer.on("device:connectInfo", (event, arg) => {
-    console.log('ipcRender connectInfo');    
+    console.log("ipcRender connectInfo");    
     switch (arg.what) {
       case "UuidGetted": {
         window.$message.success(`设备${arg.address}已连接`);
