@@ -41,7 +41,8 @@ function handleRefreshDevices() {
         .map((v: any) => {
           return {
             uuid: v.address,
-            name: "bluestack",
+            name: v.config,
+            tag:v.config,
             status: "available",
             adbPath: v.adb_path,
             connectionString: v.address,

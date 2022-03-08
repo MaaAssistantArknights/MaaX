@@ -69,7 +69,7 @@ function handleDeviceConnect() {
   const success = window.ipcRenderer.sendSync("asst:connect", {
     address: device?.connectionString,
     adb_path: device?.adbPath,
-    config: "LDPlayer",
+    config: device?.tag,
   });
 
   if (success) {
