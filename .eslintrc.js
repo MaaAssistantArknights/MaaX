@@ -1,32 +1,35 @@
+// eslint-disable-next-line no-undef
 module.exports = {
-  extends: 'erb',
-  rules: {
-    'import/no-cycle': 'off',
-    // A temporary hack related to IDE not resolving correct package.json
-    'import/no-extraneous-dependencies': 'off',
-    'import/no-unresolved': 'error',
-    // Since React 17 and typescript 4.1 you can safely disable the rule
-    'react/react-in-jsx-scope': 'off',
-    'react/jsx-props-no-spreading': 'off',
+  root: true,
+  env: {
+    browser: true,
+    es2021: true,
+    node: true,
+    "vue/setup-compiler-macros": true
   },
   parserOptions: {
-    ecmaVersion: 2020,
-    sourceType: 'module',
-    project: './tsconfig.json',
-    tsconfigRootDir: __dirname,
-    createDefaultProgram: true,
+    ecmaVersion: 12,
+    sourceType: "module",
+    parser: "@typescript-eslint/parser",
   },
-  settings: {
-    'import/resolver': {
-      // See https://github.com/benmosher/eslint-plugin-import/issues/1396#issuecomment-575727774 for line below
-      node: {},
-      webpack: {
-        config: require.resolve('./.erb/configs/webpack.config.eslint.ts'),
-      },
-      typescript: {},
-    },
-    'import/parsers': {
-      '@typescript-eslint/parser': ['.ts', '.tsx'],
-    },
-  },
+  plugins: [
+    "vue",
+    "@typescript-eslint"
+  ],
+  extends: [
+    "eslint:recommended",
+    "plugin:vue/vue3-essential"
+  ],
+  rules: {
+    "semi": "error",
+    "quotes": ["error", "double"],
+    "no-undef": "off", // 让ts检查undefined
+    "no-unused-vars": "off",
+    "vue/max-len": ["error", {
+      code: 200,
+      template: 90
+    }],
+    "vue/no-unused-vars": "warn",
+    "vue/multi-word-component-names": "off"
+  }
 };

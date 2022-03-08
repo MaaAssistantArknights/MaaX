@@ -1,34 +1,18 @@
 {
   "compilerOptions": {
-    "experimentalDecorators": true,
-    "target": "es2021",
-    "module": "commonjs",
-    "lib": [
-      "dom",
-      "esnext"
-    ],
-    "declaration": true,
-    "declarationMap": true,
-    "jsx": "react-jsx",
-    "strict": true,
-    "pretty": true,
-    "sourceMap": true,
-    "baseUrl": "./src",
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
+    "target": "ESNext",
+    "module": "ESNext",
     "moduleResolution": "node",
+    "importHelpers": true,
+    "jsx": "preserve",
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
-    "allowJs": true,
-    "outDir": "release/app/dist"
-  },
-  "exclude": [
-    "test",
-    "release/build",
-    "release/app/dist",
-    ".erb/dll"
-  ]
+    "sourceMap": true,
+    "baseUrl": "./",
+    "strict": true,
+    "paths": {},
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "types": ["naive-ui/volar"]
+  }
 }
