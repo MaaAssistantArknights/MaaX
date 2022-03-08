@@ -27,8 +27,8 @@ const useSettingStore = defineStore<"setting", SettingState, {}, SettingAction>(
         reportId: "",
         version: {
           core: {
-            current: "v3.0.1",
-            latest: "v3.0.2",
+            current: "v3.0.6",
+            latest: "v3.0.7",
           },
           ui: {
             current: "v1.0.0",

@@ -6,6 +6,14 @@ type DeviceStatus =
   | "disconnected"
   | "unknown";
 
+type EmulatorName =
+  | "bluestack"
+  | "mumu"
+  | "LDPlayer"
+  | "nox"
+  | "default"
+  | "unknown";
+
 interface Device {
   /**
    * @props 设备的uuid，应由maa返回
@@ -26,9 +34,19 @@ interface Device {
    * @disconnected 因为某些原因与设备断开
    */
   status: DeviceStatus;
+  /**
+   * @props 模拟器名称, 传给maa使其使用模拟器的自定配置, 自定义连接的设备为'default'
+   */
+  name: EmulatorName;
+  /**
+   * @props adb路径
+   */
+  adbPath: string;
 }
 
 interface NativeDevice {
   uuid: string;
   connectionString: string;
+  name: EmulatorName;
+  adbPath:string;
 }

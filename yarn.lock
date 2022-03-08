@@ -225,6 +225,15 @@
   dependencies:
     "@types/ms" "*"
 
+"@types/ffi-napi@^4.0.5":
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/@types/ffi-napi/-/ffi-napi-4.0.5.tgz#0b2dc2d549361947a117d55156ff34fd9632c3df"
+  integrity sha512-WDPpCcHaPhHmP1FIw3ds/+OLt8bYQ/h3SO7o+8kH771PL21kHVzTwii7+WyMBXMQrBsR6xVU2y7w+h+9ggpaQw==
+  dependencies:
+    "@types/node" "*"
+    "@types/ref-napi" "*"
+    "@types/ref-struct-di" "*"
+
 "@types/fs-extra@^9.0.11":
   version "9.0.13"
   resolved "https://registry.npmmirror.com/@types/fs-extra/-/fs-extra-9.0.13.tgz#7594fbae04fe7f1918ce8b3d213f74ff44ac1f45"
@@ -297,6 +306,20 @@
   dependencies:
     "@types/node" "*"
     xmlbuilder ">=11.0.1"
+
+"@types/ref-napi@*":
+  version "3.0.4"
+  resolved "https://registry.yarnpkg.com/@types/ref-napi/-/ref-napi-3.0.4.tgz#d7edc063b244c85767867ce1167ec2d7051728a1"
+  integrity sha512-ng8SCmdZbz1GHaW3qgGoX9IaHoIvgMqgBHLe3sv18NbAkHVgnjRW8fJq51VTUm4lnJyLu60q9/002o7qjOg13g==
+  dependencies:
+    "@types/node" "*"
+
+"@types/ref-struct-di@*":
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/@types/ref-struct-di/-/ref-struct-di-1.1.6.tgz#9775753b24ba5bf248dd66d79d4fdb7cebef6e95"
+  integrity sha512-+Sa2H3ynDYo2ungR3d5kmNetlkAYNqQVjJvs1k7i6zvo7Zu/qb+OsrXU54RuiOYJCwY9piN+hOd4YRRaiEOqgw==
+  dependencies:
+    "@types/ref-napi" "*"
 
 "@types/sortablejs@^1.10.7":
   version "1.10.7"

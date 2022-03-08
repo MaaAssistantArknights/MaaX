@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import _ from "lodash";
 import { NForm, NFormItem, NButton, NModal, NSelect, NCard } from "naive-ui";
-import useTaskStore from "@/store/tasks";
-import router from "@/router";
 
-type Strategies = "ToTheEnd" | "AfterFirstLevel" | "AfterMoney"
+type Strategies = "ToTheEnd" | "AfterFirstLevel" | "AfterMoney";
 
 interface RogueConfiguration {
   strategy: Strategies;
@@ -12,27 +11,28 @@ interface RogueConfiguration {
 }
 
 const strategyOptions: Array<{
-  label: string,
-  value: Strategies
+  label: string;
+  value: Strategies;
 }> = [
-    {
-      label: "尽可能往后打",
-      value: "ToTheEnd"
-    }, {
-      label: "刷源石锭投资，第一层商店后退出",
-      value: "AfterFirstLevel"
-    }, {
-      label: "刷源石锭投资，投资后退出",
-      value: "AfterMoney"
-    }
-  ];
+  {
+    label: "尽可能往后打",
+    value: "ToTheEnd",
+  },
+  {
+    label: "刷源石锭投资，第一层商店后退出",
+    value: "AfterFirstLevel",
+  },
+  {
+    label: "刷源石锭投资，投资后退出",
+    value: "AfterMoney",
+  },
+];
 
-const routeUuid = router.currentRoute.value.params.uuid as string;
-const taskStore = useTaskStore();
-const task = taskStore.deviceTasks[routeUuid].find(task => task.id === "rogue");
-const configuration = task?.configurations as unknown as RogueConfiguration;
+const props = defineProps<{
+  configurations: RogueConfiguration;
+}>();
+
 const showModal = ref(false);
-
 </script>
 
 <template>
@@ -46,8 +46,11 @@ const showModal = ref(false);
   >
     <NFormItem label="通关策略">
       <NSelect
-        v-model:value="configuration.strategy"
+        :value="props.configurations.strategy"
         :options="strategyOptions"
+        @update:value="
+          (value) => _.set(props.configurations, 'strategy', value)
+        "
       />
     </NFormItem>
     <NFormItem :show-label="false">
@@ -66,7 +69,7 @@ const showModal = ref(false);
       aria-modal="true"
     >
       <NCard
-        style="width: 600px;"
+        style="width: 600px"
         role="dialog"
         aria-modal="true"
         title="干员招募顺序"
@@ -75,5 +78,4 @@ const showModal = ref(false);
   </NForm>
 </template>
 
-<style lang="less" scoped>
-</style>
+<style lang="less" scoped></style>

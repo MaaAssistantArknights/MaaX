@@ -9,7 +9,7 @@ import {
   NMessageProvider,
   GlobalThemeOverrides,
   darkTheme,
-  ThemeCommonVars
+  ThemeCommonVars,
 } from "naive-ui";
 import useThemeStore from "@/store/theme";
 
@@ -17,6 +17,9 @@ import { initHook } from "./hooks";
 initHook();
 
 const themeStore = useThemeStore();
+
+// check core available
+window.ipcRenderer.sendSync("version:core");
 
 const commonThemeOverrides: Partial<ThemeCommonVars> = {
   infoColor: "#66c7ff",

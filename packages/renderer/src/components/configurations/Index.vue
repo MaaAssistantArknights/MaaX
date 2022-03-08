@@ -12,20 +12,26 @@ const components: Record<string, Component> = {
   recruit: Recruit,
   infrast: Infrast,
   rogue: Rogue,
-  mall: Mall
+  mall: Mall,
 };
 
 export default defineComponent({
   props: {
     taskId: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
+    configurations: {
+      type: Object,
+      required: true,
+    },
   },
   render() {
     const component = components[this.taskId];
+    const { configurations } = this;
     if (component) {
-      return h(component);
+      // @ts-ignore
+      return h(component, { configurations });
     } else {
       return h(NoConfiguration);
     }
