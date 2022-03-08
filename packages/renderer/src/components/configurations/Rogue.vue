@@ -59,12 +59,12 @@ const showModal = ref(false);
         type="primary"
         @click="showModal = true"
         :focusable="false"
-        >招募干员顺序...</NButton
-      >
+      >干员招募顺序...</NButton>
     </NFormItem>
     <NModal
       v-model:show="showModal"
-      title="招募干员顺序"
+      title="干员招募顺序"
+      display-directive="show"
       role="dialog"
       aria-modal="true"
     >
@@ -72,7 +72,7 @@ const showModal = ref(false);
         style="width: 600px"
         role="dialog"
         aria-modal="true"
-        title="招募干员顺序"
+        title="干员招募顺序"
       ></NCard>
     </NModal>
   </NForm>

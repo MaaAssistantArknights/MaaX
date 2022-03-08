@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import _ from "lodash";
 
 export interface TaskState {
-  deviceTasks: Record<string, Task[]>
+  deviceTasks: Record<string, Task[]>;
 }
 
 // TODO 任务持久化处理以及为新设备创建默认task
@@ -112,7 +112,9 @@ export const defaultTask: Task[] = [
     title: "收取信用及购物",
     status: "idle",
     enable: true,
-    configurations: {},
+    configurations: {
+      exclude: new Set([]),
+    },
   },
   {
     id: "award",

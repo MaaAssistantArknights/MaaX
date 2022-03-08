@@ -13,11 +13,11 @@ type Formatter = (time: Time) => string;
 const defaultFormatter: Formatter = ({ hours, minutes, seconds }) => {
   const arr = [minutes, seconds];
   if (hours !== 0) arr.unshift(hours);
-  return arr.map((x, index) => index === 0 ? String(x) : String(x).padStart(2, '0')).join(':');
+  return arr.map((x, index) => index === 0 ? String(x) : String(x).padStart(2, "0")).join(":");
 };
 
 export default defineComponent({
-  name: 'Timer',
+  name: "Timer",
   props: {
     startTime: Number,
     endTime: Number,
@@ -73,7 +73,7 @@ export default defineComponent({
 
     const format = props.formatter || defaultFormatter;
 
-    return () => h('div', format(timeDiff()));
+    return () => h("div", format(timeDiff()));
   }
 });
 

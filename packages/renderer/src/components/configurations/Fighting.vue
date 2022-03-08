@@ -30,8 +30,6 @@ const props = defineProps<{
   configurations: FightingConfiguration;
 }>();
 
-// const configurations = toRefs(props.configurations);
-
 const showModal = ref(false);
 
 function handleConfigurationUpdate(key: string, value: any) {
@@ -99,6 +97,7 @@ function handleConfigurationUpdate(key: string, value: any) {
     </NFormItem>
     <NModal
       v-model:show="showModal"
+      display-directive="show"
       title="关卡选择"
       role="dialog"
       aria-modal="true"

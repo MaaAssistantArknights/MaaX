@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { NInput, NSpace, NIcon, NTooltip, NButton } from 'naive-ui';
-import IconBinary from '@/assets/icons/binary.svg?component';
-import IconWindowUi from '@/assets/icons/window-ui.svg?component';
+import { computed } from "vue";
+import { NInput, NSpace, NIcon, NTooltip, NButton } from "naive-ui";
+import IconBinary from "@/assets/icons/binary.svg?component";
+import IconWindowUi from "@/assets/icons/window-ui.svg?component";
 
-import useSettingStore from '@/store/settings';
+import useSettingStore from "@/store/settings";
 
 const settingStore = useSettingStore();
 

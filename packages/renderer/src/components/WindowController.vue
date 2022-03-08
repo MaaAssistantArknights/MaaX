@@ -1,30 +1,30 @@
 <script setup lang="ts">
 import { ref, Ref } from "vue";
-import { NButton, NSpace, NIcon } from 'naive-ui';
+import { NButton, NSpace, NIcon } from "naive-ui";
 
 import IconWindowMinimize from "@/assets/icons/window-minimize.svg?component";
 import IconClose from "@/assets/icons/close.svg?component";
 import IconScaleContract from "@/assets/icons/scale-contract.svg?component";
 import IconScaleExtend from "@/assets/icons/scale-extend.svg?component";
 
-const isMaximized: Ref<boolean> = ref(window.ipcRenderer.sendSync('window:is-maximized'));
+const isMaximized: Ref<boolean> = ref(window.ipcRenderer.sendSync("window:is-maximized"));
 
 const onClose = () => {
-  window.ipcRenderer.send('window:close');
+  window.ipcRenderer.send("window:close");
 };
 
 const onToggleMaximized = () => {
-  const result = window.ipcRenderer.sendSync('window:toggle-maximized');
+  const result = window.ipcRenderer.sendSync("window:toggle-maximized");
   if (result instanceof Error) {
     console.log();
   }
 };
 
 const onMinimize = () => {
-  window.ipcRenderer.send('window:minimize');
+  window.ipcRenderer.send("window:minimize");
 };
 
-window.ipcRenderer.on('window:update-maximized', (_, maximized) => {
+window.ipcRenderer.on("window:update-maximized", (_, maximized) => {
   isMaximized.value = maximized;
 });
 </script>

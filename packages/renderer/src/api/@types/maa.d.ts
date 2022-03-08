@@ -79,9 +79,16 @@ declare namespace Api.Maa {
       [K in GameLocales]: string;
     };
     stages: StageMetadata[];
-  }
+  };
 
   type Item = {
-    
-  }
+    category: Array<string>;
+    description: string;
+    id: string;
+    image: string;
+    name: string;
+    obtain: string;
+    rarity: number;
+    usage: string;
+  };
 }

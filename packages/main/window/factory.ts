@@ -24,6 +24,7 @@ class WindowFactory {
         minWidth: 800,
         minHeight: 600,
         webPreferences: {
+          // 编译后的模块仍然是main/index.cjs
           preload: join(__dirname, "../preload/index.cjs"),
           sandbox: true,
           contextIsolation: true,
