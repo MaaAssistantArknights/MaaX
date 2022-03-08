@@ -24,6 +24,7 @@ const themeVars = useThemeVars();
 const deviceStore = useDeviceStore();
 const taskStore = useTaskStore();
 const device = deviceStore.devices.find((device) => device.uuid === props.uuid);
+const deviceDisplayName = computed(() => device?.tag || device?.connectionString);
 const routeUuid = computed(
   () => router.currentRoute.value.params.uuid as string | undefined
 );
@@ -52,7 +53,7 @@ function handleDeviceDisconnect() {
   // task stop
   // device disconnect
   message.info(
-    `${device?.connectionString}断开中... （此消息不会在正式版中出现）`
+    `${deviceDisplayName.value}断开中... （此消息不会在正式版中出现）`
   );
 }
 
@@ -61,7 +62,7 @@ function handleDeviceConnect() {
     return;
   }
   deviceStore.updateDeviceStatus(device?.uuid as string, "connecting");
-  message.loading(`${device?.connectionString}连接中...`);
+  message.loading(`${deviceDisplayName.value}连接中...`);
 
   window.ipcRenderer.send("asst:createEx",{address:device?.connectionString});
 
@@ -121,7 +122,7 @@ function handleDeviceConnect() {
           })()
         }}
       </NTooltip>
-      <div class="device-name">{{ device?.connectionString }}</div>
+      <div class="device-name">{{ deviceDisplayName }}</div>
     </NButton>
     <NSpace :align="'center'">
       <NPopconfirm

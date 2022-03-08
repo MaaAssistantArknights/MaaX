@@ -1,7 +1,8 @@
 import { app, ipcMain } from "electron";
 import { Assistant, cb, voidPointer } from "./interface";
+import path from "path";
 
-Assistant.libPath = "D:\\MeoAsstElectronUI\\packages\\main\\core\\";
+Assistant.libPath = path.join(__dirname, "../../packages/main/core");
 
 export default function useAsstHooks() {
   ipcMain.on("asst:loadResource", (event, arg) => {

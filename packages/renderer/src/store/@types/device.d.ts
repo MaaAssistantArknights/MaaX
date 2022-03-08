@@ -42,6 +42,11 @@ interface Device {
    * @props adb路径
    */
   adbPath: string;
+  /**
+   * @props 设备标签
+   * @description 可选，前端优先展示“设备标签”，如果不存在则展示“设备连接地址”
+   */
+  tag?: string;
 }
 
 interface NativeDevice {
@@ -49,4 +54,5 @@ interface NativeDevice {
   connectionString: string;
   name: EmulatorName;
   adbPath:string;
+  tag?: string;
 }
