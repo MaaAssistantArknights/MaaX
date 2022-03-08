@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import IconDisconnect from '@/assets/icons/disconnect.svg?component';
-import IconLink from '@/assets/icons/link.svg?component';
-import { NButton, NTooltip, NIcon, NSpace, NPopconfirm, useThemeVars, useMessage } from 'naive-ui';
-import useDeviceStore from '@/store/devices';
-import router from '@/router';
+import { computed } from "vue";
+import IconDisconnect from "@/assets/icons/disconnect.svg?component";
+import IconLink from "@/assets/icons/link.svg?component";
+import { NButton, NTooltip, NIcon, NSpace, NPopconfirm, useThemeVars, useMessage } from "naive-ui";
+import useDeviceStore from "@/store/devices";
+import router from "@/router";
 
 const props = defineProps<{
   uuid: string
@@ -17,12 +17,12 @@ const device = deviceStore.devices.find(device => device.uuid === props.uuid);
 const routeUuid = computed(() => router.currentRoute.value.params.uuid as (string | undefined));
 const isCurrent = computed(() => routeUuid.value === props.uuid);
 
-const connectedStatus: Set<DeviceStatus> = new Set(['connected', 'tasking']);
+const connectedStatus: Set<DeviceStatus> = new Set(["connected", "tasking"]);
 const disconnectedStatus: Set<DeviceStatus> = new Set([
-  'available',
-  'disconnected',
-  'connecting',
-  'unknown'
+  "available",
+  "disconnected",
+  "connecting",
+  "unknown"
 ]);
 
 function disconnectDevice(uuid: string) {
@@ -34,7 +34,7 @@ function connectDevice(uuid: string) {
 }
 
 function handleJumpToTask() {
-  if (!connectedStatus.has(device?.status ?? 'unknown')) {
+  if (!connectedStatus.has(device?.status ?? "unknown")) {
     return;
   }
   if (!isCurrent.value)
@@ -48,7 +48,7 @@ function handleDeviceDisconnect() {
 }
 
 function handleDeviceConnect() {
-  if (!disconnectedStatus.has(device?.status ?? 'unknown')) {
+  if (!disconnectedStatus.has(device?.status ?? "unknown")) {
     return;
   }
   message.info(`${device?.connectionString}连接中... （此消息不会在正式版中出现）`);

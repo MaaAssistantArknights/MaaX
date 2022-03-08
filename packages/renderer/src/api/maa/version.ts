@@ -44,7 +44,7 @@ export default {
     return await service.get<{
       platform: Api.Maa.Platform;
       arch: Api.Maa.Arch;
-      version_metadata: Api.Maa.VersionDetail
+      version_metadata: Api.Maa.VersionDetail;
     }>(`/version/${platform}/${arch}/${version}`, {
       params: {
         component,

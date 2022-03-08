@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { NForm, NFormItem, NButton, NModal, NSelect, NCard } from 'naive-ui';
-import useTaskStore from '@/store/tasks';
-import router from '@/router';
+import { ref } from "vue";
+import { NForm, NFormItem, NButton, NModal, NSelect, NCard } from "naive-ui";
+import useTaskStore from "@/store/tasks";
+import router from "@/router";
 
-type Strategies = 'ToTheEnd' | 'AfterFirstLevel' | 'AfterMoney'
+type Strategies = "ToTheEnd" | "AfterFirstLevel" | "AfterMoney"
 
 interface RogueConfiguration {
   strategy: Strategies;
@@ -16,20 +16,20 @@ const strategyOptions: Array<{
   value: Strategies
 }> = [
     {
-      label: '尽可能往后打',
-      value: 'ToTheEnd'
+      label: "尽可能往后打",
+      value: "ToTheEnd"
     }, {
-      label: '刷源石锭投资，第一层商店后退出',
-      value: 'AfterFirstLevel'
+      label: "刷源石锭投资，第一层商店后退出",
+      value: "AfterFirstLevel"
     }, {
-      label: '刷源石锭投资，投资后退出',
-      value: 'AfterMoney'
+      label: "刷源石锭投资，投资后退出",
+      value: "AfterMoney"
     }
   ];
 
 const routeUuid = router.currentRoute.value.params.uuid as string;
 const taskStore = useTaskStore();
-const task = taskStore.deviceTasks[routeUuid].find(task => task.id === 'rogue');
+const task = taskStore.deviceTasks[routeUuid].find(task => task.id === "rogue");
 const configuration = task?.configurations as unknown as RogueConfiguration;
 const showModal = ref(false);
 
@@ -56,11 +56,12 @@ const showModal = ref(false);
         type="primary"
         @click="showModal = true"
         :focusable="false"
-      >招募干员顺序...</NButton>
+      >干员招募顺序...</NButton>
     </NFormItem>
     <NModal
       v-model:show="showModal"
-      title="招募干员顺序"
+      title="干员招募顺序"
+      display-directive="show"
       role="dialog"
       aria-modal="true"
     >
@@ -68,7 +69,7 @@ const showModal = ref(false);
         style="width: 600px;"
         role="dialog"
         aria-modal="true"
-        title="招募干员顺序"
+        title="干员招募顺序"
       ></NCard>
     </NModal>
   </NForm>

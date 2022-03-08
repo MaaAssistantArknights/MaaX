@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NScrollbar, useThemeVars } from 'naive-ui';
+import { NScrollbar, useThemeVars } from "naive-ui";
 
 const themeVars = useThemeVars();
 </script>

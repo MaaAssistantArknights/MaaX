@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { NInputNumber, NCheckbox, NForm, NFormItem } from 'naive-ui';
-import useTaskStore from '@/store/tasks';
-import router from '@/router';
+import { NInputNumber, NCheckbox, NForm, NFormItem } from "naive-ui";
+import useTaskStore from "@/store/tasks";
+import router from "@/router";
 
 const taskStore = useTaskStore();
 
@@ -10,15 +10,15 @@ interface RecruitConfiguration {
   use_expedited_plan: boolean;
   maximum_times_of_recruitments: number,
   recognitions: {
-    '3 Stars': boolean,
-    '4 Stars': boolean,
-    '5 Stars': boolean,
+    "3 Stars": boolean,
+    "4 Stars": boolean,
+    "5 Stars": boolean,
   };
 }
 
 const routeUuid = router.currentRoute.value.params.uuid as string;
 
-const task = taskStore.deviceTasks[routeUuid].find(task => task.id === 'recruit');
+const task = taskStore.deviceTasks[routeUuid].find(task => task.id === "recruit");
 const configuration = task?.configurations as unknown as RecruitConfiguration;
 
 </script>

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { NButton, NSwitch, NCheckbox, NModal, NForm, NFormItem } from 'naive-ui';
-import LevelChoose from '../LevelChooseModal.vue';
-import useTaskStore from '@/store/tasks';
-import router from '@/router';
+import { ref } from "vue";
+import { NButton, NSwitch, NCheckbox, NModal, NForm, NFormItem } from "naive-ui";
+import LevelChoose from "../LevelChooseModal.vue";
+import useTaskStore from "@/store/tasks";
+import router from "@/router";
 
 const taskStore = useTaskStore();
 
@@ -14,12 +14,12 @@ interface FightingConfiguration {
   levels: Array<Level>
   special: {
     times: number;
-    type: 'current' | 'last'
+    type: "current" | "last"
   }
 }
 const routeUuid = router.currentRoute.value.params.uuid as string;
 
-const task = taskStore.deviceTasks[routeUuid].find(task => task.id === 'fight');
+const task = taskStore.deviceTasks[routeUuid].find(task => task.id === "fight");
 const configuration = task?.configurations as unknown as FightingConfiguration;
 
 const showModal = ref(false);
@@ -69,6 +69,7 @@ const showModal = ref(false);
     </NFormItem>
     <NModal
       v-model:show="showModal"
+      display-directive="show"
       title="关卡选择"
       role="dialog"
       aria-modal="true"

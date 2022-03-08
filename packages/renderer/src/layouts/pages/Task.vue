@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { onMounted, ref, Ref } from 'vue';
-import { NSpace, NButton, NSwitch, NIcon, NTooltip } from 'naive-ui';
-import _ from 'lodash';
-import Sortable from 'sortablejs';
-import TaskCard from '@/components/TaskCard.vue';
-import IconList from '@/assets/icons/list.svg?component';
-import IconGrid from '@/assets/icons/grid.svg?component';
-import Configuration from '@/components/configurations/Index.vue';
+import { onMounted, ref, Ref } from "vue";
+import { NSpace, NButton, NSwitch, NIcon, NTooltip } from "naive-ui";
+import _ from "lodash";
+import Sortable from "sortablejs";
+import TaskCard from "@/components/TaskCard.vue";
+import IconList from "@/assets/icons/list.svg?component";
+import IconGrid from "@/assets/icons/grid.svg?component";
+import Configuration from "@/components/configurations/Index.vue";
 
-import useTaskStore from '@/store/tasks';
+import useTaskStore from "@/store/tasks";
 
-import router from '@/router';
+import router from "@/router";
 
 const taskStore = useTaskStore();
 
@@ -25,7 +25,7 @@ onMounted(() => {
     new Sortable(cardsRef.value, {
       swapThreshold: 1,
       animation: 150,
-      filter: '.undraggable',
+      filter: ".undraggable",
       store: {
         get() {
           return tasks.map(task => task.id);
@@ -39,7 +39,7 @@ onMounted(() => {
         }
       },
       onMove: (event) => {
-        if (event.related.classList.contains('undraggable')) {
+        if (event.related.classList.contains("undraggable")) {
           return false;
         }
       },

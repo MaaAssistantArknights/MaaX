@@ -5,7 +5,7 @@ import type { ElectronLog } from "electron-log";
 class Logger {
   private constructor() {
     this._log = log.create("MeoAssistantArknights");
-    const format = '{h}:{i}:{s}.{ms} [{level}] › {text}';
+    const format = "{h}:{i}:{s}.{ms} [{level}] › {text}";
     this._log.transports.file.format = format;
 
     if (!is.development) {

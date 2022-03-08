@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { onMounted, ref, Ref } from 'vue';
-import { NCheckbox, NForm, NFormItem, NSelect, NSlider } from 'naive-ui';
-import useTaskStore from '@/store/tasks';
-import _ from 'lodash';
-import Sortable from 'sortablejs';
-import router from '@/router';
+import { onMounted, ref, Ref } from "vue";
+import { NCheckbox, NForm, NFormItem, NSelect, NSlider } from "naive-ui";
+import useTaskStore from "@/store/tasks";
+import _ from "lodash";
+import Sortable from "sortablejs";
+import router from "@/router";
 
 const taskStore = useTaskStore();
 const facilitiesRef: Ref<HTMLElement | null> = ref(null);
@@ -24,13 +24,13 @@ interface InfrastConfiguration {
     enabled: boolean
   }>,
   drone_usage:
-  | 'None'
-  | 'LMD'
-  | 'Orumdum'
-  | 'Battle Record'
-  | 'Pure Gold'
-  | 'Originium Shared'
-  | 'Chip';
+  | "None"
+  | "LMD"
+  | "Orumdum"
+  | "Battle Record"
+  | "Pure Gold"
+  | "Originium Shared"
+  | "Chip";
   mood_limit: number;
 }
 
@@ -46,37 +46,37 @@ const infrastTranslation = {
 
 const droneUsageOptions = [
   {
-    value: 'None',
-    label: '不使用无人机'
+    value: "None",
+    label: "不使用无人机"
   },
   {
-    value: 'LMD',
-    label: '贸易站 - 龙门币'
+    value: "LMD",
+    label: "贸易站 - 龙门币"
   },
   {
-    value: 'Orumdum',
-    label: '贸易站 - 合成玉'
+    value: "Orumdum",
+    label: "贸易站 - 合成玉"
   },
   {
-    value: 'Battle Record',
-    label: '制造站 - 作战记录'
+    value: "Battle Record",
+    label: "制造站 - 作战记录"
   },
   {
-    value: 'Pure Gold',
-    label: '制造站 - 赤金'
+    value: "Pure Gold",
+    label: "制造站 - 赤金"
   },
   {
-    value: 'Originium Shared',
-    label: '制造站 - 源石碎片'
+    value: "Originium Shared",
+    label: "制造站 - 源石碎片"
   },
   {
-    value: 'Chip',
-    label: '制造站 - 芯片'
+    value: "Chip",
+    label: "制造站 - 芯片"
   },
 ];
 
 const routeUuid = router.currentRoute.value.params.uuid as string;
-const task = taskStore.deviceTasks[routeUuid].find(task => task.id === 'infrast');
+const task = taskStore.deviceTasks[routeUuid].find(task => task.id === "infrast");
 const configuration = task?.configurations as unknown as InfrastConfiguration;
 
 function onFacilityEnableUpdate(name: string, enabled: boolean) {

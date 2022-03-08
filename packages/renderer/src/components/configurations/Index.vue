@@ -4,13 +4,15 @@ import Fighting from "./Fighting.vue";
 import Infrast from "./Infrast.vue";
 import NoConfiguration from "./NoConfiguration.vue";
 import Recruit from "./Recruit.vue";
-import Rogue from './Rogue.vue';
+import Rogue from "./Rogue.vue";
+import Mall from "./Mall.vue";
 
 const components: Record<string, Component> = {
   fight: Fighting,
   recruit: Recruit,
   infrast: Infrast,
-  rogue: Rogue
+  rogue: Rogue,
+  mall: Mall
 };
 
 export default defineComponent({

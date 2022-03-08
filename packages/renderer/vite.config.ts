@@ -96,7 +96,7 @@ export {
       .map((moduleId) => {
         const nodeModule = require(moduleId);
         const requireModule = `const M = require("${moduleId}");`;
-        const exportDefault = `export default M;`;
+        const exportDefault = "export default M;";
         const exportMembers =
           Object.keys(nodeModule)
             .map((attr) => `export const ${attr} = M.${attr}`)

@@ -5,7 +5,7 @@ import _ from "lodash";
 
 const getCoreVersion = () => {
   const coreVersion = version.core();
-  return coreVersion ? `(core ${coreVersion})` : "(without core)";
+  return coreVersion ? `(core v${coreVersion})` : "(without core)";
 };
 
 class ApiService {
@@ -13,13 +13,13 @@ class ApiService {
     this._instance = axios.create({
       baseURL: baseUrl,
       timeout: 5000,
+      headers: {
+        "Client-Version": ApiService._ua,
+      }
     });
 
     this._instance.interceptors.request.use(
       (request) => {
-        request.headers = Object.assign(request.headers ?? {}, {
-          "User-Agent": ApiService._ua,
-        });
         return request;
       },
       (error) => {
@@ -45,12 +45,16 @@ class ApiService {
     return response.data;
   }
 
+  get baseUrl() {
+    return this._instance.defaults.baseURL;
+  }
+
   static updateUA = () => {
-    ApiService._ua = `MeoAssistantArknights ${version.ui()} ${getCoreVersion()}`;
+    ApiService._ua = `MeoAssistantArknights v${version.ui()} ${getCoreVersion()}`;
   };
 
   private _instance: AxiosInstance;
-  private static _ua: string = `MeoAssistantArknights ${version.ui()} ${getCoreVersion()}`;
+  private static _ua: string = `MeoAssistantArknights v${version.ui()} ${getCoreVersion()}`;
 }
 
 export default ApiService;

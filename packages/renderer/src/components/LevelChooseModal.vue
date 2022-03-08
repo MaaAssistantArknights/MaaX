@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NButton, NCard, NInputNumber, NInput, NSpace, NTooltip, useThemeVars } from 'naive-ui';
+import { NButton, NCard, NInputNumber, NInput, NSpace, NTooltip, useThemeVars } from "naive-ui";
 
 const themeVars = useThemeVars();
 
@@ -7,17 +7,17 @@ const props = defineProps<{
   levels: Array<Level>
   special: {
     times: number;
-    type: 'current' | 'last'
+    type: "current" | "last"
   }
 }>();
 
-const emit = defineEmits(['update:special_type']);
+const emit = defineEmits(["update:special_type"]);
 
 function handleSpecialTypeChange() {
-  if (props.special.type === 'current') {
-    emit('update:special_type', 'last');
+  if (props.special.type === "current") {
+    emit("update:special_type", "last");
   } else {
-    emit('update:special_type', 'current');
+    emit("update:special_type", "current");
   }
 }
 </script>
@@ -67,6 +67,8 @@ function handleSpecialTypeChange() {
 <style lang="less" scoped>
 .level-card {
   display: flex;
+  border: 1px solid var(--n-border-color);
+  box-shadow: var(--n-box-shadow);
   justify-content: space-between;
   align-items: center;
   padding: 20px 16px;

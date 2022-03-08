@@ -27,7 +27,9 @@ async function createWindow() {
     win.loadFile(join(__dirname, "../renderer/index.html"));
   } else {
     // 🚧 Use ['ENV_NAME'] avoid vite:define plugin
-    const url = `http://${process.env["VITE_DEV_SERVER_HOST"]}:${process.env["VITE_DEV_SERVER_PORT"]}`;
+    const host = process.env["VITE_DEV_SERVER_HOST"];
+    const port = process.env["VITE_DEV_SERVER_PORT"];
+    const url = `http://${host}:${port}`;
     win.loadURL(url);
   }
 
@@ -48,7 +50,7 @@ app.whenReady().then(createWindow);
 app.on("window-all-closed", () => {
   // const win = WindowFactory.getInstance();
   // win = null;
-  if (process.platform !== "darwin") app.quit();
+  app.quit();
 });
 
 app.on("second-instance", () => {

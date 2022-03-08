@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { NIcon, NSpace, NButton, NTooltip } from 'naive-ui';
-import IconRefresh from '@/assets/icons/refresh.svg?component';
-import IconSettings from '@/assets/icons/settings.svg?component';
-import DeviceCard from '@/components/DeviceCard.vue';
+import { computed } from "vue";
+import { NIcon, NSpace, NButton, NTooltip } from "naive-ui";
+import IconRefresh from "@/assets/icons/refresh.svg?component";
+import IconSettings from "@/assets/icons/settings.svg?component";
+import DeviceCard from "@/components/DeviceCard.vue";
 
-import useDeviceStore from '@/store/devices';
+import useDeviceStore from "@/store/devices";
 
-const connectedStatus: Set<DeviceStatus> = new Set(['connected', 'tasking']);
-const disconnectedStatus: Set<DeviceStatus> = new Set(['available', 'disconnected', 'connecting']);
+const connectedStatus: Set<DeviceStatus> = new Set(["connected", "tasking"]);
+const disconnectedStatus: Set<DeviceStatus> = new Set(["available", "disconnected", "connecting"]);
 const deviceStore = useDeviceStore();
 const { devices } = deviceStore;
 const connectedDevices = computed(() =>
