@@ -108,7 +108,6 @@ function getBlueStackInfo(e: Emulator) {
       return;
     }
   } else {
-    console.log(confPath);
     assert(
       existsSync(confPath),
       `bluestacks.conf not exist! path: ${confPath}`

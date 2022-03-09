@@ -17,6 +17,7 @@ const StringPtrType = ref.refType(StringType);
 const StringPtrArrayType = ArrayType(StringType);
 const AsstType = ref.types.void;
 const AsstPtrType = ref.refType(AsstType);
+const TaskPtrType = ref.refType(AsstType);
 const CustomArgsType = ref.refType(ref.types.void);
 const CallBackType = ffi.Function(ref.types.void, [
   IntType,
@@ -25,6 +26,7 @@ const CallBackType = ffi.Function(ref.types.void, [
 ]);
 const Buff = CustomArgsType;
 type AsstInstancePtr = ref.Pointer<void>;
+type TaskInstancePtr = ref.Pointer<void>;
 
 interface CallBackFunc {
   (msg: number, detail: string, custom?: any): any;
@@ -90,40 +92,40 @@ const cb = ffi.Callback(
             break;
           }
           case "ConnectFailed": {
-            wc.send("device:connectInfo",{
-              what:detail.what,
-              address:more.address
+            wc.send("device:connectInfo", {
+              what: detail.what,
+              address: more.address,
             });
             break;
           }
         }
         break;
       }
-      case AsstMsg.AllTasksCompleted:{
+      case AsstMsg.AllTasksCompleted: {
         break;
       }
-      case AsstMsg.TaskChainError:{
+      case AsstMsg.TaskChainError: {
         break;
       }
-      case AsstMsg.TaskChainStart:{
+      case AsstMsg.TaskChainStart: {
         break;
       }
-      case AsstMsg.TaskChainCompleted:{
+      case AsstMsg.TaskChainCompleted: {
         break;
       }
-      case AsstMsg.TaskChainExtraInfo:{
+      case AsstMsg.TaskChainExtraInfo: {
         break;
       }
-      case AsstMsg.SubTaskError:{
+      case AsstMsg.SubTaskError: {
         break;
       }
-      case AsstMsg.SubTaskStart:{
+      case AsstMsg.SubTaskStart: {
         break;
       }
-      case AsstMsg.SubTaskCompleted:{
+      case AsstMsg.SubTaskCompleted: {
         break;
       }
-      case AsstMsg.SubTaskExtraInfo:{
+      case AsstMsg.SubTaskExtraInfo: {
         break;
       }
     }
@@ -154,7 +156,6 @@ class Assistant {
 
   private constructor() {
     assert(Boolean(Assistant.libPath), "path undefined");
-    console.log(Assistant.libPath);
     dependences[process.platform].forEach((lib) => {
       ffi.Library(path.join(Assistant.libPath, lib));
     });
@@ -169,7 +170,7 @@ class Assistant {
         AsstCreateEx: [AsstPtrType, ["pointer", CustomArgsType]],
         AsstDestroy: [voidType, [AsstPtrType]],
 
-        /** deleted after v3.0.6
+        /** deprecated after v3.0.6
           AsstCatchDefault: [BoolType, [AsstPtrType]],
           AsstCatchEmulator: [BoolType, [AsstPtrType]],
           AsstCatchCustom: [BoolType, [AsstPtrType, StringType]],
@@ -180,6 +181,7 @@ class Assistant {
           [AsstPtrType, StringType, StringType, StringType],
         ], // dev
 
+        /**deprecated
         AsstAppendStartUp: [BoolType, [AsstPtrType]],
         AsstAppendFight: [
           BoolType,
@@ -214,11 +216,18 @@ class Assistant {
         AsstAppendRoguelike: [BoolType, [AsstPtrType]],
 
         AsstAppendDebug: [BoolType, [AsstPtrType]],
-
+         
         AsstStartRecruitCalc: [
           BoolType,
           [AsstPtrType, IntArrayType, IntType, BoolType],
         ],
+
+         */
+
+        AsstAppendTask: [TaskPtrType, [AsstPtrType, StringType, StringType]],
+        AsstSetTaskParams: [BoolType, [AsstPtrType, TaskPtrType, StringType]],
+        AsstSetParam: [BoolType, [AsstPtrType, TaskPtrType, StringType]],
+
         AsstStart: [BoolType, [AsstPtrType]],
         AsstStop: [BoolType, [AsstPtrType]],
 
@@ -358,14 +367,29 @@ class Assistant {
     );
   }
 
+  AppendTask(
+    uuid:string,
+    type: string,
+    params: string
+  ): TaskInstancePtr {
+    return this.MeoAsstLib.AsstAppendTask( this.GetUUID(uuid), type, params);
+  }
+
+  SetTaskParams(
+    handle: ref.Pointer<void>,
+    task: ref.Pointer<void>,
+    params: string
+  ) {}
+
   /**
    * 添加开始唤醒任务
    * @param p_asst 实例指针
    * @returns
    */
-  AppendStartUp(uuid: string): boolean {
+
+  /*   AppendStartUp(uuid: string): boolean {
     return this.MeoAsstLib.AsstStart(this.GetUUID(uuid));
-  }
+  } */
 
   /**
    * 添加作战任务
@@ -376,7 +400,7 @@ class Assistant {
    * @param max_times 最多刷几次关卡
    * @returns
    */
-  AppendFight(
+  /*   AppendFight(
     stage: string,
     max_mecidine: number,
     max_stone: number,
@@ -390,34 +414,34 @@ class Assistant {
       max_stone,
       max_times
     );
-  }
+  } */
 
   /**
    * 添加领取奖励任务
    * @param p_asst 实例指针
    * @returns
    */
-  AppendAward(uuid: string): boolean {
+  /*   AppendAward(uuid: string): boolean {
     return this.MeoAsstLib.AsstAppendAward(this.GetUUID(uuid));
-  }
+  } */
 
   /**
    * 添加访问好友基建任务
    * @param p_asst 实例指针
    * @returns
    */
-  AppendVisit(uuid: string): boolean {
+  /*   AppendVisit(uuid: string): boolean {
     return this.MeoAsstLib.AsstAppendVisit(this.GetUUID(uuid));
-  }
+  } */
 
   /**
    * 添加信用购物任务
    * @param with_shopping 是否购物{boolean}
    * @returns
    */
-  AppendMall(uuid: string, with_shopping: boolean) {
+  /*   AppendMall(uuid: string, with_shopping: boolean) {
     return this.MeoAsstLib.AsstAppendMall(this.GetUUID(uuid), with_shopping);
-  }
+  } */
 
   /**
    * 添加基建事件
@@ -429,7 +453,7 @@ class Assistant {
    * @param dorm_threshold 换班心情阈值,范围[0,1.0]
    * @returns
    */
-  AppendInfrast(
+  /*   AppendInfrast(
     work_mode: number,
     order: string[],
     order_size: number,
@@ -445,7 +469,7 @@ class Assistant {
       uses_of_drones,
       dorm_threshold
     );
-  }
+  } */
 
   /**
    * 添加公招任务
@@ -458,7 +482,7 @@ class Assistant {
    * @param need_refresh 是否刷新3级tag{boolean}
    * @returns
    */
-  AppendRecruit(
+  /*   AppendRecruit(
     max_times: number,
     select_level: number[],
     select_len: number,
@@ -476,16 +500,16 @@ class Assistant {
       confirm_len,
       need_refresh
     );
-  }
+  } */
 
   /**
    *
    * @param p_asst
    * @returns
    */
-  AppendDebug(uuid: string): boolean {
+  /*   AppendDebug(uuid: string): boolean {
     return this.MeoAsstLib.AsstAppendDebug(this.GetUUID(uuid));
-  }
+  } */
 
   /**
    * 进行公招计算
@@ -495,7 +519,7 @@ class Assistant {
    * @param set_time 是否点击九小时{boolean}
    * @returns
    */
-  StartRecruitCalc(
+  /*   StartRecruitCalc(
     select_level: number[],
     required_len: number,
     set_time: boolean,
@@ -507,7 +531,7 @@ class Assistant {
       required_len,
       set_time
     );
-  }
+  } */
 
   /**
    * 开始任务

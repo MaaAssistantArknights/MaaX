@@ -22,7 +22,7 @@ export default function useAsstHooks() {
     event.returnValue = true;
   });
 
-  ipcMain.on("asst:connect", (event, arg) => {
+  ipcMain.on("asst:connect", async (event, arg) => {
     event.returnValue = Assistant.getInstance().Connect(
       arg.address,
       arg.adb_path,
@@ -30,6 +30,16 @@ export default function useAsstHooks() {
     );
   });
 
+
+  ipcMain.on("asst:appendTask",(event,arg)=>{
+    event.returnValue = Assistant.getInstance().AppendTask(
+      arg.uuid,
+      arg.type,
+      JSON.stringify(arg.params)
+    );
+  });
+
+  /**
   ipcMain.on("asst:appendStartUp", (event, arg) => {
     event.returnValue = Assistant.getInstance().AppendStartUp(arg.uuid);
   });
@@ -85,6 +95,8 @@ export default function useAsstHooks() {
   //ipcMain.on("asst:appendRoguelike")
   //ipcMain.on("asst:appendDebug")
   //ipcMain.on("asst:startRecruitCalc")
+
+   */
   ipcMain.on("asst:start", (event, arg) => {
     event.returnValue = Assistant.getInstance().Start(arg.uuid);
   });
