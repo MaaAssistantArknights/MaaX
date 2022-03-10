@@ -45,8 +45,7 @@ const useDeviceStore = defineStore<"device", DeviceState, {}, DeviceAction>(
     state: () => {
       return {
         devices: [],
-        // TODO: update this value
-        lastUpdate: Date.now(),
+        lastUpdate: null,
       };
     },
     actions: {

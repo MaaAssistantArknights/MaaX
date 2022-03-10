@@ -5,11 +5,11 @@ export interface SettingState {
   version: {
     core: {
       current: string
-      latest: string
+      latest?: string
     }
     ui: {
       current: string
-      latest: string
+      latest?: string
     }
   }
 }
@@ -28,11 +28,11 @@ const useSettingStore = defineStore<"setting", SettingState, {}, SettingAction>(
         version: {
           core: {
             current: "v3.0.6",
-            latest: "v3.0.7",
+            // latest: "v3.0.7",
           },
           ui: {
             current: "v1.0.0",
-            latest: "v1.0.0",
+            // latest: "v1.0.0",
           },
         },
       };
