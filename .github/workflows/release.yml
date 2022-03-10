@@ -24,7 +24,7 @@ defaults:
 jobs:
   build:
     # see more environment https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idruns-on
-    runs-on: ${{ matrix.os }}
+    runs-on: [ubuntu-20.04]
     # https://www.electron.build/multi-platform-build#provided-docker-images
     container: electronuserland/builder:wine
 
@@ -36,7 +36,6 @@ jobs:
     strategy:
       matrix:
         node: ["14"]
-        os: [macos-latest, ubuntu-latest, windows-latest]
 
     steps:
       - uses: actions/checkout@v2
