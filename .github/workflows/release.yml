@@ -1,8 +1,7 @@
 name: "Build/Release"
 
 on:
-  release:
-    branches: [main]
+  label:
     types:
       - created
     paths-ignore:

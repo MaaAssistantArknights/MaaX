@@ -28,7 +28,7 @@
   },
   "linux": {
     "target": [
-      "AppImage"
+      "zip"
     ],
     "category": "Tools"
   }
