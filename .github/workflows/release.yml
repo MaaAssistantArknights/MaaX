@@ -1,9 +1,9 @@
 name: "Build/Release"
 
 on:
-  label:
-    types:
-      - created
+  push:
+    branches:
+      - main
     paths-ignore:
       - "**.md"
       - "**.spec.js"
