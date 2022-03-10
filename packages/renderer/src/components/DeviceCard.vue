@@ -62,7 +62,7 @@ function handleDeviceConnect() {
     return;
   }
   deviceStore.updateDeviceStatus(device?.uuid as string, "connecting");
-  message.loading(`${deviceDisplayName.value}连接中...`);
+  const loadingMessage = message.loading(`${deviceDisplayName.value}连接中...`);
 
   window.ipcRenderer.send("asst:createEx",{address:device?.connectionString});
 
@@ -71,6 +71,8 @@ function handleDeviceConnect() {
     adb_path: device?.adbPath,
     config: device?.tag,
   });
+
+  loadingMessage.destroy();
 
   if (success) {
     // do something

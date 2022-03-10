@@ -55,14 +55,14 @@ function handleConfigurationUpdate(key: string, value: any) {
         "
       />
     </NFormItem>
-    <NFormItem>
+    <NFormItem v-if="false">
+      <!-- 不提供设置，Core暂不支持 -->
       <NButton
         quaternary
         @click="() => handleConfigurationUpdate('expiration_first', false)"
         :focusable="false"
         :disabled="!props.configurations.medicine"
-        >理智回复量优先</NButton
-      >
+      >理智回复量优先</NButton>
       <NSwitch
         :value="props.configurations.expiration_first"
         @update:value="
@@ -75,8 +75,7 @@ function handleConfigurationUpdate(key: string, value: any) {
         @click="() => handleConfigurationUpdate('expiration_first', true)"
         :focusable="false"
         :disabled="!props.configurations.medicine"
-        >过期时间优先</NButton
-      >
+      >过期时间优先</NButton>
     </NFormItem>
     <NFormItem label="可用源石">
       <NCheckbox
@@ -92,8 +91,7 @@ function handleConfigurationUpdate(key: string, value: any) {
         type="primary"
         @click="showModal = true"
         :focusable="false"
-        >关卡选择...</NButton
-      >
+      >关卡选择...</NButton>
     </NFormItem>
     <NModal
       v-model:show="showModal"

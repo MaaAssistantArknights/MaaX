@@ -9,6 +9,7 @@ import {
   NMessageProvider,
   GlobalThemeOverrides,
   darkTheme,
+  zhCN, dateZhCN,
   ThemeCommonVars,
 } from "naive-ui";
 import useThemeStore from "@/store/theme";
@@ -67,6 +68,8 @@ const darkThemeOverrides: GlobalThemeOverrides = {
 <template>
   <NConfigProvider
     class="app-provider"
+    :locale="zhCN"
+    :date-locale="dateZhCN"
     :theme="themeStore.theme === 'maa-light' ? null : darkTheme"
     :theme-overrides="themeStore.theme === 'maa-light' ?
     lightThemeOverrides : darkThemeOverrides"

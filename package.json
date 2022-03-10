@@ -15,6 +15,7 @@
     "node": ">=14.17.0"
   },
   "devDependencies": {
+    "@types/cron": "^1.7.3",
     "@types/sortablejs": "^1.10.7",
     "@typescript-eslint/eslint-plugin": "^5.12.1",
     "@typescript-eslint/parser": "^5.12.1",
@@ -51,6 +52,7 @@
   ],
   "dependencies": {
     "@types/ffi-napi": "^4.0.5",
+    "cron": "^1.8.2",
     "electron-acrylic-window": "^0.5.11",
     "electron-log": "^4.4.6",
     "electron-store": "^8.0.1",

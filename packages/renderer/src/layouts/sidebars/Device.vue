@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { NIcon, NSpace, NButton, NTooltip, useMessage } from "naive-ui";
+import { computed, ref } from "vue";
+import { NIcon, NSpace, NButton, NTooltip, NText, NTime, useMessage } from "naive-ui";
 import IconRefresh from "@/assets/icons/refresh.svg?component";
 import IconSettings from "@/assets/icons/settings.svg?component";
 import DeviceCard from "@/components/DeviceCard.vue";
@@ -15,16 +15,13 @@ const disconnectedStatus: Set<DeviceStatus> = new Set([
 ]);
 const deviceStore = useDeviceStore();
 const message = useMessage();
-const { devices } = deviceStore;
+const { devices, lastUpdate } = deviceStore;
 const connectedDevices = computed(() =>
   devices.filter((device) => connectedStatus.has(device.status))
 );
 const disconnectedDevices = computed(() =>
   devices.filter((device) => disconnectedStatus.has(device.status))
 );
-
-
-
 
 function handleRefreshDevices() {
   const refreshMessage = message.loading("正在更新设备列表...");
@@ -57,8 +54,15 @@ function handleRefreshDevices() {
       refreshMessage.type = "warning";
       refreshMessage.content = "未找到任何可用设备!";
     }
+    
   });
 }
+
+const now = ref(Date.now());
+
+setInterval(() => {
+  now.value = Date.now();
+}, 1000);
 
 </script>
 
@@ -85,7 +89,11 @@ function handleRefreshDevices() {
       <h2>可用的设备列表</h2>
       <NTooltip>
         <template #trigger>
-          <NButton text style="font-size: 24px" @click="handleRefreshDevices">
+          <NButton
+            text
+            style="font-size: 24px"
+            @click="handleRefreshDevices"
+          >
             <NIcon>
               <IconRefresh />
             </NIcon>
@@ -100,6 +108,13 @@ function handleRefreshDevices() {
         :uuid="device.uuid"
         :key="device.uuid"
       />
+    </div>
+    <div :style="{ textAlign: 'center' }">
+      <NText depth="3">
+        最后更新：
+        <span v-if="lastUpdate === null">从不</span>
+        <NTime v-else :time="lastUpdate" :to="now" type="relative" />
+      </NText>
     </div>
   </div>
 </template>
