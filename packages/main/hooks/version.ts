@@ -9,6 +9,6 @@ export default function useVersionHooks() {
   });
 
   ipcMain.on("version:core", (event) => {
-    event.returnValue = Assistant.getInstance().GetVersion();
+    event.returnValue = Assistant.getInstance()?.GetVersion();
   });
 }

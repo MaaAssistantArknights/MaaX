@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, onMounted } from "vue";
 import { NIcon, NSpace, NButton, NTooltip, NText, NTime, useMessage } from "naive-ui";
 import IconRefresh from "@/assets/icons/refresh.svg?component";
 import IconSettings from "@/assets/icons/settings.svg?component";
 import DeviceCard from "@/components/DeviceCard.vue";
 
 import useDeviceStore from "@/store/devices";
+import useSettingStore from "@/store/settings";
+import asstHooks from "@/hooks/caller/asst";
+import versionHooks from "@/hooks/caller/version";
 
 const connectedStatus: Set<DeviceStatus> = new Set(["connected", "tasking"]);
 const disconnectedStatus: Set<DeviceStatus> = new Set([
@@ -14,8 +17,10 @@ const disconnectedStatus: Set<DeviceStatus> = new Set([
   "connecting",
 ]);
 const deviceStore = useDeviceStore();
+const settingStore = useSettingStore();
 const message = useMessage();
 const { devices, lastUpdate } = deviceStore;
+const { version } = settingStore;
 const connectedDevices = computed(() =>
   devices.filter((device) => connectedStatus.has(device.status))
 );
@@ -39,7 +44,7 @@ function handleRefreshDevices() {
           return {
             uuid: v.address,
             name: v.config,
-            tag:v.config,
+            tag: v.config,
             status: "available",
             adbPath: v.adb_path,
             connectionString: v.address,
@@ -54,7 +59,7 @@ function handleRefreshDevices() {
       refreshMessage.type = "warning";
       refreshMessage.content = "未找到任何可用设备!";
     }
-    
+
   });
 }
 
@@ -63,6 +68,14 @@ const now = ref(Date.now());
 setInterval(() => {
   now.value = Date.now();
 }, 1000);
+
+onMounted(() => {
+  const success = asstHooks.load();
+  const version = versionHooks.core();
+  if (success && version) {
+    settingStore.version.core.current = version;
+  }
+});
 
 </script>
 
@@ -93,6 +106,7 @@ setInterval(() => {
             text
             style="font-size: 24px"
             @click="handleRefreshDevices"
+            :disabled="version.core === undefined ? true : false"
           >
             <NIcon>
               <IconRefresh />

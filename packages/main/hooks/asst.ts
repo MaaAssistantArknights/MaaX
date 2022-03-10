@@ -1,45 +1,75 @@
-import { app, ipcMain } from "electron";
+import Electron, { app, ipcMain } from "electron";
 import { Assistant, cb, voidPointer } from "./interface";
 import path from "path";
 
 Assistant.libPath = path.join(__dirname, "../../packages/main/core");
 
-export default function useAsstHooks() {
-  ipcMain.on("asst:loadResource", (event, arg) => {
-    event.returnValue = Assistant.getInstance().LoadResource(arg.path);
-  });
-
-  ipcMain.on("asst:create", (event, arg) => {
-    event.returnValue = Assistant.getInstance().Create();
-  });
-
-  ipcMain.on("asst:createEx", (event, arg) => {
-    event.returnValue = Assistant.getInstance().CreateEx(arg.address);
-  });
-
-  ipcMain.on("asst:destroy", (event, arg) => {
-    Assistant.getInstance().Destroy(arg.uuid);
+const asstHooks: Record<
+  string,
+  (event: Electron.IpcMainEvent, ...args: any[]) => void
+> = {
+  "asst:loadResource": (event, arg) => {
+    event.returnValue = Assistant.getInstance()?.LoadResource(arg.path);
+  },
+  "asst:create": (event, arg) => {
+    event.returnValue = Assistant.getInstance()?.Create();
+  },
+  "asst:createEx": (event, arg) => {
+    event.returnValue = Assistant.getInstance()?.CreateEx(arg.address);
+  },
+  "asst:destroy": (event, arg) => {
+    Assistant.getInstance()?.Destroy(arg.uuid);
     event.returnValue = true;
-  });
-
-  ipcMain.on("asst:connect", async (event, arg) => {
-    event.returnValue = Assistant.getInstance().Connect(
+  },
+  "asst:connect": async (event, arg) => {
+    event.returnValue = Assistant.getInstance()?.Connect(
       arg.address,
       arg.adb_path,
       arg.config
     );
-  });
-
-
-  ipcMain.on("asst:appendTask",(event,arg)=>{
-    event.returnValue = Assistant.getInstance().AppendTask(
+  },
+  "asst:appendTask": (event, arg) => {
+    event.returnValue = Assistant.getInstance()?.AppendTask(
       arg.uuid,
       arg.type,
       JSON.stringify(arg.params)
     );
+  },
+  "asst:start": (event, arg) => {
+    event.returnValue = Assistant.getInstance()?.Start(arg.uuid);
+  },
+  "asst:stop": (event, arg) => {
+    event.returnValue = Assistant.getInstance()?.Stop(arg.uuid);
+  },
+  "asst:setUUID": (event, arg) => {
+    Assistant.getInstance()?.SetUUID(arg.address, arg.uuid);
+    event.returnValue = true;
+  }
+};
+
+export default function useAsstHooks() {
+  ipcMain.on("asst:load", (event) => {
+    const asst = Assistant.getInstance();
+    if (!asst) {
+      event.returnValue = false;
+      return;
+    }
+    for (const eventName of Object.keys(asstHooks)) {
+      ipcMain.on(eventName, asstHooks[eventName]);
+    }
+    event.returnValue = true;
   });
 
-  /**
+  ipcMain.on("asst:dispose", (event) => {
+    Assistant.dispose();
+    for (const eventName of Object.keys(asstHooks)) {
+      ipcMain.off(eventName, asstHooks[eventName]);
+    }
+  });
+}
+
+/**  
+  export default function useAsstHooks() {
   ipcMain.on("asst:appendStartUp", (event, arg) => {
     event.returnValue = Assistant.getInstance().AppendStartUp(arg.uuid);
   });
@@ -96,22 +126,11 @@ export default function useAsstHooks() {
   //ipcMain.on("asst:appendDebug")
   //ipcMain.on("asst:startRecruitCalc")
 
-   */
-  ipcMain.on("asst:start", (event, arg) => {
-    event.returnValue = Assistant.getInstance().Start(arg.uuid);
-  });
-
-  ipcMain.on("asst:stop", (event, arg) => {
-    event.returnValue = Assistant.getInstance().Stop(arg.uuid);
-  });
 
   //ipcMain.on("asst:setPenguinId")
   //ipcMain.on("asst:getImage")
   //ipcMain.on("asst:ctrlerClick")
   //ipcMain.on("asst:Log")
+// }
 
-  ipcMain.on("asst:setUUID", (event, arg) => {
-    Assistant.getInstance().SetUUID(arg.address, arg.uuid);
-    event.returnValue = true;
-  });
-}
+*/

@@ -11,15 +11,15 @@ const settingStore = useSettingStore();
 const versionCore = computed(() => settingStore.version.core);
 const versionUi = computed(() => settingStore.version.ui);
 
-function needUpdate(version: { current: string, latest?: string }) {
-  if (!version.latest) {
+function needUpdate(version: { current?: string, latest?: string }) {
+  if (!version.latest || !version.current) {
     return false;
   }
   return version.current !== version.latest;
 }
 
-function versionString(version: { current: string, latest?: string }) {
-  let str = version.current;
+function versionString(version: { current?: string, latest?: string }) {
+  let str = version.current || "未知";
   if (needUpdate(version)) {
     str += ` -> ${version.latest}`;
   }

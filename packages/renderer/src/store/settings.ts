@@ -4,7 +4,7 @@ export interface SettingState {
   reportId: string
   version: {
     core: {
-      current: string
+      current?: string
       latest?: string
     }
     ui: {
@@ -27,7 +27,7 @@ const useSettingStore = defineStore<"setting", SettingState, {}, SettingAction>(
         reportId: "",
         version: {
           core: {
-            current: "v3.0.6",
+            // current: "v3.0.6",
             // latest: "v3.0.7",
           },
           ui: {
