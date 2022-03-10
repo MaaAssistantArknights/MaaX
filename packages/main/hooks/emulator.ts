@@ -5,6 +5,8 @@ import path from "path";
 import { existsSync, readFileSync } from "fs";
 import { assert } from "console";
 
+let __InUsePorts: string[] = []; //本次识别已被使用的端口，将会在此暂存。
+
 const emulator_list = [
   "HD-Player.exe",
   "LdVBoxHeadless.exe",
@@ -47,8 +49,6 @@ function getPnamePath(pname: string) {
   const path = JSON.parse(exec(pathExp));
   return path.length > 1 ? path[0]["ExecutablePath"] : path["ExecutablePath"];
 }
-
-const __InUsePorts: string[] = []; //本次识别已被使用的端口，将会在此暂存。
 function getBlueStackInfo(e: Emulator) {
   // BlueStack, windows only!
   const mainPathExp = `Get-WmiObject -Query "select ExecutablePath FROM Win32_Process where ProcessID=${e.pid}" | Select-Object -Property ExecutablePath | ConvertTo-Json`;
@@ -108,7 +108,6 @@ function getBlueStackInfo(e: Emulator) {
       return;
     }
   } else {
-    console.log(confPath);
     assert(
       existsSync(confPath),
       `bluestacks.conf not exist! path: ${confPath}`
@@ -194,6 +193,7 @@ function getLdInfo(e: Emulator) {
 }
 
 function getEmulators() {
+  __InUsePorts = [];
   let emulators: Emulator[] = [];
   const tasklist = execSync("tasklist");
   tasklist
