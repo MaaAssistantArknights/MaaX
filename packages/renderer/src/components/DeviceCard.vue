@@ -66,19 +66,14 @@ function handleDeviceConnect() {
 
   window.ipcRenderer.send("asst:createEx",{address:device?.connectionString});
 
-  const success = window.ipcRenderer.sendSync("asst:connect", {
+  window.ipcRenderer.send("asst:connect", {
     address: device?.connectionString,
     adb_path: device?.adbPath,
     config: device?.tag,
   });
 
-  loadingMessage.destroy();
+  //loadingMessage.destroy();
 
-  if (success) {
-    // do something
-  } else {
-    // do something
-  }
 }
 
 

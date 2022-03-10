@@ -199,6 +199,7 @@ class Assistant {
         this.singleton.LoadResource(Assistant.libPath);
       } catch (error) {
         logger.error("error while loading core");
+        logger.error(error);  
       }
     }
     return this.singleton;
@@ -296,10 +297,11 @@ class Assistant {
    * @param task_id 任务唯一id
    * @param params 任务参数
    */
+  
   SetTaskParams(uuid: string, task_id: number, params: string) {
     return this.MeoAsstLib.AsstSetTaskParams(this.GetUUID(uuid),task_id,params);
   }
-
+ 
   /**
    * 开始任务
    * @param uuid 设备唯一标识符
@@ -353,9 +355,11 @@ class Assistant {
     return this.MeoAsstPtr[uuid];
   }
 
+  
   Log(level:string,message:string){
     return this.MeoAsstLib.AsstLog(level,message);
   }
+  
 }
 
 function voidPointer(){

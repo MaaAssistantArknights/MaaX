@@ -15,7 +15,6 @@ export default function useDeviceEvents() {
   );
 
   window.ipcRenderer.on("device:connectInfo", (event, arg) => {
-    console.log("ipcRender connectInfo");
     switch (arg.what) {
       case "UuidGetted": {
         window.$message.success(`设备${arg.address}已连接`);
