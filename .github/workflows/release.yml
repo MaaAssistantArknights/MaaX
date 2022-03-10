@@ -1,6 +1,6 @@
 name: "Build/Release"
 
-on:x
+on:
   release:
     branches: [main]
     types:
