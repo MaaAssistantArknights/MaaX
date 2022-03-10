@@ -22,9 +22,7 @@ defaults:
 jobs:
   build:
     # see more environment https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idruns-on
-    runs-on: [ubuntu-20.04]
-    # https://www.electron.build/multi-platform-build#provided-docker-images
-    container: electronuserland/builder:wine
+    runs-on: ${{ matrix.os }}
 
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -34,6 +32,7 @@ jobs:
     strategy:
       matrix:
         node: ["14"]
+        os: [macos-latest, ubuntu-20.04, windows-latest]
 
     steps:
       - uses: actions/checkout@v2
@@ -46,10 +45,10 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Install dependencies
-        run: npm install
+        run: yarn install
 
       - name: Run tests
-        run: npm run test
+        run: yarn run test
 
       # - name: Build dependencies
       #   run: npm run build
@@ -69,7 +68,7 @@ jobs:
         uses: samuelmeuli/action-electron-builder@v1
         with:
           build_script_name: prebuild
-          args: -mwl --config electron-builder.json
+          args: --config electron-builder.json
           github_token: ${{ secrets.GITHUB_TOKEN }}
           release: ${{ startsWith(github.ref, 'refs/tags/v') && github.event_name == 'push' && needs.get_metadata.outputs.branch == 'main'}}
           max_attempts: 5
