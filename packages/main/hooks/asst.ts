@@ -1,5 +1,5 @@
 import Electron, { app, ipcMain } from "electron";
-import { Assistant, cb, voidPointer } from "./interface";
+import { Assistant } from "./interface";
 import path from "path";
 
 Assistant.libPath = path.join(__dirname, "../../packages/main/core");
