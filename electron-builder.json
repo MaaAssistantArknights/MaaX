@@ -1,7 +1,7 @@
 {
   "appId": "com.misteo.assistant-arknights",
   "productName": "MeoAssistantArknights",
-  "artifactName": "${productName}-v${version}-${arch}_${os}.${ext}",
+  "artifactName": "${productName}-${os}-${arch}-${version}.${ext}",
   "asar": true,
   "asarUnpack": "**\\*.{node,dll}",
   "directories": {

@@ -4,6 +4,7 @@ import ArrayType from "ref-array-napi";
 import path from "path";
 import { assert } from "@vue/compiler-core";
 import WindowFactory from "../window/factory";
+import logger from "../utils/logger";
 
 /** Some types for core */
 const BoolType = ref.types.bool;
@@ -225,8 +226,8 @@ class Assistant {
          */
 
         AsstAppendTask: [TaskPtrType, [AsstPtrType, StringType, StringType]],
-        AsstSetTaskParams: [BoolType, [AsstPtrType, TaskPtrType, StringType]],
-        AsstSetParam: [BoolType, [AsstPtrType, TaskPtrType, StringType]],
+        // AsstSetTaskParams: [BoolType, [AsstPtrType, TaskPtrType, StringType]],
+        // AsstSetParam: [BoolType, [AsstPtrType, TaskPtrType, StringType]],
 
         AsstStart: [BoolType, [AsstPtrType]],
         AsstStop: [BoolType, [AsstPtrType]],
@@ -242,14 +243,28 @@ class Assistant {
     );
   }
 
-  public static getInstance(): Assistant {
+  public static getInstance(): Assistant | undefined {
     if (Assistant.libPath) Assistant.libPath = path.resolve(Assistant.libPath);
     //TODO: Check is dll available
     if (!this.singleton) {
-      this.singleton = new Assistant();
-      this.singleton.LoadResource(Assistant.libPath);
+      try {
+        this.singleton = new Assistant();
+        this.singleton.LoadResource(Assistant.libPath);
+      } catch (error) {
+        logger.error("error while loading core");
+      }
     }
     return this.singleton;
+  }
+
+  public static dispose(): void {
+    if (this.singleton) {
+      for (const [uuid] of Object.entries(this.singleton.MeoAsstPtr)) {
+        this.singleton.Stop(uuid);
+        this.singleton.Destroy(uuid);
+      }
+      delete this.singleton;
+    }
   }
 
   /**
@@ -367,12 +382,8 @@ class Assistant {
     );
   }
 
-  AppendTask(
-    uuid:string,
-    type: string,
-    params: string
-  ): TaskInstancePtr {
-    return this.MeoAsstLib.AsstAppendTask( this.GetUUID(uuid), type, params);
+  AppendTask(uuid: string, type: string, params: string): TaskInstancePtr {
+    return this.MeoAsstLib.AsstAppendTask(this.GetUUID(uuid), type, params);
   }
 
   SetTaskParams(
