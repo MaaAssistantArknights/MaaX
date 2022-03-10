@@ -1,7 +1,6 @@
 name: "Build/Release"
 
-on:
-  push:
+on:x
   release:
     branches: [main]
     types:
@@ -24,9 +23,7 @@ defaults:
 jobs:
   build:
     # see more environment https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idruns-on
-    runs-on: [ubuntu-20.04]
-    # https://www.electron.build/multi-platform-build#provided-docker-images
-    container: electronuserland/builder:wine
+    runs-on: ${{ matrix.os }}
 
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -36,6 +33,7 @@ jobs:
     strategy:
       matrix:
         node: ["14"]
+        os: [macos-latest, ubuntu-latest, windows-latest]
 
     steps:
       - uses: actions/checkout@v2
