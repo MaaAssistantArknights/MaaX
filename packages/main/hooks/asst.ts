@@ -2,7 +2,7 @@ import Electron, { app, ipcMain } from "electron";
 import { Assistant } from "./interface";
 import path from "path";
 
-Assistant.libPath = path.join(__dirname, "../../packages/main/core");
+Assistant.libPath = path.join(__dirname, "../core");
 
 const asstHooks: Record<
   string,

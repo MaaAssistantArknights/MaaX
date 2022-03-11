@@ -1,9 +1,11 @@
-import { execSync } from "child_process";
+import { execSync, spawn, spawnSync } from "child_process";
 import { is } from "electron-util";
 import { ipcMain } from "electron";
 import path from "path";
 import { existsSync, readFileSync } from "fs";
 import { assert } from "console";
+
+const adbPath = path.join(__dirname, "../platform-tools", "adb");
 
 let __InUsePorts: string[] = []; //本次识别已被使用的端口，将会在此暂存。
 
@@ -26,17 +28,15 @@ interface Emulator {
 }
 
 function exec(exp: string): string {
-  return execSync(exp, { shell: "powershell.exe" }).toString();
-  /**
-    if (is.windows) {
-        return execSync(exp, { 'shell': 'powershell.exe' }).toString();
-    }
-    else if (is.linux) {
-        return execSync(exp).toString();
-    }
-    else {
-        return ""; // macos
-    } */
+  // return execSync(exp, { shell: "powershell.exe" }).toString();
+
+  if (is.windows) {
+    return execSync(exp, { shell: "powershell.exe" }).toString();
+  } else if (is.linux) {
+    return execSync(exp, { shell: "bash" }).toString();
+  } else {
+    return execSync(exp, { shell: "bash" }).toString(); // macos
+  }
 }
 
 function getPidPath(pid: string | number) {
@@ -79,7 +79,7 @@ function getBlueStackInfo(e: Emulator) {
       else {
         emulatorName.forEach((v) => {
           const exp = String.raw`Get-ItemProperty -Path Registry::HKEY_LOCAL_MACHINE\SOFTWARE\BlueStacks_china_gmgr\Guests\\${v}\Network\0 | Select-Object -Property InboundRules | ConvertTo-Json`;
-          const port = JSON.parse(exec(exp))["InboundRules"][0].split(":").pop();
+          const port = JSON.parse(exec(exp)).InboundRules[0].split(":").pop();
           if (
             !__InUsePorts.includes(port) &&
             testPort("127.0.0.1", port) &&
@@ -207,7 +207,7 @@ function getEmulators() {
         }
       }
     });
-    emulators.forEach((e) => {
+  emulators.forEach((e) => {
     if (e.pname == "HD-Player.exe") {
       getBlueStackInfo(e);
     } else if (e.pname == "NoxVMHandle.exe") {
@@ -224,8 +224,71 @@ function getEmulators() {
   return emulators;
 }
 
+function testNoxPorts() {
+  const opened: number[] = [];
+  const baseport = 62001;
+  let index = 0;
+  do {
+    let port = baseport + index;
+    if (index > 0) {
+      port += 24;
+    }
+    const output = spawnSync(adbPath, ["connect", `127.0.0.1:${port}`]);
+    if (/connected/.test(output.output.toString())) {
+      opened.push(port);
+    }
+    index += 1;
+  } while (opened.length === index);
+  return opened;
+}
+
+function adbDevices() {
+  let emulators: Emulator[] = [];
+  let e = {};
+  getNoxInfo(e as Emulator);
+  return emulators;
+}
+
+function getDeviceName(address: string): string | false {
+  const connectResult = spawnSync(adbPath, [
+    "connect",
+    address,
+  ]).stdout.toString();
+  if (/connected/.test(connectResult)) {
+    return spawnSync(adbPath, [
+      "shell",
+      "settings",
+      "get",
+      "global",
+      "device_name",
+    ]).stdout.toString();
+  }
+  return false;
+}
+
+function getDeviceUuid(address: string): string | false {
+  const connectResult = spawnSync(adbPath, [
+    "connect",
+    address,
+  ]).stdout.toString();
+  if (/connected/.test(connectResult)) {
+    return spawnSync(adbPath, [
+      "shell",
+      "settings",
+      "get",
+      "secure",
+      "android_id",
+    ]).stdout.toString();
+  }
+  return false;
+}
+
 export default function getEmulatorHooks() {
   ipcMain.handle("asst:getEmulators", async (event) => {
-    return getEmulators();
+    if (is.windows) {
+      return getEmulators();
+    } else {
+      return adbDevices();
+    }
   });
 }

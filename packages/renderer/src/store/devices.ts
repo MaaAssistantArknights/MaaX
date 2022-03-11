@@ -23,13 +23,13 @@ export interface DeviceAction {
 //   "unknown",
 // ];
 // const devicesDemo: Device[] = [
-//   {
-//     uuid: "12345678-90abcdefg",
-//     connectionString: "127.0.0.1:5555",
-//     name: "bluestack",
-//     status: "tasking",
-//     adbPath: "E://adb.exe",
-//   },
+  // {
+  //   uuid: "12345678-90abcdefg",
+  //   connectionString: "127.0.0.1:5555",
+  //   name: "bluestack",
+  //   status: "tasking",
+  //   adbPath: "E://adb.exe",
+  // },
 //   ...allStatus.map((v) => ({
 //     uuid: v,
 //     connectionString: v,
