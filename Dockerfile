@@ -1,5 +1,5 @@
 # use the version that corresponds to your electron version
-FROM node:14.16
+FROM node:16.13
 
 LABEL NAME="electron-wrapper"
 LABEL RUN="docker run --rm -it electron-wrapper bash"
