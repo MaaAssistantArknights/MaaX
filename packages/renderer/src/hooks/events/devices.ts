@@ -31,6 +31,7 @@ export default function useDeviceEvents() {
           `设备${arg.address}连接失败, 请尝试重启模拟器.\n如多次失败请在 GitHub 上进行反馈.`,
           { closable: true, duration: 0 }
         );
+        window.ipcRenderer.sendSync("asst:destroy",{uuid:arg.address});
         deviceStore.updateDeviceStatus(arg.address, "unknown");
         break;
       }
