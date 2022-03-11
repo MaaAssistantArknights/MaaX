@@ -2,6 +2,7 @@ import ffi from "ffi-napi";
 import ref from "ref-napi";
 import ArrayType from "ref-array-napi";
 import path from "path";
+import { existsSync } from "fs";
 import { assert } from "@vue/compiler-core";
 import WindowFactory from "../window/factory";
 import logger from "../utils/logger";
@@ -73,33 +74,21 @@ const cb = ffi.Callback(
     const detail = JSON.parse(_detail as string);
     const more = detail.details;
     const wc = WindowFactory.getInstance().webContents;
-
     console.log(detail);
     switch (msg as unknown as number) {
       case AsstMsg.InternalError: {
+        // TODO: 玛丽没写这部分
         break;
       }
       case AsstMsg.InitFailed: {
         break;
       }
       case AsstMsg.ConnectionInfo: {
-        switch (detail.what) {
-          case "UuidGetted": {
-            wc.send("device:connectInfo", {
-              what: detail.what,
-              address: more.address,
-              uuid: more.uuid,
-            });
-            break;
-          }
-          case "ConnectFailed": {
-            wc.send("device:connectInfo", {
-              what: detail.what,
-              address: more.address,
-            });
-            break;
-          }
-        }
+        wc.send("device:connectInfo", {
+          what: detail.what,
+          address: more.address,
+          ...{ UuidGetted: { uuid: more.uuid }, ConnectFailed: {} }[detail.what as string],
+        });
         break;
       }
       case AsstMsg.AllTasksCompleted: {
@@ -147,7 +136,6 @@ function makeArray(array: any[]) {
 }
 
 class Assistant {
-  // TODO 可能要针对core版本来适配API
   private static singleton?: Assistant;
   public static libPath: string;
   MeoAsstLib;
@@ -156,7 +144,8 @@ class Assistant {
   __CALLBACK!: any;
 
   private constructor() {
-    assert(Boolean(Assistant.libPath), "path undefined");
+    console.log(Assistant.libPath);
+
     dependences[process.platform].forEach((lib) => {
       ffi.Library(path.join(Assistant.libPath, lib));
     });
@@ -191,15 +180,16 @@ class Assistant {
   }
 
   public static getInstance(): Assistant | undefined {
+    assert(Boolean(Assistant.libPath), "path undefined");
+    assert(existsSync(Assistant.libPath),"core path not exist!");
     if (Assistant.libPath) Assistant.libPath = path.resolve(Assistant.libPath);
-    //TODO: Check is dll available
     if (!this.singleton) {
       try {
         this.singleton = new Assistant();
         this.singleton.LoadResource(Assistant.libPath);
       } catch (error) {
         logger.error("error while loading core");
-        logger.error(error);  
+        //logger.error(error);
       }
     }
     return this.singleton;
@@ -297,11 +287,15 @@ class Assistant {
    * @param task_id 任务唯一id
    * @param params 任务参数
    */
-  
+
   SetTaskParams(uuid: string, task_id: number, params: string) {
-    return this.MeoAsstLib.AsstSetTaskParams(this.GetUUID(uuid),task_id,params);
+    return this.MeoAsstLib.AsstSetTaskParams(
+      this.GetUUID(uuid),
+      task_id,
+      params
+    );
   }
- 
+
   /**
    * 开始任务
    * @param uuid 设备唯一标识符
@@ -355,14 +349,12 @@ class Assistant {
     return this.MeoAsstPtr[uuid];
   }
 
-  
-  Log(level:string,message:string){
-    return this.MeoAsstLib.AsstLog(level,message);
+  Log(level: string, message: string) {
+    return this.MeoAsstLib.AsstLog(level, message);
   }
-  
 }
 
-function voidPointer(){
+function voidPointer() {
   return ref.alloc(ref.types.void);
 }
 
