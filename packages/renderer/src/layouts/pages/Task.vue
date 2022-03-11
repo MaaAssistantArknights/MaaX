@@ -8,7 +8,7 @@ import IconList from "@/assets/icons/list.svg?component";
 import IconGrid from "@/assets/icons/grid.svg?component";
 import Configuration from "@/components/configurations/Index.vue";
 
-import useTaskStore, { defaultTask } from "@/store/tasks";
+import useTaskStore, { defaultTask , handleSingleTask} from "@/store/tasks";
 
 import router from "@/router";
 
@@ -63,6 +63,17 @@ function load() {
     });
   }
 }
+
+
+function handleStart(){
+  tasks.value?.forEach((singleTask)=>{
+    if(singleTask.enable)
+      handleSingleTask[singleTask.id](singleTask.configurations);
+  });
+    
+}
+
+
 </script>
 
 <template>
@@ -88,7 +99,8 @@ function load() {
           <span>切换到{{ isGrid ? "简单" : "详细" }}信息</span>
         </NTooltip>
 
-        <NButton type="primary" round>
+        <NButton type="primary" round
+        @click = "handleStart">
           <span>开始</span>
         </NButton>
       </NSpace>
