@@ -205,7 +205,7 @@ function taskInfrast(task: Task["configurations"]) {
   const droneTranslate: Record<string, string> = {
     None: "_NotUse",
     LMD: "Money",
-    "Originium Shared": "SyntheticJade",
+    "Originium Shard": "SyntheticJade",
     "Battle Record": "CombatRecord",
     "Pure Gold": "PureGold",
     Orumdum: "OriginStone",

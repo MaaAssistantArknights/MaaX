@@ -26,7 +26,7 @@ interface InfrastConfiguration {
     | "Orumdum"
     | "Battle Record"
     | "Pure Gold"
-    | "Originium Shared"
+    | "Originium Shard"
     | "Chip";
   mood_limit: number;
 }
@@ -63,7 +63,7 @@ const droneUsageOptions = [
     label: "制造站 - 赤金",
   },
   {
-    value: "Originium Shared",
+    value: "Originium Shard",
     label: "制造站 - 源石碎片",
   },
   {
