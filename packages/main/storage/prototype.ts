@@ -31,7 +31,7 @@ class Storage<T extends Object> {
     }
 
     if (!fs.existsSync(this.filepath)) {
-      fs.writeFileSync(this.filepath, "");
+      fs.writeFileSync(this.filepath, "{}");
     } else {
       this.readFromFile();
     }
