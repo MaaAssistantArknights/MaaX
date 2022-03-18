@@ -52,6 +52,68 @@ enum AsstMsg {
   SubTaskExtraInfo, // 原子任务额外信息
 }
 
+type taskchainProps = {
+  [key in AsstMsg]: (msg: number, detail: any) => object;
+};
+
+const handleCallback: taskchainProps = {
+  [AsstMsg.InternalError]: (msg, detail) => {
+    return { name: msg };
+  },
+  [AsstMsg.InitFailed]: (msg, detail) => {
+    return { name: msg, uuid: detail.uuid };
+  },
+  [AsstMsg.ConnectionInfo]: (msg, detail) => {
+    return {
+      //name: msg,
+      name: detail.what, // 连接类型
+      address: detail.details.address,
+      ...{ UuidGetted: { uuid: detail.details.uuid }, ConnectFailed: {} }[
+        detail.what as string
+      ],
+    };
+  },
+  [AsstMsg.AllTasksCompleted]: (msg, detail) => {
+    return { name: msg, uuid: detail.uuid };
+  },
+  [AsstMsg.TaskChainError]: (msg, detail) => {
+    return {
+      name: msg,
+      task: taskChainTranslate[detail.taskchain],
+      uuid: detail.uuid,
+    };
+  },
+  [AsstMsg.TaskChainStart]: (msg, detail) => {
+    return {
+      name: msg,
+      task: taskChainTranslate[detail.taskchain],
+      uuid: detail.uuid,
+    };
+  },
+  [AsstMsg.TaskChainCompleted]: (msg, detail) => {
+    return {
+      name: msg,
+      task: taskChainTranslate[detail.taskchain],
+      uuid: detail.uuid,
+    };
+  },
+  [AsstMsg.TaskChainExtraInfo]: (msg, detail) => {
+    return { name: msg };
+  },
+  [AsstMsg.SubTaskError]: (msg, detail) => {
+    return { name: msg };
+  },
+  [AsstMsg.SubTaskStart]: (msg, detail) => {
+    return { name: msg };
+  },
+  [AsstMsg.SubTaskCompleted]: (msg, detail) => {
+    return { name: msg };
+  },
+  [AsstMsg.SubTaskExtraInfo]: (msg, detail) => {
+    return { name: msg };
+  },
+};
+
 const dependences: Record<string, Array<string>> = {
   win32: [
     "libiomp5md",
@@ -66,59 +128,77 @@ const dependences: Record<string, Array<string>> = {
   darwin: ["libpaddle_inference"],
 };
 
+/**
+type handleCallback  = Record<string, (detail:any)=>object>;
+// 下面注释起来的key应该是用不上的回调信息.
+
+const handleConnectionInfo: handleCallback = {
+  UuidGetted: (detail) => {
+    return { what: detail.what, address: detail.details.address, uuid: detail.details.uuid };
+  },
+  ConnectFailed: (detail) => {
+    return { what: detail.what, address: detail.details.address };
+  }
+};
+
+const handleTaskChianStart: handleCallback = {
+    StartUp:(detail) =>{return {uuid:detail.uuid};} // 开始唤醒任务链_开始
+};
+
+const handleSubTaskStart: handleCallback = {
+  //StartUp: (detail,more) => {return {uuid:detail.uuid};}, //  开始唤醒任务链子任务_预处理
+  StartToWakeUp:(detail) => {return {uuid:detail.uuid};},  //   开始唤醒任务子任务_开始
+  AwardBegin:(detail)=>{return {uuid:detail.uuid};}, // 领取每日_开始
+
+};
+
+const handleSubTaskCompleted: handleCallback = {
+  // StartUp
+  StartToWakeUp: (detail) =>{ return {uuid:detail.uuid};}, // 开始唤醒任务子任务_结束
+};
+
+ */
+
+const taskChainTranslate: Record<string, string> = {
+  StartUp: "startup",
+  Fight: "fight",
+  Recruit: "recruit",
+  Infrast: "infrast",
+  Visit: "visit",
+  Mall: "mall",
+  Award: "award",
+  Roguelike: "rogue",
+};
+
+//  "idle" | "processing" | "success" | "exception"
+/**
+ *       event,
+      uuid: string,
+      taskId: string,
+      status: TaskStatus,
+      progress: number
+
+ */
+const taskChainState: Record<number, string> = {
+  10000: "exception",
+  10001: "processing",
+  10002: "success",
+};
+
 const cb = ffi.Callback(
   "void",
   ["int", "string", ref.refType(ref.types.void)],
-  (msg, _detail, custom_args) => {
-    console.log(msg);
+  (_msg, _detail, custom_args) => {
+    console.log(_msg);
+    const msg: number = _msg as unknown as number;
     const detail = JSON.parse(_detail as string);
-    const more = detail.details;
-    const wc = WindowFactory.getInstance().webContents;
     console.log(detail);
-    switch (msg as unknown as number) {
-      case AsstMsg.InternalError: {
-        // TODO: 玛丽没写这部分
-        break;
-      }
-      case AsstMsg.InitFailed: {
-        break;
-      }
-      case AsstMsg.ConnectionInfo: {
-        wc.send("device:connectInfo", {
-          what: detail.what,
-          address: more.address,
-          ...{ UuidGetted: { uuid: more.uuid }, ConnectFailed: {} }[detail.what as string],
-        });
-        break;
-      }
-      case AsstMsg.AllTasksCompleted: {
-        break;
-      }
-      case AsstMsg.TaskChainError: {
-        break;
-      }
-      case AsstMsg.TaskChainStart: {
-        break;
-      }
-      case AsstMsg.TaskChainCompleted: {
-        break;
-      }
-      case AsstMsg.TaskChainExtraInfo: {
-        break;
-      }
-      case AsstMsg.SubTaskError: {
-        break;
-      }
-      case AsstMsg.SubTaskStart: {
-        break;
-      }
-      case AsstMsg.SubTaskCompleted: {
-        break;
-      }
-      case AsstMsg.SubTaskExtraInfo: {
-        break;
-      }
-    }
+    const callback = handleCallback[msg as AsstMsg](msg, detail);
+    // TODO: 一堆类型注解没写
+    WindowFactory.getInstance().webContents.send(
+      (callback as any).name.toString(),
+      callback
+    );
   }
 );
 
@@ -181,7 +261,7 @@ class Assistant {
 
   public static getInstance(): Assistant | undefined {
     assert(Boolean(Assistant.libPath), "path undefined");
-    assert(existsSync(Assistant.libPath),"core path not exist!");
+    assert(existsSync(Assistant.libPath), "core path not exist!");
     if (Assistant.libPath) Assistant.libPath = path.resolve(Assistant.libPath);
     if (!this.singleton) {
       try {
@@ -358,4 +438,4 @@ function voidPointer() {
   return ref.alloc(ref.types.void);
 }
 
-export { Assistant };
+export { Assistant, AsstMsg };
