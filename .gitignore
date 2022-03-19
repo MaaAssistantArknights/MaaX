@@ -7,3 +7,6 @@ dist-ssr
 tmp
 **/.tmp
 release
+
+# core test
+packages/main/core

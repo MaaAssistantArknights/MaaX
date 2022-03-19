@@ -179,19 +179,24 @@ function taskFight(task: Task["configurations"]) {
     stage: "CE-5", // TODO: UI上关卡支持
     mecidine: 0, // TODO: 使用理智药数量
     stones: 0, // TODO: 吃石头数量
-    times: task.special.times,
+    times: (task.special as any).times,
+    report_to_penguin: true, // TODO: 是否上传到企鹅物流, 可选, 默认false
     penguin_id: "", // TODO: 接受回调的物流id
+    server: "CN" // TODO: 企鹅物流上传区服
   };
 }
 
 function taskRecruit(task: Task["configurations"]) {
+  const select :number[] = [];
   const confirm: number[] = [];
   for (const [key, value] of Object.entries(task.recognitions as Object)) {
     if (value) confirm.push(parseInt(key));
+    if (value && parseInt(key)!=3) select.push(parseInt(key)); // 不选择3星词条.
   }
+
   const ret = {
     refresh: task.refresh_normal_tags,
-    select: [],
+    select: select,
     confirm: confirm,
     times: task.maximum_times_of_recruitments,
     expedite: task.use_expedited_plan,
@@ -223,15 +228,16 @@ function taskInfrast(task: Task["configurations"]) {
   };
 
   const facilities:string[] = [];
-  task.facilities.forEach((room:any)=>{
+  (task.facilities as Array<object>).forEach((room:any)=>{
     if(room.enable)
     facilities.push(facilityTranslate[room.name]);
   });
   return {
-    // "mode": 0,
-    facility: facilities,
-    drones: droneTranslate[task.drone_usage as string],
-    threshold: (task.mode_limit as number) / 23,
+    // "mode": 0, // 换班模式
+    facility: facilities, // 换班顺序
+    drones: droneTranslate[task.drone_usage as string], // 无人机用途 
+    threshold: (task.mode_limit as number) / 23, // 换班心情阈值
+    replenish: true // TODO: 原始碎片自动补货
   };
 }
 
@@ -245,7 +251,7 @@ function taskMall(task: Task["configurations"]) {
 
   return {
     "shopping":true,   // TODO: 可以只收取信用而不购物, UI中无选项, 虽然感觉这个功能没啥用
-    "shopping_list": [...task.exclude.keys()],
+    "shopping_list": [...(task.exclude as Set<string>).keys()],
     "is_black_list": true,
   };
 }
@@ -261,8 +267,8 @@ function taskRogue(task: Task["configurations"]) {
     AfterMoney
   }
   return {
-    mode: rogueTranslate[task.strategy as number],
-    opers:"" // TODO: {name:干员名, fullmatch:干员名是否全字匹配, skill: 使用哪个技能}
+    mode: rogueTranslate[task.strategy as number], // 肉鸽战斗模式, 0-尽可能往后打 1-第一层投资完源石就退出 2-投资后退出
+    opers:[] // TODO: 参考 https://github.com/MaaAssistantArknights/MaaAssistantArknights/blob/dev/docs/%E9%9B%86%E6%88%90%E6%96%87%E6%A1%A3.md?plain=1#L128-L137
   };
 }
 
