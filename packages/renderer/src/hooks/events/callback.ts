@@ -25,7 +25,7 @@ enum Connection {
   ConnectFailed = "ConnectFailed",
 }
 
-enum StartUp{
+enum StartUp {
 
 }
 
@@ -34,10 +34,10 @@ export default function useCallbackEvents() {
   const taskStore = useTaskStore();
 
   // 字面意思, 内部错误
-  window.ipcRenderer.on(CallbackMsg.InternalError, (event, arg) => {});
+  window.ipcRenderer.on(CallbackMsg.InternalError, (event, arg) => { });
 
   // 初始化失败
-  window.ipcRenderer.on(CallbackMsg.InitFailed, (event, arg) => {});
+  window.ipcRenderer.on(CallbackMsg.InitFailed, (event, arg) => { });
 
   // 获取到UUID
   window.ipcRenderer.on(Connection.UuidGetted, async (event, arg) => {
@@ -61,14 +61,14 @@ export default function useCallbackEvents() {
   });
 
   // 任务链开始
-  window.ipcRenderer.on(CallbackMsg.TaskChainStart, async (event,arg)=>{
-    taskStore.updateTaskStatus(arg.uuid, arg.task, "processing",0);
+  window.ipcRenderer.on(CallbackMsg.TaskChainStart, async (event, arg) => {
+    taskStore.updateTaskStatus(arg.uuid, arg.task, "processing", 0);
   });
 
   // 任务链完成
-    window.ipcRenderer.on(CallbackMsg.TaskChainCompleted, async (event,arg)=>{
+  window.ipcRenderer.on(CallbackMsg.TaskChainCompleted, async (event, arg) => {
     console.log(arg);
-    taskStore.updateTaskStatus(arg.uuid, arg.task, "success",100);
+    taskStore.updateTaskStatus(arg.uuid, arg.task, "success", 100);
     window.$message.info(`taskchian ${arg.task} completed`);
   });
 }

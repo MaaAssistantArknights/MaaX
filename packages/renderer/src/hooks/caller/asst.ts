@@ -1,4 +1,4 @@
 export default {
   load: () => window.ipcRenderer.sendSync("asst:load") as boolean,
-  dispose: () => window.ipcRenderer.send("asst:dispose") as void,
+  dispose: () => window.ipcRenderer.sendSync("asst:dispose") as void,
 };

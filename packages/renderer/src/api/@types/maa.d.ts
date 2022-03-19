@@ -1,7 +1,7 @@
 declare namespace Api.Maa {
   type Platform = "windows" | "macos" | "linux" | "NoPlatform";
   type Arch = "x64" | "arm64" | "NoArch";
-  type Component = ""; // TODO: MaaDS Component
+  type Component = "MaaCore"; // TODO: MaaDS Component
 
   interface Resource {
     file_name: string;

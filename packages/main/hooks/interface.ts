@@ -1,11 +1,14 @@
-import ffi from "ffi-napi";
+import ffi, { DynamicLibrary } from "ffi-napi";
 import ref from "ref-napi";
 import ArrayType from "ref-array-napi";
 import path from "path";
-import { existsSync } from "fs";
-import { assert } from "@vue/compiler-core";
+import { existsSync, mkdirSync } from "fs";
 import WindowFactory from "../window/factory";
 import logger from "../utils/logger";
+import _, { findIndex } from "lodash";
+import { app } from "electron";
+import Storage from "../storage";
+import lib from "naive-ui";
 
 /** Some types for core */
 const BoolType = ref.types.bool;
@@ -69,7 +72,7 @@ const handleCallback: taskchainProps = {
       name: detail.what, // 连接类型
       address: detail.details.address,
       ...{ UuidGetted: { uuid: detail.details.uuid }, ConnectFailed: {} }[
-        detail.what as string
+      detail.what as string
       ],
     };
   },
@@ -211,65 +214,82 @@ function makeArray(array: any[]) {
   return typeof array[0] === "number"
     ? IntArrayType(array)
     : array.map((v) => {
-        return Buffer.from(v);
-      });
+      return Buffer.from(v);
+    });
 }
 
 class Assistant {
   private static singleton?: Assistant;
-  public static libPath: string;
-  MeoAsstLib;
+  // public static libPath: string;
+  public MeoAsstLib;
   //MeoAsstPtr!: ref.Pointer<void>;
+  private DLib;
+  private DepLibs: DynamicLibrary[] = [];
   MeoAsstPtr: Record<string, AsstInstancePtr> = {};
   __CALLBACK!: any;
 
+  private static libPathKey = "libPath";
+
+  private static defaultLibPath = path.join(app.getPath("appData"), app.getName(), "core");
+
+  public static get libPath(): string {
+    let libPath = Storage.get(Assistant.libPathKey);
+    if (!_.isString(libPath) || !existsSync(libPath)) {
+      logger.error(`原资源路径： ${libPath}, 更新后：${this.defaultLibPath}`);
+      libPath = this.defaultLibPath;
+      mkdirSync(libPath);
+    }
+    if (path.isAbsolute(libPath)) {
+      libPath = path.resolve(libPath);
+      Storage.set(Assistant.libPathKey, libPath);
+    }
+    return libPath;
+  }
+
   private constructor() {
+
     console.log(Assistant.libPath);
 
     dependences[process.platform].forEach((lib) => {
-      ffi.Library(path.join(Assistant.libPath, lib));
+      console.log(lib);
+      // ffi.Library(path.join(Assistant.libPath, lib));
+      this.DepLibs.push(ffi.DynamicLibrary(path.join(Assistant.libPath, lib)));
     });
-    console.log(Assistant.libPath);
+    this.DLib = ffi.DynamicLibrary(path.join(Assistant.libPath, "MeoAssistant"), ffi.RTLD_NOW);
+    this.MeoAsstLib =
+    {
+      AsstLoadResource: ffi.ForeignFunction(this.DLib.get("AsstLoadResource"), BoolType, [StringType], ffi.FFI_STDCALL),
+      AsstCreate: ffi.ForeignFunction(this.DLib.get("AsstCreate"), AsstPtrType, [], ffi.FFI_STDCALL),
+      AsstCreateEx: ffi.ForeignFunction(this.DLib.get("AsstCreateEx"), AsstPtrType, ["pointer", CustomArgsType], ffi.FFI_STDCALL),
+      AsstDestroy: ffi.ForeignFunction(this.DLib.get("AsstDestroy"), voidType, [AsstPtrType], ffi.FFI_STDCALL),
+      AsstConnect: ffi.ForeignFunction(this.DLib.get("AsstConnect"),
+        BoolType,
+        [AsstPtrType, StringType, StringType, StringType],
+        ffi.FFI_STDCALL),
 
-    this.MeoAsstLib = ffi.Library(
-      path.join(Assistant.libPath, "MeoAssistant"),
-      {
-        AsstLoadResource: [BoolType, [StringType]],
+      AsstAppendTask: ffi.ForeignFunction(this.DLib.get("AsstAppendTask"), IntType, [AsstPtrType, StringType, StringType], ffi.FFI_STDCALL),
+      AsstSetTaskParams: ffi.ForeignFunction(this.DLib.get("AsstSetTaskParams"), BoolType, [AsstPtrType, IntType, StringType], ffi.FFI_STDCALL),
 
-        AsstCreate: [AsstPtrType, []],
-        AsstCreateEx: [AsstPtrType, ["pointer", CustomArgsType]],
-        AsstDestroy: [voidType, [AsstPtrType]],
-        AsstConnect: [
-          BoolType,
-          [AsstPtrType, StringType, StringType, StringType],
-        ],
+      AsstStart: ffi.ForeignFunction(this.DLib.get("AsstStart"), BoolType, [AsstPtrType], ffi.FFI_STDCALL),
+      AsstStop: ffi.ForeignFunction(this.DLib.get("AsstStop"), BoolType, [AsstPtrType], ffi.FFI_STDCALL),
 
-        AsstAppendTask: [IntType, [AsstPtrType, StringType, StringType]],
-        AsstSetTaskParams: [BoolType, [AsstPtrType, IntType, StringType]],
-
-        AsstStart: [BoolType, [AsstPtrType]],
-        AsstStop: [BoolType, [AsstPtrType]],
-
-        AsstGetImage: [ULLType, [AsstPtrType, Buff, ULLType]],
-        AsstCtrlerClick: [BoolType, [AsstPtrType, IntType, IntType, BoolType]],
-        AsstGetVersion: [StringType, []],
-
-        AsstLog: [voidType, [StringType, StringType]],
-      }
-    );
+      AsstGetImage: ffi.ForeignFunction(this.DLib.get("AsstGetImage"), ULLType, [AsstPtrType, Buff, ULLType], ffi.FFI_STDCALL),
+      AsstCtrlerClick: ffi.ForeignFunction(this.DLib.get("AsstCtrlerClick"), BoolType, [AsstPtrType, IntType, IntType, BoolType], ffi.FFI_STDCALL),
+      AsstGetVersion: ffi.ForeignFunction(this.DLib.get("AsstGetVersion"), StringType, [], ffi.FFI_STDCALL),
+      AsstLog: ffi.ForeignFunction(this.DLib.get("AsstLog"), voidType, [StringType, StringType], ffi.FFI_STDCALL),
+    };
   }
 
+
   public static getInstance(): Assistant | undefined {
-    assert(Boolean(Assistant.libPath), "path undefined");
-    assert(existsSync(Assistant.libPath), "core path not exist!");
-    if (Assistant.libPath) Assistant.libPath = path.resolve(Assistant.libPath);
+    let libPath = Assistant.libPath;
     if (!this.singleton) {
       try {
         this.singleton = new Assistant();
-        this.singleton.LoadResource(Assistant.libPath);
+        this.singleton.LoadResource(libPath);
       } catch (error) {
         logger.error("error while loading core");
-        //logger.error(error);
+        logger.error(error);
       }
     }
     return this.singleton;
@@ -277,10 +297,15 @@ class Assistant {
 
   public static dispose(): void {
     if (this.singleton) {
-      for (const [uuid] of Object.entries(this.singleton.MeoAsstPtr)) {
+      for (const uuid of Object.keys(this.singleton.MeoAsstPtr)) {
         this.singleton.Stop(uuid);
         this.singleton.Destroy(uuid);
       }
+      for (const dep of this.singleton.DepLibs) {
+        console.log(dep.path());
+        dep.close();
+      }
+      this.singleton.DLib.close();
       delete this.singleton;
     }
   }

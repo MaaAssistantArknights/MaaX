@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, onMounted } from "vue";
+import { computed, ref } from "vue";
 import { NIcon, NSpace, NButton, NTooltip, NText, NTime, useMessage } from "naive-ui";
 import IconRefresh from "@/assets/icons/refresh.svg?component";
 import IconSettings from "@/assets/icons/settings.svg?component";
@@ -9,6 +9,8 @@ import useDeviceStore from "@/store/devices";
 import useSettingStore from "@/store/settings";
 import asstHooks from "@/hooks/caller/asst";
 import versionHooks from "@/hooks/caller/version";
+
+import installCore from "@/utils/installer";
 
 const connectedStatus: Set<DeviceStatus> = new Set(["connected", "tasking"]);
 const disconnectedStatus: Set<DeviceStatus> = new Set([
@@ -28,7 +30,22 @@ const disconnectedDevices = computed(() =>
   devices.filter((device) => disconnectedStatus.has(device.status))
 );
 
-function handleRefreshDevices() {
+async function checkCoreVersion() {
+  const success = asstHooks.load();
+  const version = versionHooks.core();
+  if (success && version) {
+    settingStore.version.core.current = version;
+    return true;
+  } else {
+    return false;
+  }
+}
+
+async function handleRefreshDevices() {
+  if (!await checkCoreVersion()) {
+    installCore();
+    return;
+  }
   const refreshMessage = message.loading("正在更新设备列表...");
 
   //console.log(deviceStore.devices);
@@ -68,14 +85,6 @@ const now = ref(Date.now());
 setInterval(() => {
   now.value = Date.now();
 }, 1000);
-
-onMounted(() => {
-  const success = asstHooks.load();
-  const version = versionHooks.core();
-  if (success && version) {
-    settingStore.version.core.current = version;
-  }
-});
 
 </script>
 
@@ -124,7 +133,7 @@ onMounted(() => {
       />
     </div>
     <div :style="{ textAlign: 'center' }">
-      <NText depth="3">
+      <NText depth="2">
         最后更新：
         <span v-if="lastUpdate === null">从不</span>
         <NTime v-else :time="lastUpdate" :to="now" type="relative" />

@@ -20,7 +20,7 @@ initHook();
 const themeStore = useThemeStore();
 
 // check core available
-window.ipcRenderer.sendSync("version:core");
+// window.ipcRenderer.sendSync("version:core");
 
 const commonThemeOverrides: Partial<ThemeCommonVars> = {
   infoColor: "#66c7ff",

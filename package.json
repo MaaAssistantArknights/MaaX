@@ -17,6 +17,7 @@
   "devDependencies": {
     "@types/cron": "^1.7.3",
     "@types/sortablejs": "^1.10.7",
+    "@types/unzipper": "^0.10.5",
     "@typescript-eslint/eslint-plugin": "^5.12.1",
     "@typescript-eslint/parser": "^5.12.1",
     "@vitejs/plugin-vue": "^2.2.2",
@@ -59,6 +60,7 @@
     "electron-util": "^0.17.2",
     "ffi-napi": "^4.0.3",
     "ref-array-napi": "^1.2.2",
-    "ref-napi": "^3.0.3"
+    "ref-napi": "^3.0.3",
+    "unzipper": "^0.10.11"
   }
 }

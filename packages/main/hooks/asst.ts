@@ -1,8 +1,5 @@
-import Electron, { app, ipcMain } from "electron";
+import Electron, { ipcMain } from "electron";
 import { Assistant } from "./interface";
-import path from "path";
-
-Assistant.libPath = path.join(__dirname, "../core");
 
 const asstHooks: Record<
   string,
@@ -44,7 +41,7 @@ const asstHooks: Record<
   "asst:setUUID": (event, arg) => {
     Assistant.getInstance()?.SetUUID(arg.address, arg.uuid);
     event.returnValue = true;
-  }
+  },
 };
 
 export default function useAsstHooks() {
@@ -65,6 +62,7 @@ export default function useAsstHooks() {
     for (const eventName of Object.keys(asstHooks)) {
       ipcMain.off(eventName, asstHooks[eventName]);
     }
+    event.returnValue = void 0;
   });
 }
 

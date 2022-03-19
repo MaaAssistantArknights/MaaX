@@ -1,5 +1,6 @@
 import installExtension from "electron-devtools-installer";
 import type { BrowserWindow } from "electron";
+import axios, { Method } from "axios";
 
 function useDebug(window: BrowserWindow) {
   installExtension("nhdogjmejiglipccpnnnanhbledajbpd")
@@ -9,21 +10,14 @@ function useDebug(window: BrowserWindow) {
     );
   window.webContents.openDevTools({ mode: "detach" });
   // Bypass CORS
-  window.webContents.session.webRequest.onBeforeSendHeaders(
-    (details, callback) => {
-      callback({ requestHeaders: { Origin: "http://127.0.0.1:3344", ...details.requestHeaders } });
-    }
-  );
-  window.webContents.session.webRequest.onHeadersReceived(
-    (details, callback) => {
-      callback({
-        responseHeaders: {
-          "Access-Control-Allow-Origin": ["http://127.0.0.1:3344"],
-          "Access-Control-Allow-Credentials": "true",
-          ...details.responseHeaders,
-        },
-      });
-    }
+  window.webContents.session.webRequest.onBeforeRequest(
+    { urls: ["https://maa.alisaqaq.moe"] },
+    async (details, callback) => {
+      callback(await axios.request({
+        method: details.method as Method,
+        url: details.url,
+      }));
+    } 
   );
 }
 
