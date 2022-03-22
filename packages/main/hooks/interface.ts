@@ -55,6 +55,10 @@ enum AsstMsg {
   SubTaskExtraInfo, // 原子任务额外信息
 }
 
+const subTaskStart : Record<string, (detail:any) => object > = {
+  StartUp : (detail:any) => { return {task:detail.details.task}; },
+};
+
 type taskchainProps = {
   [key in AsstMsg]: (msg: number, detail: any) => object;
 };
@@ -104,16 +108,22 @@ const handleCallback: taskchainProps = {
     return { name: msg };
   },
   [AsstMsg.SubTaskError]: (msg, detail) => {
-    return { name: msg };
+    return { name: `${detail.taskchain}:${detail.details.task}` };
   },
   [AsstMsg.SubTaskStart]: (msg, detail) => {
-    return { name: msg };
+    console.log(`CALL: ${detail.taskchain}:Start:${detail.details.task}`);
+    return { name: `${detail.taskchain}:Start:${detail.details.task}`,
+          execTimes:detail.details.exec_times,
+        task:taskChainTranslate[detail.taskchain],
+      uuid:detail.uuid };
   },
   [AsstMsg.SubTaskCompleted]: (msg, detail) => {
-    return { name: msg };
+    console.log(`CALL: ${detail.taskchain}:Completed:${detail.details.task}`);
+    return { name: `${detail.taskchain}:Completed:${detail.details.task}`, ...detail };
   },
   [AsstMsg.SubTaskExtraInfo]: (msg, detail) => {
-    return { name: msg };
+    console.log(`CALL: ${detail.taskchain}:Extra:${detail.what}`);
+    return { name: `${detail.taskchain}:Extra:${detail.what}`, ...detail };
   },
 };
 

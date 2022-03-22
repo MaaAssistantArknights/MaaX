@@ -15,6 +15,8 @@ export interface TaskAction {
   changeTaskOrder(uuid: string, from: number, to: number): void;
   updateTask(uuid: string, tasks: Task[]): void;
   newTask(uuid: string): void;
+  getTask(uuid:string, taskId:string) : any;
+  getTaskProcess(uuid: string, taskId:string): number | undefined;
 }
 
 export const defaultTask: Task[] = [
@@ -165,6 +167,18 @@ const useTaskStore = defineStore<"tasks", TaskState, {}, TaskAction>("tasks", {
     newTask(uuid) {
       const { deviceTasks } = this;
       deviceTasks[uuid] = defaultTask;
+    },
+    getTask(uuid,taskId){
+      const { deviceTasks } = this;
+      const origin = deviceTasks[uuid];
+      const task = origin?.find((task) => task.id === taskId);
+      return task?task:{};
+    },
+    getTaskProcess(uuid,taskId){
+      const { deviceTasks } = this;
+      const origin = deviceTasks[uuid];
+      const task = origin?.find((task) => task.id === taskId);
+      return task?task.progress:0;
     },
   },
 });
