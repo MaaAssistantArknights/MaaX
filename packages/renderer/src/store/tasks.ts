@@ -15,6 +15,8 @@ export interface TaskAction {
   changeTaskOrder(uuid: string, from: number, to: number): void;
   updateTask(uuid: string, tasks: Task[]): void;
   newTask(uuid: string): void;
+  getTask(uuid:string, taskId:string) : any;
+  getTaskProcess(uuid: string, taskId:string): number | undefined;
 }
 
 export const defaultTask: Task[] = [
@@ -166,6 +168,18 @@ const useTaskStore = defineStore<"tasks", TaskState, {}, TaskAction>("tasks", {
       const { deviceTasks } = this;
       deviceTasks[uuid] = defaultTask;
     },
+    getTask(uuid,taskId){
+      const { deviceTasks } = this;
+      const origin = deviceTasks[uuid];
+      const task = origin?.find((task) => task.id === taskId);
+      return task?task:{};
+    },
+    getTaskProcess(uuid,taskId){
+      const { deviceTasks } = this;
+      const origin = deviceTasks[uuid];
+      const task = origin?.find((task) => task.id === taskId);
+      return task?task.progress:0;
+    },
   },
 });
 
@@ -176,10 +190,11 @@ function taskStartUp(task: Task["configurations"]) {
 
 function taskFight(task: Task["configurations"]) {
   return {
-    stage: "CE-5", // TODO: UI上关卡支持
+    stage: "", // TODO: UI上关卡支持
     mecidine: 0, // TODO: 使用理智药数量
     stones: 0, // TODO: 吃石头数量
-    times: (task.special as any).times,
+    //times: (task.special as any).times,
+    times : 1,
     report_to_penguin: true, // TODO: 是否上传到企鹅物流, 可选, 默认false
     penguin_id: "", // TODO: 接受回调的物流id
     server: "CN" // TODO: 企鹅物流上传区服
@@ -229,16 +244,18 @@ function taskInfrast(task: Task["configurations"]) {
 
   const facilities:string[] = [];
   (task.facilities as Array<object>).forEach((room:any)=>{
-    if(room.enable)
+    if(room.enabled)
     facilities.push(facilityTranslate[room.name]);
   });
-  return {
+  const ret =  {
     // "mode": 0, // 换班模式
     facility: facilities, // 换班顺序
     drones: droneTranslate[task.drone_usage as string], // 无人机用途 
-    threshold: (task.mode_limit as number) / 23, // 换班心情阈值
-    replenish: true // TODO: 原始碎片自动补货
+    threshold: ((task.mood_limit as number) / 23).toFixed(1), // 换班心情阈值
+    replenish: true // TODO: 源石碎片自动补货
   };
+  console.log(ret);
+  return ret;
 }
 
 function taskVisit(task: Task["configurations"]) {
