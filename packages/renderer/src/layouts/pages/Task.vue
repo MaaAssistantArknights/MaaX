@@ -65,13 +65,13 @@ function load() {
   }
 }
 
-function handleStart() {
-  tasks.value?.forEach((singleTask) => {
+async function handleStart() {
+  tasks.value?.forEach(async (singleTask) => {
     if (singleTask.enable) {
       taskStore.updateTaskStatus(uuid.value as string,singleTask.id,"processing",0);
       const task = handleSingleTask[singleTask.id](singleTask.configurations);
       console.log(task);
-      window.ipcRenderer.sendSync("asst:appendTask", {
+      await window.ipcRenderer.invoke("asst:appendTask", {
         uuid: uuid.value,
         type: {
           startup: "StartUp",
@@ -89,7 +89,7 @@ function handleStart() {
   });
 
 
-  window.ipcRenderer.sendSync("asst:start",{uuid:uuid.value});
+  await window.ipcRenderer.invoke("asst:start",{uuid:uuid.value});
 }
 </script>
 

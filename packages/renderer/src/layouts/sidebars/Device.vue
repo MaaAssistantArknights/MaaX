@@ -7,8 +7,6 @@ import DeviceCard from "@/components/DeviceCard.vue";
 
 import useDeviceStore from "@/store/devices";
 import useSettingStore from "@/store/settings";
-import asstHooks from "@/hooks/caller/asst";
-import versionHooks from "@/hooks/caller/version";
 
 import { installCore, checkCoreVersion } from "@/utils/core";
 
@@ -21,13 +19,11 @@ const disconnectedStatus: Set<DeviceStatus> = new Set([
 const deviceStore = useDeviceStore();
 const settingStore = useSettingStore();
 const message = useMessage();
-const { devices, lastUpdate } = deviceStore;
-const { version } = settingStore;
 const connectedDevices = computed(() =>
-  devices.filter((device) => connectedStatus.has(device.status))
+  deviceStore.devices.filter((device) => connectedStatus.has(device.status))
 );
 const disconnectedDevices = computed(() =>
-  devices.filter((device) => disconnectedStatus.has(device.status))
+  deviceStore.devices.filter((device) => disconnectedStatus.has(device.status))
 );
 
 async function handleRefreshDevices() {
@@ -103,7 +99,7 @@ setInterval(() => {
             text
             style="font-size: 24px"
             @click="handleRefreshDevices"
-            :disabled="version.core === undefined ? true : false"
+            :disabled="settingStore.version.core === undefined ? true : false"
           >
             <NIcon>
               <IconRefresh />
@@ -123,10 +119,14 @@ setInterval(() => {
     <div :style="{ textAlign: 'center' }">
       <NText depth="2">
         最后更新：
-        <span v-if="lastUpdate === null">从不</span>
-        <NTime v-else :time="lastUpdate" :to="now" type="relative" />
+        <span v-if="deviceStore.lastUpdate === null">从不</span>
+        <NTime
+          v-else
+          :time="deviceStore.lastUpdate"
+          :to="now"
+          type="relative"
+        />
       </NText>
     </div>
   </div>
 </template>
-∏
