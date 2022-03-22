@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, Ref } from "vue";
+import { ref, onMounted } from "vue";
 import { NButton, NSpace, NIcon } from "naive-ui";
 
 import IconWindowMinimize from "@/assets/icons/window-minimize.svg?component";
@@ -7,7 +7,14 @@ import IconClose from "@/assets/icons/close.svg?component";
 import IconScaleContract from "@/assets/icons/scale-contract.svg?component";
 import IconScaleExtend from "@/assets/icons/scale-extend.svg?component";
 
-const isMaximized: Ref<boolean> = ref(await window.ipcRenderer.invoke("window:is-maximized"));
+const isMaximized = ref(false);
+
+onMounted(() => {
+  window.ipcRenderer.invoke("window:is-maximized").then(result => {
+    isMaximized.value = result;
+  });
+});
+
 
 const onClose = () => {
   window.ipcRenderer.send("window:close");
@@ -31,8 +38,8 @@ window.ipcRenderer.on("window:update-maximized", (_, maximized) => {
 
 <template>
   <div class="window-controller">
-    <div class="placeholder-bar"></div>
-    <div class="drag-bar"></div>
+    <div class="placeholder-bar" />
+    <div class="drag-bar" />
     <NSpace class="traffic-lights">
       <NButton
         @click="onMinimize"
