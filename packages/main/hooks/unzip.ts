@@ -2,7 +2,7 @@ import unzipper from "unzipper";
 import fs from "fs";
 import { ipcMain } from "electron";
 import path from "path";
-import logger from "../utils/logger";
+import logger from "@main/utils/logger";
 
 export default function useUnzipHooks() {
   ipcMain.on("unzip:file", (event, src, dist) => {

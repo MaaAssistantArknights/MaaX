@@ -10,7 +10,7 @@ import useSettingStore from "@/store/settings";
 import asstHooks from "@/hooks/caller/asst";
 import versionHooks from "@/hooks/caller/version";
 
-import installCore from "@/utils/installer";
+import { installCore, checkCoreVersion } from "@/utils/core";
 
 const connectedStatus: Set<DeviceStatus> = new Set(["connected", "tasking"]);
 const disconnectedStatus: Set<DeviceStatus> = new Set([
@@ -29,17 +29,6 @@ const connectedDevices = computed(() =>
 const disconnectedDevices = computed(() =>
   devices.filter((device) => disconnectedStatus.has(device.status))
 );
-
-async function checkCoreVersion() {
-  const success = asstHooks.load();
-  const version = versionHooks.core();
-  if (success && version) {
-    settingStore.version.core.current = version;
-    return true;
-  } else {
-    return false;
-  }
-}
 
 async function handleRefreshDevices() {
   if (!await checkCoreVersion()) {
@@ -76,7 +65,6 @@ async function handleRefreshDevices() {
       refreshMessage.type = "warning";
       refreshMessage.content = "未找到任何可用设备!";
     }
-
   });
 }
 
@@ -141,3 +129,4 @@ setInterval(() => {
     </div>
   </div>
 </template>
+∏

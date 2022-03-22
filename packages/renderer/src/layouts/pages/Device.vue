@@ -1,23 +1,46 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { NInput, NAlert, NButton, NIcon, NText, NForm, NFormItem,useMessage } from "naive-ui";
+import { NInput, NAlert, NButton, NIcon, NText, NForm, NFormItem, useMessage } from "naive-ui";
+import useDeviceStore from "@/store/devices";
+import { uuidV4 } from "@common/uuid";
 import IconLink from "@/assets/icons/link.svg?component";
+import _ from "lodash";
 
 const message = useMessage();
 const connectionString = ref("");
+const deviceStore = useDeviceStore();
 
-function handleCustomConnect(){
-  // eslint-disable-next-line vue/max-len
-  const ipPortRegexRule = RegExp(String.raw`(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\:(6553[0-5]|655[0-2]\d|65[0-4]\d{2}|6[0-4]\d{3}|[0-5]\d{4}|[1-9]\d{0,3})`);
-
-  message.info(connectionString.value);
-
-  const ret = ipPortRegexRule.test(connectionString.value);
-  if(ret){
-    message.info("正在连接");
+function connectionStringChecker(cs: string) {
+  let [ip, port] = cs.split(":");
+  if (!port) {
+    // adb默认端口
+    port = "5555";
   }
-  else{
-    message.error("设备地址格式不正确");
+  if (!_.isNumber(port) || Number(port) <= 0x0000 || Number(port) >= 0xffff) {
+    return false;
+  }
+  return ip.split(".").every((v, i, a) => Number(v) && a.length === 4);
+}
+
+function handleCustomConnect() {
+  console.log(connectionString.value);
+  if (connectionStringChecker(connectionString.value)) {
+    // message.loading("正在连接");
+    if (deviceStore.devices.find(dev => dev.connectionString === connectionString.value)) {
+      message.info("设备已经存在了哦");
+      return;
+    }
+    deviceStore.mergeSearchResult([
+      {
+        uuid: uuidV4(),
+        connectionString: connectionString.value,
+        name: "default",
+        adbPath: "adb"
+      }
+    ]);
+  }
+  else {
+    message.error("设备地址不对哦，检查一下吧");
   }
 }
 
@@ -42,11 +65,12 @@ function handleCustomConnect(){
             placeholder="e.g. 127.0.0.1:5555"
           />
         </NFormItem>
-        <!-- 保持空格，使button和input对齐 --> 
+        <!-- 保持空格，使button和input对齐 -->
         <NFormItem label=" ">
-          <NButton type="primary"
-          class="operation"
-          @click="handleCustomConnect"
+          <NButton
+            type="primary"
+            class="operation"
+            @click="handleCustomConnect"
           >
             <span>连接</span>
             <NIcon size="24px">

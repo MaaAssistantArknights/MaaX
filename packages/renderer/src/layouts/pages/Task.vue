@@ -8,7 +8,8 @@ import IconList from "@/assets/icons/list.svg?component";
 import IconGrid from "@/assets/icons/grid.svg?component";
 import Configuration from "@/components/configurations/Index.vue";
 
-import useTaskStore, { defaultTask, handleSingleTask } from "@/store/tasks";
+import useTaskStore, { defaultTask } from "@/store/tasks";
+import handleSingleTask from "@/utils/converter/tasks";
 
 import router from "@/router";
 

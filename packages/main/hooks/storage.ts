@@ -1,5 +1,5 @@
 import { ipcMain } from "electron";
-import storage from "../storage";
+import storage from "@main/storage";
 
 export default function useStorageHooks() {
   ipcMain.on("storage:get", async (event, key: string) => {

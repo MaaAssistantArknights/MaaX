@@ -20,8 +20,7 @@ import {
   openFileInFolder,
   pathJoin,
   removeFile,
-  renameFile,
-  uuidV4,
+  renameFile
 } from "./util";
 
 import {
@@ -35,7 +34,6 @@ import {
   setTaskbar,
   updateDownloadItem,
 } from "./helper";
-import WindowFactory from "../window/factory";
 
 import path from "path";
 
