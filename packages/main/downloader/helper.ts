@@ -7,7 +7,8 @@ import {
   IPagination,
   IUpdateDownloadItem,
 } from "./@types";
-import { getBase64Bytes, getFileIcon, getFileName, pathJoin, uuidV4 } from "./util";
+import { getBase64Bytes, getFileIcon, getFileName, pathJoin } from "./util";
+import { uuidV4 } from "@common/uuid";
 
 /**
  * 获取下载中的字节数据

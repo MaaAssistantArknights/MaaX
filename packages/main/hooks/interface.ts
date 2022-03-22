@@ -138,7 +138,13 @@ const dependences: Record<string, Array<string>> = {
     "penguin-stats-recognize",
   ],
   linux: [],
-  darwin: ["libpaddle_inference"],
+  darwin: ["libpaddle_inference.dylib"],
+};
+
+const libName: Record<string, string> = {
+  win32: "MeoAssistant",
+  darwin: "MeoAssistant.dylib",
+  linux: "MeoAssistant"
 };
 
 /**
@@ -265,7 +271,7 @@ class Assistant {
       // ffi.Library(path.join(Assistant.libPath, lib));
       this.DepLibs.push(ffi.DynamicLibrary(path.join(Assistant.libPath, lib)));
     });
-    this.DLib = ffi.DynamicLibrary(path.join(Assistant.libPath, "MeoAssistant"), ffi.RTLD_NOW);
+    this.DLib = ffi.DynamicLibrary(path.join(Assistant.libPath, libName[process.platform]), ffi.RTLD_NOW);
     this.MeoAsstLib =
     {
       AsstLoadResource: ffi.ForeignFunction(this.DLib.get("AsstLoadResource"), BoolType, [StringType], ffi.FFI_STDCALL),

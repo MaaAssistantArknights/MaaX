@@ -2,7 +2,7 @@ import path from "path";
 import fs from "fs";
 import { app } from "electron";
 import _ from "lodash";
-import logger from "../utils/logger";
+import logger from "@main/utils/logger";
 // import { Observable } from "object-observer";
 
 type StorageOption<T> = Partial<{

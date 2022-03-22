@@ -1,5 +1,5 @@
 import { ipcMain } from "electron";
-import logger from "../utils/logger";
+import logger from "@main/utils/logger";
 
 export default function useLoggerHooks() {
   ipcMain.on("log:log", (event, ...params) => {

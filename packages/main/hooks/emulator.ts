@@ -4,6 +4,8 @@ import { ipcMain } from "electron";
 import path from "path";
 import { existsSync, readFileSync } from "fs";
 import { assert } from "console";
+import { runAppleScriptSync } from "@main/utils/applescript";
+import execa from "execa";
 
 const adbPath = path.join(__dirname, "../platform-tools", "adb");
 
@@ -283,10 +285,47 @@ function getDeviceUuid(address: string): string | false {
   return false;
 }
 
+function getEmulatorsDarwin(): Emulator[] {
+  const player_list = ["NoxAppPlayer.app", "NemuPlayer.app"];
+  const emulators: Emulator[] = [];
+  const { stdout } = execa.sync("pgrep", ["-lf", "."]);
+  const active_players = stdout
+    .split("\n")
+    .filter((line) => player_list.some((player) => line.includes(player)))
+    .map((line) => {
+      const [pid, ppath] = line.split(" ");
+      const pname = path.basename(ppath);
+      const pdir = path.dirname(ppath);
+      return { pid, pname, adbPath: `${pdir}/adb` };
+    });
+  console.log(active_players);
+  // const players = runAppleScriptSync(script)
+  //   .split(",")
+  //   .map((v) => v.trim());
+  // players.forEach((player) => {
+  //   const adb_path = `/Applications/${player}.app/Contents/MacOS/adb`;
+  //   const result = execa.sync(adb_path, ["devices"]).stdout;
+  //   result.split("\n").forEach((line) => {
+  //     const device = /(.+?)\tdevice/.exec(line);
+  //     if (device) {
+  //       emulators.push({
+  //         pname: player,
+  //         pid: "",
+  //         adb_path,
+  //         address: device[1],
+  //       });
+  //     }
+  //   });
+  // });
+  return emulators;
+}
+
 export default function getEmulatorHooks() {
-  ipcMain.handle("asst:getEmulators", async (event) => {
+  ipcMain.handle("asst:getEmulators", async (event): Promise<Emulator[]> => {
     if (is.windows) {
       return getEmulators();
+    } else if (is.macos) {
+      return getEmulatorsDarwin();
     } else {
       return adbDevices();
     }

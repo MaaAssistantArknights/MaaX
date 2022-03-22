@@ -1,4 +1,4 @@
-import WindowFactory from "../window/factory";
+import WindowFactory from "@main/window/factory";
 
 type MessageType = "info" | "success" | "warning" | "error" | "loading" | "default";
 

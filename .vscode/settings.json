@@ -1,5 +1,6 @@
 {
   "css.validate": false,
   "less.validate": false,
-  "volar.formatting.printWidth": 75
+  "volar.formatting.printWidth": 75,
+  "files.autoSave": "off"
 }

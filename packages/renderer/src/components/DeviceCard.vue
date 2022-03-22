@@ -64,13 +64,13 @@ function handleDeviceConnect() {
   deviceStore.updateDeviceStatus(device?.uuid as string, "connecting");
   const loadingMessage = message.loading(`${deviceDisplayName.value}连接中...`);
 
-  window.ipcRenderer.send("asst:createEx",{address:device?.connectionString});
+  console.log(window.ipcRenderer.send("asst:createEx",{address:device?.connectionString}));
 
-  window.ipcRenderer.send("asst:connect", {
+  console.log(window.ipcRenderer.send("asst:connect", {
     address: device?.connectionString,
     adb_path: device?.adbPath,
     config: device?.tag,
-  });
+  }));
 
   //loadingMessage.destroy();
 
