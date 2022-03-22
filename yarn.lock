@@ -3204,7 +3204,7 @@ ms@^2.0.0, ms@^2.1.1:
   resolved "https://registry.npmmirror.com/ms/-/ms-2.1.3.tgz#574c8138ce1d2b5861f0b44579dbadd60c6615b2"
   integrity sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
 
-naive-ui@^2.25.3:
+naive-ui@^2.26.4:
   version "2.26.4"
   resolved "https://registry.npmmirror.com/naive-ui/-/naive-ui-2.26.4.tgz#96b91fd36919fd36d20641668c8636a02e144d65"
   integrity sha512-yJQl6y58pxQWKi8YAofiFk0+4WVN+dNYoyKiMfaVdvVQTh9VxjBrcs4z5NUT+d98xUXOtmMzpIlrW/4P1xty+w==

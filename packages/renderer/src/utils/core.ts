@@ -5,8 +5,8 @@ import asst from "@/hooks/caller/asst";
 import version from "@/hooks/caller/version";
 
 export async function checkCoreVersion() {
-  const success = asst.load();
-  const coreVersion = version.core();
+  const success = await asst.load();
+  const coreVersion = await version.core();
   if (success && coreVersion) {
     return true;
   } else {
@@ -17,8 +17,8 @@ export async function checkCoreVersion() {
 export async function installCore(currentVersion: string | undefined = undefined) {
   const message = window.$message.loading("开始下载Maa Core", { duration: 0 });
   const os = {
-    arch: window.ipcRenderer.sendSync("os:arch") as Api.Maa.Arch,
-    platform: window.ipcRenderer.sendSync("os:platform") as Api.Maa.Platform
+    arch: await window.ipcRenderer.invoke("os:arch") as Api.Maa.Arch,
+    platform: await window.ipcRenderer.invoke("os:platform") as Api.Maa.Platform
   };
   const available = await maa.component.getInfo("MaaCore");
   if (_.isError(available)) {
@@ -59,8 +59,8 @@ export async function installCore(currentVersion: string | undefined = undefined
     }, 5000);
     return;
   }
-  const temp_dir = window.ipcRenderer.sendSync("path:app", "temp");
-  const core_dir = window.ipcRenderer.sendSync("path:asst");
+  const temp_dir = await window.ipcRenderer.invoke("path:app", "temp");
+  const core_dir = await window.ipcRenderer.invoke("path:asst");
   downloader.newDownloadFile({
     url: package_info.url,
     path: temp_dir,
@@ -73,8 +73,8 @@ export async function installCore(currentVersion: string | undefined = undefined
     asst.dispose();
     window.ipcRenderer.send("unzip:file", item.path, core_dir);
   });
-  window.ipcRenderer.once("unzip:done", (event) => {
-    const success = asst.load();
+  window.ipcRenderer.once("unzip:done", async (event) => {
+    const success = await asst.load();
     if (success) {
       message.content = `MaaCore ${version.core()}安装完成`;
       message.type = "success";

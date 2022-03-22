@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { NButton, NModal, NCard, NText, NDivider } from "naive-ui";
 import useTaskStore from "@/store/tasks";
 import router from "@/router";
@@ -59,8 +59,8 @@ const mallItems = [
 ];
 
 const routeUuid = router.currentRoute.value.params.uuid as string;
-const task = taskStore.deviceTasks[routeUuid].find(task => task.id === "mall");
-const configuration = task?.configurations as unknown as MallConfiguration;
+const task = computed(() => taskStore.deviceTasks[routeUuid].find(task => task.id === "mall"));
+const configuration = task.value?.configurations as unknown as MallConfiguration;
 
 const showModal = ref(false);
 

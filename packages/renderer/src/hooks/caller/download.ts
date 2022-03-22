@@ -21,7 +21,7 @@ interface IDownloadFile {
 }
 
 export default {
-  getDownloadData: () => window.ipcRenderer.sendSync("download:getDownloadData"),
+  getDownloadData: () => window.ipcRenderer.invoke("download:getDownloadData"),
   newDownloadFile: (file: INewDownloadFile) => window.ipcRenderer.send("download:newDownloadFile", file),
   retryDownloadFile: (file: IDownloadFile) => window.ipcRenderer.send("download:retryDownloadFile", file),
   togglePause: (file: IDownloadFile) => window.ipcRenderer.send("download:pauseOrResume", file),

@@ -5,10 +5,9 @@ import path from "path";
 import { existsSync, mkdirSync } from "fs";
 import WindowFactory from "../window/factory";
 import logger from "../utils/logger";
-import _, { findIndex } from "lodash";
+import _ from "lodash";
 import { app } from "electron";
 import Storage from "../storage";
-import lib from "naive-ui";
 
 /** Some types for core */
 const BoolType = ref.types.bool;
@@ -55,8 +54,8 @@ enum AsstMsg {
   SubTaskExtraInfo, // 原子任务额外信息
 }
 
-const subTaskStart : Record<string, (detail:any) => object > = {
-  StartUp : (detail:any) => { return {task:detail.details.task}; },
+const subTaskStart: Record<string, (detail: any) => object> = {
+  StartUp: (detail: any) => { return { task: detail.details.task }; },
 };
 
 type taskchainProps = {
@@ -112,10 +111,12 @@ const handleCallback: taskchainProps = {
   },
   [AsstMsg.SubTaskStart]: (msg, detail) => {
     console.log(`CALL: ${detail.taskchain}:Start:${detail.details.task}`);
-    return { name: `${detail.taskchain}:Start:${detail.details.task}`,
-          execTimes:detail.details.exec_times,
-        task:taskChainTranslate[detail.taskchain],
-      uuid:detail.uuid };
+    return {
+      name: `${detail.taskchain}:Start:${detail.details.task}`,
+      execTimes: detail.details.exec_times,
+      task: taskChainTranslate[detail.taskchain],
+      uuid: detail.uuid
+    };
   },
   [AsstMsg.SubTaskCompleted]: (msg, detail) => {
     console.log(`CALL: ${detail.taskchain}:Completed:${detail.details.task}`);
@@ -359,7 +360,8 @@ class Assistant {
     callback: any = cb,
     custom_arg: any = voidPointer()
   ): boolean {
-    this.MeoAsstPtr[address] = this.MeoAsstLib.AsstCreateEx(cb, custom_arg);
+    if (!this.MeoAsstPtr[address])
+      this.MeoAsstPtr[address] = this.MeoAsstLib.AsstCreateEx(callback, custom_arg);
 
     return this.MeoAsstPtr[address] ? true : false;
   }

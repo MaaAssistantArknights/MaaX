@@ -288,51 +288,51 @@ const getDownloadItemCount = () => {
 // 添加主进程 ipc 调用事件
 const listenerEvent = () => {
   // 获取下载数据
-  ipcMain.on("download:getDownloadData", (event) => {
+  ipcMain.handle("download:getDownloadData", (event) => {
     return deleteSourceItem(downloadItemData);
   });
 
   // 新建下载
-  ipcMain.on("download:newDownloadFile", (event, data: INewDownloadFile) =>
+  ipcMain.handle("download:newDownloadFile", (event, data: INewDownloadFile) =>
     downloadFile(data)
   );
 
   // 重新下载
-  ipcMain.on("download:retryDownloadFile", (event, data: IDownloadFile) =>
+  ipcMain.handle("download:retryDownloadFile", (event, data: IDownloadFile) =>
     retryDownloadFile(data)
   );
 
   // 选择保存位置对话框
-  ipcMain.on("download:openFileDialog", (event, oldPath?: string) =>
+  ipcMain.handle("download:openFileDialog", (event, oldPath?: string) =>
     openFileDialog(oldPath)
   );
 
   // 打开文件
-  ipcMain.on("download:openFile", (event, path: string) => openFile(path));
+  ipcMain.handle("download:openFile", (event, path: string) => openFile(path));
 
   // 打开文件所在路径
-  ipcMain.on("download:openFileInFolder", (event, path: string) =>
+  ipcMain.handle("download:openFileInFolder", (event, path: string) =>
     openFileInFolder(path)
   );
 
   // 暂停或恢复下载
-  ipcMain.on("download:pauseOrResume", (event, item: IDownloadFile) =>
+  ipcMain.handle("download:pauseOrResume", (event, item: IDownloadFile) =>
     pauseOrResume(item)
   );
 
   // 清空已完成（非下载中的）的下载项
-  ipcMain.on("download:clearDownloadDone", () => clearDownloadDone());
+  ipcMain.handle("download:clearDownloadDone", () => clearDownloadDone());
 
   // 删除下载项
-  ipcMain.on(
+  ipcMain.handle(
     "download:removeDownloadItem",
     (event, item: IDownloadFile, index: number) =>
       removeDownloadItem(item, index)
   );
   // 获取下载文件夹路径
-  ipcMain.on("download:getDownloadPath", () => getDownloadPath());
+  ipcMain.handle("download:getDownloadPath", () => getDownloadPath());
 
-  ipcMain.on("download:getDownloadItemCount", () => getDownloadItemCount());
+  ipcMain.handle("download:getDownloadItemCount", () => getDownloadItemCount());
   // 调用 download 方法后，触发 will-download 事件
   session.defaultSession.on("will-download", listenerDownload);
 };

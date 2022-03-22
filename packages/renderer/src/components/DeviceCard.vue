@@ -12,7 +12,6 @@ import {
   useMessage,
 } from "naive-ui";
 import useDeviceStore from "@/store/devices";
-import useTaskStore from "@/store/tasks";
 import router from "@/router";
 
 const props = defineProps<{
@@ -22,9 +21,8 @@ const props = defineProps<{
 const message = useMessage();
 const themeVars = useThemeVars();
 const deviceStore = useDeviceStore();
-const taskStore = useTaskStore();
-const device = deviceStore.devices.find((device) => device.uuid === props.uuid);
-const deviceDisplayName = computed(() => device?.tag || device?.connectionString);
+const device = computed(() => deviceStore.devices.find((device) => device.uuid === props.uuid));
+const deviceDisplayName = computed(() => device.value?.tag || device.value?.connectionString);
 const routeUuid = computed(
   () => router.currentRoute.value.params.uuid as string | undefined
 );
@@ -43,10 +41,10 @@ function disconnectDevice(uuid: string) {}
 function connectDevice(uuid: string) {}
 
 function handleJumpToTask() {
-  if (!connectedStatus.has(device?.status ?? "unknown")) {
+  if (!connectedStatus.has(device.value?.status ?? "unknown")) {
     return;
   }
-  if (!isCurrent.value) router.push(`/task/${device?.uuid}`);
+  if (!isCurrent.value) router.push(`/task/${device.value?.uuid}`);
 }
 
 function handleDeviceDisconnect() {
@@ -57,19 +55,19 @@ function handleDeviceDisconnect() {
   );
 }
 
-function handleDeviceConnect() {
-  if (!disconnectedStatus.has(device?.status ?? "unknown")) {
+async function handleDeviceConnect() {
+  if (!disconnectedStatus.has(device.value?.status ?? "unknown")) {
     return;
   }
-  deviceStore.updateDeviceStatus(device?.uuid as string, "connecting");
+  deviceStore.updateDeviceStatus(device.value?.uuid as string, "connecting");
   const loadingMessage = message.loading(`${deviceDisplayName.value}连接中...`);
 
-  console.log(window.ipcRenderer.send("asst:createEx",{address:device?.connectionString}));
+  console.log(await window.ipcRenderer.invoke("asst:createEx",{address:device.value?.connectionString}));
 
-  console.log(window.ipcRenderer.send("asst:connect", {
-    address: device?.connectionString,
-    adb_path: device?.adbPath,
-    config: device?.tag,
+  console.log(await window.ipcRenderer.invoke("asst:connect", {
+    address: device.value?.connectionString,
+    adb_path: device.value?.adbPath,
+    config: device.value?.tag,
   }));
 
   //loadingMessage.destroy();

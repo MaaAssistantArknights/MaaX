@@ -7,21 +7,21 @@ import IconClose from "@/assets/icons/close.svg?component";
 import IconScaleContract from "@/assets/icons/scale-contract.svg?component";
 import IconScaleExtend from "@/assets/icons/scale-extend.svg?component";
 
-const isMaximized: Ref<boolean> = ref(window.ipcRenderer.sendSync("window:is-maximized"));
+const isMaximized: Ref<boolean> = ref(await window.ipcRenderer.invoke("window:is-maximized"));
 
 const onClose = () => {
   window.ipcRenderer.send("window:close");
 };
 
-const onToggleMaximized = () => {
-  const result = window.ipcRenderer.sendSync("window:toggle-maximized");
+const onToggleMaximized = async () => {
+  const result = await window.ipcRenderer.invoke("window:toggle-maximized");
   if (result instanceof Error) {
     console.log();
   }
 };
 
 const onMinimize = () => {
-  window.ipcRenderer.send("window:minimize");
+  window.ipcRenderer.invoke("window:minimize");
 };
 
 window.ipcRenderer.on("window:update-maximized", (_, maximized) => {

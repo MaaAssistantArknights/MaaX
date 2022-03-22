@@ -194,10 +194,10 @@ function getLdInfo(e: Emulator) {
   e.tag = "雷电模拟器";
 }
 
-function getEmulators() {
+async function getEmulators() {
   __InUsePorts = [];
   let emulators: Emulator[] = [];
-  const tasklist = execSync("tasklist");
+  const { stdout: tasklist } = await execa("tasklist");
   tasklist
     .toString()
     .split("\n")
@@ -323,7 +323,7 @@ function getEmulatorsDarwin(): Emulator[] {
 export default function getEmulatorHooks() {
   ipcMain.handle("asst:getEmulators", async (event): Promise<Emulator[]> => {
     if (is.windows) {
-      return getEmulators();
+      return await getEmulators();
     } else if (is.macos) {
       return getEmulatorsDarwin();
     } else {

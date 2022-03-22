@@ -1,7 +1,7 @@
 import { ipcMain } from "electron";
 
 export default function useOsHooks() {
-  ipcMain.on("os:arch", (event) => {
+  ipcMain.handle("os:arch", async (event) => {
     let arch = "NoArch";
     switch (process.arch) {
       case "x64":
@@ -11,10 +11,10 @@ export default function useOsHooks() {
         arch = "arm64";
         break;
     }
-    event.returnValue = arch;
+    return arch;
   });
 
-  ipcMain.on("os:platform", (event) => {
+  ipcMain.handle("os:platform", async (event) => {
     let platform = "NoPlatform";
     switch (process.platform) {
       case "win32":
@@ -27,6 +27,6 @@ export default function useOsHooks() {
         platform = "linux";
         break;
     }
-    event.returnValue = platform;
+    return platform;
   });
 }

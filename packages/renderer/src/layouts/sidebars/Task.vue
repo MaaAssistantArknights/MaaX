@@ -9,9 +9,9 @@ import useDeviceStore from "@/store/devices";
 
 const connectedStatus: Set<DeviceStatus> = new Set(["connected", "tasking"]);
 const deviceStore = useDeviceStore();
-const { devices } = deviceStore;
+const devices = computed(() => deviceStore.devices);
 const connectedDevices = computed(() =>
-  devices.filter((device) => connectedStatus.has(device.status))
+  devices.value.filter((device) => connectedStatus.has(device.status))
 );
 </script>
 
