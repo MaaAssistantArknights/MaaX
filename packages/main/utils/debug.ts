@@ -10,14 +10,23 @@ function useDebug(window: BrowserWindow) {
     );
   window.webContents.openDevTools({ mode: "detach" });
   // Bypass CORS
-  window.webContents.session.webRequest.onBeforeRequest(
-    { urls: ["https://maa.alisaqaq.moe"] },
-    async (details, callback) => {
-      callback(await axios.request({
-        method: details.method as Method,
-        url: details.url,
-      }));
-    } 
+  window.webContents.session.webRequest.onBeforeSendHeaders(
+    {
+      urls: ["https://prts.wiki/*", "https://maa.alisaqaq.moe/*",]
+    },
+    (details, callback) => {
+      details.requestHeaders["Origin"] = new URL(details.url).origin;
+      callback({ requestHeaders: details.requestHeaders });
+    }
+  );
+  window.webContents.session.webRequest.onHeadersReceived(
+    {
+      urls: ["https://prts.wiki/*", "https://maa.alisaqaq.moe/*",]
+    },
+    (details, callback) => {
+      details.responseHeaders["access-control-allow-origin"] = ["*"];
+      callback({ responseHeaders: details.responseHeaders });
+    }
   );
 }
 

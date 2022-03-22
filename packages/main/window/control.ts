@@ -28,7 +28,6 @@ export default function useController(window: BrowserWindow) {
   });
 
   ipcMain.handle("window:is-maximized", async (event) => {
-    console.log(event);
     return window.isMaximized();
   });
 

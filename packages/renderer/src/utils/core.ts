@@ -29,9 +29,9 @@ export async function installCore(currentVersion: string | undefined = undefined
     }, 5000);
     return;
   }
-  const supportedVersions = 
-    available.versions.filter(v => 
-      v.support.findIndex(system => 
+  const supportedVersions =
+    available.versions.filter(v =>
+      v.support.findIndex(system =>
         system.arch === os.arch && system.platform === os.platform
       ) !== -1
     );
@@ -65,18 +65,24 @@ export async function installCore(currentVersion: string | undefined = undefined
     url: package_info.url,
     path: temp_dir,
   });
-  window.ipcRenderer.on("download:itemUpdate", (_, item) => {
+  const updateListener = (_: Electron.IpcRendererEvent, item: any) => {
     message.content = `MaaCore下载中 ${Math.ceil(item.progress * 100)}%`;
-  });
-  window.ipcRenderer.on("download:itemDone", (_, item) => {
+  };
+  const doneListener = (_: Electron.IpcRendererEvent, item: any) => {
     message.content = "MaaCore解压中...";
     asst.dispose();
     window.ipcRenderer.send("unzip:file", item.path, core_dir);
-  });
+  };
+  window.ipcRenderer.on("download:itemUpdate", updateListener);
+  window.ipcRenderer.on("download:itemDone", doneListener);
+  
   window.ipcRenderer.once("unzip:done", async (event) => {
+    window.ipcRenderer.off("download:itemUpdate", updateListener);
+    window.ipcRenderer.off("download:itemDone", doneListener);
+
     const success = await asst.load();
     if (success) {
-      message.content = `MaaCore ${version.core()}安装完成`;
+      message.content = `MaaCore ${await version.core()}安装完成`;
       message.type = "success";
       setTimeout(() => {
         message.destroy();

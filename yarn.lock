@@ -4667,6 +4667,11 @@ widest-line@^3.1.0:
   dependencies:
     string-width "^4.0.0"
 
+wikiparse@^1.0.27:
+  version "1.0.27"
+  resolved "https://registry.npmmirror.com/wikiparse/-/wikiparse-1.0.27.tgz#4cd8b14f0af9c640861796d5bc84397ad7b99a9c"
+  integrity sha512-Y/E+iQPaFw4z9pSnnC1eYVqYY6mcr4QQ7XLMdKgQuB/I7aQSGaMwOtnLcZWE1Rb5F3xqVhwMjQ3OD1QKNj1pNw==
+
 with@^7.0.0:
   version "7.0.2"
   resolved "https://registry.npmmirror.com/with/-/with-7.0.2.tgz#ccee3ad542d25538a7a7a80aad212b9828495bac"

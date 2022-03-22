@@ -293,12 +293,12 @@ const listenerEvent = () => {
   });
 
   // 新建下载
-  ipcMain.handle("download:newDownloadFile", (event, data: INewDownloadFile) =>
+  ipcMain.on("download:newDownloadFile", (event, data: INewDownloadFile) =>
     downloadFile(data)
   );
 
   // 重新下载
-  ipcMain.handle("download:retryDownloadFile", (event, data: IDownloadFile) =>
+  ipcMain.on("download:retryDownloadFile", (event, data: IDownloadFile) =>
     retryDownloadFile(data)
   );
 
@@ -316,7 +316,7 @@ const listenerEvent = () => {
   );
 
   // 暂停或恢复下载
-  ipcMain.handle("download:pauseOrResume", (event, item: IDownloadFile) =>
+  ipcMain.on("download:pauseOrResume", (event, item: IDownloadFile) =>
     pauseOrResume(item)
   );
 

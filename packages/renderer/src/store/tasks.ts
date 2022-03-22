@@ -133,7 +133,7 @@ export const defaultTask: Task[] = [
       strategy: "ToTheEnd",
       operators: [],
     },
-  },
+  }
 ];
 
 const useTaskStore = defineStore<"tasks", TaskState, {}, TaskAction>("tasks", {

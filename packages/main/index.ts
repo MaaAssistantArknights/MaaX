@@ -11,6 +11,7 @@ import useController from "./window/control";
 import useHooks from "./hooks";
 
 import { registerDownloadService } from "./downloader";
+import logger from "./utils/logger";
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith("6.1")) app.disableHardwareAcceleration();
@@ -39,7 +40,10 @@ async function createWindow() {
   useTheme(win);
   useHooks();
   registerDownloadService(win);
-  if (is.development) useDebug(win);
+  if (is.development) {
+    logger.warn("You are in development mode");
+    useDebug(win);
+  }
 
   // Make all links open with the browser, not with the application
   win.webContents.setWindowOpenHandler(({ url }) => {

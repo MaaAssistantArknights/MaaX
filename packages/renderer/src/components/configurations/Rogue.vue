@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted, Ref } from "vue";
 import _ from "lodash";
-import { NForm, NFormItem, NButton, NModal, NSelect, NCard } from "naive-ui";
+import { NForm, NFormItem, NButton, NModal, NSelect, NCard, NImage, NSkeleton } from "naive-ui";
+import gamedataApi from "@/api/gamedata";
+import { getOperatorAvatar, getSkillImage } from "@/utils/game_image";
 
 type Strategies = "ToTheEnd" | "AfterFirstLevel" | "AfterMoney";
 
@@ -14,25 +16,37 @@ const strategyOptions: Array<{
   label: string;
   value: Strategies;
 }> = [
-  {
-    label: "尽可能往后打",
-    value: "ToTheEnd",
-  },
-  {
-    label: "刷源石锭投资，第一层商店后退出",
-    value: "AfterFirstLevel",
-  },
-  {
-    label: "刷源石锭投资，投资后退出",
-    value: "AfterMoney",
-  },
-];
+    {
+      label: "尽可能往后打",
+      value: "ToTheEnd",
+    },
+    {
+      label: "刷源石锭投资，第一层商店后退出",
+      value: "AfterFirstLevel",
+    },
+    {
+      label: "刷源石锭投资，投资后退出",
+      value: "AfterMoney",
+    },
+  ];
 
 const props = defineProps<{
   configurations: RogueConfiguration;
 }>();
 
 const showModal = ref(false);
+
+const operators: Ref<unknown[]> = ref([]);
+const skills: Ref<unknown> = ref();
+
+onMounted(async () => {
+  operators.value = Object.values(await gamedataApi.getAllOperators() as Object);
+  skills.value = await gamedataApi.getAllSkills();
+  operators.value.forEach(async operator => {
+    operator.image = await getOperatorAvatar(operator.name);
+  });
+});
+
 </script>
 
 <template>
@@ -73,7 +87,12 @@ const showModal = ref(false);
         role="dialog"
         aria-modal="true"
         title="干员招募顺序"
-      ></NCard>
+      >
+        <div v-for="operator in operators" :key="operator.name">
+          <span>{{ operator.name }}</span>
+          <img :src="operator.image" />
+        </div>
+      </NCard>
     </NModal>
   </NForm>
 </template>
