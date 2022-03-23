@@ -5,6 +5,7 @@ import useDeviceStore from "@/store/devices";
 import { uuidV4 } from "@common/uuid";
 import IconLink from "@/assets/icons/link.svg?component";
 import _ from "lodash";
+import { ipcRenderer } from "electron";
 
 const message = useMessage();
 const connectionString = ref("");
@@ -16,25 +17,36 @@ function connectionStringChecker(cs: string) {
     // adb默认端口
     port = "5555";
   }
-  if (!_.isNumber(port) || Number(port) <= 0x0000 || Number(port) >= 0xffff) {
+
+  if (isNaN(Number(port)) || Number(port) <= 0x0000 || Number(port) >= 0xffff) {
+    console.log(`is_number: ${_.isNumber(port)}`);
     return false;
   }
-  return ip.split(".").every((v, i, a) => Number(v) && a.length === 4);
+  return ip.split(".").every((v, i, a) =>  !isNaN(Number(v)) && a.length === 4);
 }
 
 function handleCustomConnect() {
   console.log(connectionString.value);
   if (connectionStringChecker(connectionString.value)) {
-    // message.loading("正在连接");
+    message.loading("正在连接");
     if (deviceStore.devices.find(dev => dev.connectionString === connectionString.value)) {
       message.info("设备已经存在了哦");
       return;
     }
+    const uuid = window.ipcRenderer.invoke("asst:getDeviceUuid",{
+      address : connectionString.value,
+      adb_path : "adb",
+    });
+    if(!(uuid as unknown as string | false))
+    {
+      message.error("连接失败，检查一下地址吧");
+      return;
+    }
     deviceStore.mergeSearchResult([
       {
-        uuid: uuidV4(),
+        uuid: uuid as unknown as string,
         connectionString: connectionString.value,
-        name: "default",
+        name: "General",
         adbPath: "adb"
       }
     ]);

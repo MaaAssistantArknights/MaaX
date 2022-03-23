@@ -17,6 +17,7 @@ export interface TaskAction {
   newTask(uuid: string): void;
   getTask(uuid:string, taskId:string) : any;
   getTaskProcess(uuid: string, taskId:string): number | undefined;
+  stopAllTasks(uuid: string): void;
 }
 
 export const defaultTask: Task[] = [
@@ -180,6 +181,15 @@ const useTaskStore = defineStore<"tasks", TaskState, {}, TaskAction>("tasks", {
       const task = origin?.find((task) => task.id === taskId);
       return task?task.progress:0;
     },
+    stopAllTasks(uuid) {
+      const { deviceTasks } = this;
+      const origin = deviceTasks[uuid];
+      if (origin) {
+        origin.forEach((task) => {
+          task.status = "idle";
+        });
+      }
+    }
   },
 });
 
