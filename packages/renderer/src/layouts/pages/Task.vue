@@ -88,7 +88,10 @@ async function handleStart() {
     }
   });
 
-
+  // 初始化掉落物存储
+  if(!window.sessionStorage.getItem(uuid.value as string))
+      window.sessionStorage.setItem(uuid.value as string,"{\"StageDrops\":{}}");
+      
   await window.ipcRenderer.invoke("asst:start",{uuid:uuid.value});
 }
 </script>

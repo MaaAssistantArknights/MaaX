@@ -45,10 +45,11 @@ enum Fight {
   SubFightStart = "Fight:Start:StartButton2",
   MedicineConfirm = "Fight:Start:MedicineConfirm",
   StoneConfrim = "Fight:Start:StoneConfrim",
+
+  StageDrops = "Fight:Extra:StageDrops", // 掉落物
 }
 
 enum Recriut {
-
   Refresh = "Recruit:Completed:RecruitRefreshConfirm",
   Confirm = "Recruit:Completed:RecruitConfirm",
 
@@ -66,12 +67,11 @@ enum Infrast {
 
   EnterFacility = "Infrast:Extra:EnterFacility", // 进入设施
 
-  NotEnoughStaff = "Infrast:NotEnoughStaff", // 可用干员不足
+  NotEnoughStaff = "Infrast:Extra:NotEnoughStaff", // 可用干员不足
 
   GetFriendClue = "Infrast:Completed:GetFriendClue", // 领取好友线索
 
-  UnlockClues =  "Infrast:Completed:UnlockClues" // 开启线索交流
-
+  UnlockClues = "Infrast:Completed:UnlockClues", // 开启线索交流
 }
 
 enum Rogue {
@@ -96,8 +96,9 @@ enum Penguin {
   ReportError = "Penguin:ReportToPenguinStats", // 汇报企鹅物流失败
 }
 
-enum Friend{
-  EnterFriendList = "Visit:Completed:FriendsList"
+enum Friend {
+  EnterFriendList = "Visit:Completed:FriendsList", // 进入好友列表
+  VisitNext = "Visit:Completed:VisitNext", // 访问下位
 }
 
 export default function useCallbackEvents() {
@@ -110,16 +111,13 @@ export default function useCallbackEvents() {
   // 初始化失败
   window.ipcRenderer.on(CallbackMsg.InitFailed, (event, arg) => {});
 
-  // 获取到UUID
+  
+  /** 获取到uuid, 作为连接成功的标志 */
   window.ipcRenderer.on(Connection.UuidGetted, async (event, arg) => {
     window.$message.success(`设备${arg.address}已连接`);
-    deviceStore.updateDeviceUuid(arg.address, arg.uuid);
     deviceStore.updateDeviceStatus(arg.uuid, "connected");
-    window.ipcRenderer.invoke("asst:setUUID", {
-      address: arg.address,
-      uuid: arg.uuid,
-    });
   });
+ 
 
   // 获取UUID失败
   window.ipcRenderer.on(Connection.ConnectFailed, async (event, arg) => {
@@ -137,8 +135,8 @@ export default function useCallbackEvents() {
   });
 
   /** 任务链出错 */
-  window.ipcRenderer.on(CallbackMsg.TaskChainError, async(event,arg)=>{
-    taskStore.updateTaskStatus(arg.uuid,arg.task,"exception",1);
+  window.ipcRenderer.on(CallbackMsg.TaskChainError, async (event, arg) => {
+    taskStore.updateTaskStatus(arg.uuid, arg.task, "exception", 1);
   });
 
   /* 任务链完成 */
@@ -170,10 +168,35 @@ export default function useCallbackEvents() {
   });
 
   /* 作战 - 已吃药 */
-  window.ipcRenderer.on(Fight.MedicineConfirm, async (event, arg) => {});
+  window.ipcRenderer.on(Fight.MedicineConfirm, async (event, arg) => {
+    // TODO
+  });
 
   /* 作战 - 已吃源石 */
-  window.ipcRenderer.on(Fight.StoneConfrim, async (event, arg) => {});
+  window.ipcRenderer.on(Fight.StoneConfrim, async (event, arg) => {
+    // TODO
+  });
+
+  /** 作战 - 掉落物 */
+  window.ipcRenderer.on(Fight.StageDrops, async (event, arg) => {
+    const sessionStorage = JSON.parse(
+      window.sessionStorage.getItem(arg.uuid) as string
+    );
+    arg.details.forEach((drop: any) => {
+      if (sessionStorage["StageDrops"][drop.itemId]) {
+        sessionStorage["StageDrops"][drop.itemId] += drop.quantity;
+      } else {
+        sessionStorage["StageDrops"][drop.itemId] = {
+          dropType: drop.dropType,
+          itemId: drop.itemId,
+          quantity: drop.quantity,
+          itemName: drop.itemName,
+        };
+      }
+    });
+    window.sessionStorage.setItem(arg.uuid, JSON.stringify(sessionStorage));
+    console.log(`当前掉落统计 ${sessionStorage}`);
+  });
 
   /** 企鹅 - 上传🐧物流错误 */
   window.ipcRenderer.on(Penguin.ReportError, async (event, arg) => {
@@ -202,42 +225,52 @@ export default function useCallbackEvents() {
     console.log(task);
     const curProgress = task.progress;
     const times = task.configurations.maximum_times_of_recruitments;
-    const newProgress = parseInt(curProgress + 100/times);
+    const newProgress = parseInt(curProgress + 100 / times);
     taskStore.updateTaskStatus(arg.uuid, "recruit", "processing", newProgress);
     console.log(arg);
   });
 
   /** 公招 - 已选择词条 */
-  window.ipcRenderer.on(Recriut.TagsSelected, async(event,arg)=>{
+  window.ipcRenderer.on(Recriut.TagsSelected, async (event, arg) => {
     const tags = arg.details.tags;
     console.log(`已选择词条 ${tags}`);
   });
 
   /** 基建 - 已进入基建 */
-  window.ipcRenderer.on(Infrast.EnterFacility, async(event,arg) =>{
-    /**
-     *     ManufacturingStation:"Mfg",
-    TradingStation:"Trade",
-    ControlCenter:"Control",
-    PowerStation:"Power",
-    MeetingRoom:"Reception",
-    Office:"Office",
-    Dormitory:"Dorm",
-     */
-    const facilityTranslate :Record<string,string> = {
-      "Mfg": "制造站",
-      "Trade":"贸易站",
-      "Control":"控制中枢",
-      "Power":"发电站",
-      "Reception":"会客室",
-      "Office":"办公室",
-      "Dorm":"宿舍",
+  window.ipcRenderer.on(Infrast.EnterFacility, async (event, arg) => {
+    const facilityTranslate: Record<string, string> = {
+      Mfg: "制造站",
+      Trade: "贸易站",
+      Control: "控制中枢",
+      Power: "发电站",
+      Reception: "会客室",
+      Office: "办公室",
+      Dorm: "宿舍",
     };
     //const times = taskStore.getTask(arg.uuid,"infrast").configurations.facilities.length;
     const times = 18; // 共18个设施
-    const curProgress = taskStore.getTaskProcess(arg.uuid,"infrast") as number;
-    const newProgress = Math.round( Number(curProgress + 100/times));
-    taskStore.updateTaskStatus(arg.uuid, "infrast", "processing",newProgress);
-    console.log(`进入 ${facilityTranslate[arg.details.facility]}, ${arg.details.index}`);
+    const curProgress = taskStore.getTaskProcess(arg.uuid, "infrast") as number;
+    const newProgress = Math.round(Number(curProgress + 100 / times));
+    taskStore.updateTaskStatus(arg.uuid, "infrast", "processing", newProgress);
+    console.log(
+      `进入 ${facilityTranslate[arg.details.facility]}, ${arg.details.index}`
+    );
+  });
+
+  /** 基建 - 可用干员不足 */
+  window.ipcRenderer.on(Infrast.NotEnoughStaff, async (event, arg) => {
+    console.log(`${arg.details.facility} ${arg.details.index} 可用干员不足`);
+  });
+
+  /** 访问好友 - 进入好友列表 */
+  window.ipcRenderer.on(Friend.EnterFriendList, async (event, arg) => {
+    taskStore.updateTaskStatus(arg.uuid, "visit", "processing", 10);
+  });
+
+  /** 访问好友 - 寻找下位 */
+  window.ipcRenderer.on(Friend.VisitNext, async (event, arg) => {
+    const curProgress = taskStore.getTaskProcess(arg.uuid, "visit") as number;
+    const newProgress = curProgress < 90 ? curProgress + 10 : curProgress; // 计数可能有误，玛丽如是说。
+    taskStore.updateTaskStatus(arg.uuid, "visit", "processing", newProgress);
   });
 }
