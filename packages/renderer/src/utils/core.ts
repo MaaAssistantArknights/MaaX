@@ -5,7 +5,8 @@ import asst from "@/hooks/caller/asst";
 import version from "@/hooks/caller/version";
 
 export async function checkCoreVersion() {
-  const success = await asst.load();
+  const success = window.sessionStorage.getItem("coreIPCLoadStatus") == "true" ? true: await asst.load();
+  if(success) window.sessionStorage.setItem("coreIPCLoadStatus","true");
   const coreVersion = await version.core();
   if (success && coreVersion) {
     return true;
@@ -71,6 +72,7 @@ export async function installCore(currentVersion: string | undefined = undefined
   const doneListener = (_: Electron.IpcRendererEvent, item: any) => {
     message.content = "MaaCore解压中...";
     asst.dispose();
+    window.sessionStorage.setItem("coreIPCLoadStatus","false");
     window.ipcRenderer.send("unzip:file", item.path, core_dir);
   };
   window.ipcRenderer.on("download:itemUpdate", updateListener);
