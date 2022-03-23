@@ -39,12 +39,12 @@ async function handleRefreshDevices() {
       ret
         .filter((v: any) => {
           return !deviceStore.devices.find(
-            (dev) => dev.connectionString === v.address
+            (dev) => dev.uuid === v.uuid
           );
         })
         .map((v: any) => {
           return {
-            uuid: v.address,
+            uuid: v.uuid,
             name: v.config,
             tag: v.config,
             status: "available",
