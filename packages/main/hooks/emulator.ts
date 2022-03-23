@@ -5,6 +5,7 @@ import path from "path";
 import { existsSync, readFileSync } from "fs";
 import { assert } from "console";
 import { runAppleScriptSync } from "@main/utils/applescript";
+import _ from "lodash";
 import execa from "execa";
 
 const adbPath = path.join(__dirname, "../platform-tools", "adb");
@@ -27,6 +28,7 @@ interface Emulator {
   config?: string; //传给后端的标记
   adb_path?: string; // "E://bluestack//HD-Adb.exe"
   address?: string; // "127.0.0.1:11451"
+  uuid?: string;
 }
 
 function exec(exp: string): string {
@@ -223,6 +225,13 @@ async function getEmulators() {
 
   //const blueStackPath = execSync(expBlueStackConfPath);
   //console.log(blueStackPath.toString());
+  emulators.forEach((e) => {
+    const uuid = getDeviceUuid(e.address as string, e.adb_path);
+    if (uuid) {
+      e.uuid = uuid;
+    }
+  });
+  console.log(emulators);
   return emulators;
 }
 
@@ -268,19 +277,24 @@ function getDeviceName(address: string): string | false {
   return false;
 }
 
-function getDeviceUuid(address: string): string | false {
-  const connectResult = spawnSync(adbPath, [
+function getDeviceUuid(address: string, adb_path = adbPath): string | false {
+  if(!adb_path) {
+    console.log("adb_path is null");
+    return false;
+  }
+  const connectResult = spawnSync(adb_path, [
     "connect",
     address,
   ]).stdout.toString();
   if (/connected/.test(connectResult)) {
-    return spawnSync(adbPath, [
+    const ret =spawnSync(adb_path, [
+      "-s",
+      address,
       "shell",
-      "settings",
-      "get",
-      "secure",
-      "android_id",
+      "service call iphonesubinfo 1 | awk -F \\''\\' '{print $2}'| sed '1 d' | tr -d '.' | awk '{print}' ORS=",
     ]).stdout.toString();
+    console.log(ret);
+    if(ret) return _.trim(ret);
   }
   return false;
 }
@@ -330,4 +344,10 @@ export default function getEmulatorHooks() {
       return adbDevices();
     }
   });
+  ipcMain.handle("asst:getDeviceUuid",async (event, arg) : Promise<string|boolean> => {
+    const ret =  getDeviceUuid(arg.address,arg.adb_path);
+    console.log(ret);
+    return ret;
+  });
+
 }

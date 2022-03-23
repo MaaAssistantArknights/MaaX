@@ -347,46 +347,51 @@ class Assistant {
 
   /**
    * 创建实例
-   * @param dirname 本体路径{string}
+   * @param uuid 设备唯一标识符{string}
    * @param callback 回调函数, 必须要有msg,detail参数, 可选custom_arg
    * @param custom_arg 自定义参数{???}
-   * @returns  实例指针{ref.Pointer}
+   * @returns  是否创建成功
    */
   CreateEx(
     /**
-     * 逻辑: 接受一个连接地址, 先把指针存在这个地址上, 等后续回调再把地址名称改成uuid
+     * 
      */
-    address: string,
+    uuid: string,
     callback: any = cb,
     custom_arg: any = voidPointer()
   ): boolean {
-    if (!this.MeoAsstPtr[address])
-      this.MeoAsstPtr[address] = this.MeoAsstLib.AsstCreateEx(callback, custom_arg);
-
-    return this.MeoAsstPtr[address] ? true : false;
-  }
+    if (!this.MeoAsstPtr[uuid])
+    {
+      this.MeoAsstPtr[uuid] = this.MeoAsstLib.AsstCreateEx(callback, custom_arg);
+      return true;
+    }
+    return false; // 重复创建
+  } 
 
   Destroy(uuid: string) {
-    this.MeoAsstLib.AsstDestroy(this.GetUUID(uuid));
+    this.MeoAsstLib.AsstDestroy(this.MeoAsstPtr[uuid]);
+    delete this.MeoAsstPtr[uuid];
   }
 
   /**
    * 连接
    * @param address 连接地址
-   * @param config 模拟器名称, 自定义设备为'General'
+   * @param uuid 设备唯一标识符
    * @param adb_path adb路径
+   * @param config 模拟器名称, 自定义设备为'General'
    * @returns 是否连接成功
    */
   Connect(
     /**
-     * 连接时是不知道 uuid 的, 所以先用 address 代替 uuid.
+     * 
      */
     address: string,
+    uuid:string,
     adb_path: string,
     config: string
   ): boolean {
     return this.MeoAsstLib.AsstConnect(
-      this.GetUUID(address),
+      this.MeoAsstPtr[uuid],
       adb_path,
       address,
       config
@@ -463,11 +468,12 @@ class Assistant {
    * @param address 设备连接地址
    * @param uuid 要绑定的uuid
    */
+  /**
   SetUUID(address: string, uuid: string) {
     this.MeoAsstPtr[uuid] = this.MeoAsstPtr[address];
     delete this.MeoAsstPtr[address];
   }
-
+ */
   GetUUID(uuid: string) {
     return this.MeoAsstPtr[uuid];
   }
