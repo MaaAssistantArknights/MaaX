@@ -13,6 +13,7 @@ import {
 } from "naive-ui";
 import useDeviceStore from "@/store/devices";
 import router from "@/router";
+import useTaskStore from "@/store/tasks";
 
 const props = defineProps<{
   uuid: string;
@@ -21,6 +22,7 @@ const props = defineProps<{
 const message = useMessage();
 const themeVars = useThemeVars();
 const deviceStore = useDeviceStore();
+const taskStore = useTaskStore();
 const device = computed(() => deviceStore.devices.find((device) => device.uuid === props.uuid));
 const deviceDisplayName = computed(() => device.value?.tag || device.value?.connectionString);
 const routeUuid = computed(
@@ -49,9 +51,14 @@ function handleJumpToTask() {
 
 function handleDeviceDisconnect() {
   // task stop
-  // device disconnect
   message.info(
     `${deviceDisplayName.value}断开中... （此消息不会在正式版中出现）`
+  );
+  window.ipcRenderer.send("disconnect_destroy",{uuid:device.value?.uuid});
+  taskStore.stopAllTasks(device.value?.uuid as string);
+  deviceStore.updateDeviceStatus(device.value?.uuid as string, "disconnected");
+   message.info(
+    `${deviceDisplayName.value}已断开连接 （此消息不会在正式版中出现）`
   );
 }
 
@@ -62,10 +69,14 @@ async function handleDeviceConnect() {
   deviceStore.updateDeviceStatus(device.value?.uuid as string, "connecting");
   const loadingMessage = message.loading(`${deviceDisplayName.value}连接中...`);
 
+  /**
   console.log(await window.ipcRenderer.invoke("asst:createEx",{address:device.value?.connectionString}));
 
-  console.log(await window.ipcRenderer.invoke("asst:connect", {
+  console.log(`address: ${device.value?.connectionString}`);
+ */
+  console.log(await window.ipcRenderer.invoke("asst:createEx_connect", {
     address: device.value?.connectionString,
+    uuid:device.value?.uuid,
     adb_path: device.value?.adbPath,
     config: device.value?.tag,
   }));

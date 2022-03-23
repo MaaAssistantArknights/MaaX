@@ -23,10 +23,27 @@ const asstHooks: Record<
   "asst:connect": async (event, arg) => {
     return Assistant.getInstance()?.Connect(
       arg.address,
+      arg.uuid,
       arg.adb_path,
       arg.config
     );
   },
+  "asst:createEx_connect": async (event, arg) => {
+    const createStatus = Assistant.getInstance()?.CreateEx(arg.uuid);
+    if (!createStatus) console.log(`重复创建 ${arg}`);
+    return Assistant.getInstance()?.Connect(
+      arg.address,
+      arg.uuid,
+      arg.adb_path,
+      arg.config
+    );
+  },
+  "asst:disconnect_destroy": async (event, arg) => {
+    Assistant.getInstance()?.Stop(arg.uuid);
+    Assistant.getInstance()?.Destroy(arg.uuid);
+    return true;
+  },
+
   "asst:appendTask": async (event, arg) => {
     return Assistant.getInstance()?.AppendTask(
       arg.uuid,
@@ -40,19 +57,17 @@ const asstHooks: Record<
   "asst:stop": async (event, arg) => {
     return Assistant.getInstance()?.Stop(arg.uuid);
   },
-  "asst:setUUID": async (event, arg) => {
-    Assistant.getInstance()?.SetUUID(arg.address, arg.uuid);
-    return true;
-  },
   "asst:supportedStages": async (event) => {
     if (!Assistant.getInstance()) {
       return [];
     }
     const jsonPath = path.join(Assistant.libPath, "resource/tasks.json");
     const tasks = JSON.parse(String(fs.readFileSync(jsonPath)));
-    const stages = Object.keys(tasks).filter(s => /[A-Z0-9]+-([A-Z0-9]+-?)?[0-9]/.test(s));
+    const stages = Object.keys(tasks).filter((s) =>
+      /[A-Z0-9]+-([A-Z0-9]+-?)?[0-9]/.test(s)
+    );
     return stages;
-  }
+  },
 };
 
 export default function useAsstHooks() {
@@ -61,9 +76,9 @@ export default function useAsstHooks() {
     if (!asst) {
       return false;
     }
-    for (const eventName of Object.keys(asstHooks)) {
-      ipcMain.handle(eventName, asstHooks[eventName]);
-    }
+      for (const eventName of Object.keys(asstHooks)) {
+        ipcMain.handle(eventName, asstHooks[eventName]);
+      }
     return true;
   });
 
@@ -72,6 +87,7 @@ export default function useAsstHooks() {
     for (const eventName of Object.keys(asstHooks)) {
       ipcMain.removeHandler(eventName);
     }
+    window.sessionStorage.setItem("coreIPCLoadStatus","false");
     return void 0;
   });
 }
