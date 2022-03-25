@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, Ref, watch } from "vue";
-import { NSpace, NButton, NSwitch, NIcon, NTooltip } from "naive-ui";
+import { NSpace, NButton, NSwitch, NIcon, NTooltip, useMessage } from "naive-ui";
 import _ from "lodash";
 import Sortable from "sortablejs";
 import TaskCard from "@/components/TaskCard.vue";
@@ -9,11 +9,14 @@ import IconGrid from "@/assets/icons/grid.svg?component";
 import Configuration from "@/components/configurations/Index.vue";
 
 import useTaskStore, { defaultTask } from "@/store/tasks";
+import useDeviceStore from "@/store/devices";
 import handleSingleTask from "@/utils/converter/tasks";
 
 import router from "@/router";
 
 const taskStore = useTaskStore();
+const deviceStore = useDeviceStore();
+const message = useMessage();
 
 const isGrid = ref<boolean>(false);
 const cardsRef: Ref<HTMLElement | null> = ref(null);
@@ -65,7 +68,17 @@ function load() {
 }
 
 async function handleStart() {
-  tasks.value?.forEach(async (singleTask) => {
+    const device = deviceStore.getDevice(uuid.value as string);
+  if(device && device.status === "tasking")
+  {
+    message.error("设备正在运行任务，请先停止任务");
+    return;
+  }
+
+  if (_.findIndex(tasks.value, (task) => task.enable === true) === -1) {
+    message.error("请至少选择一个任务");
+    return;
+  }  tasks.value?.forEach(async (singleTask) => {
     if (singleTask.enable) {
       taskStore.updateTaskStatus(uuid.value, singleTask.id, "processing", 0);
       const task = handleSingleTask[singleTask.id](singleTask.configurations);
@@ -86,6 +99,7 @@ async function handleStart() {
       });
     }
   });
+  deviceStore.updateDeviceStatus(uuid.value as string,"tasking");
 
   // 初始化掉落物存储
   if(!window.sessionStorage.getItem(uuid.value as string))

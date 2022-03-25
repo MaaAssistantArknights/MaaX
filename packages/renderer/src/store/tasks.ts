@@ -15,12 +15,30 @@ export interface TaskAction {
   changeTaskOrder(uuid: string, from: number, to: number): void;
   updateTask(uuid: string, tasks: Task[]): void;
   newTask(uuid: string): void;
-  getTask(uuid:string, taskId:string) : any;
-  getTaskProcess(uuid: string, taskId:string): number | undefined;
+  getTask(uuid: string, taskId: string): any;
+  getTaskProcess(uuid: string, taskId: string): number | undefined;
   stopAllTasks(uuid: string): void;
 }
 
 export const defaultTask: Task[] = [
+  {
+    id: "emulator",
+    title: "启动模拟器",
+    status: "idle",
+    enable: false,
+    configurations: {
+      emulator_path: "",
+      arg: "", //启动参数, 用于启动指定模拟器
+      adb_path: "",
+    },
+  },
+  {
+    id: "game",
+    title: "启动明日方舟",
+    status: "idle",
+    enable: false,
+    configurations: {},
+  },
   {
     id: "startup",
     title: "开始唤醒",
@@ -28,7 +46,9 @@ export const defaultTask: Task[] = [
     //progress: 50,
     //startTime: Date.now(),
     enable: true,
-    configurations: {},
+    configurations: {
+      server:"CN_OFFICIAL",
+    },
   },
   {
     id: "fight",
@@ -134,7 +154,7 @@ export const defaultTask: Task[] = [
       strategy: "ToTheEnd",
       operators: [],
     },
-  }
+  },
 ];
 
 const useTaskStore = defineStore<"tasks", TaskState, {}, TaskAction>("tasks", {
@@ -151,6 +171,14 @@ const useTaskStore = defineStore<"tasks", TaskState, {}, TaskAction>("tasks", {
       if (task) {
         task.status = status;
         task.progress = progress;
+
+        if (task.status != "processing" && status == "processing") {
+          task.startTime = Date.now();
+        } else if (task.status != "success" && status == "success") {
+          task.endTime = Date.now();
+        } else if (task.status != "exception" && status == "exception") {
+          task.endTime = Date.now();
+        }
       }
     },
     changeTaskOrder(uuid, from, to) {
@@ -169,17 +197,17 @@ const useTaskStore = defineStore<"tasks", TaskState, {}, TaskAction>("tasks", {
       const { deviceTasks } = this;
       deviceTasks[uuid] = defaultTask;
     },
-    getTask(uuid,taskId){
+    getTask(uuid, taskId) {
       const { deviceTasks } = this;
       const origin = deviceTasks[uuid];
       const task = origin?.find((task) => task.id === taskId);
-      return task?task:{};
+      return task ? task : {};
     },
-    getTaskProcess(uuid,taskId){
+    getTaskProcess(uuid, taskId) {
       const { deviceTasks } = this;
       const origin = deviceTasks[uuid];
       const task = origin?.find((task) => task.id === taskId);
-      return task?task.progress:0;
+      return task ? task.progress : 0;
     },
     stopAllTasks(uuid) {
       const { deviceTasks } = this;
@@ -189,7 +217,7 @@ const useTaskStore = defineStore<"tasks", TaskState, {}, TaskAction>("tasks", {
           task.status = "idle";
         });
       }
-    }
+    },
   },
 });
 
