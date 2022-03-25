@@ -30,6 +30,10 @@ const processBarColor = (taskStatus: TaskStatus) => {
       return themeVars.value.successColor;
     case "exception":
       return themeVars.value.errorColor;
+    case "waiting":
+      return themeVars.value.infoColor;
+    case "warning":
+      return themeVars.value.warningColor;
   }
 };
 </script>

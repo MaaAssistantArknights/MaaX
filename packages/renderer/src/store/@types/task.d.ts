@@ -1,4 +1,4 @@
-type TaskStatus = "idle" | "processing" | "success" | "exception";
+type TaskStatus = "idle" | "waiting" | "processing" | "success" | "warning" | "exception";
 
 interface Task {
   /**
