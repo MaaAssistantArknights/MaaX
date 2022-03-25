@@ -8,7 +8,8 @@ import IconList from "@/assets/icons/list.svg?component";
 import IconGrid from "@/assets/icons/grid.svg?component";
 import Configuration from "@/components/configurations/Index.vue";
 
-import useTaskStore, { defaultTask, handleSingleTask } from "@/store/tasks";
+import useTaskStore, { defaultTask } from "@/store/tasks";
+import handleSingleTask from "@/utils/converter/tasks";
 
 import router from "@/router";
 
@@ -63,13 +64,13 @@ function load() {
   }
 }
 
-function handleStart() {
-  tasks.value?.forEach((singleTask) => {
+async function handleStart() {
+  tasks.value?.forEach(async (singleTask) => {
     if (singleTask.enable) {
       taskStore.updateTaskStatus(uuid.value, singleTask.id, "processing", 0);
       const task = handleSingleTask[singleTask.id](singleTask.configurations);
       console.log(task);
-      window.ipcRenderer.sendSync("asst:appendTask", {
+      await window.ipcRenderer.invoke("asst:appendTask", {
         uuid: uuid.value,
         type: {
           startup: "StartUp",
@@ -86,8 +87,11 @@ function handleStart() {
     }
   });
 
-
-  window.ipcRenderer.sendSync("asst:start", { uuid: uuid.value });
+  // 初始化掉落物存储
+  if(!window.sessionStorage.getItem(uuid.value as string))
+      window.sessionStorage.setItem(uuid.value as string,"{\"StageDrops\":{}}");
+      
+  await window.ipcRenderer.invoke("asst:start",{uuid:uuid.value});
 }
 </script>
 

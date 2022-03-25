@@ -7,17 +7,19 @@ type DeviceStatus =
   | "unknown";
 
 type EmulatorName =
-  | "bluestack"
-  | "mumu"
+  | "BlueStacks"
+  | "MuMuEmulator"
   | "LDPlayer"
-  | "nox"
-  | "default"
+  | "Nox"
+  | "XYAZ"
+  | "WSA"
+  | "General"
   | "unknown";
 
 interface Device {
   /**
-   * @props 设备的uuid，应由maa返回
-   * @description maa连接到设备时，检查并读取特定位置文件，不存在就在特定位置新建uuid文件，下次连接时读取
+   * @props 设备的uuid，UI给模拟器发送adb指令来获取
+   * @description UI连接到设备时，检查并读取特定位置文件，不存在就在特定位置新建uuid文件，下次连接时读取
    */
   uuid: string;
   /**
@@ -35,7 +37,7 @@ interface Device {
    */
   status: DeviceStatus;
   /**
-   * @props 模拟器名称, 传给maa使其使用模拟器的自定配置, 自定义连接的设备为'default'
+   * @props 模拟器名称, 传给maa使其使用模拟器的自定配置, 自定义连接的设备为'General'
    */
   name: EmulatorName;
   /**

@@ -1,4 +1,4 @@
 export default {
-  ui: () => window.ipcRenderer.sendSync("version:ui") as string,
-  core: () => window.ipcRenderer.sendSync("version:core") as string | null,
+  ui: () => window.ipcRenderer.invoke("version:ui") as Promise<string>,
+  core: () => window.ipcRenderer.invoke("version:core") as Promise<string | null>,
 };

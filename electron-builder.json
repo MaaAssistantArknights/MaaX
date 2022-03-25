@@ -8,7 +8,7 @@
     "output": "release/${version}"
   },
   "electronDownload": {
-    "mirror": "https://npm.taobao.org/mirrors/electron/"
+    "mirror": "https://npmmirror.com/mirrors/electron/"
   },
   "files": [
     "dist"

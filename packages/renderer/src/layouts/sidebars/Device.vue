@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, onMounted } from "vue";
+import { computed, ref } from "vue";
 import { NIcon, NSpace, NButton, NTooltip, NText, NTime, useMessage } from "naive-ui";
 import IconRefresh from "@/assets/icons/refresh.svg?component";
 import IconSettings from "@/assets/icons/settings.svg?component";
@@ -7,8 +7,8 @@ import DeviceCard from "@/components/DeviceCard.vue";
 
 import useDeviceStore from "@/store/devices";
 import useSettingStore from "@/store/settings";
-import asstHooks from "@/hooks/caller/asst";
-import versionHooks from "@/hooks/caller/version";
+
+import { installCore, checkCoreVersion } from "@/utils/core";
 
 const connectedStatus: Set<DeviceStatus> = new Set(["connected", "tasking"]);
 const disconnectedStatus: Set<DeviceStatus> = new Set([
@@ -19,16 +19,18 @@ const disconnectedStatus: Set<DeviceStatus> = new Set([
 const deviceStore = useDeviceStore();
 const settingStore = useSettingStore();
 const message = useMessage();
-const { devices, lastUpdate } = deviceStore;
-const { version } = settingStore;
 const connectedDevices = computed(() =>
-  devices.filter((device) => connectedStatus.has(device.status))
+  deviceStore.devices.filter((device) => connectedStatus.has(device.status))
 );
 const disconnectedDevices = computed(() =>
-  devices.filter((device) => disconnectedStatus.has(device.status))
+  deviceStore.devices.filter((device) => disconnectedStatus.has(device.status))
 );
 
-function handleRefreshDevices() {
+async function handleRefreshDevices() {
+  if (!await checkCoreVersion()) {
+    installCore();
+    return;
+  }
   const refreshMessage = message.loading("正在更新设备列表...");
 
   //console.log(deviceStore.devices);
@@ -37,12 +39,12 @@ function handleRefreshDevices() {
       ret
         .filter((v: any) => {
           return !deviceStore.devices.find(
-            (dev) => dev.connectionString === v.address
+            (dev) => dev.uuid === v.uuid
           );
         })
         .map((v: any) => {
           return {
-            uuid: v.address,
+            uuid: v.uuid,
             name: v.config,
             tag: v.config,
             status: "available",
@@ -59,7 +61,6 @@ function handleRefreshDevices() {
       refreshMessage.type = "warning";
       refreshMessage.content = "未找到任何可用设备!";
     }
-
   });
 }
 
@@ -68,14 +69,6 @@ const now = ref(Date.now());
 setInterval(() => {
   now.value = Date.now();
 }, 1000);
-
-onMounted(() => {
-  const success = asstHooks.load();
-  const version = versionHooks.core();
-  if (success && version) {
-    settingStore.version.core.current = version;
-  }
-});
 
 </script>
 
@@ -106,7 +99,7 @@ onMounted(() => {
             text
             style="font-size: 24px"
             @click="handleRefreshDevices"
-            :disabled="version.core === undefined ? true : false"
+            :disabled="settingStore.version.core === undefined ? true : false"
           >
             <NIcon>
               <IconRefresh />
@@ -124,10 +117,15 @@ onMounted(() => {
       />
     </div>
     <div :style="{ textAlign: 'center' }">
-      <NText depth="3">
+      <NText depth="2">
         最后更新：
-        <span v-if="lastUpdate === null">从不</span>
-        <NTime v-else :time="lastUpdate" :to="now" type="relative" />
+        <span v-if="deviceStore.lastUpdate === null">从不</span>
+        <NTime
+          v-else
+          :time="deviceStore.lastUpdate"
+          :to="now"
+          type="relative"
+        />
       </NText>
     </div>
   </div>

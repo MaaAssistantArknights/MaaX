@@ -1,81 +1,105 @@
-import Electron, { app, ipcMain } from "electron";
-import { Assistant } from "./interface";
+import Electron, { ipcMain } from "electron";
 import path from "path";
-
-Assistant.libPath = path.join(__dirname, "../core");
+import fs from "fs";
+import { Assistant } from "./interface";
 
 const asstHooks: Record<
   string,
-  (event: Electron.IpcMainEvent, ...args: any[]) => void
+  (event: Electron.IpcMainInvokeEvent, ...args: any[]) => void
 > = {
-  "asst:loadResource": (event, arg) => {
-    event.returnValue = Assistant.getInstance()?.LoadResource(arg.path);
+  "asst:loadResource": async (event, arg) => {
+    return Assistant.getInstance()?.LoadResource(arg.path);
   },
-  "asst:create": (event, arg) => {
-    event.returnValue = Assistant.getInstance()?.Create();
+  "asst:create": async (event, arg) => {
+    return Assistant.getInstance()?.Create();
   },
-  "asst:createEx": (event, arg) => {
-    event.returnValue = Assistant.getInstance()?.CreateEx(arg.address);
+  "asst:createEx": async (event, arg) => {
+    return Assistant.getInstance()?.CreateEx(arg.address);
   },
-  "asst:destroy": (event, arg) => {
+  "asst:destroy": async (event, arg) => {
     Assistant.getInstance()?.Destroy(arg.uuid);
-    event.returnValue = true;
+    return true;
   },
   "asst:connect": async (event, arg) => {
-    event.returnValue = Assistant.getInstance()?.Connect(
+    return Assistant.getInstance()?.Connect(
       arg.address,
+      arg.uuid,
       arg.adb_path,
       arg.config
     );
   },
-  "asst:appendTask": (event, arg) => {
-    event.returnValue = Assistant.getInstance()?.AppendTask(
+  "asst:createEx_connect": async (event, arg) => {
+    const createStatus = Assistant.getInstance()?.CreateEx(arg.uuid);
+    if (!createStatus) console.log(`重复创建 ${arg}`);
+    return Assistant.getInstance()?.Connect(
+      arg.address,
+      arg.uuid,
+      arg.adb_path,
+      arg.config
+    );
+  },
+  "asst:disconnect_destroy": async (event, arg) => {
+    Assistant.getInstance()?.Stop(arg.uuid);
+    Assistant.getInstance()?.Destroy(arg.uuid);
+    return true;
+  },
+
+  "asst:appendTask": async (event, arg) => {
+    return Assistant.getInstance()?.AppendTask(
       arg.uuid,
       arg.type,
       JSON.stringify(arg.params)
     );
   },
-  "asst:start": (event, arg) => {
-    event.returnValue = Assistant.getInstance()?.Start(arg.uuid);
+  "asst:start": async (event, arg) => {
+    return Assistant.getInstance()?.Start(arg.uuid);
   },
-  "asst:stop": (event, arg) => {
-    event.returnValue = Assistant.getInstance()?.Stop(arg.uuid);
+  "asst:stop": async (event, arg) => {
+    return Assistant.getInstance()?.Stop(arg.uuid);
   },
-  "asst:setUUID": (event, arg) => {
-    Assistant.getInstance()?.SetUUID(arg.address, arg.uuid);
-    event.returnValue = true;
-  }
+  "asst:supportedStages": async (event) => {
+    if (!Assistant.getInstance()) {
+      return [];
+    }
+    const jsonPath = path.join(Assistant.libPath, "resource/tasks.json");
+    const tasks = JSON.parse(String(fs.readFileSync(jsonPath)));
+    const stages = Object.keys(tasks).filter((s) =>
+      /[A-Z0-9]+-([A-Z0-9]+-?)?[0-9]/.test(s)
+    );
+    return stages;
+  },
 };
 
 export default function useAsstHooks() {
-  ipcMain.on("asst:load", (event) => {
+  ipcMain.handle("asst:load", (event) => {
     const asst = Assistant.getInstance();
     if (!asst) {
-      event.returnValue = false;
-      return;
+      return false;
     }
-    for (const eventName of Object.keys(asstHooks)) {
-      ipcMain.on(eventName, asstHooks[eventName]);
-    }
-    event.returnValue = true;
+      for (const eventName of Object.keys(asstHooks)) {
+        ipcMain.handle(eventName, asstHooks[eventName]);
+      }
+    return true;
   });
 
-  ipcMain.on("asst:dispose", (event) => {
+  ipcMain.handle("asst:dispose", (event) => {
     Assistant.dispose();
     for (const eventName of Object.keys(asstHooks)) {
-      ipcMain.off(eventName, asstHooks[eventName]);
+      ipcMain.removeHandler(eventName);
     }
+    window.sessionStorage.setItem("coreIPCLoadStatus","false");
+    return void 0;
   });
 }
 
 /**  
   export default function useAsstHooks() {
-  ipcMain.on("asst:appendStartUp", (event, arg) => {
-    event.returnValue = Assistant.getInstance().AppendStartUp(arg.uuid);
+  ipcMain.handle("asst:appendStartUp", (event, arg) => {
+    return Assistant.getInstance().AppendStartUp(arg.uuid);
   });
 
-  ipcMain.on("asst:AppendFight", (event, arg) => {
-    event.returnValue = Assistant.getInstance().AppendFight(
+  ipcMain.handle("asst:AppendFight", (event, arg) => {
+    return Assistant.getInstance().AppendFight(
       arg.stage,
       arg.max_mecidine,
       arg.number,
@@ -84,23 +108,23 @@ export default function useAsstHooks() {
     );
   });
 
-  ipcMain.on("asst:appendAward", (event, arg) => {
-    event.returnValue = Assistant.getInstance().AppendAward(arg.uuid);
+  ipcMain.handle("asst:appendAward", (event, arg) => {
+    return Assistant.getInstance().AppendAward(arg.uuid);
   });
 
-  ipcMain.on("asst:appendVisit", (event, arg) => {
-    event.returnValue = Assistant.getInstance().AppendVisit(arg.uuid);
+  ipcMain.handle("asst:appendVisit", (event, arg) => {
+    return Assistant.getInstance().AppendVisit(arg.uuid);
   });
 
-  ipcMain.on("asst:appendMall", (event, arg) => {
-    event.returnValue = Assistant.getInstance().AppendMall(
+  ipcMain.handle("asst:appendMall", (event, arg) => {
+    return Assistant.getInstance().AppendMall(
       arg.with_shopping,
       arg.uuid
     );
   });
 
-  ipcMain.on("asst:appendInfrast", (event, arg) => {
-    event.returnValue = Assistant.getInstance().AppendInfrast(
+  ipcMain.handle("asst:appendInfrast", (event, arg) => {
+    return Assistant.getInstance().AppendInfrast(
       arg.work_mode,
       arg.order,
       arg.order_size,
@@ -110,8 +134,8 @@ export default function useAsstHooks() {
     );
   });
 
-  ipcMain.on("asst:appendRecruit", (event, arg) => {
-    event.returnValue = Assistant.getInstance().AppendRecruit(
+  ipcMain.handle("asst:appendRecruit", (event, arg) => {
+    return Assistant.getInstance().AppendRecruit(
       arg.max_times,
       arg.select_level,
       arg.select_len,
@@ -122,15 +146,15 @@ export default function useAsstHooks() {
     );
   });
 
-  //ipcMain.on("asst:appendRoguelike")
-  //ipcMain.on("asst:appendDebug")
-  //ipcMain.on("asst:startRecruitCalc")
+  //ipcMain.handle("asst:appendRoguelike")
+  //ipcMain.handle("asst:appendDebug")
+  //ipcMain.handle("asst:startRecruitCalc")
 
 
-  //ipcMain.on("asst:setPenguinId")
-  //ipcMain.on("asst:getImage")
-  //ipcMain.on("asst:ctrlerClick")
-  //ipcMain.on("asst:Log")
+  //ipcMain.handle("asst:setPenguinId")
+  //ipcMain.handle("asst:getImage")
+  //ipcMain.handle("asst:ctrlerClick")
+  //ipcMain.handle("asst:Log")
 // }
 
 */

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, Ref } from "vue";
+import { ref, onMounted } from "vue";
 import { NButton, NSpace, NIcon } from "naive-ui";
 
 import IconWindowMinimize from "@/assets/icons/window-minimize.svg?component";
@@ -7,21 +7,28 @@ import IconClose from "@/assets/icons/close.svg?component";
 import IconScaleContract from "@/assets/icons/scale-contract.svg?component";
 import IconScaleExtend from "@/assets/icons/scale-extend.svg?component";
 
-const isMaximized: Ref<boolean> = ref(window.ipcRenderer.sendSync("window:is-maximized"));
+const isMaximized = ref(false);
+
+onMounted(() => {
+  window.ipcRenderer.invoke("window:is-maximized").then(result => {
+    isMaximized.value = result;
+  });
+});
+
 
 const onClose = () => {
   window.ipcRenderer.send("window:close");
 };
 
-const onToggleMaximized = () => {
-  const result = window.ipcRenderer.sendSync("window:toggle-maximized");
+const onToggleMaximized = async () => {
+  const result = await window.ipcRenderer.invoke("window:toggle-maximized");
   if (result instanceof Error) {
     console.log();
   }
 };
 
 const onMinimize = () => {
-  window.ipcRenderer.send("window:minimize");
+  window.ipcRenderer.invoke("window:minimize");
 };
 
 window.ipcRenderer.on("window:update-maximized", (_, maximized) => {
@@ -31,9 +38,22 @@ window.ipcRenderer.on("window:update-maximized", (_, maximized) => {
 
 <template>
   <div class="window-controller">
-    <div class="placeholder-bar"></div>
-    <div class="drag-bar"></div>
+    <div class="placeholder-bar" />
+    <div class="drag-bar" />
     <NSpace class="traffic-lights">
+      <NButton
+        @click="onMinimize"
+        circle
+        type="warning"
+        size="tiny"
+        class="traffic-light"
+      >
+        <template #icon>
+          <NIcon class="traffic-light-icon" color="#000">
+            <IconWindowMinimize />
+          </NIcon>
+        </template>
+      </NButton>
       <NButton
         @click="onToggleMaximized"
         circle
@@ -45,19 +65,6 @@ window.ipcRenderer.on("window:update-maximized", (_, maximized) => {
           <NIcon class="traffic-light-icon" color="#000">
             <IconScaleExtend v-if="!isMaximized" />
             <IconScaleContract v-if="isMaximized" />
-          </NIcon>
-        </template>
-      </NButton>
-      <NButton
-        @click="onMinimize"
-        circle
-        type="warning"
-        size="tiny"
-        class="traffic-light"
-      >
-        <template #icon>
-          <NIcon class="traffic-light-icon" color="#000">
-            <IconWindowMinimize />
           </NIcon>
         </template>
       </NButton>

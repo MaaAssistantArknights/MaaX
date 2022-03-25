@@ -8,5 +8,5 @@ tmp
 **/.tmp
 release
 
-# core test
-packages/main/core
+# gamedata
+packages/renderer/public/gamedata

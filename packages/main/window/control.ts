@@ -8,27 +8,27 @@ export default function useController(window: BrowserWindow) {
     }
   });
 
-  ipcMain.on("window:toggle-maximized", (event) => {
+  ipcMain.handle("window:toggle-maximized", async (event) => {
     if (!window.isMaximized() && window.isMaximizable()) {
       window.maximize();
-      event.returnValue = true;
+      return true;
     } else if (window.isMaximized()) {
       window.unmaximize();
-      event.returnValue = false;
+      return false;
     } else {
-      event.returnValue = new Error("window is not maximizable");
+      return new Error("window is not maximizable");
     }
   });
 
-  ipcMain.on("window:minimize", (event) => {
+  ipcMain.handle("window:minimize", async (event) => {
     if (window.isMinimizable()) {
       window.minimize();
-      event.returnValue = true;
+      return true;
     }
   });
 
-  ipcMain.on("window:is-maximized", (event) => {
-    event.returnValue = window.isMaximized();
+  ipcMain.handle("window:is-maximized", async (event) => {
+    return window.isMaximized();
   });
 
   window.on("maximize", () => {

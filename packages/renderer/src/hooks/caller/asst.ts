@@ -1,4 +1,4 @@
 export default {
-  load: () => window.ipcRenderer.sendSync("asst:load") as boolean,
-  dispose: () => window.ipcRenderer.send("asst:dispose") as void,
+  load: () => window.ipcRenderer.invoke("asst:load") as Promise<boolean>,
+  dispose: () => window.ipcRenderer.invoke("asst:dispose") as Promise<void>,
 };

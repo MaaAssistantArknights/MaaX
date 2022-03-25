@@ -1,0 +1,20 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "target": "esnext",
+    "useDefineForClassFields": true,
+    "module": "commonJS",
+    "moduleResolution": "node",
+    "strict": true,
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "lib": ["esnext"],
+    "baseUrl": ".",
+    "paths": {
+      "@main/*": ["./*"],
+      "@common/*": ["../common/*"],
+    }
+  },
+  "include": ["./**/*.ts", "./**/*.d.ts"]
+}

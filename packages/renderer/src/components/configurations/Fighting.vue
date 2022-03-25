@@ -21,10 +21,6 @@ interface FightingConfiguration {
     type: "current" | "last";
   };
 }
-// const routeUuid = router.currentRoute.value.params.uuid as string;
-
-// const task = taskStore.deviceTasks[routeUuid].find(task => task.id === 'fight');
-// const configurations = task?.configurations as unknown as FightingConfiguration;
 
 const props = defineProps<{
   configurations: FightingConfiguration;

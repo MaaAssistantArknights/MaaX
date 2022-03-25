@@ -28,6 +28,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.join(__dirname, "src"),
+      "@common": path.join(__dirname, "../common"),
     },
   },
   build: {

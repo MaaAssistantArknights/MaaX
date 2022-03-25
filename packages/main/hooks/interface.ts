@@ -1,11 +1,13 @@
-import ffi from "ffi-napi";
+import ffi, { DynamicLibrary } from "ffi-napi";
 import ref from "ref-napi";
 import ArrayType from "ref-array-napi";
 import path from "path";
-import { existsSync } from "fs";
-import { assert } from "@vue/compiler-core";
+import { existsSync, mkdirSync } from "fs";
 import WindowFactory from "../window/factory";
 import logger from "../utils/logger";
+import _ from "lodash";
+import { app } from "electron";
+import Storage from "../storage";
 
 /** Some types for core */
 const BoolType = ref.types.bool;
@@ -52,6 +54,10 @@ enum AsstMsg {
   SubTaskExtraInfo, // 原子任务额外信息
 }
 
+const subTaskStart: Record<string, (detail: any) => object> = {
+  StartUp: (detail: any) => { return { task: detail.details.task }; },
+};
+
 type taskchainProps = {
   [key in AsstMsg]: (msg: number, detail: any) => object;
 };
@@ -69,7 +75,7 @@ const handleCallback: taskchainProps = {
       name: detail.what, // 连接类型
       address: detail.details.address,
       ...{ UuidGetted: { uuid: detail.details.uuid }, ConnectFailed: {} }[
-        detail.what as string
+      detail.what as string
       ],
     };
   },
@@ -101,16 +107,24 @@ const handleCallback: taskchainProps = {
     return { name: msg };
   },
   [AsstMsg.SubTaskError]: (msg, detail) => {
-    return { name: msg };
+    return { name: `${detail.taskchain}:${detail.details.task}` };
   },
   [AsstMsg.SubTaskStart]: (msg, detail) => {
-    return { name: msg };
+    console.log(`CALL: ${detail.taskchain}:Start:${detail.details.task}`);
+    return {
+      name: `${detail.taskchain}:Start:${detail.details.task}`,
+      execTimes: detail.details.exec_times,
+      task: taskChainTranslate[detail.taskchain],
+      uuid: detail.uuid
+    };
   },
   [AsstMsg.SubTaskCompleted]: (msg, detail) => {
-    return { name: msg };
+    console.log(`CALL: ${detail.taskchain}:Completed:${detail.details.task}`);
+    return { name: `${detail.taskchain}:Completed:${detail.details.task}`, ...detail };
   },
   [AsstMsg.SubTaskExtraInfo]: (msg, detail) => {
-    return { name: msg };
+    console.log(`CALL: ${detail.taskchain}:Extra:${detail.what}`);
+    return { name: `${detail.taskchain}:Extra:${detail.what}`, ...detail };
   },
 };
 
@@ -125,7 +139,13 @@ const dependences: Record<string, Array<string>> = {
     "penguin-stats-recognize",
   ],
   linux: [],
-  darwin: ["libpaddle_inference"],
+  darwin: ["libpaddle_inference.dylib"],
+};
+
+const libName: Record<string, string> = {
+  win32: "MeoAssistant",
+  darwin: "MeoAssistant.dylib",
+  linux: "MeoAssistant"
 };
 
 /**
@@ -211,65 +231,82 @@ function makeArray(array: any[]) {
   return typeof array[0] === "number"
     ? IntArrayType(array)
     : array.map((v) => {
-        return Buffer.from(v);
-      });
+      return Buffer.from(v);
+    });
 }
 
 class Assistant {
   private static singleton?: Assistant;
-  public static libPath: string;
-  MeoAsstLib;
+  // public static libPath: string;
+  public MeoAsstLib;
   //MeoAsstPtr!: ref.Pointer<void>;
+  private DLib;
+  private DepLibs: DynamicLibrary[] = [];
   MeoAsstPtr: Record<string, AsstInstancePtr> = {};
   __CALLBACK!: any;
 
+  private static libPathKey = "libPath";
+
+  private static defaultLibPath = path.join(app.getPath("appData"), app.getName(), "core");
+
+  public static get libPath(): string {
+    let libPath = Storage.get(Assistant.libPathKey);
+    if (!_.isString(libPath) || !existsSync(libPath)) {
+      logger.error(`原资源路径： ${libPath}, 更新后：${this.defaultLibPath}`);
+      libPath = this.defaultLibPath;
+      mkdirSync(libPath);
+    }
+    if (path.isAbsolute(libPath)) {
+      libPath = path.resolve(libPath);
+      Storage.set(Assistant.libPathKey, libPath);
+    }
+    return libPath;
+  }
+
   private constructor() {
+
     console.log(Assistant.libPath);
 
     dependences[process.platform].forEach((lib) => {
-      ffi.Library(path.join(Assistant.libPath, lib));
+      console.log(lib);
+      // ffi.Library(path.join(Assistant.libPath, lib));
+      this.DepLibs.push(ffi.DynamicLibrary(path.join(Assistant.libPath, lib)));
     });
-    console.log(Assistant.libPath);
+    this.DLib = ffi.DynamicLibrary(path.join(Assistant.libPath, libName[process.platform]), ffi.RTLD_NOW);
+    this.MeoAsstLib =
+    {
+      AsstLoadResource: ffi.ForeignFunction(this.DLib.get("AsstLoadResource"), BoolType, [StringType], ffi.FFI_STDCALL),
+      AsstCreate: ffi.ForeignFunction(this.DLib.get("AsstCreate"), AsstPtrType, [], ffi.FFI_STDCALL),
+      AsstCreateEx: ffi.ForeignFunction(this.DLib.get("AsstCreateEx"), AsstPtrType, ["pointer", CustomArgsType], ffi.FFI_STDCALL),
+      AsstDestroy: ffi.ForeignFunction(this.DLib.get("AsstDestroy"), voidType, [AsstPtrType], ffi.FFI_STDCALL),
+      AsstConnect: ffi.ForeignFunction(this.DLib.get("AsstConnect"),
+        BoolType,
+        [AsstPtrType, StringType, StringType, StringType],
+        ffi.FFI_STDCALL),
 
-    this.MeoAsstLib = ffi.Library(
-      path.join(Assistant.libPath, "MeoAssistant"),
-      {
-        AsstLoadResource: [BoolType, [StringType]],
+      AsstAppendTask: ffi.ForeignFunction(this.DLib.get("AsstAppendTask"), IntType, [AsstPtrType, StringType, StringType], ffi.FFI_STDCALL),
+      AsstSetTaskParams: ffi.ForeignFunction(this.DLib.get("AsstSetTaskParams"), BoolType, [AsstPtrType, IntType, StringType], ffi.FFI_STDCALL),
 
-        AsstCreate: [AsstPtrType, []],
-        AsstCreateEx: [AsstPtrType, ["pointer", CustomArgsType]],
-        AsstDestroy: [voidType, [AsstPtrType]],
-        AsstConnect: [
-          BoolType,
-          [AsstPtrType, StringType, StringType, StringType],
-        ],
+      AsstStart: ffi.ForeignFunction(this.DLib.get("AsstStart"), BoolType, [AsstPtrType], ffi.FFI_STDCALL),
+      AsstStop: ffi.ForeignFunction(this.DLib.get("AsstStop"), BoolType, [AsstPtrType], ffi.FFI_STDCALL),
 
-        AsstAppendTask: [IntType, [AsstPtrType, StringType, StringType]],
-        AsstSetTaskParams: [BoolType, [AsstPtrType, IntType, StringType]],
-
-        AsstStart: [BoolType, [AsstPtrType]],
-        AsstStop: [BoolType, [AsstPtrType]],
-
-        AsstGetImage: [ULLType, [AsstPtrType, Buff, ULLType]],
-        AsstCtrlerClick: [BoolType, [AsstPtrType, IntType, IntType, BoolType]],
-        AsstGetVersion: [StringType, []],
-
-        AsstLog: [voidType, [StringType, StringType]],
-      }
-    );
+      AsstGetImage: ffi.ForeignFunction(this.DLib.get("AsstGetImage"), ULLType, [AsstPtrType, Buff, ULLType], ffi.FFI_STDCALL),
+      AsstCtrlerClick: ffi.ForeignFunction(this.DLib.get("AsstCtrlerClick"), BoolType, [AsstPtrType, IntType, IntType, BoolType], ffi.FFI_STDCALL),
+      AsstGetVersion: ffi.ForeignFunction(this.DLib.get("AsstGetVersion"), StringType, [], ffi.FFI_STDCALL),
+      AsstLog: ffi.ForeignFunction(this.DLib.get("AsstLog"), voidType, [StringType, StringType], ffi.FFI_STDCALL),
+    };
   }
 
+
   public static getInstance(): Assistant | undefined {
-    assert(Boolean(Assistant.libPath), "path undefined");
-    assert(existsSync(Assistant.libPath), "core path not exist!");
-    if (Assistant.libPath) Assistant.libPath = path.resolve(Assistant.libPath);
+    let libPath = Assistant.libPath;
     if (!this.singleton) {
       try {
         this.singleton = new Assistant();
-        this.singleton.LoadResource(Assistant.libPath);
+        this.singleton.LoadResource(libPath);
       } catch (error) {
         logger.error("error while loading core");
-        //logger.error(error);
+        logger.error(error);
       }
     }
     return this.singleton;
@@ -277,10 +314,15 @@ class Assistant {
 
   public static dispose(): void {
     if (this.singleton) {
-      for (const [uuid] of Object.entries(this.singleton.MeoAsstPtr)) {
+      for (const uuid of Object.keys(this.singleton.MeoAsstPtr)) {
         this.singleton.Stop(uuid);
         this.singleton.Destroy(uuid);
       }
+      for (const dep of this.singleton.DepLibs) {
+        console.log(dep.path());
+        dep.close();
+      }
+      this.singleton.DLib.close();
       delete this.singleton;
     }
   }
@@ -305,45 +347,51 @@ class Assistant {
 
   /**
    * 创建实例
-   * @param dirname 本体路径{string}
+   * @param uuid 设备唯一标识符{string}
    * @param callback 回调函数, 必须要有msg,detail参数, 可选custom_arg
    * @param custom_arg 自定义参数{???}
-   * @returns  实例指针{ref.Pointer}
+   * @returns  是否创建成功
    */
   CreateEx(
     /**
-     * 逻辑: 接受一个连接地址, 先把指针存在这个地址上, 等后续回调再把地址名称改成uuid
+     * 
      */
-    address: string,
+    uuid: string,
     callback: any = cb,
     custom_arg: any = voidPointer()
   ): boolean {
-    this.MeoAsstPtr[address] = this.MeoAsstLib.AsstCreateEx(cb, custom_arg);
-
-    return this.MeoAsstPtr[address] ? true : false;
-  }
+    if (!this.MeoAsstPtr[uuid])
+    {
+      this.MeoAsstPtr[uuid] = this.MeoAsstLib.AsstCreateEx(callback, custom_arg);
+      return true;
+    }
+    return false; // 重复创建
+  } 
 
   Destroy(uuid: string) {
-    this.MeoAsstLib.AsstDestroy(this.GetUUID(uuid));
+    this.MeoAsstLib.AsstDestroy(this.MeoAsstPtr[uuid]);
+    delete this.MeoAsstPtr[uuid];
   }
 
   /**
    * 连接
    * @param address 连接地址
-   * @param config 模拟器名称, 自定义设备为'General'
+   * @param uuid 设备唯一标识符
    * @param adb_path adb路径
+   * @param config 模拟器名称, 自定义设备为'General'
    * @returns 是否连接成功
    */
   Connect(
     /**
-     * 连接时是不知道 uuid 的, 所以先用 address 代替 uuid.
+     * 
      */
     address: string,
+    uuid:string,
     adb_path: string,
     config: string
   ): boolean {
     return this.MeoAsstLib.AsstConnect(
-      this.GetUUID(address),
+      this.MeoAsstPtr[uuid],
       adb_path,
       address,
       config
@@ -420,11 +468,12 @@ class Assistant {
    * @param address 设备连接地址
    * @param uuid 要绑定的uuid
    */
+  /**
   SetUUID(address: string, uuid: string) {
     this.MeoAsstPtr[uuid] = this.MeoAsstPtr[address];
     delete this.MeoAsstPtr[address];
   }
-
+ */
   GetUUID(uuid: string) {
     return this.MeoAsstPtr[uuid];
   }
