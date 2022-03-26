@@ -1,4 +1,4 @@
-import { execSync, spawn, spawnSync } from "child_process";
+import { execSync, spawn, spawnSync,execFile } from "child_process";
 import { is } from "electron-util";
 import { ipcMain } from "electron";
 import path from "path";
@@ -334,6 +334,25 @@ function getEmulatorsDarwin(): Emulator[] {
   return emulators;
 }
 
+function startEmulatorHook(){
+  ipcMain.handle("asst:startEmulator", async (event,arg) => {
+    console.log(arg);
+      execFile(arg.emulator_path,[arg.arg],(err: any,stdout:string,stderr:string)=>{
+        if(err) {
+          console.log(err);
+          return;
+        }
+
+        console.log(`startEmu stdout:${stdout}`);
+        console.log(`startEmu stderr:${stderr}`);
+      });
+  });
+}
+
+function killEmulatorHook(){
+
+}
+
 export default function getEmulatorHooks() {
   ipcMain.handle("asst:getEmulators", async (event): Promise<Emulator[]> => {
     if (is.windows) {
@@ -350,4 +369,5 @@ export default function getEmulatorHooks() {
     return ret;
   });
 
+  startEmulatorHook();
 }

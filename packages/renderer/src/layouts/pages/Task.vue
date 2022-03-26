@@ -10,7 +10,7 @@ import Configuration from "@/components/configurations/Index.vue";
 
 import useTaskStore, { defaultTask } from "@/store/tasks";
 import useDeviceStore from "@/store/devices";
-import handleSingleTask from "@/utils/converter/tasks";
+import {handleSingleTask, uiTasks} from "@/utils/converter/tasks";
 
 import router from "@/router";
 
@@ -80,8 +80,10 @@ async function handleStart() {
     return;
   }  tasks.value?.forEach(async (singleTask) => {
     if (singleTask.enable) {
-      taskStore.updateTaskStatus(uuid.value, singleTask.id, "processing", 0);
-      const task = handleSingleTask[singleTask.id](singleTask.configurations);
+      taskStore.updateTaskStatus(uuid.value, singleTask.id, "waiting", 0);
+      const task = handleSingleTask[singleTask.id]({...singleTask.configurations, uuid: uuid.value,taskId:singleTask.id});
+      if(uiTasks.includes(singleTask.id)) return; // ui限定任务，不发送给core执行
+      console.log("core task");
       console.log(task);
       await window.ipcRenderer.invoke("asst:appendTask", {
         uuid: uuid.value,
