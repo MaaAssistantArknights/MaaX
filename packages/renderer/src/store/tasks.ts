@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import _ from "lodash";
+import gamedata from "@/api/gamedata";
 
 export interface TaskState {
   deviceTasks: Record<string, Task[]>;
@@ -47,7 +48,7 @@ export const defaultTask: Task[] = [
     //startTime: Date.now(),
     enable: true,
     configurations: {
-      server:"CN_OFFICIAL",
+      server: "CN_OFFICIAL",
     },
   },
   {
@@ -59,7 +60,12 @@ export const defaultTask: Task[] = [
       medicine: true,
       expiration_first: true,
       originite_prime: true,
-      levels: [],
+      levels: [
+        {
+          code: "CE-5",
+          times: 3
+        }
+      ],
       special: {
         type: "current",
         times: 0,
@@ -169,16 +175,22 @@ const useTaskStore = defineStore<"tasks", TaskState, {}, TaskAction>("tasks", {
       const origin = deviceTasks[uuid];
       const task = origin?.find((task) => task.id === taskId);
       if (task) {
+        const statusChanged = status === task.status;
+
+        if (statusChanged) {
+          switch (status) {
+            case "processing":
+              task.startTime = Date.now();
+              break;
+            case "success":
+            case "exception":
+              task.endTime = Date.now();
+              break;
+          }
+        }
+
         task.status = status;
         task.progress = progress;
-
-        if (task.status != "processing" && status == "processing") {
-          task.startTime = Date.now();
-        } else if (task.status != "success" && status == "success") {
-          task.endTime = Date.now();
-        } else if (task.status != "exception" && status == "exception") {
-          task.endTime = Date.now();
-        }
       }
     },
     changeTaskOrder(uuid, from, to) {

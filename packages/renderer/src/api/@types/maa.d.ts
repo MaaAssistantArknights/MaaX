@@ -41,44 +41,48 @@ declare namespace Api.Maa {
     stage_ap_cost: number;
   };
 
-  type ZoneMetadata = {
-    zone_id: string;
-    zone_name: string;
-    zone_type: ZoneType;
+  type Zone = {
+    zoneID: string;
+    zoneIndex: number;
+    type: ZoneType;
+    zoneNameFirst: string;
+    zoneNameSecond: string;
+    zoneNameTitleCurrent: string;
+    zoneNameTitleUnCurrent: string;
+    zoneNameTitleEx: string;
+    zoneNameThird: string;
+    lockedText: string;
+    canPreview: boolean;
   };
 
   type Stage = {
-    stage_metadata: StageMetadata;
-    zone_metadata: ZoneMetadata;
-
-    existence?: {
-      [K in GameServers]: {
-        exist: boolean;
-        openTime: number | null;
-        closeTime: number | null;
-      };
-    };
-    zone_i18n: {
-      [K in GameLocales]: string;
-    };
-    stage_i18n: {
-      [K in GameLocales]: string;
-    };
-  };
-
-  type Zone = {
-    zone_metadata: ZoneMetadata;
-    existence?: {
-      [K in GameServers]: {
-        exist: boolean;
-        openTime: number | null;
-        closeTime: number | null;
-      };
-    };
-    zone_i18n: {
-      [K in GameLocales]: string;
-    };
-    stages: StageMetadata[];
+    stageType: StageType;
+    difficulty: string;
+    performanceStageFlag: string;
+    stageId: string;
+    levelId: string;
+    zoneId: string;
+    code: string;
+    name: string;
+    description: string;
+    hardStagedId: string;
+    dangerLevel: string;
+    dangerPoint: number;
+    loadingPicId: string;
+    canPractice: string;
+    canBattleReplay: string;
+    apCost: number;
+    apFailReturn: number;
+    etItemId: string | null;
+    etCost: number;
+    etFailReturn: number;
+    apProtectTimes: number;
+    diamondOnceDrop: number;
+    practiceTicketCost: number;
+    dailyStageDifficulty: number;
+    expGain: number;
+    goldGain: number;
+    loseExpGain: number;
   };
 
   type Item = {

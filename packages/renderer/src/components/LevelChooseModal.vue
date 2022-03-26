@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { NButton, NCard, NInputNumber, NInput, NSpace, NTooltip, useThemeVars } from "naive-ui";
+import gamedata from "@/api/gamedata";
+import { computed, onMounted, Ref, ref } from "vue";
 
 const themeVars = useThemeVars();
 
@@ -10,6 +12,28 @@ const props = defineProps<{
     type: "current" | "last"
   }
 }>();
+
+let allZones: Ref<Api.Maa.Zone[]> = ref([]);
+let allStages: Ref<Api.Maa.Stage[]> = ref([]);
+
+onMounted(async () => {
+  const zoneRes = await gamedata.getAllZones();
+  const stageRes = await gamedata.getAllStages();
+  allZones.value = Object.values(zoneRes["zones"]);
+  allStages.value = Object.values(stageRes["stages"]);
+});
+
+const stages = computed(() => {
+  const stageCodes = props.levels.map(level => level.code);
+  return allStages.value.filter(stage => stageCodes.findIndex(code => code === stage.code) !== -1);
+});
+
+const zones = computed(() => {
+  const zoneIds = stages.value.map(stage => stage.zoneId);
+  return allZones.value.filter(zone => zoneIds.findIndex(id => id === zone.zoneID) !== -1);
+});
+
+
 
 const emit = defineEmits(["update:special_type"]);
 
@@ -31,7 +55,8 @@ function handleSpecialTypeChange() {
     aria-modal="true"
   >
     <template #header-extra>
-      <NInput placeholder="搜索" size="small" />
+      <!-- 搜你个头，就那么几关还搜搜搜 -->
+      <NInput v-if="false" placeholder="搜索" size="small" />
     </template>
     <NSpace vertical>
       <div class="level-card">
@@ -41,7 +66,12 @@ function handleSpecialTypeChange() {
               text
               :focusable="false"
               @click="handleSpecialTypeChange"
-            >{{ special.type === 'current' ? '当前关卡' : '上次作战' }}</NButton>
+            >
+              {{
+                special.type ===
+                  'current' ? '当前关卡' : '上次作战'
+              }}
+            </NButton>
           </template>
           {{ `点击切换到“${special.type !== 'current' ? '当前关卡' : '上次作战'}”` }}
         </NTooltip>
@@ -49,15 +79,22 @@ function handleSpecialTypeChange() {
       </div>
       <div
         class="level-card"
-        v-for="(level) in props.levels"
-        :key="level.stage.stage_metadata.stage_id"
+        v-for="(level, index) in props.levels"
+        :key="level.code"
       >
-        <span>{{ `${level.stage.zone_i18n.zh} / ${level.stage.stage_i18n.zh}` }}</span>
+        <NSpace :size="2">
+          <span>
+            {{ zones[index]?.zoneNameFirst || "" }}
+            {{ zones[index]?.zoneNameSecond || "" }}
+          </span>
+          <span>/</span>
+          <span>{{ level.code }}</span>
+        </NSpace>
         <NInputNumber v-model:value="level.times" size="small" />
         <div class="cover">
-          <img
-            :src="'https://penguin-stats.s3.amazonaws.com/backgrounds/zones/A001_zone1.jpg'"
-          />
+          <!-- <img
+            src=""
+          />-->
         </div>
       </div>
     </NSpace>

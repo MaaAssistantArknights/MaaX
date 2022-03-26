@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, Ref } from "vue";
 import _ from "lodash";
-import { NForm, NFormItem, NButton, NModal, NSelect, NCard, NImage, NSkeleton } from "naive-ui";
+import { NForm, NFormItem, NButton, NModal, NSelect, NCard, NImage, NSkeleton, NScrollbar } from "naive-ui";
 import gamedataApi from "@/api/gamedata";
 import { getOperatorAvatar, getSkillImage } from "@/utils/game_image";
 
@@ -40,7 +40,8 @@ const operators: Ref<unknown[]> = ref([]);
 const skills: Ref<unknown> = ref();
 
 onMounted(async () => {
-  operators.value = Object.values(await gamedataApi.getAllOperators() as Object);
+  operators.value = Object.values(await gamedataApi.getAllOperators() as Object)
+    .filter(operator => operator.nationId !== null);
   skills.value = await gamedataApi.getAllSkills();
   operators.value.forEach(async operator => {
     operator.image = await getOperatorAvatar(operator.name);
@@ -83,15 +84,20 @@ onMounted(async () => {
       aria-modal="true"
     >
       <NCard
-        style="width: 600px"
+        style="width: 600px;"
         role="dialog"
         aria-modal="true"
         title="干员招募顺序"
       >
-        <div v-for="operator in operators" :key="operator.name">
-          <span>{{ operator.name }}</span>
-          <img :src="operator.image" />
-        </div>
+        <NScrollbar :style="{ maxHeight: '600px' }">
+          <div
+            v-for="operator in operators.reverse()"
+            :key="operator.name"
+          >
+            <span>{{ operator.name }}</span>
+            <img :src="operator.image" />
+          </div>
+        </NScrollbar>
       </NCard>
     </NModal>
   </NForm>

@@ -16,4 +16,7 @@ export default {
   async getAllSkills() {
     return await service.get("/skill_table.json");
   },
+  async getAllZones() {
+    return await service.get("/zone_table.json");
+  }
 };

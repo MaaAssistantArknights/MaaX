@@ -1,4 +1,4 @@
 interface Level {
-  stage: Api.Maa.Stage;
+  code: string;
   times: number;
 }
