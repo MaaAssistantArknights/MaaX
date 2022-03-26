@@ -159,7 +159,7 @@ export const defaultTask: Task[] = [
     status: "idle",
     enable: true,
     configurations: {
-      duration: 114514, // TODO
+      duration: 3600, // TODO
       strategy: "ToTheEnd",
       operators: [],
     },
@@ -170,7 +170,7 @@ export const defaultTask: Task[] = [
     status: "idle",
     enable: false,
     configurations: {
-      option : "shutdownWindows",
+      option : "shutdownComputer",
       delay : 300,
     },
   },

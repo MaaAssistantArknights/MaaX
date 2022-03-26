@@ -22,13 +22,13 @@ interface InfrastConfiguration {
   }>;
   replenish: boolean;
   drone_usage:
-    | "None"
-    | "LMD"
-    | "Orumdum"
-    | "Battle Record"
-    | "Pure Gold"
-    | "Originium Shard"
-    | "Chip";
+  | "None"
+  | "LMD"
+  | "Orumdum"
+  | "Battle Record"
+  | "Pure Gold"
+  | "Originium Shard"
+  | "Chip";
   mood_limit: number;
 }
 
@@ -161,16 +161,14 @@ onMounted(() => {
           :min="0"
         />
       </NFormItem>
-      <NFormItem 
-        label="源石碎片自动补货"
-        :show-label="true">
+      <NFormItem :show-label="false">
         <NCheckbox
           :checked="props.configurations.replenish"
           @update:checked="
             (checked) =>
               _.set(props.configurations, 'replenish', checked)
           "
-        />
+        >源石碎片自动补货</NCheckbox>
       </NFormItem>
     </div>
   </NForm>
