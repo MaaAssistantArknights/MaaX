@@ -20,6 +20,7 @@ interface InfrastConfiguration {
     name: InfrastType;
     enabled: boolean;
   }>;
+  replenish: boolean;
   drone_usage:
     | "None"
     | "LMD"
@@ -158,6 +159,17 @@ onMounted(() => {
           "
           :max="23"
           :min="0"
+        />
+      </NFormItem>
+      <NFormItem 
+        label="源石碎片自动补货"
+        :show-label="true">
+        <NCheckbox
+          :checked="props.configurations.replenish"
+          @update:checked="
+            (checked) =>
+              _.set(props.configurations, 'replenish', checked)
+          "
         />
       </NFormItem>
     </div>

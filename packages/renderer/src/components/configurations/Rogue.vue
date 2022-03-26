@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, Ref } from "vue";
 import _ from "lodash";
-import { NForm, NFormItem, NButton, NModal, NSelect, NCard, NImage, NSkeleton, NScrollbar } from "naive-ui";
+import { NForm, NFormItem, NButton, NModal, NSelect, NCard, NImage, NSkeleton, NScrollbar, NInputNumber } from "naive-ui";
 import gamedataApi from "@/api/gamedata";
 import { getOperatorAvatar, getSkillImage } from "@/utils/game_image";
 
@@ -10,6 +10,7 @@ type Strategies = "ToTheEnd" | "AfterFirstLevel" | "AfterMoney";
 interface RogueConfiguration {
   strategy: Strategies;
   operators: Array<string>;
+  duration: number;
 }
 
 const strategyOptions: Array<{
@@ -59,6 +60,14 @@ onMounted(async () => {
     :label-placement="'top'"
     :label-width="'150px'"
   >
+
+  <NFormItem label="运行时间">
+      <NInputNumber
+        :value="configurations.duration"
+        @update:value="(value) => _.set(props.configurations, 'duration', value)"
+      />
+    </NFormItem>
+
     <NFormItem label="通关策略">
       <NSelect
         :value="props.configurations.strategy"

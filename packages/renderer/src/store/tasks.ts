@@ -28,9 +28,10 @@ export const defaultTask: Task[] = [
     status: "idle",
     enable: false,
     configurations: {
-      emulator_path: "",
+      emulator_path: "", // 模拟器路径
       arg: "", //启动参数, 用于启动指定模拟器
-      adb_path: "",
+      //adb_path: "",
+      delay: 300, // 执行后续任务的等待延迟
     },
   },
   {
@@ -38,17 +39,18 @@ export const defaultTask: Task[] = [
     title: "启动明日方舟",
     status: "idle",
     enable: false,
-    configurations: {},
+    configurations: {
+      server:"CN",
+    },
   },
   {
     id: "startup",
     title: "开始唤醒",
     status: "idle",
-    //progress: 50,
-    //startTime: Date.now(),
+
     enable: true,
     configurations: {
-      server: "CN_OFFICIAL",
+      //server: "CN_OFFICIAL",
     },
   },
   {
@@ -157,8 +159,19 @@ export const defaultTask: Task[] = [
     status: "idle",
     enable: true,
     configurations: {
+      duration: 114514, // TODO
       strategy: "ToTheEnd",
       operators: [],
+    },
+  },
+  {
+    id: "shutdown",
+    title: "关机/关闭模拟器",
+    status: "idle",
+    enable: false,
+    configurations: {
+      option : "shutdownWindows",
+      delay : 300,
     },
   },
 ];
