@@ -14,6 +14,7 @@ import {
   NInputNumber,
   NSpace,
   NTimePicker,
+  NAvatar,
 } from "naive-ui";
 import gamedataApi from "@/api/gamedata";
 import { getOperatorAvatar, getSkillImage } from "@/utils/game_image";
@@ -34,19 +35,19 @@ const strategyOptions: Array<{
   label: string
   value: Strategies
 }> = [
-  {
-    label: "尽可能往后打",
-    value: "ToTheEnd",
-  },
-  {
-    label: "刷源石锭投资，第一层商店后退出",
-    value: "AfterFirstLevel",
-  },
-  {
-    label: "刷源石锭投资，投资后退出",
-    value: "AfterMoney",
-  },
-];
+    {
+      label: "尽可能往后打",
+      value: "ToTheEnd",
+    },
+    {
+      label: "刷源石锭投资，第一层商店后退出",
+      value: "AfterFirstLevel",
+    },
+    {
+      label: "刷源石锭投资，投资后退出",
+      value: "AfterMoney",
+    },
+  ];
 
 const props = defineProps<{
   configurations: RogueConfiguration
@@ -54,17 +55,29 @@ const props = defineProps<{
 
 const showModal = ref(false);
 
-const operators: Ref<unknown[]> = ref([]);
-const skills: Ref<unknown> = ref();
+const operators: Ref<any[]> = ref([]);
+const allSkills: Ref<any> = ref();
 
 onMounted(async () => {
   operators.value = Object.values(
     (await gamedataApi.getAllOperators()) as Object
   ).filter((operator) => operator.nationId !== null);
-  skills.value = await gamedataApi.getAllSkills();
+
   operators.value.forEach(async (operator) => {
     operator.image = await getOperatorAvatar(operator.name);
   });
+
+  allSkills.value = await gamedataApi.getAllSkills() as any;
+  Object.keys(allSkills.value).forEach(async key => {
+    allSkills.value[key].name = allSkills.value[key].levels[0].name;
+    try {
+      allSkills.value[key].image = await getSkillImage(allSkills.value[key].name);
+    } catch (e) {
+      allSkills.value[key].image = null;
+    }
+  });
+  
+
 });
 </script>
 
@@ -111,8 +124,7 @@ onMounted(async () => {
           type="primary"
           @click="showModal = true"
           :focusable="false"
-          >干员招募顺序...</NButton
-        >
+        >干员招募顺序...</NButton>
       </NFormItem>
     </NSpace>
     <NModal
@@ -129,14 +141,35 @@ onMounted(async () => {
         title="干员招募顺序"
       >
         <NScrollbar :style="{ maxHeight: '600px' }">
-          <div v-for="operator in operators.reverse()" :key="operator.name">
-            <span>{{ operator.name }}</span>
-            <img :src="operator.image" />
-          </div>
+          <NSpace
+            :align="'center'"
+            v-for="operator in operators.reverse()"
+            :key="operator.name"
+            class="operator-row"
+          >
+            <!-- <span>{{ operator.name }}</span> -->
+            <NAvatar :src="operator.image" :size="48" />
+            <NSpace class="operator-skills">
+              <NAvatar
+                v-for="(skill, index) in operator.skills"
+                :key="index"
+                :src="allSkills[skill.skillId].image"
+              />
+            </NSpace>
+          </NSpace>
         </NScrollbar>
       </NCard>
     </NModal>
   </NForm>
 </template>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.operator-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.operator-skills {
+  flex: 1;
+}
+</style>

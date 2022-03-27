@@ -7,13 +7,15 @@ import {
   NModal,
   NForm,
   NFormItem,
+  NInputNumber,
+  NSpace,
 } from "naive-ui";
 import LevelChoose from "../LevelChooseModal.vue";
 import _ from "lodash";
 
 interface FightingConfiguration {
-  medicine: boolean;
-  expiration_first: boolean;
+  medicine: number;
+  stone: number;
   originite_prime: boolean;
   levels: Array<Level>;
   special: {
@@ -43,16 +45,21 @@ function handleConfigurationUpdate(key: string, value: any) {
     :label-placement="'left'"
     :label-width="'auto'"
   >
-    <NFormItem label="可用理智液">
-      <NCheckbox
+    <NSpace vertical>
+      <NFormItem label="使用理智液数量">
+        <!-- <NCheckbox
         :checked="props.configurations.medicine"
         @update:checked="
           (checked) => handleConfigurationUpdate('medicine', checked)
         "
-      />
-    </NFormItem>
-    <NFormItem v-if="false">
+        />-->
+        <NInputNumber
+          :value="props.configurations.medicine"
+          @update:value="value => handleConfigurationUpdate('medicine', value)"
+        />
+      </NFormItem>
       <!-- 不提供设置，Core暂不支持 -->
+      <!-- <NFormItem>
       <NButton
         quaternary
         @click="() => handleConfigurationUpdate('expiration_first', false)"
@@ -72,23 +79,28 @@ function handleConfigurationUpdate(key: string, value: any) {
         :focusable="false"
         :disabled="!props.configurations.medicine"
       >过期时间优先</NButton>
-    </NFormItem>
-    <NFormItem label="可用源石">
-      <NCheckbox
+      </NFormItem>-->
+      <NFormItem label="使用源石数量">
+        <!-- <NCheckbox
         :checked="props.configurations.originite_prime"
         @update:checked="
           (checked) => handleConfigurationUpdate('originite_prime', checked)
         "
-      />
-    </NFormItem>
-    <NFormItem>
-      <NButton
-        quaternary
-        type="primary"
-        @click="showModal = true"
-        :focusable="false"
-      >关卡选择...</NButton>
-    </NFormItem>
+        />-->
+        <NInputNumber
+          :value="props.configurations.stone"
+          @update:value="value => handleConfigurationUpdate('stone', value)"
+        />
+      </NFormItem>
+      <NFormItem>
+        <NButton
+          quaternary
+          type="primary"
+          @click="showModal = true"
+          :focusable="false"
+        >关卡选择...</NButton>
+      </NFormItem>
+    </NSpace>
     <NModal
       v-model:show="showModal"
       display-directive="show"

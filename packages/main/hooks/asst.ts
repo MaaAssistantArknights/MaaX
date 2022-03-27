@@ -101,7 +101,7 @@ export default function useAsstHooks() {
   ipcMain.handle("asst:AppendFight", (event, arg) => {
     return Assistant.getInstance().AppendFight(
       arg.stage,
-      arg.max_mecidine,
+      arg.max_medicine,
       arg.number,
       arg.max_times,
       arg.uuid

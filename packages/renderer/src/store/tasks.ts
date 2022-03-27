@@ -59,8 +59,8 @@ export const defaultTask: Task[] = [
     status: "idle",
     enable: true,
     configurations: {
-      medicine: true,
-      expiration_first: true,
+      medicine: 0,
+      stone: 0,
       originite_prime: true,
       levels: [
         {
@@ -159,7 +159,7 @@ export const defaultTask: Task[] = [
     status: "idle",
     enable: true,
     configurations: {
-      duration: 3600, // TODO
+      duration: 3600,
       strategy: "ToTheEnd",
       operators: [],
     },

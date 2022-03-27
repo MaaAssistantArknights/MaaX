@@ -26,7 +26,7 @@ function taskStartUp(task: Task["configurations"]) {
 function taskFight(task: Task["configurations"]) {
   return {
     stage: "", // TODO: UI上关卡支持
-    mecidine: 0, // TODO: 使用理智药数量
+    medicine: 0, // TODO: 使用理智药数量
     stones: 0, // TODO: 吃石头数量
     //times: (task.special as any).times,
     times: 1,
@@ -119,6 +119,7 @@ function taskRogue(task: Task["configurations"]) {
   }
   return {
     mode: rogueTranslate[task.strategy as number], // 肉鸽战斗模式, 0-尽可能往后打 1-第一层投资完源石就退出 2-投资后退出
+    // eslint-disable-next-line vue/max-len
     opers: [], // TODO: 参考 https://github.com/MaaAssistantArknights/MaaAssistantArknights/blob/dev/docs/%E9%9B%86%E6%88%90%E6%96%87%E6%A1%A3.md?plain=1#L128-L137
   };
 }

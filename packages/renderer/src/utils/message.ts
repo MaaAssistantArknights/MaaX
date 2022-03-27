@@ -1,9 +1,10 @@
-import {  MessageOptions } from "naive-ui";
+import { MessageOptions } from "naive-ui";
 import { VNodeChild } from "vue";
 
 
 export const hide = () => {
-  window.$message.destroyAll();};
+  window.$message.destroyAll();
+};
 
 export const show = (content: string | (() => VNodeChild), options: MessageOptions) => {
   hide();

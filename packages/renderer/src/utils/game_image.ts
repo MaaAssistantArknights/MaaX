@@ -33,7 +33,7 @@ export async function getOperatorFullImage(operator_code: string) {
 }
 
 export async function getSkillImage(skill_name: string) {
-  const filename = `技能_“${skill_name}”.png`;
+  const filename = `技能_${skill_name}.png`;
   const url = new URL(`${baseUrl}${filename}`);
   const response = await axios.get(url.href);
   if (response.status === 200 && response.data.preferred) {
@@ -71,3 +71,4 @@ export async function getMainlineImage(mainline_name: string) {
   }
   return "";
 }
+  
