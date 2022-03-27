@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, Ref, watch } from "vue";
-import { NSpace, NButton, NSwitch, NIcon, NTooltip, useMessage } from "naive-ui";
+import {
+  NSpace,
+  NButton,
+  NSwitch,
+  NIcon,
+  NTooltip,
+} from "naive-ui";
 import _ from "lodash";
 import Sortable from "sortablejs";
 import TaskCard from "@/components/TaskCard.vue";
@@ -10,13 +16,13 @@ import Configuration from "@/components/configurations/Index.vue";
 
 import useTaskStore, { defaultTask } from "@/store/tasks";
 import useDeviceStore from "@/store/devices";
-import {handleSingleTask, uiTasks} from "@/utils/converter/tasks";
+import { handleSingleTask, uiTasks } from "@/utils/converter/tasks";
+import { show } from "@/utils/message";
 
 import router from "@/router";
 
 const taskStore = useTaskStore();
 const deviceStore = useDeviceStore();
-const message = useMessage();
 
 const isGrid = ref<boolean>(false);
 const cardsRef: Ref<HTMLElement | null> = ref(null);
@@ -68,21 +74,25 @@ function load() {
 }
 
 async function handleStart() {
-    const device = deviceStore.getDevice(uuid.value as string);
-  if(device && device.status === "tasking")
-  {
-    message.error("设备正在运行任务，请先停止任务");
+  const device = deviceStore.getDevice(uuid.value as string);
+  if (device && device.status === "tasking") {
+    show("设备正在运行任务，请先停止任务", { type: "warning", duration: 5000 });
     return;
   }
 
   if (_.findIndex(tasks.value, (task) => task.enable === true) === -1) {
-    message.error("请至少选择一个任务");
+    show("请至少选择一个任务", { type: "warning", duration: 5000 });
     return;
-  }  tasks.value?.forEach(async (singleTask) => {
+  }
+  tasks.value?.forEach(async (singleTask) => {
     if (singleTask.enable) {
       taskStore.updateTaskStatus(uuid.value, singleTask.id, "waiting", 0);
-      const task = handleSingleTask[singleTask.id]({...singleTask.configurations, uuid: uuid.value,taskId:singleTask.id});
-      if(uiTasks.includes(singleTask.id)) return; // ui限定任务，不发送给core执行
+      const task = handleSingleTask[singleTask.id]({
+        ...singleTask.configurations,
+        uuid: uuid.value,
+        taskId: singleTask.id,
+      });
+      if (uiTasks.includes(singleTask.id)) return; // ui限定任务，不发送给core执行
       console.log("core task");
       console.log(task);
       await window.ipcRenderer.invoke("asst:appendTask", {
@@ -101,13 +111,13 @@ async function handleStart() {
       });
     }
   });
-  deviceStore.updateDeviceStatus(uuid.value as string,"tasking");
+  deviceStore.updateDeviceStatus(uuid.value as string, "tasking");
 
   // 初始化掉落物存储
-  if(!window.sessionStorage.getItem(uuid.value as string))
-      window.sessionStorage.setItem(uuid.value as string,"{\"StageDrops\":{}}");
-      
-  await window.ipcRenderer.invoke("asst:start",{uuid:uuid.value});
+  if (!window.sessionStorage.getItem(uuid.value as string))
+    window.sessionStorage.setItem(uuid.value as string, "{\"StageDrops\":{}}");
+
+  await window.ipcRenderer.invoke("asst:start", { uuid: uuid.value });
 }
 </script>
 

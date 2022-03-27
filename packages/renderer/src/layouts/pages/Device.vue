@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { NInput, NAlert, NButton, NIcon, NText, NForm, NFormItem, useMessage } from "naive-ui";
+import { NInput, NAlert, NButton, NIcon, NText, NForm, NFormItem } from "naive-ui";
 import useDeviceStore from "@/store/devices";
-import { uuidV4 } from "@common/uuid";
+// import { uuidV4 } from "@common/uuid";
 import IconLink from "@/assets/icons/link.svg?component";
 import _ from "lodash";
-import { ipcRenderer } from "electron";
+import {show} from "@/utils/message";
 
-const message = useMessage();
 const connectionString = ref("");
 const deviceStore = useDeviceStore();
 
@@ -28,9 +27,9 @@ function connectionStringChecker(cs: string) {
 function handleCustomConnect() {
   console.log(connectionString.value);
   if (connectionStringChecker(connectionString.value)) {
-    message.loading("正在连接");
+    show("正在连接", { type: "loading", duration: 0 });
     if (deviceStore.devices.find(dev => dev.connectionString === connectionString.value)) {
-      message.info("设备已经存在了哦");
+      show("设备已经存在了哦", { type: "warning", duration: 5000 });
       return;
     }
     const uuid = window.ipcRenderer.invoke("asst:getDeviceUuid",{
@@ -39,7 +38,7 @@ function handleCustomConnect() {
     });
     if(!(uuid as unknown as string | false))
     {
-      message.error("连接失败，检查一下地址吧");
+      show("连接失败，检查一下地址吧", { type: "error", duration: 5000 });
       return;
     }
     deviceStore.mergeSearchResult([
@@ -52,7 +51,7 @@ function handleCustomConnect() {
     ]);
   }
   else {
-    message.error("设备地址不对哦，检查一下吧");
+    show("设备地址不对哦，检查一下吧", { type: "error", duration: 5000 });
   }
 }
 

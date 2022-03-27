@@ -14,6 +14,7 @@ import {
 import useDeviceStore from "@/store/devices";
 import router from "@/router";
 import useTaskStore from "@/store/tasks";
+import { hide, show } from "@/utils/message";
 
 const props = defineProps<{
   uuid: string;
@@ -23,8 +24,12 @@ const message = useMessage();
 const themeVars = useThemeVars();
 const deviceStore = useDeviceStore();
 const taskStore = useTaskStore();
-const device = computed(() => deviceStore.devices.find((device) => device.uuid === props.uuid));
-const deviceDisplayName = computed(() => device.value?.tag || device.value?.connectionString);
+const device = computed(() =>
+  deviceStore.devices.find((device) => device.uuid === props.uuid)
+);
+const deviceDisplayName = computed(
+  () => device.value?.tag || device.value?.connectionString
+);
 const routeUuid = computed(
   () => router.currentRoute.value.params.uuid as string | undefined
 );
@@ -34,7 +39,7 @@ const connectedStatus: Set<DeviceStatus> = new Set(["connected", "tasking"]);
 const disconnectedStatus: Set<DeviceStatus> = new Set([
   "available",
   "disconnected",
-  "connecting", 
+  "connecting",
   "unknown",
 ]);
 
@@ -51,15 +56,17 @@ function handleJumpToTask() {
 
 function handleDeviceDisconnect() {
   // task stop
-  message.info(
-    `${deviceDisplayName.value}断开中... （此消息不会在正式版中出现）`
-  );
-  window.ipcRenderer.send("disconnect_destroy",{uuid:device.value?.uuid});
+  show(`${deviceDisplayName.value}断开中... `, {
+    type: "loading",
+    duration: 0,
+  });
+  window.ipcRenderer.send("disconnect_destroy", { uuid: device.value?.uuid });
   taskStore.stopAllTasks(device.value?.uuid as string);
   deviceStore.updateDeviceStatus(device.value?.uuid as string, "disconnected");
-   message.info(
-    `${deviceDisplayName.value}已断开连接 （此消息不会在正式版中出现）`
-  );
+  show(`${deviceDisplayName.value}已断开连接 `, {
+    type: "success",
+    duration: 3000,
+  });
 }
 
 async function handleDeviceConnect() {
@@ -67,26 +74,22 @@ async function handleDeviceConnect() {
     return;
   }
   deviceStore.updateDeviceStatus(device.value?.uuid as string, "connecting");
-  const loadingMessage = message.loading(`${deviceDisplayName.value}连接中...`);
+  show(`${deviceDisplayName.value}连接中...`, {
+    type: "loading",
+    duration: 0,
+  });
 
-  /**
-  console.log(await window.ipcRenderer.invoke("asst:createEx",{address:device.value?.connectionString}));
-
-  console.log(`address: ${device.value?.connectionString}`);
- */
-  console.log(await window.ipcRenderer.invoke("asst:createEx_connect", {
-    address: device.value?.connectionString,
-    uuid:device.value?.uuid,
-    adb_path: device.value?.adbPath,
-    config: device.value?.tag,
-  }));
+  console.log(
+    await window.ipcRenderer.invoke("asst:createEx_connect", {
+      address: device.value?.connectionString,
+      uuid: device.value?.uuid,
+      adb_path: device.value?.adbPath,
+      config: device.value?.tag,
+    })
+  );
 
   //loadingMessage.destroy();
-
 }
-
-
-
 </script>
 
 <template>
