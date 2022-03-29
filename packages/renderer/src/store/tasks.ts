@@ -200,7 +200,7 @@ const useTaskStore = defineStore<"tasks", TaskState, {}, TaskAction>("tasks", {
       const origin = deviceTasks[uuid];
       const task = origin?.find((task) => task.id === taskId);
       if (task) {
-        const statusChanged = status === task.status;
+        const statusChanged = status !== task.status;
 
         if (statusChanged) {
           switch (status) {
