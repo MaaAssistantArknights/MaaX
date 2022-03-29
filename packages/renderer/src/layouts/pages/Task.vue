@@ -73,9 +73,16 @@ function load() {
   }
 }
 
+const deviceStatus = computed(() => {
+  const device = deviceStore.getDevice(uuid.value as string);
+  if (!device) return "unknown";
+  return device.status;
+});
+
 async function handleStart() {
   const device = deviceStore.getDevice(uuid.value as string);
   if (device && device.status === "tasking") {
+    // todo: 取消显示message，直接停止任务
     show("设备正在运行任务，请先停止任务", { type: "warning", duration: 5000 });
     return;
   }
@@ -119,6 +126,7 @@ async function handleStart() {
 
   await window.ipcRenderer.invoke("asst:start", { uuid: uuid.value });
 }
+
 </script>
 
 <template>
@@ -145,7 +153,7 @@ async function handleStart() {
         </NTooltip>
 
         <NButton type="primary" round @click="handleStart">
-          <span>开始</span>
+          <span>{{ deviceStatus === "tasking" ? "停止" : "开始" }}</span>
         </NButton>
       </NSpace>
     </NSpace>
