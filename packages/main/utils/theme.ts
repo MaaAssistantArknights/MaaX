@@ -9,7 +9,7 @@ export default function useTheme(window: BrowserWindow) {
       const { setVibrancy } = require("electron-acrylic-window");
       setVibrancy(window, {
         theme: isDark ? "dark" : "light",
-        effect: "blur",
+        effect: "acrylic",
       });
     }
   };
