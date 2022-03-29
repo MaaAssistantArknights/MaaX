@@ -9,6 +9,7 @@ import {
   NFormItem,
   NInputNumber,
   NSpace,
+  NAlert,
 } from "naive-ui";
 import LevelChoose from "../LevelChooseModal.vue";
 import _ from "lodash";
@@ -29,10 +30,25 @@ const props = defineProps<{
 }>();
 
 const showModal = ref(false);
+const showAlert = ref(false);
 
 function handleConfigurationUpdate(key: string, value: any) {
   // FIXME: 对props写入
   _.set(props.configurations, key, value);
+}
+
+function handleMedicineUpdate(value: number | null) {
+  if (value === null) value = 6;
+  if (value < 0) value = 999;
+  if (value > 999) value = 0;
+  handleConfigurationUpdate("medicine", value);
+}
+
+function handleStoneUpdate(value: number | null) {
+  if (value === null) value = 6;
+  if (value < 0) value = 999;
+  if (value > 999) value = 0;
+  handleConfigurationUpdate("stone", value);
 }
 </script>
 
@@ -55,7 +71,8 @@ function handleConfigurationUpdate(key: string, value: any) {
         />-->
         <NInputNumber
           :value="props.configurations.medicine"
-          @update:value="value => handleConfigurationUpdate('medicine', value)"
+          :update-value-on-input="false"
+          @update:value="handleMedicineUpdate"
         />
       </NFormItem>
       <!-- 不提供设置，Core暂不支持 -->
@@ -89,7 +106,8 @@ function handleConfigurationUpdate(key: string, value: any) {
         />-->
         <NInputNumber
           :value="props.configurations.stone"
-          @update:value="value => handleConfigurationUpdate('stone', value)"
+          :update-value-on-input="false"
+          @update:value="handleStoneUpdate"
         />
       </NFormItem>
       <NFormItem>
