@@ -1,6 +1,7 @@
 import useDeviceStore from "@/store/devices";
 import useTaskStore from "@/store/tasks";
 import { parseInt } from "lodash";
+import {show} from "@/utils/message";
 
 // 抄! https://github.com/MaaAssistantArknights/MaaAssistantArknights/blob/master/src/MeoAsstGui/Helper/AsstProxy.cs
 // cb https://github.com/MaaAssistantArknights/MaaAssistantArknights/blob/dev/docs/%E5%9B%9E%E8%B0%83%E6%B6%88%E6%81%AF%E5%8D%8F%E8%AE%AE.md
@@ -114,16 +115,16 @@ export default function useCallbackEvents() {
   
   /** 获取到uuid, 作为连接成功的标志 */
   window.ipcRenderer.on(Connection.UuidGetted, async (event, arg) => {
-    window.$message.success(`设备${arg.address}已连接`);
+    show(`设备${arg.address}已连接`,{type:"success",duration:3000});
     deviceStore.updateDeviceStatus(arg.uuid, "connected");
   });
  
 
   // 获取UUID失败
   window.ipcRenderer.on(Connection.ConnectFailed, async (event, arg) => {
-    window.$message.error(
+   show(
       `设备${arg.address}连接失败, 请尝试重启模拟器.\n如多次失败请在 GitHub 上进行反馈.`,
-      { closable: true, duration: 0 }
+      { type:"error",closable: true, duration: 20000 }
     );
     window.ipcRenderer.invoke("asst:destroy", { uuid: arg.address });
     deviceStore.updateDeviceStatus(arg.address, "unknown");
@@ -131,19 +132,19 @@ export default function useCallbackEvents() {
 
   // 任务链开始
   window.ipcRenderer.on(CallbackMsg.TaskChainStart, async (event, arg) => {
-    taskStore.updateTaskStatus(arg.uuid, arg.task, "processing", 1);
+    taskStore.updateTaskStatus(arg.uuid, arg.task, "processing", 0);
   });
 
   /** 任务链出错 */
   window.ipcRenderer.on(CallbackMsg.TaskChainError, async (event, arg) => {
-    taskStore.updateTaskStatus(arg.uuid, arg.task, "exception", 1);
+    taskStore.updateTaskStatus(arg.uuid, arg.task, "exception", 100);
   });
 
   /* 任务链完成 */
   window.ipcRenderer.on(CallbackMsg.TaskChainCompleted, async (event, arg) => {
     console.log(arg);
     taskStore.updateTaskStatus(arg.uuid, arg.task, "success", 100);
-    window.$message.info(`taskchian ${arg.task} completed`);
+    //window.$message.info(`taskchian ${arg.task} completed`);
   });
 
   /** 开始唤醒 - 进度条 */
