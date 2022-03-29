@@ -1,7 +1,7 @@
 function taskEmulator(task: Task["configurations"]) {
   console.log("before start emu");
   console.log(task);
-  window.ipcRenderer.send("10001", task.uuid, task.taskId); // 
+  window.ipcRenderer.send("10001", task.uuid, task.taskId); //
   window.ipcRenderer.invoke("asst:startEmulator", {
     emulator_path: task.emulator_path,
     arg: task.arg,
@@ -24,16 +24,33 @@ function taskStartUp(task: Task["configurations"]) {
 }
 
 function taskFight(task: Task["configurations"]) {
-  return {
-    stage: "", // TODO: UI上关卡支持
-    medicine: 0, // TODO: 使用理智药数量
-    stones: 0, // TODO: 吃石头数量
-    //times: (task.special as any).times,
-    times: 1,
-    report_to_penguin: true, // TODO: 是否上传到企鹅物流, 可选, 默认false
-    penguin_id: "", // TODO: 接受回调的物流id
-    server: "CN", // TODO: 企鹅物流上传区服
-  };
+  const ret = [
+    {
+      stage: { current: "", last: "LastBattle" }[
+        (task.special as any).type as string
+      ], // 先整上次/当前关卡
+      medicine: task.medicine, // 使用理智药数量
+      stones: task.stone, // 使用源石数量
+      times: (task.special as any).times,
+      report_to_penguin: true, // TODO: 是否上传到企鹅物流, 可选, 默认false
+      penguin_id: "", // TODO: 接受回调的物流id
+      server: "CN", // TODO: 企鹅物流上传区服
+    },
+  ];
+  (task.levels as any).forEach((level: any) => {
+    if (level.times != 0) {
+      ret.push({
+        stage: level.code,
+        medicine: task.medicine, // 使用理智药数量
+        stones: task.stone, // 使用源石数量
+        times: level.times,
+        report_to_penguin: true, // TODO: 是否上传到企鹅物流, 可选, 默认false
+        penguin_id: "", // TODO: 接受回调的物流id
+        server: "CN", // TODO: 企鹅物流上传区服
+      });
+    }
+  });
+  return ret;
 }
 
 function taskRecruit(task: Task["configurations"]) {
@@ -129,12 +146,11 @@ function taskShutdown(task: Task["configurations"]) {
   return {};
 }
 
-
 export const uiTasks = ["emulator", "shutdown"];
 
 export const handleSingleTask: Record<
   string,
-  (task: Task["configurations"]) => object | void
+  (task: Task["configurations"]) => object | void | Array<object>
 > = {
   emulator: taskEmulator,
   startup: taskStartUp,
@@ -146,4 +162,3 @@ export const handleSingleTask: Record<
   award: taskAward,
   rogue: taskRogue,
 };
-

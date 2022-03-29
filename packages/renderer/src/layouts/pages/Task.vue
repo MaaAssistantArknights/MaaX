@@ -99,9 +99,22 @@ async function handleStart() {
         uuid: uuid.value,
         taskId: singleTask.id,
       });
-      if (uiTasks.includes(singleTask.id)) return; // ui限定任务，不发送给core执行
-      console.log("core task");
       console.log(task);
+      if (uiTasks.includes(singleTask.id)) return; // TODO: ui限定任务，不发送给core执行
+
+      // 作战任务单独处理
+      if (singleTask.id == "fight") {
+        (task as Array<object>).forEach(async (level: any) => {
+          await window.ipcRenderer.invoke("asst:appendTask", {
+            uuid: uuid.value,
+            type: "Fight",
+            params: level,
+          });
+        });
+        return;
+      }
+
+      // 非作战普通任务
       await window.ipcRenderer.invoke("asst:appendTask", {
         uuid: uuid.value,
         type: {
