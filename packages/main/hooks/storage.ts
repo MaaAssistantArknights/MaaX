@@ -8,6 +8,7 @@ export default function useStorageHooks() {
 
   ipcMain.handle("storage:set", async (event, key: string, val: any) => {
     storage.set(key, val);
+    return true;
   });
 
   ipcMain.handle("storage:has", async (event, key: string) => {
