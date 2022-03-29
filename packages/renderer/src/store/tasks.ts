@@ -24,7 +24,7 @@ export interface TaskAction {
 export const defaultTask: Task[] = [
   {
     id: "emulator",
-    title: "启动模拟器",
+    title: "启动模拟器 - 暂不支持",
     status: "idle",
     enable: false,
     configurations: {
@@ -36,7 +36,7 @@ export const defaultTask: Task[] = [
   },
   {
     id: "game",
-    title: "启动明日方舟",
+    title: "启动明日方舟 - 暂不支持",
     status: "idle",
     enable: false,
     configurations: {
@@ -64,9 +64,21 @@ export const defaultTask: Task[] = [
       originite_prime: true,
       levels: [
         {
-          code: "CE-5",
-          times: 3
-        }
+          code: "CE-5", // 龙门币
+          times: 0
+        },
+        {
+          code: "AP-5", // 红票
+          times: 0
+        },
+        {
+          code: "CA-5", // 技能书
+          times: 0
+        },
+        {
+          code: "LS-5", // 作 战 记 录
+          times: 0
+        },
       ],
       special: {
         type: "current",
@@ -155,7 +167,7 @@ export const defaultTask: Task[] = [
   },
   {
     id: "rogue",
-    title: "无限刷肉鸽",
+    title: "无限刷肉鸽 - 暂不支持",
     status: "idle",
     enable: true,
     configurations: {
@@ -166,7 +178,7 @@ export const defaultTask: Task[] = [
   },
   {
     id: "shutdown",
-    title: "关机/关闭模拟器",
+    title: "关机/关闭模拟器 - 暂不支持",
     status: "idle",
     enable: false,
     configurations: {
