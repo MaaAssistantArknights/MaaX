@@ -30,7 +30,6 @@ const props = defineProps<{
 }>();
 
 const showModal = ref(false);
-const showAlert = ref(false);
 
 function handleConfigurationUpdate(key: string, value: any) {
   // FIXME: 对props写入

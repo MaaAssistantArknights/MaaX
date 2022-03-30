@@ -63,6 +63,7 @@ const darkThemeOverrides: GlobalThemeOverrides = {
     ...commonThemeOverrides
   },
 };
+
 </script>
 
 <template>

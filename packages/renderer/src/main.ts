@@ -4,6 +4,7 @@ import { createPinia } from "pinia";
 import router from "@/router";
 import App from "@/App.vue";
 import watcher from "@/store/plugin/watcher";
+import { initialStore } from "@/store/initial";
 
 import "./App.less";
 
@@ -14,6 +15,7 @@ const app = createApp(App);
 app.use(pinia);
 app.use(router);
 app.mount("#app").$nextTick(() => {
+  initialStore();
   window.removeLoading();
   router.replace({ path: "/device" });
   // debug only
