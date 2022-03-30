@@ -1,4 +1,4 @@
-import { defineStore } from "pinia";
+import { defineStore } from 'pinia'
 
 export interface SettingState {
   reportId: string
@@ -15,35 +15,35 @@ export interface SettingState {
 }
 
 export interface SettingAction {
-  checkUpdate(): void
-  setReportId(reportId: string): void
+  checkUpdate: () => void
+  setReportId: (reportId: string) => void
 }
 
-const useSettingStore = defineStore<"setting", SettingState, {}, SettingAction>(
-  "setting",
+const useSettingStore = defineStore<'setting', SettingState, {}, SettingAction>(
+  'setting',
   {
     state: () => {
       return {
-        reportId: "",
+        reportId: '',
         version: {
           core: {
             // current: "v3.0.6",
             // latest: "v3.0.7",
           },
           ui: {
-            current: "v1.0.0",
+            current: 'v1.0.0'
             // latest: "v1.0.0",
-          },
-        },
-      };
+          }
+        }
+      }
     },
     actions: {
-      checkUpdate() {},
-      setReportId(reportId) {
-        this.reportId = reportId;
-      },
-    },
+      checkUpdate () {},
+      setReportId (reportId) {
+        this.reportId = reportId
+      }
+    }
   }
-);
+)
 
-export default useSettingStore;
+export default useSettingStore

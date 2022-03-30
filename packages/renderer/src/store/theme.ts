@@ -1,27 +1,27 @@
-import { defineStore } from "pinia";
+import { defineStore } from 'pinia'
 
 export interface ThemeState {
-  theme: string;
+  theme: string
 }
 
 export interface ThemeAction {
-  updateTheme(theme: string): void;
+  updateTheme: (theme: string) => void
 }
 
-const useThemeStore = defineStore<"theme", ThemeState, {}, ThemeAction>(
-  "theme",
+const useThemeStore = defineStore<'theme', ThemeState, {}, ThemeAction>(
+  'theme',
   {
     state: () => {
       return {
-        theme: "maa-light",
-      };
+        theme: 'maa-light'
+      }
     },
     actions: {
-      updateTheme(theme) {
-        this.theme = theme;
-      },
-    },
+      updateTheme (theme) {
+        this.theme = theme
+      }
+    }
   }
-);
+)
 
-export default useThemeStore;
+export default useThemeStore

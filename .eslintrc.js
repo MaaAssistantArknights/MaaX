@@ -1,4 +1,5 @@
-// eslint-disable-next-line no-undef
+const path = require('path');
+
 module.exports = {
   root: true,
   env: {
@@ -11,6 +12,10 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: "module",
     parser: "@typescript-eslint/parser",
+    project: [
+      path.join(__dirname, 'packages/renderer/tsconfig.json'),
+      path.join(__dirname, 'packages/main/tsconfig.json'),
+    ]
   },
   plugins: [
     "vue",
@@ -18,18 +23,13 @@ module.exports = {
   ],
   extends: [
     "eslint:recommended",
-    "plugin:vue/vue3-essential"
+    "plugin:vue/vue3-essential",
+    "standard-with-typescript"
   ],
   rules: {
-    "semi": "error",
-    "quotes": ["error", "double"],
-    "no-undef": "off", // 让ts检查undefined
-    "no-unused-vars": "off",
     "vue/max-len": ["error", {
-      code: 200,
+      code: 120,
       template: 90
     }],
-    "vue/no-unused-vars": "warn",
-    "vue/multi-word-component-names": "off"
   }
 };

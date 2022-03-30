@@ -9,7 +9,8 @@
     "dev": "node scripts/watch.mjs",
     "prebuild": "vue-tsc --project packages/renderer/tsconfig.json --noEmit && node scripts/build.mjs",
     "build": "electron-builder",
-    "debug": "npm run prebuild && vite ./packages/renderer"
+    "debug": "npm run prebuild && vite ./packages/renderer",
+    "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx,.vue packages"
   },
   "engines": {
     "node": ">=14.17.0"
@@ -27,13 +28,17 @@
     "electron-builder": "^22.14.13",
     "electron-devtools-installer": "^3.2.0",
     "eslint": "^8.9.0",
+    "eslint-config-standard-with-typescript": "^21.0.1",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-vue": "^8.5.0",
     "less": "^4.1.2",
     "lodash": "^4.17.21",
     "naive-ui": "^2.26.4",
     "pinia": "^2.0.12",
     "sortablejs": "^1.14.0",
-    "typescript": "^4.5.5",
+    "typescript": "~4.4.4",
     "vite": "^2.8.4",
     "vite-plugin-resolve": "^1.4.4",
     "vite-svg-loader": "^3.1.2",

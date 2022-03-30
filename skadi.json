@@ -1,0 +1,3593 @@
+[
+  {
+    "type": "template",
+    "name": "干员页面名",
+    "parameters": {},
+    "positionalParameters": [
+      [
+        "斯卡蒂"
+      ],
+      [
+        "Skadi"
+      ],
+      [
+        "スカジ"
+      ]
+    ]
+  },
+  {
+    "type": "template",
+    "name": "pathnav2",
+    "parameters": {},
+    "positionalParameters": [
+      [
+        "干员一览"
+      ]
+    ]
+  },
+  {
+    "type": "template",
+    "name": "异格干员",
+    "parameters": {
+      "原型": [
+        {
+          "type": "template",
+          "name": "basepagename",
+          "parameters": {},
+          "positionalParameters": []
+        }
+      ],
+      "非异格": [
+        "1"
+      ]
+    },
+    "positionalParameters": []
+  },
+  "==干员信息==",
+  {
+    "type": "template",
+    "name": "charinfo",
+    "parameters": {
+      "干员名": [
+        "斯卡蒂"
+      ],
+      "干员名jp": [
+        "スカジ"
+      ],
+      "干员外文名": [
+        "Skadi"
+      ],
+      "干员id": [
+        "char_263_skadi"
+      ],
+      "干员序号": [
+        "89"
+      ],
+      "特性": [
+        "能够阻挡一个敌人"
+      ],
+      "稀有度": [
+        "5"
+      ],
+      "职业": [
+        "近卫"
+      ],
+      "子职业": [
+        "无畏者"
+      ],
+      "情报编号": [
+        "AA01"
+      ],
+      "所属国家": [
+        "阿戈尔"
+      ],
+      "所属组织": [
+        "深海猎人"
+      ],
+      "所属团队": [],
+      "位置": [
+        "近战位"
+      ],
+      "标签": [
+        "输出 生存"
+      ],
+      "画师": [
+        "alchemaniac"
+      ],
+      "日文配音": [
+        "佐藤利奈"
+      ],
+      "精英0缩放": [
+        "2"
+      ],
+      "精英0坐标x": [
+        "33"
+      ],
+      "精英0坐标y": [
+        "207"
+      ],
+      "精英2缩放": [
+        "2"
+      ],
+      "精英2坐标x": [
+        "51"
+      ],
+      "精英2坐标y": [
+        "-36"
+      ],
+      "时装1缩放": [
+        "2"
+      ],
+      "时装1坐标x": [
+        "34"
+      ],
+      "时装1坐标y": [
+        "16"
+      ],
+      "精英0描述": [
+        "干员平时最常穿着的服装。",
+        {
+          "type": "lineBreak"
+        },
+        "虽然不一定比制服更实用，但是一定是干员最舒适的搭配之一。"
+      ],
+      "精英2描述": [
+        "晋升后，经过调整的服装。",
+        {
+          "type": "lineBreak"
+        },
+        "根据干员的经验，对服装细节进行改进，针对一些作战环境进行了特化处理。在满足战斗需求的同时，最大程度还原各位干员熟悉的舒适穿着体验。"
+      ],
+      "时装1名称": [
+        "驭浪 WR04"
+      ],
+      "时装1系列": [
+        "珊瑚海岸/III"
+      ],
+      "时装1color": [
+        "#246bbc"
+      ],
+      "时装1描述": [
+        "MARTHE [珊瑚海岸/CoralCoast]驭浪系列泳衣04款。为阿戈尔人贴心订做的泳衣款式，让海中精灵在沙滩上也能光彩夺目。"
+      ]
+    },
+    "positionalParameters": []
+  },
+  "==获得方式==",
+  {
+    "type": "template",
+    "name": "干员获得方式",
+    "parameters": {
+      "获得方式": [
+        "公开招募 标准寻访"
+      ],
+      "上线时间": [
+        "2019-05-30 10:00"
+      ]
+    },
+    "positionalParameters": []
+  },
+  "==属性==",
+  {
+    "type": "template",
+    "name": "属性",
+    "parameters": {
+      "再部署": [
+        "70s"
+      ],
+      "部署费用": [
+        "17→19"
+      ],
+      "阻挡数": [
+        "1"
+      ],
+      "攻击速度": [
+        "1.5s"
+      ],
+      "精英0_1级_生命上限": [
+        "1521"
+      ],
+      "精英0_1级_攻击": [
+        "452"
+      ],
+      "精英0_1级_防御": [
+        "116"
+      ],
+      "精英0_1级_法术抗性": [
+        "0"
+      ],
+      "精英0_满级": [
+        "50"
+      ],
+      "精英0_满级_生命上限": [
+        "2174"
+      ],
+      "精英0_满级_攻击": [
+        "665"
+      ],
+      "精英0_满级_防御": [
+        "167"
+      ],
+      "精英0_满级_法术抗性": [
+        "0"
+      ],
+      "精英1_满级": [
+        "80"
+      ],
+      "精英1_满级_生命上限": [
+        "2938"
+      ],
+      "精英1_满级_攻击": [
+        "842"
+      ],
+      "精英1_满级_防御": [
+        "220"
+      ],
+      "精英1_满级_法术抗性": [
+        "0"
+      ],
+      "精英2_满级": [
+        "90"
+      ],
+      "精英2_满级_生命上限": [
+        "3866"
+      ],
+      "精英2_满级_攻击": [
+        "1015"
+      ],
+      "精英2_满级_防御": [
+        "263"
+      ],
+      "精英2_满级_法术抗性": [
+        "0"
+      ],
+      "信赖加成_生命上限": [
+        "0"
+      ],
+      "信赖加成_攻击": [
+        "80"
+      ],
+      "信赖加成_防御": [
+        "40"
+      ],
+      "潜能": [
+        "-1,-4,33,,-1"
+      ],
+      "潜能类型": [
+        "cost,re_deploy,atk,,cost"
+      ],
+      "初始模组名": [
+        "斯卡蒂证章"
+      ],
+      "模组1名": [
+        "潮湿的剑袋"
+      ],
+      "模组1数据": [
+        "max_hp:300;atk:55"
+      ]
+    },
+    "positionalParameters": []
+  },
+  "==攻击范围==",
+  {
+    "type": "template",
+    "name": "干员攻击范围",
+    "parameters": {
+      "精英0范围": [
+        "1-1"
+      ],
+      "精英1范围": [
+        "1-1"
+      ],
+      "精英2范围": [
+        "1-1"
+      ]
+    },
+    "positionalParameters": []
+  },
+  "==天赋==",
+  {
+    "type": "template",
+    "name": "天赋列表2",
+    "parameters": {
+      "第一天赋1": [
+        "深海掠食者"
+      ],
+      "第一天赋1条件": [
+        "精英1"
+      ],
+      "第一天赋1效果": [
+        {
+          "type": "template",
+          "name": "修正",
+          "parameters": {
+            "原因": [
+              "游戏文本存在疏漏"
+            ],
+            "name": [
+              "修正1"
+            ],
+            "group": [
+              "注"
+            ]
+          },
+          "positionalParameters": [
+            [
+              "编入队伍时，"
+            ]
+          ]
+        },
+        "所有【深海猎人】干员的攻击力",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "7%"
+            ],
+            [
+              "+7%"
+            ]
+          ]
+        }
+      ],
+      "第一天赋2": [
+        "深海掠食者"
+      ],
+      "第一天赋2条件": [
+        "精英1 潜能5"
+      ],
+      "第一天赋2效果": [
+        {
+          "type": "template",
+          "name": "修正",
+          "parameters": {
+            "原因": [
+              "游戏文本存在疏漏"
+            ],
+            "name": [
+              "修正1"
+            ],
+            "group": [
+              "注"
+            ]
+          },
+          "positionalParameters": [
+            [
+              "编入队伍时，"
+            ]
+          ]
+        },
+        "所有【深海猎人】干员的攻击力",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "9%"
+            ],
+            [
+              "+9%"
+            ]
+          ]
+        },
+        {
+          "type": "template",
+          "name": "color",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "#F49800"
+            ],
+            [
+              "（+2%）"
+            ]
+          ]
+        }
+      ],
+      "第一天赋3": [
+        "深海掠食者"
+      ],
+      "第一天赋3条件": [
+        "精英2"
+      ],
+      "第一天赋3效果": [
+        {
+          "type": "template",
+          "name": "修正",
+          "parameters": {
+            "原因": [
+              "游戏文本存在疏漏"
+            ],
+            "name": [
+              "修正1"
+            ],
+            "group": [
+              "注"
+            ]
+          },
+          "positionalParameters": [
+            [
+              "编入队伍时，"
+            ]
+          ]
+        },
+        "所有【深海猎人】干员的攻击力",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "14%"
+            ],
+            [
+              "+14%"
+            ]
+          ]
+        }
+      ],
+      "第一天赋4": [
+        "深海掠食者"
+      ],
+      "第一天赋4条件": [
+        "精英2 潜能5"
+      ],
+      "第一天赋4效果": [
+        {
+          "type": "template",
+          "name": "修正",
+          "parameters": {
+            "原因": [
+              "游戏文本存在疏漏"
+            ],
+            "name": [
+              "修正1"
+            ],
+            "group": [
+              "注"
+            ]
+          },
+          "positionalParameters": [
+            [
+              "编入队伍时，"
+            ]
+          ]
+        },
+        "所有【深海猎人】干员的攻击力",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "16%"
+            ],
+            [
+              "+16%"
+            ]
+          ]
+        },
+        {
+          "type": "template",
+          "name": "color",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "#F49800"
+            ],
+            [
+              "（+2%）"
+            ]
+          ]
+        }
+      ],
+      "第二天赋1": [
+        "迅捷出击"
+      ],
+      "第二天赋1条件": [
+        "精英2"
+      ],
+      "第二天赋1效果": [
+        "自身再部署时间",
+        {
+          "type": "template",
+          "name": "+",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "(-10)"
+            ],
+            [
+              "-10"
+            ]
+          ]
+        },
+        "秒"
+      ]
+    },
+    "positionalParameters": []
+  },
+  {
+    "type": "tag",
+    "attributes": {
+      "group": "注"
+    },
+    "selfClosing": true,
+    "name": "references"
+  },
+  "==潜能提升==",
+  {
+    "type": "template",
+    "name": "潜能提升",
+    "parameters": {
+      "潜能2": [
+        "部署费用-1"
+      ],
+      "潜能3": [
+        "再部署时间-4秒"
+      ],
+      "潜能4": [
+        "攻击力+33"
+      ],
+      "潜能5": [
+        "第一天赋效果增强"
+      ],
+      "潜能6": [
+        "部署费用-1"
+      ]
+    },
+    "positionalParameters": []
+  },
+  "==技能==",
+  {
+    "type": "bold",
+    "content": [
+      "技能1（精英0开放）"
+    ]
+  },
+  {
+    "type": "template",
+    "name": "技能2",
+    "parameters": {
+      "技能名": [
+        "迅捷打击·γ型"
+      ],
+      "技能名jp": [
+        "迅速攻撃γ"
+      ],
+      "技能名en": [
+        "Swift Strike γ"
+      ],
+      "技能类型1": [
+        "自动回复"
+      ],
+      "技能类型2": [
+        "手动触发"
+      ],
+      "技能1描述": [
+        "攻击力",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "20%"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+20%"
+                  ]
+                ]
+              }
+            ]
+          ]
+        },
+        "，攻击速度",
+        {
+          "type": "template",
+          "name": "+",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "20"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+20"
+                  ]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "技能1初始": [
+        "0"
+      ],
+      "技能1消耗": [
+        "45"
+      ],
+      "技能1持续": [
+        "35"
+      ],
+      "技能2描述": [
+        "攻击力",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "22%"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+22%"
+                  ]
+                ]
+              }
+            ]
+          ]
+        },
+        "，攻击速度",
+        {
+          "type": "template",
+          "name": "+",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "20"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+20"
+                  ]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "技能2初始": [
+        "0"
+      ],
+      "技能2消耗": [
+        "44"
+      ],
+      "技能2持续": [
+        "35"
+      ],
+      "技能3描述": [
+        "攻击力",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "24%"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+24%"
+                  ]
+                ]
+              }
+            ]
+          ]
+        },
+        "，攻击速度",
+        {
+          "type": "template",
+          "name": "+",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "20"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+20"
+                  ]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "技能3初始": [
+        "0"
+      ],
+      "技能3消耗": [
+        "43"
+      ],
+      "技能3持续": [
+        "35"
+      ],
+      "技能4描述": [
+        "攻击力",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "27%"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+27%"
+                  ]
+                ]
+              }
+            ]
+          ]
+        },
+        "，攻击速度",
+        {
+          "type": "template",
+          "name": "+",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "25"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+25"
+                  ]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "技能4初始": [
+        "5"
+      ],
+      "技能4消耗": [
+        "42"
+      ],
+      "技能4持续": [
+        "35"
+      ],
+      "技能5描述": [
+        "攻击力",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "29%"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+29%"
+                  ]
+                ]
+              }
+            ]
+          ]
+        },
+        "，攻击速度",
+        {
+          "type": "template",
+          "name": "+",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "25"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+25"
+                  ]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "技能5初始": [
+        "5"
+      ],
+      "技能5消耗": [
+        "41"
+      ],
+      "技能5持续": [
+        "35"
+      ],
+      "技能6描述": [
+        "攻击力",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "31%"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+31%"
+                  ]
+                ]
+              }
+            ]
+          ]
+        },
+        "，攻击速度",
+        {
+          "type": "template",
+          "name": "+",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "25"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+25"
+                  ]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "技能6初始": [
+        "5"
+      ],
+      "技能6消耗": [
+        "40"
+      ],
+      "技能6持续": [
+        "35"
+      ],
+      "技能7描述": [
+        "攻击力",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "34%"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+34%"
+                  ]
+                ]
+              }
+            ]
+          ]
+        },
+        "，攻击速度",
+        {
+          "type": "template",
+          "name": "+",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "35"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+35"
+                  ]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "技能7初始": [
+        "10"
+      ],
+      "技能7消耗": [
+        "39"
+      ],
+      "技能7持续": [
+        "35"
+      ],
+      "技能专精1描述": [
+        "攻击力",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "37%"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+37%"
+                  ]
+                ]
+              }
+            ]
+          ]
+        },
+        "，攻击速度",
+        {
+          "type": "template",
+          "name": "+",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "35"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+35"
+                  ]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "技能专精1初始": [
+        "10"
+      ],
+      "技能专精1消耗": [
+        "38"
+      ],
+      "技能专精1持续": [
+        "35"
+      ],
+      "技能专精2描述": [
+        "攻击力",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "40%"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+40%"
+                  ]
+                ]
+              }
+            ]
+          ]
+        },
+        "，攻击速度",
+        {
+          "type": "template",
+          "name": "+",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "35"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+35"
+                  ]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "技能专精2初始": [
+        "10"
+      ],
+      "技能专精2消耗": [
+        "37"
+      ],
+      "技能专精2持续": [
+        "35"
+      ],
+      "技能专精3描述": [
+        "攻击力",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "45%"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+45%"
+                  ]
+                ]
+              }
+            ]
+          ]
+        },
+        "，攻击速度",
+        {
+          "type": "template",
+          "name": "+",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "45"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+45"
+                  ]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "技能专精3初始": [
+        "15"
+      ],
+      "技能专精3消耗": [
+        "35"
+      ],
+      "技能专精3持续": [
+        "35"
+      ]
+    },
+    "positionalParameters": []
+  },
+  {
+    "type": "bold",
+    "content": [
+      "技能2（精英1开放）"
+    ]
+  },
+  {
+    "type": "template",
+    "name": "技能2",
+    "parameters": {
+      "技能名": [
+        "跃浪击"
+      ],
+      "技能名jp": [
+        "波濤の裂刃"
+      ],
+      "技能名en": [
+        "Wave Strike"
+      ],
+      "技能类型1": [
+        "被动"
+      ],
+      "技能1描述": [
+        "部署后",
+        {
+          "type": "template",
+          "name": "color",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "#0098DC"
+            ],
+            [
+              "15"
+            ]
+          ]
+        },
+        "秒内攻击力",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "80%"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+80%"
+                  ]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "技能1初始": [
+        "0"
+      ],
+      "技能1消耗": [
+        "0"
+      ],
+      "技能1持续": [],
+      "技能2描述": [
+        "部署后",
+        {
+          "type": "template",
+          "name": "color",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "#0098DC"
+            ],
+            [
+              "16"
+            ]
+          ]
+        },
+        "秒内攻击力",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "85%"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+85%"
+                  ]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "技能2初始": [
+        "0"
+      ],
+      "技能2消耗": [
+        "0"
+      ],
+      "技能2持续": [],
+      "技能3描述": [
+        "部署后",
+        {
+          "type": "template",
+          "name": "color",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "#0098DC"
+            ],
+            [
+              "17"
+            ]
+          ]
+        },
+        "秒内攻击力",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "90%"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+90%"
+                  ]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "技能3初始": [
+        "0"
+      ],
+      "技能3消耗": [
+        "0"
+      ],
+      "技能3持续": [],
+      "技能4描述": [
+        "部署后",
+        {
+          "type": "template",
+          "name": "color",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "#0098DC"
+            ],
+            [
+              "20"
+            ]
+          ]
+        },
+        "秒内攻击力",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "100%"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+100%"
+                  ]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "技能4初始": [
+        "0"
+      ],
+      "技能4消耗": [
+        "0"
+      ],
+      "技能4持续": [],
+      "技能5描述": [
+        "部署后",
+        {
+          "type": "template",
+          "name": "color",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "#0098DC"
+            ],
+            [
+              "21"
+            ]
+          ]
+        },
+        "秒内攻击力",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "105%"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+105%"
+                  ]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "技能5初始": [
+        "0"
+      ],
+      "技能5消耗": [
+        "0"
+      ],
+      "技能5持续": [],
+      "技能6描述": [
+        "部署后",
+        {
+          "type": "template",
+          "name": "color",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "#0098DC"
+            ],
+            [
+              "22"
+            ]
+          ]
+        },
+        "秒内攻击力",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "110%"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+110%"
+                  ]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "技能6初始": [
+        "0"
+      ],
+      "技能6消耗": [
+        "0"
+      ],
+      "技能6持续": [],
+      "技能7描述": [
+        "部署后",
+        {
+          "type": "template",
+          "name": "color",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "#0098DC"
+            ],
+            [
+              "25"
+            ]
+          ]
+        },
+        "秒内攻击力",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "120%"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+120%"
+                  ]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "技能7初始": [
+        "0"
+      ],
+      "技能7消耗": [
+        "0"
+      ],
+      "技能7持续": [],
+      "技能专精1描述": [
+        "部署后",
+        {
+          "type": "template",
+          "name": "color",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "#0098DC"
+            ],
+            [
+              "27"
+            ]
+          ]
+        },
+        "秒内攻击力",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "135%"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+135%"
+                  ]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "技能专精1初始": [
+        "0"
+      ],
+      "技能专精1消耗": [
+        "0"
+      ],
+      "技能专精1持续": [],
+      "技能专精2描述": [
+        "部署后",
+        {
+          "type": "template",
+          "name": "color",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "#0098DC"
+            ],
+            [
+              "28"
+            ]
+          ]
+        },
+        "秒内攻击力",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "150%"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+150%"
+                  ]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "技能专精2初始": [
+        "0"
+      ],
+      "技能专精2消耗": [
+        "0"
+      ],
+      "技能专精2持续": [],
+      "技能专精3描述": [
+        "部署后",
+        {
+          "type": "template",
+          "name": "color",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "#0098DC"
+            ],
+            [
+              "30"
+            ]
+          ]
+        },
+        "秒内攻击力",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "170%"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+170%"
+                  ]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "技能专精3初始": [
+        "0"
+      ],
+      "技能专精3消耗": [
+        "0"
+      ],
+      "技能专精3持续": []
+    },
+    "positionalParameters": []
+  },
+  {
+    "type": "bold",
+    "content": [
+      "技能3（精英2开放）"
+    ]
+  },
+  {
+    "type": "template",
+    "name": "技能2",
+    "parameters": {
+      "技能名": [
+        "涌潮悲歌"
+      ],
+      "技能名jp": [
+        "海嘯の悲歌"
+      ],
+      "技能名en": [
+        "Tidal Elegy"
+      ],
+      "技能类型1": [
+        "自动回复"
+      ],
+      "技能类型2": [
+        "手动触发"
+      ],
+      "技能1描述": [
+        "攻击力、防御力和生命上限各",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "70%"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+70%"
+                  ]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "技能1初始": [
+        "50"
+      ],
+      "技能1消耗": [
+        "90"
+      ],
+      "技能1持续": [
+        "35"
+      ],
+      "技能2描述": [
+        "攻击力、防御力和生命上限各",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "75%"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+75%"
+                  ]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "技能2初始": [
+        "50"
+      ],
+      "技能2消耗": [
+        "90"
+      ],
+      "技能2持续": [
+        "35"
+      ],
+      "技能3描述": [
+        "攻击力、防御力和生命上限各",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "80%"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+80%"
+                  ]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "技能3初始": [
+        "50"
+      ],
+      "技能3消耗": [
+        "90"
+      ],
+      "技能3持续": [
+        "35"
+      ],
+      "技能4描述": [
+        "攻击力、防御力和生命上限各",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "85%"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+85%"
+                  ]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "技能4初始": [
+        "55"
+      ],
+      "技能4消耗": [
+        "90"
+      ],
+      "技能4持续": [
+        "38"
+      ],
+      "技能5描述": [
+        "攻击力、防御力和生命上限各",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "90%"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+90%"
+                  ]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "技能5初始": [
+        "55"
+      ],
+      "技能5消耗": [
+        "90"
+      ],
+      "技能5持续": [
+        "38"
+      ],
+      "技能6描述": [
+        "攻击力、防御力和生命上限各",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "95%"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+95%"
+                  ]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "技能6初始": [
+        "55"
+      ],
+      "技能6消耗": [
+        "90"
+      ],
+      "技能6持续": [
+        "38"
+      ],
+      "技能7描述": [
+        "攻击力、防御力和生命上限各",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "100%"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+100%"
+                  ]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "技能7初始": [
+        "60"
+      ],
+      "技能7消耗": [
+        "90"
+      ],
+      "技能7持续": [
+        "41"
+      ],
+      "技能专精1描述": [
+        "攻击力、防御力和生命上限各",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "110%"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+110%"
+                  ]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "技能专精1初始": [
+        "63"
+      ],
+      "技能专精1消耗": [
+        "90"
+      ],
+      "技能专精1持续": [
+        "44"
+      ],
+      "技能专精2描述": [
+        "攻击力、防御力和生命上限各",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "120%"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+120%"
+                  ]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "技能专精2初始": [
+        "66"
+      ],
+      "技能专精2消耗": [
+        "90"
+      ],
+      "技能专精2持续": [
+        "47"
+      ],
+      "技能专精3描述": [
+        "攻击力、防御力和生命上限各",
+        {
+          "type": "template",
+          "name": "*",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "130%"
+            ],
+            [
+              {
+                "type": "template",
+                "name": "color",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "#0098DC"
+                  ],
+                  [
+                    "+130%"
+                  ]
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "技能专精3初始": [
+        "70"
+      ],
+      "技能专精3消耗": [
+        "90"
+      ],
+      "技能专精3持续": [
+        "50"
+      ]
+    },
+    "positionalParameters": []
+  },
+  "==后勤技能==",
+  {
+    "type": "template",
+    "name": "后勤技能",
+    "parameters": {
+      "后勤技能1-1": [
+        "独处"
+      ],
+      "后勤技能1-1阶段": [
+        "精英0"
+      ],
+      "后勤技能1-2": [
+        "悲歌"
+      ],
+      "后勤技能1-2阶段": [
+        "精英2"
+      ]
+    },
+    "positionalParameters": []
+  },
+  {
+    "type": "comment",
+    "content": [
+      "如需修改技能信息，请前往[[后勤技能一览]]页面"
+    ]
+  },
+  "==精英化材料==",
+  {
+    "type": "template",
+    "name": "精英化材料",
+    "parameters": {
+      "精1": [
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "龙门币"
+            ],
+            [
+              "3w"
+            ]
+          ]
+        },
+        " ",
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "近卫芯片"
+            ],
+            [
+              "5"
+            ]
+          ]
+        },
+        " ",
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "装置"
+            ],
+            [
+              "5"
+            ]
+          ]
+        },
+        " ",
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "聚酸酯"
+            ],
+            [
+              "5"
+            ]
+          ]
+        }
+      ],
+      "精2": [
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "龙门币"
+            ],
+            [
+              "18w"
+            ]
+          ]
+        },
+        " ",
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "近卫双芯片"
+            ],
+            [
+              "4"
+            ]
+          ]
+        },
+        " ",
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "D32钢"
+            ],
+            [
+              "4"
+            ]
+          ]
+        },
+        " ",
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "提纯源岩"
+            ],
+            [
+              "9"
+            ]
+          ]
+        }
+      ]
+    },
+    "positionalParameters": []
+  },
+  "==技能升级材料==",
+  {
+    "type": "template",
+    "name": "技能升级材料",
+    "parameters": {
+      "一8": [
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "技巧概要·卷3"
+            ],
+            [
+              "6"
+            ]
+          ]
+        },
+        " ",
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "白马醇"
+            ],
+            [
+              "4"
+            ]
+          ]
+        },
+        " ",
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "酮凝集组"
+            ],
+            [
+              "8"
+            ]
+          ]
+        }
+      ],
+      "一9": [
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "技巧概要·卷3"
+            ],
+            [
+              "12"
+            ]
+          ]
+        },
+        " ",
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "RMA70-24"
+            ],
+            [
+              "4"
+            ]
+          ]
+        },
+        " ",
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "三水锰矿"
+            ],
+            [
+              "7"
+            ]
+          ]
+        }
+      ],
+      "一10": [
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "技巧概要·卷3"
+            ],
+            [
+              "15"
+            ]
+          ]
+        },
+        " ",
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "D32钢"
+            ],
+            [
+              "6"
+            ]
+          ]
+        },
+        " ",
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "提纯源岩"
+            ],
+            [
+              "7"
+            ]
+          ]
+        }
+      ],
+      "二8": [
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "技巧概要·卷3"
+            ],
+            [
+              "6"
+            ]
+          ]
+        },
+        " ",
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "三水锰矿"
+            ],
+            [
+              "4"
+            ]
+          ]
+        },
+        " ",
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "全新装置"
+            ],
+            [
+              "4"
+            ]
+          ]
+        }
+      ],
+      "二9": [
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "技巧概要·卷3"
+            ],
+            [
+              "12"
+            ]
+          ]
+        },
+        " ",
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "提纯源岩"
+            ],
+            [
+              "4"
+            ]
+          ]
+        },
+        " ",
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "五水研磨石"
+            ],
+            [
+              "9"
+            ]
+          ]
+        }
+      ],
+      "二10": [
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "技巧概要·卷3"
+            ],
+            [
+              "15"
+            ]
+          ]
+        },
+        " ",
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "双极纳米片"
+            ],
+            [
+              "6"
+            ]
+          ]
+        },
+        " ",
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "提纯源岩"
+            ],
+            [
+              "6"
+            ]
+          ]
+        }
+      ],
+      "三8": [
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "技巧概要·卷3"
+            ],
+            [
+              "6"
+            ]
+          ]
+        },
+        " ",
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "五水研磨石"
+            ],
+            [
+              "4"
+            ]
+          ]
+        },
+        " ",
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "扭转醇"
+            ],
+            [
+              "7"
+            ]
+          ]
+        }
+      ],
+      "三9": [
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "技巧概要·卷3"
+            ],
+            [
+              "12"
+            ]
+          ]
+        },
+        " ",
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "糖聚块"
+            ],
+            [
+              "4"
+            ]
+          ]
+        },
+        " ",
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "RMA70-24"
+            ],
+            [
+              "8"
+            ]
+          ]
+        }
+      ],
+      "三10": [
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "技巧概要·卷3"
+            ],
+            [
+              "15"
+            ]
+          ]
+        },
+        " ",
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "双极纳米片"
+            ],
+            [
+              "6"
+            ]
+          ]
+        },
+        " ",
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "聚酸酯块"
+            ],
+            [
+              "5"
+            ]
+          ]
+        }
+      ]
+    },
+    "positionalParameters": [
+      null,
+      [
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "技巧概要·卷1"
+            ],
+            [
+              "5"
+            ]
+          ]
+        }
+      ],
+      [
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "技巧概要·卷1"
+            ],
+            [
+              "4"
+            ]
+          ]
+        },
+        " ",
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "破损装置"
+            ],
+            [
+              "4"
+            ]
+          ]
+        },
+        " ",
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "酯原料"
+            ],
+            [
+              "4"
+            ]
+          ]
+        }
+      ],
+      [
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "技巧概要·卷2"
+            ],
+            [
+              "8"
+            ]
+          ]
+        },
+        " ",
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "固源岩"
+            ],
+            [
+              "7"
+            ]
+          ]
+        }
+      ],
+      [
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "技巧概要·卷2"
+            ],
+            [
+              "8"
+            ]
+          ]
+        },
+        " ",
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "糖"
+            ],
+            [
+              "4"
+            ]
+          ]
+        },
+        " ",
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "酮凝集"
+            ],
+            [
+              "4"
+            ]
+          ]
+        }
+      ],
+      [
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "技巧概要·卷2"
+            ],
+            [
+              "8"
+            ]
+          ]
+        },
+        " ",
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "酮凝集组"
+            ],
+            [
+              "6"
+            ]
+          ]
+        }
+      ],
+      [
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "技巧概要·卷3"
+            ],
+            [
+              "8"
+            ]
+          ]
+        },
+        " ",
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "全新装置"
+            ],
+            [
+              "3"
+            ]
+          ]
+        },
+        " ",
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "糖组"
+            ],
+            [
+              "5"
+            ]
+          ]
+        }
+      ]
+    ]
+  },
+  "==模组=====斯卡蒂证章===",
+  {
+    "type": "template",
+    "name": "模组",
+    "parameters": {
+      "名称": [
+        "斯卡蒂证章"
+      ],
+      "基础证章": [
+        "yes"
+      ],
+      "分支": [
+        "无畏者"
+      ],
+      "基础信息": [
+        "干员斯卡蒂擅长挥舞巨剑切入战阵",
+        {
+          "type": "lineBreak"
+        },
+        "根据外勤部门决议",
+        {
+          "type": "lineBreak"
+        },
+        "在外勤任务中划分为近卫干员，行使无畏者职责",
+        {
+          "type": "lineBreak"
+        },
+        "特别颁发此证章",
+        {
+          "type": "lineBreak"
+        },
+        "以兹证明"
+      ]
+    },
+    "positionalParameters": []
+  },
+  "===潮湿的剑袋===",
+  {
+    "type": "tag",
+    "attributes": {
+      "begin": "专属模组"
+    },
+    "selfClosing": true,
+    "name": "section"
+  },
+  {
+    "type": "template",
+    "name": "模组",
+    "parameters": {
+      "名称": [
+        "潮湿的剑袋"
+      ],
+      "类型": [
+        "DRE-Y"
+      ],
+      "生命": [
+        "300"
+      ],
+      "攻击": [
+        "55"
+      ],
+      "特性": [
+        "被击倒时不撤退且回复所有生命但生命上限",
+        {
+          "type": "template",
+          "name": "color",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "#FF6237"
+            ],
+            [
+              "-60%"
+            ]
+          ]
+        },
+        "，攻击速度",
+        {
+          "type": "template",
+          "name": "color",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "#00B0FF"
+            ],
+            [
+              "+30"
+            ]
+          ]
+        },
+        "（单次部署只触发1次）"
+      ],
+      "特性追加": [
+        "yes"
+      ],
+      "任务1": [
+        "完成5次战斗；必须编入非助战斯卡蒂并上场，且使用斯卡蒂歼灭至少5个敌人"
+      ],
+      "任务2": [
+        "3星通关",
+        {
+          "type": "link",
+          "to": "关卡一览/别传",
+          "content": [
+            "别传"
+          ],
+          "anchor": "骑兵与猎人"
+        },
+        {
+          "type": "link",
+          "to": "GT-6",
+          "content": [
+            "GT-6"
+          ]
+        },
+        "；必须编入非助战斯卡蒂并上场，且使用斯卡蒂歼灭至少1个大鲍勃"
+      ],
+      "解锁等级": [
+        "60"
+      ],
+      "解锁信赖": [
+        "100"
+      ],
+      "材料消耗": [
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "模组数据块"
+            ],
+            [
+              "4"
+            ]
+          ]
+        },
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "双极纳米片"
+            ],
+            [
+              "2"
+            ]
+          ]
+        },
+        {
+          "type": "template",
+          "name": "材料消耗",
+          "parameters": {},
+          "positionalParameters": [
+            [
+              "龙门币"
+            ],
+            [
+              "8万"
+            ]
+          ]
+        }
+      ],
+      "基础信息": [
+        "斯卡蒂落入水中。",
+        {
+          "type": "lineBreak"
+        },
+        "皮肤再一次被滋润，熟悉的咸水灌入口腔。",
+        {
+          "type": "lineBreak"
+        },
+        "她睁开了双眼。",
+        {
+          "type": "lineBreak"
+        },
+        "在这里依然能看见海上的阳光，各种海生生物在周围游动。",
+        {
+          "type": "lineBreak"
+        },
+        "斯卡蒂很想在这里多待上一会，但她还在下沉，一股水流拉扯着她，想要将她带入海洋深处。",
+        {
+          "type": "lineBreak"
+        },
+        "斯卡蒂没有挣扎。",
+        {
+          "type": "lineBreak"
+        },
+        "渐渐地，光线从眼前消逝，身边已是一片黑暗，水中的压力变得越来越大，只能通过水流和声响辨别周边情况。",
+        {
+          "type": "lineBreak"
+        },
+        "但这让斯卡蒂感到放松，这是她最熟悉的环境。作为深海猎人与同伴们执行任务时，她常在这样的海域屠戮海嗣，然后循着光芒返回，返回那一座座海底的城市。",
+        {
+          "type": "lineBreak"
+        },
+        "可现在，斯卡蒂身边只有冰冷的海水。",
+        {
+          "type": "lineBreak"
+        },
+        "她开始感受孤独。",
+        {
+          "type": "lineBreak"
+        },
+        "……",
+        {
+          "type": "lineBreak"
+        },
+        "已经快到达海底了，在那里，海底城市忽隐忽现。",
+        {
+          "type": "lineBreak"
+        },
+        "曾几何时，这些阿戈尔的科技奇迹能够将整片海床照亮。但在如今的回忆里，也就城市群还在散发着光芒。",
+        {
+          "type": "lineBreak"
+        },
+        "而且……",
+        {
+          "type": "lineBreak"
+        },
+        "也不知从何时开始，城市变得既遥远，又陌生。",
+        {
+          "type": "lineBreak"
+        },
+        "斯卡蒂属于海洋，但不属于那里。",
+        {
+          "type": "lineBreak"
+        },
+        "她倒在了海床上，一动不动。",
+        {
+          "type": "lineBreak"
+        },
+        "她感到孤独。",
+        {
+          "type": "lineBreak"
+        },
+        "……",
+        {
+          "type": "lineBreak"
+        },
+        "海中突然响起了歌声。",
+        {
+          "type": "lineBreak"
+        },
+        "一首不基于文字，没有情感的自然之歌。",
+        {
+          "type": "lineBreak"
+        },
+        "她听到了。",
+        {
+          "type": "lineBreak"
+        },
+        "周边的“生物”循声而来——",
+        {
+          "type": "lineBreak"
+        },
+        "越聚越多，越聚越多。",
+        {
+          "type": "lineBreak"
+        },
+        "在阿戈尔破败的灯光下，它们显出了样貌——",
+        {
+          "type": "lineBreak"
+        },
+        "恐鱼，海嗣，还有那海中的无匹巨物。",
+        {
+          "type": "lineBreak"
+        },
+        "几乎是条件反射地，斯卡蒂挺身而起，阿戈尔巨剑霎时出现在她手中。",
+        {
+          "type": "lineBreak"
+        },
+        "在掌控住身周的水流后，她冲向面前的怪物聚群。随同她一同冲锋的，是几道模糊不清的阴影。他们穿着与斯卡蒂相近的服饰，手中持握着屠戮巨兽的武器。",
+        {
+          "type": "lineBreak"
+        },
+        "正是在这一刻，斯卡蒂感到——",
+        {
+          "type": "lineBreak"
+        },
+        "啪！",
+        {
+          "type": "lineBreak"
+        },
+        "斯卡蒂醒了过来，她现在躺在一张床上，身旁的医疗器械还在不断运转。",
+        {
+          "type": "lineBreak"
+        },
+        "罗德岛的心理医疗干员则紧盯着器械上的读数，一只打完响指的手还悬在空中，另一只手不停地书写着什么。",
+        {
+          "type": "lineBreak"
+        },
+        "“您现在觉得怎么样，干员斯卡蒂？”",
+        {
+          "type": "lineBreak"
+        },
+        "“我觉得——",
+        {
+          "type": "lineBreak"
+        },
+        "好极了。”"
+      ]
+    },
+    "positionalParameters": []
+  },
+  {
+    "type": "tag",
+    "attributes": {
+      "end": "专属模组"
+    },
+    "selfClosing": true,
+    "name": "section"
+  },
+  "==相关道具==",
+  {
+    "type": "template",
+    "name": "相关道具",
+    "parameters": {
+      "干员简介": [
+        "赏金猎人斯卡蒂，循着潮汐前来吞没你的敌人。"
+      ],
+      "干员简介补充": [
+        "从潮湿的地方来，到干燥的你身边。"
+      ],
+      "信物用途": [
+        "用于提升斯卡蒂的潜能。"
+      ],
+      "信物描述": [
+        "用家乡语言写下的歌谱。虽然完全没法理解这种文字，但她确实是打算教你这首歌的。"
+      ]
+    },
+    "positionalParameters": []
+  },
+  "==干员档案==",
+  {
+    "type": "template",
+    "name": "人员档案set",
+    "parameters": {
+      "性别": [
+        "女"
+      ],
+      "战斗经验": [
+        "十三年"
+      ],
+      "出身地": [
+        "阿戈尔"
+      ],
+      "生日": [
+        "3月7日"
+      ],
+      "种族": [
+        "未公开"
+      ],
+      "身高": [
+        "166cm"
+      ],
+      "矿石病感染情况": [
+        "参照医学检测报告，确认为非感染者。"
+      ],
+      "是否感染者": [
+        "非感染者"
+      ],
+      "物理强度": [
+        "■■"
+      ],
+      "战场机动": [
+        "标准"
+      ],
+      "生理耐受": [
+        "卓越"
+      ],
+      "战术规划": [
+        "标准"
+      ],
+      "战斗技巧": [
+        "优良"
+      ],
+      "源石技艺适应性": [
+        "缺陷"
+      ],
+      "体细胞与源石融合率": [
+        "0%"
+      ],
+      "血液源石结晶密度": [
+        "0.013u/L"
+      ]
+    },
+    "positionalParameters": []
+  },
+  {
+    "type": "template",
+    "name": "人员档案",
+    "parameters": {
+      "档案1": [
+        "基础档案"
+      ],
+      "档案1条件": [
+        "初始开放"
+      ],
+      "档案1文本": [
+        "【代号】斯卡蒂【性别】女【战斗经验】十三年【出身地】阿戈尔【生日】3月7日【种族】未公开【身高】166cm【体重】■■kg【矿石病感染情况】参照医学检测报告，确认为非感染者。"
+      ],
+      "档案2": [
+        "综合体检测试"
+      ],
+      "档案2条件": [
+        "初始开放"
+      ],
+      "档案2文本": [
+        "【物理强度】■■【战场机动】标准【生理耐受】卓越【战术规划】标准【战斗技巧】优良【源石技艺适应性】缺陷"
+      ],
+      "档案3": [
+        "客观履历"
+      ],
+      "档案3条件": [
+        "初始开放"
+      ],
+      "档案3文本": [
+        "斯卡蒂，赏金猎人，现为罗德岛所雇佣。在过去完成的赏金任务中，于对抗大型生物，破坏硬目标，攻坚战，歼灭战等多类行动中展现出强劲实力，推测与其过往战斗经验相关。成为赏金猎人之前的履历缺失。现于罗德岛某攻坚小队供职，同时身兼单兵任务预备执行干员一职。"
+      ],
+      "档案4": [
+        "临床诊断分析"
+      ],
+      "档案4条件": [
+        "提升信赖至25%以查看更多信息"
+      ],
+      "档案4文本": [
+        "造影检测结果显示，该干员体内脏器轮廓清晰，未见异常阴影，循环系统内源石颗粒检测未见异常，无矿石病感染迹象，现阶段可确认为非矿石病感染者。【体细胞与源石融合率】0%干员斯卡蒂没有被源石感染的迹象。【血液源石结晶密度】0.013u/L什么？怎么回事？为什么？！这，这就像是刚从温室里走出来，没怎么接触过源石一样！何止是数值过低，简直是不可能！我觉得，绝对不能放干员斯卡蒂离开医疗部门，绝不。哪怕要和作战小队开战我也要坚持这么做！她简直是特例中的特例！没有哪个热爱生物学与医疗科学的干员会不想一探斯卡蒂她身体的奥秘的！我们必须给她进行更多测试，还有，还要要求她做全套解析和临床对照观察！还有，还有......不，凯尔希医生，就这一次，求你了！——医疗干员J.A. 申请已驳回。——凯尔希医生"
+      ],
+      "档案5": [
+        "档案资料一"
+      ],
+      "档案5条件": [
+        "提升信赖至50%以查看更多信息"
+      ],
+      "档案5文本": [
+        "干员斯卡蒂在大多数普通干员中不太受欢迎。一方面，干员斯卡蒂离群索居，少言寡语，常常主动避开各位干员的社交邀请，导致罗德岛各位干员都对她缺少认识。另一方面，战斗中的干员斯卡蒂很少与队友配合，更多情况下，干员斯卡蒂会独自解决任务，让自己的队友收拾残局，这使得许多干员对她产生了不满。加之斯卡蒂在回绝他人时的冷言冷语，以及她在战场上略显残酷的形象，干员间流传起了稍显妖魔化斯卡蒂的故事。虽然此事被阿米娅明令禁止，但传闻并没有销声匿迹，反而向着更加夸张的情形发展。之后流传的版本摒弃了贬义的部分，更多强调干员斯卡蒂的实力与逸闻。现在，干员斯卡蒂在许多不明就里的普通干员们心目中的形象类似于天灾。"
+      ],
+      "档案6": [
+        "档案资料二"
+      ],
+      "档案6条件": [
+        "提升信赖至100%以查看更多信息"
+      ],
+      "档案6文本": [
+        "值得指出的是，干员斯卡蒂的战斗方式着实异类且危险。工程干员们多次尝试逆向干员斯卡蒂的佩剑，然而这些尝试基本都失败了。目前可以确认的是，这把剑的材质并不特殊，只是打造方式十分异类，难以解释。生活在偏远地区的某些工程干员指出，他们在贸易中见过类似的武器，对它们的源头则不甚了解。手持着这把一般人难以使用的巨剑，斯卡蒂在战场上势不可挡。与大多数配备重型装甲以保护自身的干员不同，干员斯卡蒂凭借巨剑的格挡与自身肉体的强度足以对抗绝大多数敌人。如果说干员斯卡蒂的体质令人生畏，那么她所造成的破坏更是匪夷所思。常有干员在与斯卡蒂一同执行任务归来后，在报告中过度渲染干员斯卡蒂的身体能力，将干员斯卡蒂描摹成变异的童话故事或传统民谣记述的怪物等。干员斯卡蒂虽然不在乎这些评价，但也向罗德岛提交过报告，埋怨称自己擅长的战术容易受到干扰，减少当地财产的破坏这一条准则更是难以实现。客观来说，干员斯卡蒂确实擅长对抗大批敌人，但她必要行动中不必要的破坏，包括摧毁当地街区建筑、撕裂目标保护物的金属防护墙错使保护物泄露、单兵攻击目标要塞造成山谷崩塌等行为，必须被阻止。实际上，干员斯卡蒂的某些动作与另一位近卫干员，幽灵鲨，十分相似。并且与干员幽灵鲨相同，干员斯卡蒂对源石技艺极度缺乏认知。当然，对于干员斯卡蒂来说，提前解决目标就是最有效的对抗方式。由此判断，干员斯卡蒂的不确定性相当之高。虽然她在遵守任务守则与接受命令方面表现得当、行为正确，但她猛然开动大型工程机器般的战斗方式理应被约束。当然，在部分任务中，罗德岛需要干员斯卡蒂这样的必要力量。"
+      ],
+      "档案7": [
+        "档案资料三"
+      ],
+      "档案7条件": [
+        "提升信赖至150%以查看更多信息"
+      ],
+      "档案7文本": [
+        "【干员斯卡蒂挥舞巨剑划开装甲、劈碎防御、切断壁垒时的动作十分夸张，她的姿态扭曲而狂放，如同在战场上跳起异国的舞蹈，仿佛干员斯卡蒂并不是要击败面前的敌人，而是在和什么遥远而巨大的存在搏斗。】这样的报告内容基本都被否决了，诗意的描述在战况报告中毫无必要。但不能否认，因为干员斯卡蒂战斗时的难以理解的姿态，给许多干员带来了困扰。许多相似的原因，促成了斯卡蒂背离罗德岛干员群体，单纯执行任务的习惯。也有不少热心的干员明确表示过，想要更多地与干员斯卡蒂交流，让她更好地融入罗德岛，只是这些干员始终是少数。实际上，很多干员并不知道......干员斯卡蒂本人拒绝大多数合作请求的理由只有一条，那就是，“不希望给他人带来危险”。干员斯卡蒂声称与她亲密交往的人最后都会遭遇不测，而她为了保护朋友，选择了不再拥有朋友。虽然使人感到可疑，但罗德岛在干员斯卡蒂不违反守则的情况下，尊重她的选择。无论是出身还是行为，无论是身躯还是经历，干员斯卡蒂身上的谜团依旧。只是，偶尔也有干员目击到斯卡蒂坐在甲板边沿，低声哼唱歌曲的场景。虽然无法理解歌词，但有目击经历的干员基本都声称，那是低沉、悠长，让他们感到忧伤的歌曲。"
+      ],
+      "档案8": [
+        "档案资料四"
+      ],
+      "档案8条件": [
+        "提升信赖至200%以查看更多信息"
+      ],
+      "档案8文本": [
+        "我和斯卡蒂交谈了很久。她没有完全相信我，合作的态度也不明显。好在我已经猜到了她的需求，也自认为罗德岛有能力满足她。我向她阐明了情报交换的意义。虽然很不情愿，斯卡蒂还是答应了，她同意出让自身的部分情报，当作罗德岛为她搜集信息的酬劳。毕竟对她来说，自我孤立是种保护他人的行为，说到底，她也不是个坏人嘛。但当有实力、也有自保能力的团体肯帮她的时候，她是会犹豫的。这样想的话，原因就很简单了，因为她其实很需要解决自身的问题。在长谈中，我代博士许诺（如果博士觉得不行的话，那也请稍稍忍耐一下，套话很重要的！），如果未知的危险找上罗德岛，并且罗德岛难以反抗的话，罗德岛会交出斯卡蒂。但我得出的结论是：1. 有一个相当严密且秘密的组织，和斯卡蒂有着密切联系，不仅敌意很重藏得很深，而且擅长暴力手段。2. 这个组织牵扯到的绝不可能只是斯卡蒂本人，从斯卡蒂的描述来看，我觉得他们是在拿斯卡蒂做一个实验；或者，是在一步步诱导并逼迫斯卡蒂做些什么事情；又或者，他们暂时处理不了，或是无暇处理斯卡蒂，却又想要打击她的精神状态，等待更好的时机。而斯卡蒂也说自己在寻找一样东西，这样东西也许能阻止某些惨剧发生。她究竟哪里像个会离群索居的人了？不过就是个拖着很重的负担，无处容身的流浪者......唉。她以前的流浪，不过是种逃离，而这逃离，大概也是她微薄的反抗。我的观点嘛......我觉得，博士应该对斯卡蒂好好负责才行。一手包办干员的需求，难道不是培养信任关系的必要流程吗？哎，凯尔希可不同意这点，如果她知道是我说的，大概会把我挂在舰桥上示众。——■■■"
+      ],
+      "档案9": [
+        "晋升记录"
+      ],
+      "档案9条件": [
+        "提升至精英阶段2以查看更多信息"
+      ],
+      "档案9文本": [
+        "咳，嗯哼。都到了吗。我知道在座的各位医疗干员来参加这场秘密会议的目的......没错，我很清楚。各位医疗干员——都对斯卡蒂有兴趣，对不对！无论是内分泌系统皮肤系统，还是骨骼系统肌肉系统神经系统，甚至包括几乎纯净为零的源石适性......究竟是怎样的生活环境造就了这具身躯？她究竟来自哪个种族？她那超出我们理解的运动方式和身体机能，究竟如何运作？没错，没错......围绕在斯卡蒂身上的秘密，实在太多了！为了罗德岛，为了所有感染者，为了医疗科学——我们必须知道答案！我的方案是，在斯卡蒂的餐食中，放入适量安眠药......具体剂量可以再讨论，两百人份大概差不多了，大概？然后，假装将感觉不适的斯卡蒂扶送至最近的医务室......转移就完成了！唔，解剖起来应该很困难，但我们只要获得比凯尔希医生所保存的资料还要多的资料......就可以了！哪怕只是血液都可以！一点点血也没问题......甚至是，极少量肌肉组织？对，我认为，没有问题！在座各位医疗干员，你们觉得——啊。凯，凯尔希医生？您什么时候在那......——医疗干员华法琳的预谋被凯尔希医生发现，讲座被解散，并被扣除当月薪金前的演讲"
+      ]
+    },
+    "positionalParameters": []
+  },
+  "==语音记录==",
+  {
+    "type": "template",
+    "name": "参阅三",
+    "parameters": {},
+    "positionalParameters": [
+      [
+        {
+          "type": "template",
+          "name": "fullpagename",
+          "parameters": {},
+          "positionalParameters": []
+        }
+      ],
+      [
+        "yy"
+      ]
+    ]
+  },
+  {
+    "type": "template",
+    "name": ":",
+    "parameters": {},
+    "positionalParameters": []
+  },
+  "==干员异格任务==",
+  {
+    "type": "template",
+    "name": "干员异格任务",
+    "parameters": {
+      "对象干员": [
+        "浊心斯卡蒂"
+      ]
+    },
+    "positionalParameters": [
+      [
+        {
+          "type": "template",
+          "name": "干员异格任务/list",
+          "parameters": {
+            "首行": [
+              "1"
+            ],
+            "精英化": [
+              "1"
+            ],
+            "等级": [
+              "1"
+            ],
+            "任务奖励": [
+              {
+                "type": "template",
+                "name": "道具图标",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "辅助芯片"
+                  ],
+                  [
+                    "3"
+                  ],
+                  [
+                    "50px"
+                  ]
+                ]
+              },
+              {
+                "type": "template",
+                "name": "道具图标",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "技巧概要·卷1"
+                  ],
+                  [
+                    "10"
+                  ],
+                  [
+                    "50px"
+                  ]
+                ]
+              },
+              {
+                "type": "template",
+                "name": "道具图标",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "中级作战记录"
+                  ],
+                  [
+                    "50"
+                  ],
+                  [
+                    "50px"
+                  ]
+                ]
+              },
+              {
+                "type": "template",
+                "name": "道具图标",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "龙门币"
+                  ],
+                  [
+                    "5万"
+                  ],
+                  [
+                    "50px"
+                  ]
+                ]
+              }
+            ]
+          },
+          "positionalParameters": []
+        },
+        {
+          "type": "template",
+          "name": "干员异格任务/list",
+          "parameters": {
+            "精英化": [
+              "1"
+            ],
+            "等级": [
+              "80"
+            ],
+            "任务奖励": [
+              {
+                "type": "template",
+                "name": "道具图标",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "辅助芯片组"
+                  ],
+                  [
+                    "2"
+                  ],
+                  [
+                    "50px"
+                  ]
+                ]
+              },
+              {
+                "type": "template",
+                "name": "道具图标",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "聚合剂"
+                  ],
+                  [
+                    "1"
+                  ],
+                  [
+                    "50px"
+                  ]
+                ]
+              },
+              {
+                "type": "template",
+                "name": "道具图标",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "五水研磨石"
+                  ],
+                  [
+                    "2"
+                  ],
+                  [
+                    "50px"
+                  ]
+                ]
+              },
+              {
+                "type": "template",
+                "name": "道具图标",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "技巧概要·卷2"
+                  ],
+                  [
+                    "10"
+                  ],
+                  [
+                    "50px"
+                  ]
+                ]
+              },
+              {
+                "type": "template",
+                "name": "道具图标",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "中级作战记录"
+                  ],
+                  [
+                    "100"
+                  ],
+                  [
+                    "50px"
+                  ]
+                ]
+              },
+              {
+                "type": "template",
+                "name": "道具图标",
+                "parameters": {},
+                "positionalParameters": [
+                  [
+                    "龙门币"
+                  ],
+                  [
+                    "10万"
+                  ],
+                  [
+                    "50px"
+                  ]
+                ]
+              }
+            ]
+          },
+          "positionalParameters": []
+        }
+      ]
+    ]
+  },
+  "==干员模型==",
+  {
+    "type": "template",
+    "name": "spine",
+    "parameters": {},
+    "positionalParameters": []
+  },
+  "==注释与链接==",
+  {
+    "type": "tag",
+    "attributes": {},
+    "selfClosing": true,
+    "name": "references"
+  },
+  {
+    "type": "template",
+    "name": "干员导航",
+    "parameters": {},
+    "positionalParameters": []
+  }
+]

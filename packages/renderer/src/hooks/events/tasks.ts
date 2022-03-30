@@ -1,9 +1,9 @@
-import useTaskStore from "@/store/tasks";
+import useTaskStore from '@/store/tasks'
 
-export default function useTaskEvents() {
-  const taskStore = useTaskStore();
+export default function useTaskEvents () {
+  const taskStore = useTaskStore()
   window.ipcRenderer.on(
-    "task:updateStatus",
+    'task:updateStatus',
     (
       event,
       uuid: string,
@@ -11,7 +11,7 @@ export default function useTaskEvents() {
       status: TaskStatus,
       progress: number
     ) => {
-      taskStore.updateTaskStatus(uuid, taskId, status, progress);
+      taskStore.updateTaskStatus(uuid, taskId, status, progress)
     }
-  );
+  )
 }

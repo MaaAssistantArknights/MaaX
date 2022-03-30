@@ -1,5 +1,5 @@
-import ApiService from "../ApiService";
+import ApiService from '../ApiService'
 
-const service = new ApiService("https://maa.alisaqaq.moe");
+const service = new ApiService('https://maa.alisaqaq.moe')
 
-export default service;
+export default service

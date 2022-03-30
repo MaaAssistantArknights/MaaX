@@ -1,5 +1,5 @@
-import Storage from "./prototype";
+import Storage from './prototype'
 
-const taskStorage = new Storage();
+const taskStorage = new Storage()
 
-export default taskStorage;
+export default taskStorage

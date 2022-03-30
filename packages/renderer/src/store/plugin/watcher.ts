@@ -1,10 +1,10 @@
-import type { PiniaPluginContext } from "pinia";
-import _ from "lodash";
-import storage from "@/hooks/caller/storage";
+import type { PiniaPluginContext } from 'pinia'
+import _ from 'lodash'
+import storage from '@/hooks/caller/storage'
 
-export default function watcher(context: PiniaPluginContext) {
+export default function watcher (context: PiniaPluginContext) {
   context.store.$subscribe((mutation, state) => {
-    storage.set(mutation.storeId, _.cloneDeep(state));
-    console.log("configutation sync");
-  });
+    storage.set(mutation.storeId, _.cloneDeep(state))
+    console.log('configutation sync')
+  })
 }
