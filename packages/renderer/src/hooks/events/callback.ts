@@ -1,7 +1,10 @@
 import useDeviceStore from "@/store/devices";
 import useTaskStore from "@/store/tasks";
+import useTaskIdStore from "@/store/taskid";
+
 import { parseInt } from "lodash";
 import {show} from "@/utils/message";
+import logger from "../caller/logger";
 
 // 抄! https://github.com/MaaAssistantArknights/MaaAssistantArknights/blob/master/src/MeoAsstGui/Helper/AsstProxy.cs
 // cb https://github.com/MaaAssistantArknights/MaaAssistantArknights/blob/dev/docs/%E5%9B%9E%E8%B0%83%E6%B6%88%E6%81%AF%E5%8D%8F%E8%AE%AE.md
@@ -43,9 +46,9 @@ const startUpProcess = [
 enum StartUp {}
 
 enum Fight {
-  SubFightStart = "Fight:Start:StartButton2",
-  MedicineConfirm = "Fight:Start:MedicineConfirm",
-  StoneConfrim = "Fight:Start:StoneConfrim",
+  SubFightStart = "Fight:Completed:StartButton2",
+  MedicineConfirm = "Fight:Completed:MedicineConfirm",
+  StoneConfrim = "Fight:Completed:StoneConfrim",
 
   StageDrops = "Fight:Extra:StageDrops", // 掉落物
 }
@@ -105,6 +108,7 @@ enum Friend {
 export default function useCallbackEvents() {
   const deviceStore = useDeviceStore();
   const taskStore = useTaskStore();
+  const taskIdStore = useTaskIdStore();
 
   // 字面意思, 内部错误
   window.ipcRenderer.on(CallbackMsg.InternalError, (event, arg) => {});
@@ -132,6 +136,12 @@ export default function useCallbackEvents() {
 
   // 任务链开始
   window.ipcRenderer.on(CallbackMsg.TaskChainStart, async (event, arg) => {
+
+    if(arg.taskchain == "Fight"){
+      taskIdStore.onFightStart(arg.uuid,arg.taskid);
+    }
+
+
     taskStore.updateTaskStatus(arg.uuid, arg.task, "processing", 0);
   });
 
@@ -143,6 +153,9 @@ export default function useCallbackEvents() {
   /* 任务链完成 */
   window.ipcRenderer.on(CallbackMsg.TaskChainCompleted, async (event, arg) => {
     console.log(arg);
+
+    // TODO if(taskStore[arg.uuid as string]){
+
     taskStore.updateTaskStatus(arg.uuid, arg.task, "success", 100);
     //window.$message.info(`taskchian ${arg.task} completed`);
   });
@@ -166,16 +179,21 @@ export default function useCallbackEvents() {
     console.log(arg);
     const process = taskStore.deviceTasks[arg.uuid];
     // TODO: 计算作战任务进度, 因为没有理智信息的回调，所以这里该怎么做呢
+
+    logger.debug(`触发作战, 任务id ${arg.taskid}`);
+    taskIdStore.onFightStart(arg.uuid, arg.taskid); // 触发作战, 将id从未进行任务中移除
   });
 
   /* 作战 - 已吃药 */
   window.ipcRenderer.on(Fight.MedicineConfirm, async (event, arg) => {
-    // TODO
+    taskIdStore.useMedicineOrStone(arg.uuid,"medicine");
+    logger.debug("吃了一颗理智药");
   });
 
   /* 作战 - 已吃源石 */
   window.ipcRenderer.on(Fight.StoneConfrim, async (event, arg) => {
-    // TODO
+    taskIdStore.useMedicineOrStone(arg.uuid,"stone");
+    logger.debug("吃了一颗源石");
   });
 
   /** 作战 - 掉落物 */

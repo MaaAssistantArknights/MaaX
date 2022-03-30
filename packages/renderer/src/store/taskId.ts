@@ -8,6 +8,7 @@ export interface TaskIdState {
 }
 
 export interface TaskIdAction {
+  newTaskId(uuid: string): void;
   getTaskId(uuid: string, taskName: string): number | number[] | undefined;
   updateTaskId(uuid: string, taskName: string, newId: number | number[]): void;
   appendFightId(uuid: string, fightId: number): void; // 添加一个新的作战id
@@ -36,6 +37,11 @@ const useTaskIdStore = defineStore<"taskId", TaskIdState, {}, TaskIdAction>(
       };
     },
     actions: {
+      newTaskId(uuid: string) {
+        const { deviceTaskId } = this;
+        if(!deviceTaskId[uuid])
+            deviceTaskId[uuid] = defaultTaskId;
+      },
       updateTaskId(uuid, taskName, newId) {
         const { deviceTaskId } = this;
         const origin = deviceTaskId[uuid];
@@ -102,7 +108,7 @@ const useTaskIdStore = defineStore<"taskId", TaskIdState, {}, TaskIdAction>(
         const origin = deviceTaskId[uuid];
         const task = origin?.find((task) => task.name === "fight");
         if (task) {
-          (task.id as number[]).filter((id) => id !== fightId);
+          task.id = (task.id as number[]).filter((id) => id !== fightId);
         }
       },
       setMedicineAndStone(uuid, medicine, stone) {

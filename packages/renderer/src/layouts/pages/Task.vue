@@ -1,12 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, Ref, watch } from "vue";
-import {
-  NSpace,
-  NButton,
-  NSwitch,
-  NIcon,
-  NTooltip,
-} from "naive-ui";
+import { NSpace, NButton, NSwitch, NIcon, NTooltip } from "naive-ui";
 import _ from "lodash";
 import Sortable from "sortablejs";
 import TaskCard from "@/components/TaskCard.vue";
@@ -16,6 +10,7 @@ import Configuration from "@/components/configurations/Index.vue";
 
 import useTaskStore, { defaultTask } from "@/store/tasks";
 import useDeviceStore from "@/store/devices";
+import useTaskIdStore from "@/store/taskId";
 import { handleSingleTask, uiTasks } from "@/utils/converter/tasks";
 import { show } from "@/utils/message";
 
@@ -23,6 +18,7 @@ import router from "@/router";
 
 const taskStore = useTaskStore();
 const deviceStore = useDeviceStore();
+const taskIdStore = useTaskIdStore();
 
 const isGrid = ref<boolean>(false);
 const cardsRef: Ref<HTMLElement | null> = ref(null);
@@ -104,18 +100,24 @@ async function handleStart() {
 
       // 作战任务单独处理
       if (singleTask.id == "fight") {
+        taskIdStore.setMedicineAndStone(
+          uuid.value,
+          singleTask.configurations.medicine as number,
+          singleTask.configurations.stone as number
+        );
         (task as Array<object>).forEach(async (level: any) => {
-          await window.ipcRenderer.invoke("asst:appendTask", {
+          const taskId = await window.ipcRenderer.invoke("asst:appendTask", {
             uuid: uuid.value,
             type: "Fight",
             params: level,
           });
+          taskIdStore.appendFightId(uuid.value, taskId);
         });
         return;
       }
 
       // 非作战普通任务
-      await window.ipcRenderer.invoke("asst:appendTask", {
+      const taskId = await window.ipcRenderer.invoke("asst:appendTask", {
         uuid: uuid.value,
         type: {
           startup: "StartUp",
@@ -129,17 +131,13 @@ async function handleStart() {
         }[singleTask.id],
         params: task,
       });
+      taskIdStore.updateTaskId(uuid.value, singleTask.id, taskId); // 记录任务id
     }
   });
   deviceStore.updateDeviceStatus(uuid.value as string, "tasking");
 
-  // 初始化掉落物存储
-  if (!window.sessionStorage.getItem(uuid.value as string))
-    window.sessionStorage.setItem(uuid.value as string, "{\"StageDrops\":{}}");
-
   await window.ipcRenderer.invoke("asst:start", { uuid: uuid.value });
 }
-
 </script>
 
 <template>

@@ -14,6 +14,7 @@ import {
 import useDeviceStore from "@/store/devices";
 import router from "@/router";
 import useTaskStore from "@/store/tasks";
+import useTaskIdStore from "@/store/taskId";
 import { hide, show } from "@/utils/message";
 
 const props = defineProps<{
@@ -24,6 +25,7 @@ const message = useMessage();
 const themeVars = useThemeVars();
 const deviceStore = useDeviceStore();
 const taskStore = useTaskStore();
+const taskIdStore = useTaskIdStore();
 const device = computed(() =>
   deviceStore.devices.find((device) => device.uuid === props.uuid)
 );
@@ -73,6 +75,9 @@ async function handleDeviceConnect() {
   if (!disconnectedStatus.has(device.value?.status ?? "unknown")) {
     return;
   }
+
+  taskIdStore.newTaskId(device.value?.uuid as string);
+
   deviceStore.updateDeviceStatus(device.value?.uuid as string, "connecting");
   show(`${deviceDisplayName.value}连接中...`, {
     type: "loading",
@@ -87,6 +92,11 @@ async function handleDeviceConnect() {
       config: device.value?.tag,
     })
   );
+
+  
+  // 初始化掉落物存储
+  if (!window.sessionStorage.getItem(device.value?.uuid as string))
+    window.sessionStorage.setItem(device.value?.uuid as string, "{\"StageDrops\":{}}");
 
   //loadingMessage.destroy();
 }
