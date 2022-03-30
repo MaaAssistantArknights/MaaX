@@ -51,6 +51,9 @@ const asstHooks: Record<
       JSON.stringify(arg.params)
     );
   },
+  "asst:setTaskParams": async(event,arg)=>{
+    return Assistant.getInstance()?.SetTaskParams(arg.uuid,arg.task_id,JSON.stringify(arg.params));
+  },
   "asst:start": async (event, arg) => {
     return Assistant.getInstance()?.Start(arg.uuid);
   },
