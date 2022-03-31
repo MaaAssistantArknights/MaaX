@@ -3,9 +3,9 @@ import type { AxiosInstance, AxiosRequestConfig } from 'axios'
 import version from '@/hooks/caller/version'
 import _ from 'lodash'
 
-const getCoreVersion = () => {
-  const coreVersion = version.core()
-  return coreVersion ? `(core v${coreVersion})` : '(without core)'
+const getCoreVersion = async (): Promise<string> => {
+  const coreVersion = await version.core()
+  return coreVersion !== null ? `(core v${coreVersion})` : '(without core)'
 }
 
 class ApiService {
@@ -45,7 +45,7 @@ class ApiService {
     return response.data
   }
 
-  get baseUrl () {
+  get baseUrl (): string | undefined {
     return this._instance.defaults.baseURL
   }
 

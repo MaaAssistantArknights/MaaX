@@ -1,142 +1,141 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, Ref, watch } from "vue";
-import { NSpace, NButton, NSwitch, NIcon, NTooltip } from "naive-ui";
-import _ from "lodash";
-import Sortable from "sortablejs";
-import TaskCard from "@/components/TaskCard.vue";
-import IconList from "@/assets/icons/list.svg?component";
-import IconGrid from "@/assets/icons/grid.svg?component";
-import Configuration from "@/components/configurations/Index.vue";
+import { computed, onMounted, ref, Ref, watch } from 'vue'
+import { NSpace, NButton, NSwitch, NIcon, NTooltip } from 'naive-ui'
+import _ from 'lodash'
+import Sortable from 'sortablejs'
+import TaskCard from '@/components/TaskCard.vue'
+import IconList from '@/assets/icons/list.svg?component'
+import IconGrid from '@/assets/icons/grid.svg?component'
+import Configuration from '@/components/configurations/Index.vue'
 
-import useTaskStore, { defaultTask } from "@/store/tasks";
-import useDeviceStore from "@/store/devices";
-import useTaskIdStore from "@/store/taskId";
-import { handleSingleTask, uiTasks } from "@/utils/converter/tasks";
-import { show } from "@/utils/message";
+import useTaskStore, { defaultTask } from '@/store/tasks'
+import useDeviceStore from '@/store/devices'
+import useTaskIdStore from '@/store/taskId'
+import { handleSingleTask, uiTasks } from '@/utils/converter/tasks'
+import { show } from '@/utils/message'
 
-import router from "@/router";
+import router from '@/router'
 
-const taskStore = useTaskStore();
-const deviceStore = useDeviceStore();
-const taskIdStore = useTaskIdStore();
+const taskStore = useTaskStore()
+const deviceStore = useDeviceStore()
+const taskIdStore = useTaskIdStore()
 
-const isGrid = ref<boolean>(false);
-const cardsRef: Ref<HTMLElement | null> = ref(null);
+const isGrid = ref<boolean>(false)
+const cardsRef: Ref<HTMLElement | null> = ref(null)
 
-const uuid = computed(() => router.currentRoute.value.params.uuid as string);
+const uuid = computed(() => router.currentRoute.value.params.uuid as string)
 const tasks = computed(() => {
-  if (!taskStore.deviceTasks[uuid.value])
-    taskStore.updateTask(uuid.value, defaultTask);
-  return taskStore.deviceTasks[uuid.value];
-});
+  if (!taskStore.deviceTasks[uuid.value]) { taskStore.updateTask(uuid.value, defaultTask) }
+  return taskStore.deviceTasks[uuid.value]
+})
 
 onMounted(() => {
-  load();
-});
+  load()
+})
 
 watch(router.currentRoute, () => {
-  load();
-});
+  load()
+})
 
-function load() {
+function load () {
   if (cardsRef.value) {
     new Sortable(cardsRef.value, {
       swapThreshold: 1,
       animation: 150,
-      filter: ".undraggable",
+      filter: '.undraggable',
       store: {
-        get() {
-          return tasks.value?.map((task) => task.id) || [];
+        get () {
+          return tasks.value?.map((task) => task.id) || []
         },
-        set(sortable) {
-          const sort = sortable.toArray();
+        set (sortable) {
+          const sort = sortable.toArray()
           if (tasks.value && uuid.value) {
             taskStore.updateTask(
               uuid.value,
               _.sortBy(tasks.value, (task) =>
                 sort.findIndex((v) => v === task.id)
               )
-            );
+            )
           }
-        },
-      },
-      onMove: (event) => {
-        if (event.related.classList.contains("undraggable")) {
-          return false;
         }
       },
-    });
+      onMove: (event) => {
+        if (event.related.classList.contains('undraggable')) {
+          return false
+        }
+      }
+    })
   }
 }
 
 const deviceStatus = computed(() => {
-  const device = deviceStore.getDevice(uuid.value as string);
-  if (!device) return "unknown";
-  return device.status;
-});
+  const device = deviceStore.getDevice(uuid.value as string)
+  if (!device) return 'unknown'
+  return device.status
+})
 
-async function handleStart() {
-  const device = deviceStore.getDevice(uuid.value as string);
-  if (device && device.status === "tasking") {
+async function handleStart () {
+  const device = deviceStore.getDevice(uuid.value as string)
+  if (device && device.status === 'tasking') {
     // todo: 取消显示message，直接停止任务
-    show("设备正在运行任务，请先停止任务", { type: "warning", duration: 5000 });
-    return;
+    show('设备正在运行任务，请先停止任务', { type: 'warning', duration: 5000 })
+    return
   }
 
   if (_.findIndex(tasks.value, (task) => task.enable === true) === -1) {
-    show("请至少选择一个任务", { type: "warning", duration: 5000 });
-    return;
+    show('请至少选择一个任务', { type: 'warning', duration: 5000 })
+    return
   }
   tasks.value?.forEach(async (singleTask) => {
     if (singleTask.enable) {
-      taskStore.updateTaskStatus(uuid.value, singleTask.id, "waiting", 0);
+      taskStore.updateTaskStatus(uuid.value, singleTask.id, 'waiting', 0)
       const task = handleSingleTask[singleTask.id]({
         ...singleTask.configurations,
         uuid: uuid.value,
-        taskId: singleTask.id,
-      });
-      console.log(task);
-      if (uiTasks.includes(singleTask.id)) return; // TODO: ui限定任务，不发送给core执行
+        taskId: singleTask.id
+      })
+      console.log(task)
+      if (uiTasks.includes(singleTask.id)) return // TODO: ui限定任务，不发送给core执行
 
       // 作战任务单独处理
-      if (singleTask.id == "fight") {
+      if (singleTask.id == 'fight') {
         taskIdStore.setMedicineAndStone(
           uuid.value,
           singleTask.configurations.medicine as number,
           singleTask.configurations.stone as number
         );
         (task as Array<object>).forEach(async (level: any) => {
-          const taskId = await window.ipcRenderer.invoke("asst:appendTask", {
+          const taskId = await window.ipcRenderer.invoke('asst:appendTask', {
             uuid: uuid.value,
-            type: "Fight",
-            params: level,
-          });
-          taskIdStore.appendFightId(uuid.value, taskId);
-        });
-        return;
+            type: 'Fight',
+            params: level
+          })
+          taskIdStore.appendFightId(uuid.value, taskId)
+        })
+        return
       }
 
       // 非作战普通任务
-      const taskId = await window.ipcRenderer.invoke("asst:appendTask", {
+      const taskId = await window.ipcRenderer.invoke('asst:appendTask', {
         uuid: uuid.value,
         type: {
-          startup: "StartUp",
-          fight: "Fight",
-          recruit: "Recruit",
-          infrast: "Infrast",
-          visit: "Visit",
-          mall: "Mall",
-          award: "Award",
-          rogue: "Roguelike",
+          startup: 'StartUp',
+          fight: 'Fight',
+          recruit: 'Recruit',
+          infrast: 'Infrast',
+          visit: 'Visit',
+          mall: 'Mall',
+          award: 'Award',
+          rogue: 'Roguelike'
         }[singleTask.id],
-        params: task,
-      });
-      taskIdStore.updateTaskId(uuid.value, singleTask.id, taskId); // 记录任务id
+        params: task
+      })
+      taskIdStore.updateTaskId(uuid.value, singleTask.id, taskId) // 记录任务id
     }
-  });
-  deviceStore.updateDeviceStatus(uuid.value as string, "tasking");
+  })
+  deviceStore.updateDeviceStatus(uuid.value as string, 'tasking')
 
-  await window.ipcRenderer.invoke("asst:start", { uuid: uuid.value });
+  await window.ipcRenderer.invoke('asst:start', { uuid: uuid.value })
 }
 </script>
 

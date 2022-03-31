@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron'
 
-export default function useOsHooks () {
+export default function useOsHooks (): void {
   ipcMain.handle('os:arch', async (event) => {
     let arch = 'NoArch'
     switch (process.arch) {

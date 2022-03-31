@@ -5,22 +5,22 @@ import { Assistant } from './interface'
 
 const asstHooks: Record<
 string,
-(event: Electron.IpcMainInvokeEvent, ...args: any[]) => void
+(event: Electron.IpcMainInvokeEvent, ...args: any[]) => Promise<any>
 > = {
-  'asst:loadResource': async (event, arg) => {
-    return Assistant.getInstance()?.LoadResource(arg.path)
+  'asst:loadResource': async (_event, arg) => {
+    return Assistant.getInstance()?.LoadResource(arg.path) ?? false
   },
-  'asst:create': async (event, arg) => {
-    return Assistant.getInstance()?.Create()
+  'asst:create': async (_event, _arg) => {
+    return Assistant.getInstance()?.Create() ?? false
   },
-  'asst:createEx': async (event, arg) => {
+  'asst:createEx': async (_event, arg) => {
     return Assistant.getInstance()?.CreateEx(arg.address)
   },
-  'asst:destroy': async (event, arg) => {
+  'asst:destroy': async (_event, arg) => {
     Assistant.getInstance()?.Destroy(arg.uuid)
     return true
   },
-  'asst:connect': async (event, arg) => {
+  'asst:connect': async (_event, arg) => {
     return Assistant.getInstance()?.Connect(
       arg.address,
       arg.uuid,
@@ -28,9 +28,9 @@ string,
       arg.config
     )
   },
-  'asst:createEx_connect': async (event, arg) => {
-    const createStatus = Assistant.getInstance()?.CreateEx(arg.uuid)
-    if (!createStatus) console.log(`重复创建 ${arg}`)
+  'asst:createEx_connect': async (_event, arg) => {
+    const createStatus = Assistant.getInstance()?.CreateEx(arg.uuid) ?? false
+    if (!createStatus) console.log(`重复创建 ${JSON.stringify(arg)}`)
     return Assistant.getInstance()?.Connect(
       arg.address,
       arg.uuid,
@@ -38,29 +38,29 @@ string,
       arg.config
     )
   },
-  'asst:disconnect_destroy': async (event, arg) => {
+  'asst:disconnect_destroy': async (_event, arg) => {
     Assistant.getInstance()?.Stop(arg.uuid)
     Assistant.getInstance()?.Destroy(arg.uuid)
     return true
   },
 
-  'asst:appendTask': async (event, arg) => {
+  'asst:appendTask': async (_event, arg) => {
     return Assistant.getInstance()?.AppendTask(
       arg.uuid,
       arg.type,
       JSON.stringify(arg.params)
     )
   },
-  'asst:setTaskParams': async (event, arg) => {
+  'asst:setTaskParams': async (_event, arg) => {
     return Assistant.getInstance()?.SetTaskParams(arg.uuid, arg.task_id, JSON.stringify(arg.params))
   },
-  'asst:start': async (event, arg) => {
+  'asst:start': async (_event, arg) => {
     return Assistant.getInstance()?.Start(arg.uuid)
   },
-  'asst:stop': async (event, arg) => {
+  'asst:stop': async (_event, arg) => {
     return Assistant.getInstance()?.Stop(arg.uuid)
   },
-  'asst:supportedStages': async (event) => {
+  'asst:supportedStages': async (_event) => {
     if (Assistant.getInstance() == null) {
       return []
     }
@@ -73,8 +73,8 @@ string,
   }
 }
 
-export default function useAsstHooks () {
-  ipcMain.handle('asst:load', (event) => {
+export default function useAsstHooks (): void {
+  ipcMain.handle('asst:load', (_event) => {
     const asst = Assistant.getInstance()
     if (asst == null) {
       return false
@@ -85,13 +85,12 @@ export default function useAsstHooks () {
     return true
   })
 
-  ipcMain.handle('asst:dispose', (event) => {
+  ipcMain.handle('asst:dispose', (_event) => {
     Assistant.dispose()
     for (const eventName of Object.keys(asstHooks)) {
       ipcMain.removeHandler(eventName)
     }
     window.sessionStorage.setItem('coreIPCLoadStatus', 'false')
-    return void 0
   })
 }
 

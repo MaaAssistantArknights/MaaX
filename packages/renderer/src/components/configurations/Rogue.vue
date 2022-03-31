@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted, Ref } from "vue";
-import _ from "lodash";
+import { ref, onMounted, Ref } from 'vue'
+import _ from 'lodash'
 import {
   NForm,
   NFormItem,
@@ -14,16 +14,16 @@ import {
   NInputNumber,
   NSpace,
   NTimePicker,
-  NAvatar,
-} from "naive-ui";
-import gamedataApi from "@/api/gamedata";
-import { getOperatorAvatar, getSkillImage } from "@/utils/game_image";
+  NAvatar
+} from 'naive-ui'
+import gamedataApi from '@/api/gamedata'
+import { getOperatorAvatar, getSkillImage } from '@/utils/game_image'
 import {
   secondsToFormattedDuration,
-  formattedDurationToSeconds,
-} from "@/utils/time_picker";
+  formattedDurationToSeconds
+} from '@/utils/time_picker'
 
-type Strategies = "ToTheEnd" | "AfterFirstLevel" | "AfterMoney"
+type Strategies = 'ToTheEnd' | 'AfterFirstLevel' | 'AfterMoney'
 
 interface RogueConfiguration {
   strategy: Strategies
@@ -35,50 +35,48 @@ const strategyOptions: Array<{
   label: string
   value: Strategies
 }> = [
-    {
-      label: "尽可能往后打",
-      value: "ToTheEnd",
-    },
-    {
-      label: "刷源石锭投资，第一层商店后退出",
-      value: "AfterFirstLevel",
-    },
-    {
-      label: "刷源石锭投资，投资后退出",
-      value: "AfterMoney",
-    },
-  ];
+  {
+    label: '尽可能往后打',
+    value: 'ToTheEnd'
+  },
+  {
+    label: '刷源石锭投资，第一层商店后退出',
+    value: 'AfterFirstLevel'
+  },
+  {
+    label: '刷源石锭投资，投资后退出',
+    value: 'AfterMoney'
+  }
+]
 
 const props = defineProps<{
   configurations: RogueConfiguration
-}>();
+}>()
 
-const showModal = ref(false);
+const showModal = ref(false)
 
-const operators: Ref<any[]> = ref([]);
-const allSkills: Ref<any> = ref();
+const operators: Ref<any[]> = ref([])
+const allSkills: Ref<any> = ref()
 
 onMounted(async () => {
   operators.value = Object.values(
     (await gamedataApi.getAllOperators()) as Object
-  ).filter((operator) => operator.nationId !== null);
+  ).filter((operator) => operator.nationId !== null)
 
   operators.value.forEach(async (operator) => {
-    operator.image = await getOperatorAvatar(operator.name);
-  });
+    operator.image = await getOperatorAvatar(operator.name)
+  })
 
-  allSkills.value = await gamedataApi.getAllSkills() as any;
+  allSkills.value = await gamedataApi.getAllSkills() as any
   Object.keys(allSkills.value).forEach(async key => {
-    allSkills.value[key].name = allSkills.value[key].levels[0].name;
+    allSkills.value[key].name = allSkills.value[key].levels[0].name
     try {
-      allSkills.value[key].image = await getSkillImage(allSkills.value[key].name);
+      allSkills.value[key].image = await getSkillImage(allSkills.value[key].name)
     } catch (e) {
-      allSkills.value[key].image = null;
+      allSkills.value[key].image = null
     }
-  });
-  
-
-});
+  })
+})
 </script>
 
 <template>

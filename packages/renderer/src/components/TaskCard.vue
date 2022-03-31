@@ -6,36 +6,36 @@ import {
   NCollapseItem,
   NScrollbar,
   NSpace,
-  useThemeVars,
-} from "naive-ui";
-import useThemeStore from "@/store/theme";
-import Timer from "./Timer.vue";
+  useThemeVars
+} from 'naive-ui'
+import useThemeStore from '@/store/theme'
+import Timer from './Timer.vue'
 
-const themeVars = useThemeVars();
-const themeStore = useThemeStore();
+const themeVars = useThemeVars()
+const themeStore = useThemeStore()
 
 const props = defineProps<{
   isCollapsed: boolean;
   taskInfo: Task;
-}>();
+}>()
 
-defineEmits(["update:enable"]);
+defineEmits(['update:enable'])
 
 const processBarColor = (taskStatus: TaskStatus) => {
   switch (taskStatus) {
-    case "idle":
-    case "processing":
-      return themeVars.value.primaryColor;
-    case "success":
-      return themeVars.value.successColor;
-    case "exception":
-      return themeVars.value.errorColor;
-    case "waiting":
-      return themeVars.value.infoColor;
-    case "warning":
-      return themeVars.value.warningColor;
+    case 'idle':
+    case 'processing':
+      return themeVars.value.primaryColor
+    case 'success':
+      return themeVars.value.successColor
+    case 'exception':
+      return themeVars.value.errorColor
+    case 'waiting':
+      return themeVars.value.infoColor
+    case 'warning':
+      return themeVars.value.warningColor
   }
-};
+}
 </script>
 
 <template>

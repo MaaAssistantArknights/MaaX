@@ -24,16 +24,16 @@ if (!app.requestSingleInstanceLock()) {
   process.exit(0)
 }
 
-async function createWindow () {
+async function createWindow (): Promise<void> {
   const win = WindowFactory.getInstance()
-  if (app.isPackaged || process.env.DEBUG) {
-    win.loadFile(join(__dirname, '../renderer/index.html'))
+  if (app.isPackaged || !is.development) {
+    win.loadFile(join(__dirname, '../renderer/index.html')).catch(e => console.error(e))
   } else {
     // 🚧 Use ['ENV_NAME'] avoid vite:define plugin
     const host = process.env.VITE_DEV_SERVER_HOST
     const port = process.env.VITE_DEV_SERVER_PORT
-    const url = `http://${host}:${port}`
-    win.loadURL(url)
+    const url = `http://${host ?? 'localhost'}:${port ?? '3344'}`
+    win.loadURL(url).catch(e => console.error(e))
   }
 
   useController(win)
@@ -47,12 +47,12 @@ async function createWindow () {
 
   // Make all links open with the browser, not with the application
   win.webContents.setWindowOpenHandler(({ url }) => {
-    if (url.startsWith('https:')) shell.openExternal(url)
+    if (url.startsWith('https:')) shell.openExternal(url).catch(e => console.error(e))
     return { action: 'deny' }
   })
 }
 
-app.whenReady().then(createWindow)
+app.whenReady().then(createWindow).catch(e => console.error(e))
 
 app.on('window-all-closed', () => {
   // const win = WindowFactory.getInstance();
@@ -62,11 +62,10 @@ app.on('window-all-closed', () => {
 
 app.on('second-instance', () => {
   const win = WindowFactory.getInstance()
-  if (win) {
-    // Focus on the main window if the user tried to open another
-    if (win.isMinimized()) win.restore()
-    win.focus()
-  }
+
+  // Focus on the main window if the user tried to open another
+  if (win?.isMinimized()) win?.restore()
+  win?.focus()
 })
 
 app.on('activate', () => {
@@ -74,6 +73,6 @@ app.on('activate', () => {
   if (allWindows.length > 0) {
     allWindows[0].focus()
   } else {
-    createWindow()
+    createWindow().catch(e => console.error(e))
   }
 })

@@ -1,6 +1,6 @@
 import execa from 'execa'
 
-export async function runAppleScript (script: string) {
+export async function runAppleScript (script: string): Promise<string> {
   if (process.platform !== 'darwin') {
     throw new Error('macOS only')
   }
@@ -9,7 +9,7 @@ export async function runAppleScript (script: string) {
   return stdout
 }
 
-export function runAppleScriptSync (script: string) {
+export function runAppleScriptSync (script: string): string {
   if (process.platform !== 'darwin') {
     throw new Error('macOS only')
   }

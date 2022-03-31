@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import { NInputNumber, NCheckbox, NForm, NFormItem } from "naive-ui";
-import _ from "lodash";
+import { NInputNumber, NCheckbox, NForm, NFormItem } from 'naive-ui'
+import _ from 'lodash'
 
 interface RecruitConfiguration {
   refresh_normal_tags: boolean;
   use_expedited_plan: boolean;
   maximum_times_of_recruitments: number;
   recognitions: {
-    "3 Stars": boolean;
-    "4 Stars": boolean;
-    "5 Stars": boolean;
+    '3 Stars': boolean;
+    '4 Stars': boolean;
+    '5 Stars': boolean;
   };
 }
 
 const props = defineProps<{
   configurations: RecruitConfiguration;
-}>();
+}>()
 </script>
 
 <template>

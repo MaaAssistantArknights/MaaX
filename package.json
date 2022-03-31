@@ -23,6 +23,7 @@
     "@typescript-eslint/eslint-plugin": "^5.12.1",
     "@typescript-eslint/parser": "^5.12.1",
     "@vitejs/plugin-vue": "^2.2.2",
+    "@vue/eslint-config-typescript": "^10.0.0",
     "axios": "^0.26.0",
     "electron": "^17.0.1",
     "electron-builder": "^22.14.13",

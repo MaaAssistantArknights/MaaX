@@ -1,57 +1,55 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { NInput, NAlert, NButton, NIcon, NText, NForm, NFormItem } from "naive-ui";
-import useDeviceStore from "@/store/devices";
+import { ref } from 'vue'
+import { NInput, NAlert, NButton, NIcon, NText, NForm, NFormItem } from 'naive-ui'
+import useDeviceStore from '@/store/devices'
 // import { uuidV4 } from "@common/uuid";
-import IconLink from "@/assets/icons/link.svg?component";
-import _ from "lodash";
-import {show} from "@/utils/message";
+import IconLink from '@/assets/icons/link.svg?component'
+import _ from 'lodash'
+import { show } from '@/utils/message'
 
-const connectionString = ref("");
-const deviceStore = useDeviceStore();
+const connectionString = ref('')
+const deviceStore = useDeviceStore()
 
-function connectionStringChecker(cs: string) {
-  let [ip, port] = cs.split(":");
+function connectionStringChecker (cs: string) {
+  let [ip, port] = cs.split(':')
   if (!port) {
     // adb默认端口
-    port = "5555";
+    port = '5555'
   }
 
   if (isNaN(Number(port)) || Number(port) <= 0x0000 || Number(port) >= 0xffff) {
-    console.log(`is_number: ${_.isNumber(port)}`);
-    return false;
+    console.log(`is_number: ${_.isNumber(port)}`)
+    return false
   }
-  return ip.split(".").every((v, i, a) =>  !isNaN(Number(v)) && a.length === 4);
+  return ip.split('.').every((v, i, a) => !isNaN(Number(v)) && a.length === 4)
 }
 
-function handleCustomConnect() {
-  console.log(connectionString.value);
+function handleCustomConnect () {
+  console.log(connectionString.value)
   if (connectionStringChecker(connectionString.value)) {
-    show("正在连接", { type: "loading", duration: 0 });
+    show('正在连接', { type: 'loading', duration: 0 })
     if (deviceStore.devices.find(dev => dev.connectionString === connectionString.value)) {
-      show("设备已经存在了哦", { type: "warning", duration: 5000 });
-      return;
+      show('设备已经存在了哦', { type: 'warning', duration: 5000 })
+      return
     }
-    const uuid = window.ipcRenderer.invoke("asst:getDeviceUuid",{
-      address : connectionString.value,
-      adb_path : "adb",
-    });
-    if(!(uuid as unknown as string | false))
-    {
-      show("连接失败，检查一下地址吧", { type: "error", duration: 5000 });
-      return;
+    const uuid = window.ipcRenderer.invoke('asst:getDeviceUuid', {
+      address: connectionString.value,
+      adb_path: 'adb'
+    })
+    if (!(uuid as unknown as string | false)) {
+      show('连接失败，检查一下地址吧', { type: 'error', duration: 5000 })
+      return
     }
     deviceStore.mergeSearchResult([
       {
         uuid: uuid as unknown as string,
         connectionString: connectionString.value,
-        name: "General",
-        adbPath: "adb"
+        name: 'General',
+        adbPath: 'adb'
       }
-    ]);
-  }
-  else {
-    show("设备地址不对哦，检查一下吧", { type: "error", duration: 5000 });
+    ])
+  } else {
+    show('设备地址不对哦，检查一下吧', { type: 'error', duration: 5000 })
   }
 }
 

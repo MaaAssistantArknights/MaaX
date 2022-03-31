@@ -8,9 +8,9 @@ import {
   NSelect,
   NTimePicker,
   NSpace
-} from "naive-ui";
-import _ from "lodash";
-import { secondsToFormattedDuration, formattedDurationToSeconds } from "@/utils/time_picker";
+} from 'naive-ui'
+import _ from 'lodash'
+import { secondsToFormattedDuration, formattedDurationToSeconds } from '@/utils/time_picker'
 
 interface ShutdownConfiguration {
   option: string;
@@ -19,22 +19,22 @@ interface ShutdownConfiguration {
 
 const shutdownOptions = [
   {
-    value: "shutdownEmulator",
-    label: "仅关闭模拟器",
+    value: 'shutdownEmulator',
+    label: '仅关闭模拟器'
   },
   {
-    value: "shutdownAll",
-    label: "关闭模拟器和MAA",
+    value: 'shutdownAll',
+    label: '关闭模拟器和MAA'
   },
   {
-    value: "shutdownComputer",
-    label: "关闭电脑",
-  },
-];
+    value: 'shutdownComputer',
+    label: '关闭电脑'
+  }
+]
 
 const props = defineProps<{
   configurations: ShutdownConfiguration;
-}>();
+}>()
 
 </script>
 <template>

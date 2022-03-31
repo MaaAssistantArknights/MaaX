@@ -1,29 +1,29 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { NInput, NSpace, NIcon, NTooltip, NButton } from "naive-ui";
-import IconBinary from "@/assets/icons/binary.svg?component";
-import IconWindowUi from "@/assets/icons/window-ui.svg?component";
+import { computed } from 'vue'
+import { NInput, NSpace, NIcon, NTooltip, NButton } from 'naive-ui'
+import IconBinary from '@/assets/icons/binary.svg?component'
+import IconWindowUi from '@/assets/icons/window-ui.svg?component'
 
-import useSettingStore from "@/store/settings";
+import useSettingStore from '@/store/settings'
 
-const settingStore = useSettingStore();
+const settingStore = useSettingStore()
 
-const versionCore = computed(() => settingStore.version.core);
-const versionUi = computed(() => settingStore.version.ui);
+const versionCore = computed(() => settingStore.version.core)
+const versionUi = computed(() => settingStore.version.ui)
 
-function needUpdate(version: { current?: string, latest?: string }) {
+function needUpdate (version: { current?: string, latest?: string }) {
   if (!version.latest || !version.current) {
-    return false;
+    return false
   }
-  return version.current !== version.latest;
+  return version.current !== version.latest
 }
 
-function versionString(version: { current?: string, latest?: string }) {
-  let str = version.current || "未知";
+function versionString (version: { current?: string, latest?: string }) {
+  let str = version.current || '未知'
   if (needUpdate(version)) {
-    str += ` -> ${version.latest}`;
+    str += ` -> ${version.latest}`
   }
-  return str;
+  return str
 }
 
 </script>

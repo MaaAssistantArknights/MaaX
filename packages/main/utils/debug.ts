@@ -1,8 +1,7 @@
 import installExtension from 'electron-devtools-installer'
 import type { BrowserWindow } from 'electron'
-import axios, { Method } from 'axios'
 
-function useDebug (window: BrowserWindow) {
+function useDebug (window: BrowserWindow): void {
   installExtension('nhdogjmejiglipccpnnnanhbledajbpd')
     .then((name) => console.log(`Added Extension:  ${name}`))
     .catch((err) =>
@@ -16,7 +15,7 @@ function useDebug (window: BrowserWindow) {
     },
     (details, callback) => {
       details.requestHeaders.Origin = new URL(details.url).origin
-      callback({ requestHeaders: details.requestHeaders })
+      callback(details)
     }
   )
   window.webContents.session.webRequest.onHeadersReceived(
@@ -24,8 +23,9 @@ function useDebug (window: BrowserWindow) {
       urls: ['https://prts.wiki/*', 'https://maa.alisaqaq.moe/*']
     },
     (details, callback) => {
-      details.responseHeaders['access-control-allow-origin'] = ['*']
-      callback({ responseHeaders: details.responseHeaders })
+      const corsHeader = { 'access-control-allow-origin': '*' }
+      details.responseHeaders = Object.assign(details.responseHeaders ?? {}, corsHeader)
+      callback(details)
     }
   )
 }

@@ -4,7 +4,7 @@ import { ipcMain } from 'electron'
 import path from 'path'
 import logger from '@main/utils/logger'
 
-export default function useUnzipHooks () {
+export default function useUnzipHooks (): void {
   ipcMain.on('unzip:file', (event, src, dist) => {
     fs.createReadStream(src).pipe(unzipper.Extract({ path: dist }))
       .on('entry', (entry) => {

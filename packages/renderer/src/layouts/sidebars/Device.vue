@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, h, ref } from "vue";
+import { computed, h, ref } from 'vue'
 import {
   NIcon,
   NSpace,
@@ -7,80 +7,78 @@ import {
   NTooltip,
   NText,
   NTime,
-  useMessage,
-} from "naive-ui";
-import IconRefresh from "@/assets/icons/refresh.svg?component";
-import IconSettings from "@/assets/icons/settings.svg?component";
-import DeviceCard from "@/components/DeviceCard.vue";
+  useMessage
+} from 'naive-ui'
+import IconRefresh from '@/assets/icons/refresh.svg?component'
+import IconSettings from '@/assets/icons/settings.svg?component'
+import DeviceCard from '@/components/DeviceCard.vue'
 
-import useDeviceStore from "@/store/devices";
-import useSettingStore from "@/store/settings";
+import useDeviceStore from '@/store/devices'
+import useSettingStore from '@/store/settings'
 
-import { installCore, checkCoreVersion } from "@/utils/core";
-import { hide, show } from "@/utils/message";
+import { installCore, checkCoreVersion } from '@/utils/core'
+import { hide, show } from '@/utils/message'
 
-const connectedStatus: Set<DeviceStatus> = new Set(["connected", "tasking"]);
+const connectedStatus: Set<DeviceStatus> = new Set(['connected', 'tasking'])
 const disconnectedStatus: Set<DeviceStatus> = new Set([
-  "available",
-  "disconnected",
-  "connecting",
-]);
-const deviceStore = useDeviceStore();
-const settingStore = useSettingStore();
-const message = useMessage();
+  'available',
+  'disconnected',
+  'connecting'
+])
+const deviceStore = useDeviceStore()
+const settingStore = useSettingStore()
+const message = useMessage()
 const connectedDevices = computed(() =>
   deviceStore.devices.filter((device) => connectedStatus.has(device.status))
-);
+)
 const disconnectedDevices = computed(() =>
   deviceStore.devices.filter((device) => disconnectedStatus.has(device.status))
-);
+)
 
-async function handleRefreshDevices() {
+async function handleRefreshDevices () {
   if (!(await checkCoreVersion())) {
-    installCore();
-    return;
+    installCore()
+    return
   }
-  show("正在更新设备列表...", { type: "loading", duration: 0 });
+  show('正在更新设备列表...', { type: 'loading', duration: 0 })
 
-
-  //console.log(deviceStore.devices);
-  window.ipcRenderer.invoke("asst:getEmulators").then((ret) => {
-    if (!ret.every((v: any) => {return v.uuid;})) 
-    {
-      show(() => h("span","检测到设备, 但唯一标识符获取失败, 可能是模拟器未启动完成导致, 请重试或重启模拟器"),{ type: "error" });
-      return;
+  // console.log(deviceStore.devices);
+  window.ipcRenderer.invoke('asst:getEmulators').then((ret) => {
+    if (!ret.every((v: any) => { return v.uuid })) {
+      show(() => h('span', '检测到设备, 但唯一标识符获取失败, 可能是模拟器未启动完成导致, 请重试或重启模拟器'), { type: 'error' })
+      return
     }
 
     deviceStore.mergeSearchResult(
       ret
         .filter((v: any) => {
-          return !deviceStore.devices.find((dev) => dev.uuid === v.uuid);
+          return !deviceStore.devices.find((dev) => dev.uuid === v.uuid)
         })
         .map((v: any) => {
           return {
             uuid: v.uuid,
             name: v.config,
             tag: v.config,
-            status: "available",
+            status: 'available',
             adbPath: v.adb_path,
-            connectionString: v.address,
-          };
+            connectionString: v.address
+          }
         })
-    );
+    )
 
     if (ret.length > 0) {
-      show(`找到${ret.length}个设备`, { type: "success", duration: 2000 });
+      show(`找到${ret.length}个设备`, { type: 'success', duration: 2000 })
     } else {
-      show("未找到任何可用设备! 请重试", { type: "warning", duration: 2000 });
+      show('未找到任何可用设备! 请重试', { type: 'warning', duration: 2000 })
     }
-  });
+  })
 }
 
-const now = ref(Date.now());
+const now = ref(Date.now())
 
 setInterval(() => {
-  now.value = Date.now();
-}, 1000);
+  now.value = Date.now()
+}, 1000)
 </script>
 
 <template>

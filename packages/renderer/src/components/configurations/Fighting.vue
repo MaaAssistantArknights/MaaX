@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref } from 'vue'
 import {
   NButton,
   NSwitch,
@@ -9,10 +9,10 @@ import {
   NFormItem,
   NInputNumber,
   NSpace,
-  NAlert,
-} from "naive-ui";
-import LevelChoose from "../LevelChooseModal.vue";
-import _ from "lodash";
+  NAlert
+} from 'naive-ui'
+import LevelChoose from '../LevelChooseModal.vue'
+import _ from 'lodash'
 
 interface FightingConfiguration {
   medicine: number;
@@ -21,33 +21,33 @@ interface FightingConfiguration {
   levels: Array<Level>;
   special: {
     times: number;
-    type: "current" | "last";
+    type: 'current' | 'last';
   };
 }
 
 const props = defineProps<{
   configurations: FightingConfiguration;
-}>();
+}>()
 
-const showModal = ref(false);
+const showModal = ref(false)
 
-function handleConfigurationUpdate(key: string, value: any) {
+function handleConfigurationUpdate (key: string, value: any) {
   // FIXME: 对props写入
-  _.set(props.configurations, key, value);
+  _.set(props.configurations, key, value)
 }
 
-function handleMedicineUpdate(value: number | null) {
-  if (value === null) value = 6;
-  if (value < 0) value = 999;
-  if (value > 999) value = 0;
-  handleConfigurationUpdate("medicine", value);
+function handleMedicineUpdate (value: number | null) {
+  if (value === null) value = 6
+  if (value < 0) value = 999
+  if (value > 999) value = 0
+  handleConfigurationUpdate('medicine', value)
 }
 
-function handleStoneUpdate(value: number | null) {
-  if (value === null) value = 6;
-  if (value < 0) value = 999;
-  if (value > 999) value = 0;
-  handleConfigurationUpdate("stone", value);
+function handleStoneUpdate (value: number | null) {
+  if (value === null) value = 6
+  if (value < 0) value = 999
+  if (value > 999) value = 0
+  handleConfigurationUpdate('stone', value)
 }
 </script>
 

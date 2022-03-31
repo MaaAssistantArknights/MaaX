@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { NScrollbar, useThemeVars, useMessage } from "naive-ui";
+import { NScrollbar, useThemeVars, useMessage } from 'naive-ui'
 
-const themeVars = useThemeVars();
-window.$message = useMessage();
+const themeVars = useThemeVars()
+window.$message = useMessage()
 </script>
 
 <template>

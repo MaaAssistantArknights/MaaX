@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NText } from "naive-ui";
+import { NText } from 'naive-ui'
 </script>
 
 <template>

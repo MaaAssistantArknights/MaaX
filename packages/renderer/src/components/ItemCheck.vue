@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { NCheckbox, NPopover } from "naive-ui";
-import { maa as MaaApi } from "@/api";
-import ItemCard from "./ItemCard.vue";
+import { NCheckbox, NPopover } from 'naive-ui'
+import { maa as MaaApi } from '@/api'
+import ItemCard from './ItemCard.vue'
 
 const props = defineProps<{
   name: string;
   checked: boolean;
-}>();
+}>()
 
-const emit = defineEmits(["update:checked"]);
+const emit = defineEmits(['update:checked'])
 
 </script>
 

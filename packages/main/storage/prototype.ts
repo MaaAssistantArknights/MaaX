@@ -14,17 +14,17 @@ type StorageOption<T> = Partial<{
   deserialize: (raw: string) => T
 }>
 
-const convertExt = (str?: string) => (/\.\w+/.test(str || '') ? str : false)
+const convertExt = (str?: string): string | undefined => (/\.\w+/.test(str ?? '') ? str : undefined)
 
 class Storage<T extends Object> {
   constructor (option?: StorageOption<T>) {
-    this.m_storage = ((option?.defaults) != null) || Object.create({})
-    this.m_cwd = option?.cwd || app.getPath('userData')
-    this.m_ext = convertExt(option?.ext) || '.json'
-    this.m_name = option?.name || 'config'
+    this.m_storage = option?.defaults ?? Object.create({})
+    this.m_cwd = option?.cwd ?? app.getPath('userData')
+    this.m_ext = convertExt(option?.ext) ?? '.json'
+    this.m_name = option?.name ?? 'config'
     this.m_serialize =
-      ((option?.serialize) != null) || ((value: T) => JSON.stringify(value, null, '  '))
-    this.m_deserialize = ((option?.deserialize) != null) || JSON.parse
+      option?.serialize ?? ((value: T) => JSON.stringify(value, null, '  '))
+    this.m_deserialize = option?.deserialize ?? JSON.parse
 
     if (!fs.existsSync(this.m_cwd)) {
       fs.mkdirSync(this.m_cwd)
@@ -47,16 +47,16 @@ class Storage<T extends Object> {
     // Observable.observe(this.m_observer, )
   }
 
-  get (key: string) {
+  get (key: string): any {
     return _.get(this.m_storage, key)
   }
 
-  set (key: string, value: unknown) {
+  set (key: string, value: any): void {
     _.set(this.m_storage, key, value)
     this.saveToFile()
   }
 
-  has (key: string) {
+  has (key: string): boolean {
     return _.has(this.m_storage, key)
   }
 

@@ -1,47 +1,45 @@
 <script setup lang="ts">
-import { NButton, NCard, NInputNumber, NInput, NSpace, NTooltip, useThemeVars } from "naive-ui";
-import gamedata from "@/api/gamedata";
-import { computed, onMounted, Ref, ref } from "vue";
+import { NButton, NCard, NInputNumber, NInput, NSpace, NTooltip, useThemeVars } from 'naive-ui'
+import gamedata from '@/api/gamedata'
+import { computed, onMounted, Ref, ref } from 'vue'
 
-const themeVars = useThemeVars();
+const themeVars = useThemeVars()
 
 const props = defineProps<{
   levels: Array<Level>
   special: {
     times: number;
-    type: "current" | "last"
+    type: 'current' | 'last'
   }
-}>();
+}>()
 
-let allZones: Ref<Api.Maa.Zone[]> = ref([]);
-let allStages: Ref<Api.Maa.Stage[]> = ref([]);
+const allZones: Ref<Api.Maa.Zone[]> = ref([])
+const allStages: Ref<Api.Maa.Stage[]> = ref([])
 
 onMounted(async () => {
-  const zoneRes = await gamedata.getAllZones();
-  const stageRes = await gamedata.getAllStages();
-  allZones.value = Object.values(zoneRes["zones"]);
-  allStages.value = Object.values(stageRes["stages"]);
-});
+  const zoneRes = await gamedata.getAllZones()
+  const stageRes = await gamedata.getAllStages()
+  allZones.value = Object.values(zoneRes.zones)
+  allStages.value = Object.values(stageRes.stages)
+})
 
 const stages = computed(() => {
-  const stageCodes = props.levels.map(level => level.code);
-  return allStages.value.filter(stage => stageCodes.findIndex(code => code === stage.code) !== -1);
-});
+  const stageCodes = props.levels.map(level => level.code)
+  return allStages.value.filter(stage => stageCodes.findIndex(code => code === stage.code) !== -1)
+})
 
 const zones = computed(() => {
-  const zoneIds = stages.value.map(stage => stage.zoneId);
-  return allZones.value.filter(zone => zoneIds.findIndex(id => id === zone.zoneID) !== -1);
-});
+  const zoneIds = stages.value.map(stage => stage.zoneId)
+  return allZones.value.filter(zone => zoneIds.findIndex(id => id === zone.zoneID) !== -1)
+})
 
+const emit = defineEmits(['update:special_type'])
 
-
-const emit = defineEmits(["update:special_type"]);
-
-function handleSpecialTypeChange() {
-  if (props.special.type === "current") {
-    emit("update:special_type", "last");
+function handleSpecialTypeChange () {
+  if (props.special.type === 'current') {
+    emit('update:special_type', 'last')
   } else {
-    emit("update:special_type", "current");
+    emit('update:special_type', 'current')
   }
 }
 </script>

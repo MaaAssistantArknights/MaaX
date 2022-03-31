@@ -1,7 +1,7 @@
 import type { BrowserWindow } from 'electron'
 import { ipcMain } from 'electron'
 
-export default function useController (window: BrowserWindow) {
+export default function useController (window: BrowserWindow): void {
   ipcMain.on('window:close', () => {
     if (window.isClosable()) {
       window.close()

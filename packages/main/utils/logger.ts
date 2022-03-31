@@ -16,13 +16,13 @@ class Logger {
   }
 
   static instance = () => {
-    if (!Logger._instance) {
+    if (Logger._instance == null) {
       Logger._instance = new Logger()
     }
     return Logger._instance._log.functions
   };
 
-  private static _instance: Logger;
+  private static _instance: Logger | undefined = undefined;
   private readonly _log: ElectronLog;
 }
 

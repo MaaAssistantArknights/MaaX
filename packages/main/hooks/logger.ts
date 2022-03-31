@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron'
 import logger from '@main/utils/logger'
 
-export default function useLoggerHooks () {
+export default function useLoggerHooks (): void {
   ipcMain.on('log:log', (event, ...params) => {
     logger.log(...params)
   })

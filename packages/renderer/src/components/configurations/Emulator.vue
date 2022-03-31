@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { NInputNumber, NCheckbox, NForm, NFormItem, NInput, NSelect, NSpace } from "naive-ui";
-import _ from "lodash";
+import { NInputNumber, NCheckbox, NForm, NFormItem, NInput, NSelect, NSpace } from 'naive-ui'
+import _ from 'lodash'
 
 interface EmulatorConfiguration {
   emulator_path: string; // 模拟器路径
@@ -11,29 +11,29 @@ interface EmulatorConfiguration {
 const delayOptions = [
   {
     value: 30,
-    label: "30秒 - 不建议",
+    label: '30秒 - 不建议'
   },
   {
     value: 60,
-    label: "一分钟",
+    label: '一分钟'
   },
   {
     value: 120,
-    label: "两分钟",
+    label: '两分钟'
   },
   {
     value: 300,
-    label: "五分钟",
+    label: '五分钟'
   },
   {
     value: 600,
-    label: "十分钟",
-  },
-];
+    label: '十分钟'
+  }
+]
 
 const props = defineProps<{
   configurations: EmulatorConfiguration;
-}>();
+}>()
 </script>
 <template>
   <NForm

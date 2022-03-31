@@ -13,7 +13,7 @@ class WindowFactory {
     return new Ctor(options)
   }
 
-  static getInstance () {
+  static getInstance (): BrowserWindow {
     if (this.instance_ == null) {
       this.instance_ = WindowFactory.create({
         transparent: true,
@@ -34,7 +34,7 @@ class WindowFactory {
     return this.instance_
   }
 
-  static destory () {
+  static destory (): void {
     if (this.instance_ != null) {
       this.instance_.destroy()
     }

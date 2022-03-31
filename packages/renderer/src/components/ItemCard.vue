@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import { ref, Ref, onMounted } from "vue";
-import { maa } from "@/api";
-import { NCard, NText, NTag, NSkeleton } from "naive-ui";
+import { ref, Ref, onMounted } from 'vue'
+import { maa } from '@/api'
+import { NCard, NText, NTag, NSkeleton } from 'naive-ui'
 
 const props = defineProps<{
   name: string;
-}>();
+}>()
 
-const itemApi = maa.gamedata.items;
+const itemApi = maa.gamedata.items
 
-const info: Ref<Api.Maa.Item | undefined> = ref();
-const loading = ref(true);
+const info: Ref<Api.Maa.Item | undefined> = ref()
+const loading = ref(true)
 
 onMounted(async () => {
-  info.value = await itemApi.get(props.name);
-  loading.value = false;
-});
+  info.value = await itemApi.get(props.name)
+  loading.value = false
+})
 
 </script>
 
