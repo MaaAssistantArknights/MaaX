@@ -1,4 +1,4 @@
-function taskEmulator (task: Task['configurations']) {
+function taskEmulator (task: Task['configurations']): void {
   console.log('before start emu')
   console.log(task)
   window.ipcRenderer.send('10001', task.uuid, task.taskId) //
@@ -12,18 +12,18 @@ function taskEmulator (task: Task['configurations']) {
   }, (task.delay as number) * 1000)
 }
 
-function taskGame (task: Task['configurations']) {
+function taskGame (task: Task['configurations']): object {
   return {
     server: task.server // 区服
   }
 }
 
-function taskStartUp (task: Task['configurations']) {
+function taskStartUp (task: Task['configurations']): object {
   // 无配置选项
   return {}
 }
 
-function taskFight (task: Task['configurations']) {
+function taskFight (task: Task['configurations']): object {
   const ret = [
     {
       stage: { current: '', last: 'LastBattle' }[
@@ -38,7 +38,7 @@ function taskFight (task: Task['configurations']) {
     }
   ];
   (task.levels as any).forEach((level: any) => {
-    if (level.times != 0) {
+    if (level.times !== 0) {
       ret.push({
         stage: level.code,
         medicine: task.medicine, // 使用理智药数量
@@ -53,12 +53,12 @@ function taskFight (task: Task['configurations']) {
   return ret
 }
 
-function taskRecruit (task: Task['configurations']) {
+function taskRecruit (task: Task['configurations']): object {
   const select: number[] = []
   const confirm: number[] = []
   for (const [key, value] of Object.entries(task.recognitions as Object)) {
     if (value) confirm.push(parseInt(key))
-    if (value && parseInt(key) != 3) select.push(parseInt(key)) // 不选择3星词条.
+    if (value && parseInt(key) !== 3) select.push(parseInt(key)) // 不选择3星词条.
   }
 
   const ret = {
@@ -73,7 +73,7 @@ function taskRecruit (task: Task['configurations']) {
   return ret
 }
 
-function taskInfrast (task: Task['configurations']) {
+function taskInfrast (task: Task['configurations']): object {
   const droneTranslate: Record<string, string> = {
     None: '_NotUse',
     LMD: 'Money',
@@ -109,12 +109,12 @@ function taskInfrast (task: Task['configurations']) {
   return ret
 }
 
-function taskVisit (task: Task['configurations']) {
+function taskVisit (task: Task['configurations']): object {
   // 没有配置项
   return {}
 }
 
-function taskMall (task: Task['configurations']) {
+function taskMall (task: Task['configurations']): object {
   // 领取信用以及商店购物
 
   return {
@@ -124,11 +124,11 @@ function taskMall (task: Task['configurations']) {
   }
 }
 
-function taskAward (task: Task['configurations']) {
+function taskAward (task: Task['configurations']): object {
   // 没有配置项
   return {}
 }
-function taskRogue (task: Task['configurations']) {
+function taskRogue (task: Task['configurations']): object {
   enum rogueTranslate {
     ToTheEnd = 0,
     AfterFirstLevel,
@@ -141,13 +141,14 @@ function taskRogue (task: Task['configurations']) {
   }
 }
 
-function taskShutdown (task: Task['configurations']) {
+function taskShutdown (task: Task['configurations']): object {
   // 没有配置项
   return {}
 }
 
 export const uiTasks = ['emulator', 'shutdown']
 
+// TODO: 等重构
 export const handleSingleTask: Record<
 string,
 (task: Task['configurations']) => object | void | object[]

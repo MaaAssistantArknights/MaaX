@@ -1,6 +1,5 @@
 import ffi, { DynamicLibrary } from 'ffi-napi'
 import ref from 'ref-napi'
-import ArrayType from 'ref-array-napi'
 import path from 'path'
 import { existsSync, mkdirSync } from 'fs'
 import WindowFactory from '../window/factory'
@@ -12,27 +11,29 @@ import Storage from '../storage'
 /** Some types for core */
 const BoolType = ref.types.bool
 const IntType = ref.types.int
-const IntArrayType = ArrayType(IntType)
-const DoubleType = ref.types.double
+// const IntArrayType = ArrayType(IntType)
+// const DoubleType = ref.types.double
 const ULLType = ref.types.ulonglong
 const voidType = ref.types.void
 const StringType = ref.types.CString
-const StringPtrType = ref.refType(StringType)
-const StringPtrArrayType = ArrayType(StringType)
+// const StringPtrType = ref.refType(StringType)
+// const StringPtrArrayType = ArrayType(StringType)
 const AsstType = ref.types.void
 const AsstPtrType = ref.refType(AsstType)
-const TaskPtrType = ref.refType(AsstType)
+// const TaskPtrType = ref.refType(AsstType)
 const CustomArgsType = ref.refType(ref.types.void)
+/**
 const CallBackType = ffi.Function(ref.types.void, [
   IntType,
   StringType,
   ref.refType(ref.types.void)
 ])
+ */
 const Buff = CustomArgsType
 type AsstInstancePtr = ref.Pointer<void>
-type TaskInstancePtr = ref.Pointer<void>
+// type TaskInstancePtr = ref.Pointer<void>
 
-type CallBackFunc = (msg: number, detail: string, custom?: any) => any
+// type CallBackFunc = (msg: number, detail: string, custom?: any) => any
 
 enum AsstMsg {
   /* Global Info */
@@ -52,62 +53,75 @@ enum AsstMsg {
   SubTaskExtraInfo, // 原子任务额外信息
 }
 
-const subTaskStart: Record<string, (detail: any) => object> = {
-  StartUp: (detail: any) => { return { task: detail.details.task } }
+interface callbackDetailType {
+  uuid: string
+  what: string
+  taskchain: string
+  details: {
+    task: string
+    address: string
+    uuid: string
+    exec_times: number | string
+  }
 }
 
+/** 暂时不对subStaskStart做处理 */
+// const subTaskStart: Record<string, (detail: callbackDetailType) => object> = {
+//   StartUp: (detail: callbackDetailType) => { return { task: detail.details.task } }
+// }
+
 type taskchainProps = {
-  [key in AsstMsg]: (msg: number, detail: any) => object;
+  [key in AsstMsg]: (msg: number, detail: callbackDetailType) => object;
 }
 
 const handleCallback: taskchainProps = {
-  [AsstMsg.InternalError]: (msg, detail) => {
+  [AsstMsg.InternalError]: (msg, detail): object => {
     return { name: msg }
   },
-  [AsstMsg.InitFailed]: (msg, detail) => {
+  [AsstMsg.InitFailed]: (msg, detail): object => {
     return { name: msg, uuid: detail.uuid }
   },
-  [AsstMsg.ConnectionInfo]: (msg, detail) => {
+  [AsstMsg.ConnectionInfo]: (msg, detail): object => {
     return {
       // name: msg,
       name: detail.what, // 连接类型
       address: detail.details.address,
       ...{ UuidGetted: { uuid: detail.details.uuid }, ConnectFailed: {} }[
-        detail.what as string
+        detail.what
       ]
     }
   },
-  [AsstMsg.AllTasksCompleted]: (msg, detail) => {
+  [AsstMsg.AllTasksCompleted]: (msg, detail): object => {
     return { name: msg, uuid: detail.uuid }
   },
-  [AsstMsg.TaskChainError]: (msg, detail) => {
+  [AsstMsg.TaskChainError]: (msg, detail): object => {
     return {
       name: msg,
       task: taskChainTranslate[detail.taskchain],
       uuid: detail.uuid
     }
   },
-  [AsstMsg.TaskChainStart]: (msg, detail) => {
+  [AsstMsg.TaskChainStart]: (msg, detail): object => {
     return {
       name: msg,
       task: taskChainTranslate[detail.taskchain],
       uuid: detail.uuid
     }
   },
-  [AsstMsg.TaskChainCompleted]: (msg, detail) => {
+  [AsstMsg.TaskChainCompleted]: (msg, detail): object => {
     return {
       name: msg,
       task: taskChainTranslate[detail.taskchain],
       uuid: detail.uuid
     }
   },
-  [AsstMsg.TaskChainExtraInfo]: (msg, detail) => {
+  [AsstMsg.TaskChainExtraInfo]: (msg, detail): object => {
     return { name: msg }
   },
-  [AsstMsg.SubTaskError]: (msg, detail) => {
+  [AsstMsg.SubTaskError]: (msg, detail): object => {
     return { name: `${detail.taskchain}:${detail.details.task}` }
   },
-  [AsstMsg.SubTaskStart]: (msg, detail) => {
+  [AsstMsg.SubTaskStart]: (msg, detail): object => {
     console.log(`CALL: ${detail.taskchain}:Start:${detail.details.task}`)
     return {
       name: `${detail.taskchain}:Start:${detail.details.task}`,
@@ -116,11 +130,11 @@ const handleCallback: taskchainProps = {
       uuid: detail.uuid
     }
   },
-  [AsstMsg.SubTaskCompleted]: (msg, detail) => {
+  [AsstMsg.SubTaskCompleted]: (msg, detail): object => {
     console.log(`CALL: ${detail.taskchain}:Completed:${detail.details.task}`)
     return { name: `${detail.taskchain}:Completed:${detail.details.task}`, ...detail }
   },
-  [AsstMsg.SubTaskExtraInfo]: (msg, detail) => {
+  [AsstMsg.SubTaskExtraInfo]: (msg, detail): object => {
     console.log(`CALL: ${detail.taskchain}:Extra:${detail.what}`)
     return { name: `${detail.taskchain}:Extra:${detail.what}`, ...detail }
   }
@@ -197,16 +211,11 @@ const taskChainTranslate: Record<string, string> = {
       progress: number
 
  */
-const taskChainState: Record<number, string> = {
-  10000: 'exception',
-  10001: 'processing',
-  10002: 'success'
-}
 
 const cb = ffi.Callback(
   'void',
   ['int', 'string', ref.refType(ref.types.void)],
-  (_msg, _detail, custom_args) => {
+  (_msg, _detail, _customArgs) => {
     console.log(_msg)
     const msg: number = _msg as unknown as number
     const detail = JSON.parse(_detail as string)
@@ -225,13 +234,13 @@ const cb = ffi.Callback(
  * @param array
  * @returns
  */
-function makeArray (array: any[]) {
-  return typeof array[0] === 'number'
-    ? IntArrayType(array)
-    : array.map((v) => {
-      return Buffer.from(v)
-    })
-}
+// function makeArray (array: any[]) {
+//   return typeof array[0] === 'number'
+//     ? IntArrayType(array)
+//     : array.map((v) => {
+//       return Buffer.from(v)
+//     })
+// }
 
 class Assistant {
   private static singleton?: Assistant;
@@ -274,23 +283,32 @@ class Assistant {
     {
       AsstLoadResource: ffi.ForeignFunction(this.DLib.get('AsstLoadResource'), BoolType, [StringType], ffi.FFI_STDCALL),
       AsstCreate: ffi.ForeignFunction(this.DLib.get('AsstCreate'), AsstPtrType, [], ffi.FFI_STDCALL),
-      AsstCreateEx: ffi.ForeignFunction(this.DLib.get('AsstCreateEx'), AsstPtrType, ['pointer', CustomArgsType], ffi.FFI_STDCALL),
+      AsstCreateEx: ffi.ForeignFunction(this.DLib.get('AsstCreateEx'), AsstPtrType,
+        ['pointer', CustomArgsType], ffi.FFI_STDCALL),
       AsstDestroy: ffi.ForeignFunction(this.DLib.get('AsstDestroy'), voidType, [AsstPtrType], ffi.FFI_STDCALL),
       AsstConnect: ffi.ForeignFunction(this.DLib.get('AsstConnect'),
         BoolType,
         [AsstPtrType, StringType, StringType, StringType],
         ffi.FFI_STDCALL),
 
-      AsstAppendTask: ffi.ForeignFunction(this.DLib.get('AsstAppendTask'), IntType, [AsstPtrType, StringType, StringType], ffi.FFI_STDCALL),
-      AsstSetTaskParams: ffi.ForeignFunction(this.DLib.get('AsstSetTaskParams'), BoolType, [AsstPtrType, IntType, StringType], ffi.FFI_STDCALL),
+      AsstAppendTask: ffi.ForeignFunction(this.DLib.get('AsstAppendTask'), IntType,
+        [AsstPtrType, StringType, StringType], ffi.FFI_STDCALL),
+      AsstSetTaskParams: ffi.ForeignFunction(this.DLib.get('AsstSetTaskParams'), BoolType,
+        [AsstPtrType, IntType, StringType], ffi.FFI_STDCALL),
 
-      AsstStart: ffi.ForeignFunction(this.DLib.get('AsstStart'), BoolType, [AsstPtrType], ffi.FFI_STDCALL),
-      AsstStop: ffi.ForeignFunction(this.DLib.get('AsstStop'), BoolType, [AsstPtrType], ffi.FFI_STDCALL),
+      AsstStart: ffi.ForeignFunction(this.DLib.get('AsstStart'), BoolType,
+        [AsstPtrType], ffi.FFI_STDCALL),
+      AsstStop: ffi.ForeignFunction(this.DLib.get('AsstStop'), BoolType,
+        [AsstPtrType], ffi.FFI_STDCALL),
 
-      AsstGetImage: ffi.ForeignFunction(this.DLib.get('AsstGetImage'), ULLType, [AsstPtrType, Buff, ULLType], ffi.FFI_STDCALL),
-      AsstCtrlerClick: ffi.ForeignFunction(this.DLib.get('AsstCtrlerClick'), BoolType, [AsstPtrType, IntType, IntType, BoolType], ffi.FFI_STDCALL),
-      AsstGetVersion: ffi.ForeignFunction(this.DLib.get('AsstGetVersion'), StringType, [], ffi.FFI_STDCALL),
-      AsstLog: ffi.ForeignFunction(this.DLib.get('AsstLog'), voidType, [StringType, StringType], ffi.FFI_STDCALL)
+      AsstGetImage: ffi.ForeignFunction(this.DLib.get('AsstGetImage'), ULLType,
+        [AsstPtrType, Buff, ULLType], ffi.FFI_STDCALL),
+      AsstCtrlerClick: ffi.ForeignFunction(this.DLib.get('AsstCtrlerClick'), BoolType,
+        [AsstPtrType, IntType, IntType, BoolType], ffi.FFI_STDCALL),
+      AsstGetVersion: ffi.ForeignFunction(this.DLib.get('AsstGetVersion'), StringType,
+        [], ffi.FFI_STDCALL),
+      AsstLog: ffi.ForeignFunction(this.DLib.get('AsstLog'), voidType,
+        [StringType, StringType], ffi.FFI_STDCALL)
     }
   }
 
@@ -328,15 +346,15 @@ class Assistant {
    * @param path? 未指定就用libPath
    * @returns
    */
-  LoadResource (path?: string) {
-    return this.MeoAsstLib.AsstLoadResource(path || Assistant.libPath)
+  LoadResource (path?: string): Boolean {
+    return this.MeoAsstLib.AsstLoadResource(path ?? Assistant.libPath)
   }
 
   /**
    * 创建普通实例, 即无回调版
    * @returns 实例指针{ref.Pointer}
    */
-  Create () {
+  Create (): boolean {
     this.MeoAsstPtr.placeholder = this.MeoAsstLib.AsstCreate()
     return !!this.MeoAsstPtr.placeholder
   }
@@ -344,8 +362,8 @@ class Assistant {
   /**
    * 创建实例
    * @param uuid 设备唯一标识符{string}
-   * @param callback 回调函数, 必须要有msg,detail参数, 可选custom_arg
-   * @param custom_arg 自定义参数{???}
+   * @param callback 回调函数,
+   * @param customArg 自定义参数{???}
    * @returns  是否创建成功
    */
   CreateEx (
@@ -354,25 +372,27 @@ class Assistant {
      */
     uuid: string,
     callback: any = cb,
-    custom_arg: any = voidPointer()
+    customArg: any = voidPointer()
   ): boolean {
     if (!this.MeoAsstPtr[uuid]) {
-      this.MeoAsstPtr[uuid] = this.MeoAsstLib.AsstCreateEx(callback, custom_arg)
+      this.MeoAsstPtr[uuid] = this.MeoAsstLib.AsstCreateEx(callback, customArg)
       return true
     }
     return false // 重复创建
   }
 
-  Destroy (uuid: string) {
-    this.MeoAsstLib.AsstDestroy(this.MeoAsstPtr[uuid])
-    delete this.MeoAsstPtr[uuid]
+  Destroy (uuid: string): void {
+    if (this.MeoAsstPtr[uuid]) {
+      this.MeoAsstLib.AsstDestroy(this.MeoAsstPtr[uuid])
+      delete this.MeoAsstPtr[uuid]
+    }
   }
 
   /**
    * 连接
    * @param address 连接地址
    * @param uuid 设备唯一标识符
-   * @param adb_path adb路径
+   * @param adbPath adb路径
    * @param config 模拟器名称, 自定义设备为'General'
    * @returns 是否连接成功
    */
@@ -382,12 +402,12 @@ class Assistant {
      */
     address: string,
     uuid: string,
-    adb_path: string,
+    adbPath: string,
     config: string
   ): boolean {
     return this.MeoAsstLib.AsstConnect(
       this.MeoAsstPtr[uuid],
-      adb_path,
+      adbPath,
       address,
       config
     )
@@ -407,14 +427,14 @@ class Assistant {
   /**
    * 设置任务参数
    * @param uuid 设备唯一标识符
-   * @param task_id 任务唯一id
+   * @param taskId 任务唯一id
    * @param params 任务参数
    */
 
-  SetTaskParams (uuid: string, task_id: number, params: string) {
+  SetTaskParams (uuid: string, taskId: number, params: string): boolean {
     return this.MeoAsstLib.AsstSetTaskParams(
       this.GetUUID(uuid),
-      task_id,
+      taskId,
       params
     )
   }
@@ -454,7 +474,7 @@ class Assistant {
    * @returns 版本{string}
    *
    */
-  GetVersion () {
+  GetVersion (): string | null {
     return this.MeoAsstLib.AsstGetVersion()
   }
 
@@ -469,16 +489,16 @@ class Assistant {
     delete this.MeoAsstPtr[address];
   }
  */
-  GetUUID (uuid: string) {
+  GetUUID (uuid: string): AsstInstancePtr {
     return this.MeoAsstPtr[uuid]
   }
 
-  Log (level: string, message: string) {
+  Log (level: string, message: string): void {
     return this.MeoAsstLib.AsstLog(level, message)
   }
 }
 
-function voidPointer () {
+function voidPointer (): ref.Value<void> {
   return ref.alloc(ref.types.void)
 }
 

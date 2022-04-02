@@ -7,7 +7,7 @@ import { assert } from 'console'
 import _ from 'lodash'
 import execa from 'execa'
 
-const adbPath = path.join(__dirname, '../platform-tools', 'adb')
+const defaultAdbPath = path.join(__dirname, '../platform-tools', 'adb')
 
 let inUsePorts: string[] = [] // 本次识别已被使用的端口，将会在此暂存。
 
@@ -21,10 +21,10 @@ const regPNamePid = /(.{3,25}[^\s*])\s*([0-9]*)\s.*\s*/g
 // get "HD-Player.exe  3396 Console    1  79,692 K"
 
 interface Emulator {
-  pname: string; // "HD-Player.exe"
-  pid: string; // "114514"
-  tag?: string; // 标记模拟器具体型号，比如蓝叠hyperv
-  config?: string; // 传给后端的标记
+  pname: string // "HD-Player.exe"
+  pid: string // "114514"
+  tag?: string // 标记模拟器具体型号，比如蓝叠hyperv
+  config?: string // 传给后端的标记
   adb_path?: string // "E://bluestack//HD-Adb.exe"
   address?: string // "127.0.0.1:11451"
   uuid?: string
@@ -42,21 +42,25 @@ function exec (exp: string): string {
   }
 }
 
+/**
 function getPidPath (pid: string | number): string {
   const pathExp = `Get-WmiObject -Query "select ExecutablePath FROM Win32_Process where ProcessID=${pid}" | Select-Object -Property ExecutablePath | ConvertTo-Json`
   return JSON.parse(exec(pathExp)).ExecutablePath
 }
+ */
 
 function getPnamePath (pname: string): string {
   const pathExp = `Get-WmiObject -Query "select ExecutablePath FROM Win32_Process where Name='${pname}'" |  Select-Object -Property ExecutablePath | ConvertTo-Json`
   const path = JSON.parse(exec(pathExp))
   return path.length > 1 ? path[0].ExecutablePath : path.ExecutablePath
 }
-function getBlueStackInfo (e: Emulator): boolean {
+function getBlueStackInfo (e: Emulator): void {
   // BlueStack, windows only!
   const mainPathExp = `Get-WmiObject -Query "select ExecutablePath FROM Win32_Process where ProcessID=${e.pid}" | Select-Object -Property ExecutablePath | ConvertTo-Json`
   const confPathExp = String.raw`Get-ItemProperty -Path Registry::HKEY_LOCAL_MACHINE\SOFTWARE\BlueStacks_nxt | Select-Object -Property UserDefinedDir | ConvertTo-Json`
   const confPortExp = /bst.instance.Nougat64_?\d?.status.adb_port="(\d{4,6})"/g
+  const blueStackCNPnameExp = String.raw`Get-ChildItem -Path Registry::HKEY_LOCAL_MACHINE\SOFTWARE\BlueStacks_china_gmgr\Guests | ConvertTo-Json`
+
   e.config = 'BlueStacks'
   e.adb_path = path.join(
     path.dirname(JSON.parse(exec(mainPathExp)).ExecutablePath),
@@ -70,16 +74,15 @@ function getBlueStackInfo (e: Emulator): boolean {
     // 蓝叠CN特供版本 读注册表 Computer\HKEY_LOCAL_MACHINE\SOFTWARE\BlueStacks_china_gmgr\Guests\Android\Network\0 中的InboundRules
     // 搞两套方案，先读注册表拿adb端口, 如果读失败了可能是打包复制导致，再使用 netstat 尝试
     let success: boolean = false
-    const blueStackCnPortExp = String.raw`Get-ChildItem -Path Registry::HKEY_LOCAL_MACHINE\SOFTWARE\BlueStacks_china_gmgr\Guests | ConvertTo-Json`
     try {
-      const emulatorName = [...JSON.parse(exec(blueStackCnPortExp))].map(
+      const emulatorName: string[] = [...JSON.parse(exec(blueStackCNPnameExp))].map(
         (v) => v.PSChildName
       ) // 蓝叠CN注册表中的模拟器id
-      if (emulatorName.length == 0) success = false
+      if (emulatorName.length === 0) success = false
       else {
         emulatorName.forEach((v) => {
-          const exp = String.raw`Get-ItemProperty -Path Registry::HKEY_LOCAL_MACHINE\SOFTWARE\BlueStacks_china_gmgr\Guests\\${v}\Network\0 | Select-Object -Property InboundRules | ConvertTo-Json`
-          const port = JSON.parse(exec(exp)).InboundRules[0].split(':').pop()
+          const blueStackCNPortExp = String.raw`Get-ItemProperty -Path Registry::HKEY_LOCAL_MACHINE\SOFTWARE\BlueStacks_china_gmgr\Guests\\${v}\Network\0 | Select-Object -Property InboundRules | ConvertTo-Json`
+          const port: string = JSON.parse(exec(blueStackCNPortExp)).InboundRules[0].split(':').pop()
           if (
             !inUsePorts.includes(port) &&
             testPort('127.0.0.1', port) &&
@@ -92,12 +95,13 @@ function getBlueStackInfo (e: Emulator): boolean {
             success = true
           }
         })
-        if (success) return
       }
     } catch (err) {
       console.log(err)
       success = false
     }
+    if (success) return
+
     if (!success) {
       // 通过读注册表失败, 使用 netstat 抓一个5开头的端口充数
       const regExp = '\\s*TCP\\s*127.0.0.1:(5\\d{3,4})\\s*' // 提取端口
@@ -149,7 +153,7 @@ function testPort (
     .includes('True')
 }
 
-function getNoxInfo (e: Emulator): boolean {
+function getNoxInfo (e: Emulator): void {
   e.adb_path = path.resolve(
     path.dirname(getPnamePath('Nox.exe')),
     'nox_adb.exe'
@@ -169,7 +173,7 @@ function getNoxInfo (e: Emulator): boolean {
   e.config = 'Nox'
 }
 
-function getMumuInfo (e: Emulator) {
+function getMumuInfo (e: Emulator): void {
   // MuMu无法多开，且adb端口仅限7555
   // 流程: 有"NemuHeadless.exe"进程后，就去抓'NemuPlayer.exe'的路径.
   const emuPathExp = getPnamePath('NemuPlayer.exe')
@@ -181,7 +185,7 @@ function getMumuInfo (e: Emulator) {
 
 function getLdInfo (e: Emulator): void {
   // 雷电模拟器识别
-  const portExp = RegExp('\\s*TCP\\s*0.0.0.0:(5\\d{3,4})\\s*0.0.0.0:0\\s*')
+  const portExp = /\s*TCP\s*0.0.0.0:(5\d{3,4})\s*0.0.0.0:0\s*/g
   const netstatExp = `netstat -ano | findstr ${e.pid}`
   const emulatorPath = getPnamePath('dnplayer.exe')
   e.adb_path = path.resolve(path.dirname(emulatorPath), 'adb.exe')
@@ -191,7 +195,7 @@ function getLdInfo (e: Emulator): void {
   e.tag = '雷电模拟器'
 }
 
-async function getEmulators (): Emulator[] {
+async function getEmulators (): Promise<Emulator[]> {
   inUsePorts = []
   const emulators: Emulator[] = []
   const { stdout: tasklist } = await execa('tasklist')
@@ -207,13 +211,13 @@ async function getEmulators (): Emulator[] {
       }
     })
   emulators.forEach((e) => {
-    if (e.pname == 'HD-Player.exe') {
+    if (e.pname === 'HD-Player.exe') {
       getBlueStackInfo(e)
-    } else if (e.pname == 'NoxVMHandle.exe') {
+    } else if (e.pname === 'NoxVMHandle.exe') {
       getNoxInfo(e)
-    } else if (e.pname == 'NemuHeadless.exe') {
+    } else if (e.pname === 'NemuHeadless.exe') {
       getMumuInfo(e)
-    } else if (e.pname == 'LdVBoxHeadless.exe') {
+    } else if (e.pname === 'LdVBoxHeadless.exe') {
       getLdInfo(e)
     }
   })
@@ -221,7 +225,7 @@ async function getEmulators (): Emulator[] {
   // const blueStackPath = execSync(expBlueStackConfPath);
   // console.log(blueStackPath.toString());
   emulators.forEach((e) => {
-    const uuid = getDeviceUuid(e.address as string, e.adb_path)
+    const uuid = getDeviceUuid(e.address as string)
     if (uuid) {
       e.uuid = uuid
     }
@@ -230,59 +234,59 @@ async function getEmulators (): Emulator[] {
   return emulators
 }
 
-function testNoxPorts () {
-  const opened: number[] = []
-  const baseport = 62001
-  let index = 0
-  do {
-    let port = baseport + index
-    if (index > 0) {
-      port += 24
-    }
-    const output = spawnSync(adbPath, ['connect', `127.0.0.1:${port}`])
-    if (output.output.toString().includes('connected')) {
-      opened.push(port)
-    }
-    index += 1
-  } while (opened.length === index)
-  return opened
-}
+// function testNoxPorts (): number[] {
+//   const opened: number[] = []
+//   const baseport = 62001
+//   let index = 0
+//   do {
+//     let port = baseport + index
+//     if (index > 0) {
+//       port += 24
+//     }
+//     const output = spawnSync(defaultAdbPath, ['connect', `127.0.0.1:${port}`])
+//     if (output.output.toString().includes('connected')) {
+//       opened.push(port)
+//     }
+//     index += 1
+//   } while (opened.length === index)
+//   return opened
+// }
 
-function adbDevices () {
+function adbDevices (): Emulator[] {
   const emulators: Emulator[] = []
   const e = {}
   getNoxInfo(e as Emulator)
   return emulators
 }
 
-function getDeviceName (address: string): string | false {
+// function getDeviceName (address: string): string | false {
+//   const connectResult = spawnSync(defaultAdbPath, [
+//     'connect',
+//     address
+//   ]).stdout.toString()
+//   if (connectResult.includes('connected')) {
+//     return spawnSync(defaultAdbPath, [
+//       'shell',
+//       'settings',
+//       'get',
+//       'global',
+//       'device_name'
+//     ]).stdout.toString()
+//   }
+//   return false
+// }
+
+function getDeviceUuid (address: string, adbPath = defaultAdbPath): string | false {
+  if (!adbPath) {
+    console.log('adb_path is null')
+    return false
+  }
   const connectResult = spawnSync(adbPath, [
     'connect',
     address
   ]).stdout.toString()
   if (connectResult.includes('connected')) {
-    return spawnSync(adbPath, [
-      'shell',
-      'settings',
-      'get',
-      'global',
-      'device_name'
-    ]).stdout.toString()
-  }
-  return false
-}
-
-function getDeviceUuid (address: string, adb_path = adbPath): string | false {
-  if (!adb_path) {
-    console.log('adb_path is null')
-    return false
-  }
-  const connectResult = spawnSync(adb_path, [
-    'connect',
-    address
-  ]).stdout.toString()
-  if (connectResult.includes('connected')) {
-    const ret = spawnSync(adb_path, [
+    const ret = spawnSync(adbPath, [
       '-s',
       address,
       'shell',
@@ -295,19 +299,19 @@ function getDeviceUuid (address: string, adb_path = adbPath): string | false {
 }
 
 function getEmulatorsDarwin (): Emulator[] {
-  const player_list = ['NoxAppPlayer.app', 'NemuPlayer.app']
+  const playerList = ['NoxAppPlayer.app', 'NemuPlayer.app']
   const emulators: Emulator[] = []
   const { stdout } = execa.sync('pgrep', ['-lf', '.'])
-  const active_players = stdout
+  const activePlayers = stdout
     .split('\n')
-    .filter((line) => player_list.some((player) => line.includes(player)))
+    .filter((line) => playerList.some((player) => line.includes(player)))
     .map((line) => {
       const [pid, ppath] = line.split(' ')
       const pname = path.basename(ppath)
       const pdir = path.dirname(ppath)
       return { pid, pname, adbPath: `${pdir}/adb` }
     })
-  console.log(active_players)
+  console.log(activePlayers)
   // const players = runAppleScriptSync(script)
   //   .split(",")
   //   .map((v) => v.trim());
@@ -329,7 +333,7 @@ function getEmulatorsDarwin (): Emulator[] {
   return emulators
 }
 
-function startEmulatorHook () {
+function startEmulatorHook (): void {
   ipcMain.handle('asst:startEmulator', async (event, arg) => {
     console.log(arg)
     execFile(
@@ -348,12 +352,12 @@ function startEmulatorHook () {
   })
 }
 
-function killEmulatorHook () { }
+// function killEmulatorHook (): void { }
 
-export default function getEmulatorHooks () {
+export default function getEmulatorHooks (): void {
   ipcMain.handle('asst:getEmulators', async (event): Promise<Emulator[]> => {
     if (is.windows) {
-      return getEmulators()
+      return await getEmulators()
     } else if (is.macos) {
       return getEmulatorsDarwin()
     } else {

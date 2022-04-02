@@ -2,12 +2,48 @@ import useDeviceStore from '@/store/devices'
 import useTaskStore from '@/store/tasks'
 import useTaskIdStore from '@/store/taskid'
 
-import { parseInt } from 'lodash'
 import { show } from '@/utils/message'
 import logger from '../caller/logger'
+import _ from 'lodash'
 
 // 抄! https://github.com/MaaAssistantArknights/MaaAssistantArknights/blob/master/src/MeoAsstGui/Helper/AsstProxy.cs
 // cb https://github.com/MaaAssistantArknights/MaaAssistantArknights/blob/dev/docs/%E5%9B%9E%E8%B0%83%E6%B6%88%E6%81%AF%E5%8D%8F%E8%AE%AE.md
+
+interface basicCallbackType {
+  uuid: string
+  what: string
+}
+
+interface uuidType extends basicCallbackType {
+  address: string
+}
+
+interface taskchainType extends basicCallbackType{
+  task: string
+  taskid: number
+  taskchain: string
+}
+
+interface fightType extends basicCallbackType{
+  taskid: number
+}
+
+interface penguinType extends basicCallbackType{
+  message: string
+}
+
+interface recruitType extends basicCallbackType{
+  details: {
+    tags: string[]
+  }
+}
+
+interface infrastType extends basicCallbackType{
+  details: {
+    index: number
+    facility: string
+  }
+}
 
 enum CallbackMsg {
   /* Global Info */
@@ -43,7 +79,7 @@ const startUpProcess = [
   'StartUp:Start:ReturnToTerminal',
   'StartUp:Start:OfflineConfirm'
 ]
-enum StartUp {}
+// enum StartUp {}
 
 enum Fight {
   SubFightStart = 'Fight:Completed:StartButton2',
@@ -105,7 +141,7 @@ enum Friend {
   VisitNext = 'Visit:Completed:VisitNext', // 访问下位
 }
 
-export default function useCallbackEvents () {
+export default function useCallbackEvents (): void {
   const deviceStore = useDeviceStore()
   const taskStore = useTaskStore()
   const taskIdStore = useTaskIdStore()
@@ -117,13 +153,13 @@ export default function useCallbackEvents () {
   window.ipcRenderer.on(CallbackMsg.InitFailed, (event, arg) => {})
 
   /** 获取到uuid, 作为连接成功的标志 */
-  window.ipcRenderer.on(Connection.UuidGetted, async (event, arg) => {
+  window.ipcRenderer.on(Connection.UuidGetted, async (event, arg: uuidType) => {
     show(`设备${arg.address}已连接`, { type: 'success', duration: 3000 })
     deviceStore.updateDeviceStatus(arg.uuid, 'connected')
   })
 
   // 获取UUID失败
-  window.ipcRenderer.on(Connection.ConnectFailed, async (event, arg) => {
+  window.ipcRenderer.on(Connection.ConnectFailed, async (event, arg: uuidType) => {
     show(
       `设备${arg.address}连接失败, 请尝试重启模拟器.\n如多次失败请在 GitHub 上进行反馈.`,
       { type: 'error', closable: true, duration: 20000 }
@@ -133,8 +169,8 @@ export default function useCallbackEvents () {
   })
 
   // 任务链开始
-  window.ipcRenderer.on(CallbackMsg.TaskChainStart, async (event, arg) => {
-    if (arg.taskchain == 'Fight') {
+  window.ipcRenderer.on(CallbackMsg.TaskChainStart, async (event, arg: taskchainType) => {
+    if (arg.taskchain === 'Fight') {
       taskIdStore.onFightStart(arg.uuid, arg.taskid)
     }
 
@@ -142,12 +178,12 @@ export default function useCallbackEvents () {
   })
 
   /** 任务链出错 */
-  window.ipcRenderer.on(CallbackMsg.TaskChainError, async (event, arg) => {
+  window.ipcRenderer.on(CallbackMsg.TaskChainError, async (event, arg: taskchainType) => {
     taskStore.updateTaskStatus(arg.uuid, arg.task, 'exception', 100)
   })
 
   /* 任务链完成 */
-  window.ipcRenderer.on(CallbackMsg.TaskChainCompleted, async (event, arg) => {
+  window.ipcRenderer.on(CallbackMsg.TaskChainCompleted, async (event, arg: taskchainType) => {
     console.log(arg)
 
     // TODO if(taskStore[arg.uuid as string]){
@@ -171,9 +207,9 @@ export default function useCallbackEvents () {
   })
 
   /* 作战 - 已开始行动 x 次 */
-  window.ipcRenderer.on(Fight.SubFightStart, async (event, arg) => {
+  window.ipcRenderer.on(Fight.SubFightStart, async (event, arg: fightType) => {
     console.log(arg)
-    const process = taskStore.deviceTasks[arg.uuid]
+    // const process = taskStore.deviceTasks[arg.uuid]
     // TODO: 计算作战任务进度, 因为没有理智信息的回调，所以这里该怎么做呢
 
     logger.debug(`触发作战, 任务id ${arg.taskid}`)
@@ -181,78 +217,81 @@ export default function useCallbackEvents () {
   })
 
   /* 作战 - 已吃药 */
-  window.ipcRenderer.on(Fight.MedicineConfirm, async (event, arg) => {
+  window.ipcRenderer.on(Fight.MedicineConfirm, async (event, arg: basicCallbackType) => {
     taskIdStore.useMedicineOrStone(arg.uuid, 'medicine')
     logger.debug('吃了一颗理智药')
   })
 
   /* 作战 - 已吃源石 */
-  window.ipcRenderer.on(Fight.StoneConfrim, async (event, arg) => {
+  window.ipcRenderer.on(Fight.StoneConfrim, async (event, arg: basicCallbackType) => {
     taskIdStore.useMedicineOrStone(arg.uuid, 'stone')
     logger.debug('吃了一颗源石')
   })
 
+  // TODO: 掉落物存储
   /** 作战 - 掉落物 */
-  window.ipcRenderer.on(Fight.StageDrops, async (event, arg) => {
-    const sessionStorage = JSON.parse(
-      window.sessionStorage.getItem(arg.uuid) as string
-    )
-    arg.details.forEach((drop: any) => {
-      if (sessionStorage.StageDrops[drop.itemId]) {
-        sessionStorage.StageDrops[drop.itemId] += drop.quantity
-      } else {
-        sessionStorage.StageDrops[drop.itemId] = {
-          dropType: drop.dropType,
-          itemId: drop.itemId,
-          quantity: drop.quantity,
-          itemName: drop.itemName
-        }
-      }
-    })
-    window.sessionStorage.setItem(arg.uuid, JSON.stringify(sessionStorage))
-    console.log(`当前掉落统计 ${sessionStorage}`)
-  })
+  // window.ipcRenderer.on(Fight.StageDrops, async (event, arg: any) => {
+  //   const sessionStorage = JSON.parse(
+  //     window.sessionStorage.getItem(arg.uuid) as string
+  //   )
+  //   arg.details.forEach((drop: any) => {
+  //     if (sessionStorage.StageDrops[drop.itemId]) {
+  //       sessionStorage.StageDrops[drop.itemId] += drop.quantity
+  //     } else {
+  //       sessionStorage.StageDrops[drop.itemId] = {
+  //         dropType: drop.dropType,
+  //         itemId: drop.itemId,
+  //         quantity: drop.quantity,
+  //         itemName: drop.itemName
+  //       }
+  //     }
+  //   })
+  //   window.sessionStorage.setItem(arg.uuid, JSON.stringify(sessionStorage))
+  //   console.log(`当前掉落统计 ${sessionStorage}`)
+  // })
 
   /** 企鹅 - 上传🐧物流错误 */
-  window.ipcRenderer.on(Penguin.ReportError, async (event, arg) => {
+  window.ipcRenderer.on(Penguin.ReportError, async (event, arg: penguinType) => {
     console.log(arg)
     window.$message.error(arg.message)
   })
 
   /** 公招 - 已刷新标签 */
-  window.ipcRenderer.on(Recriut.Refresh, async (event, arg) => {
+  window.ipcRenderer.on(Recriut.Refresh, async (event, arg: recruitType) => {
     console.log(`RECEIVE: ${Recriut.Refresh}`)
     console.log(arg)
   })
 
   /** 公招 - 识别到词条 */
-  window.ipcRenderer.on(Recriut.TagsDetected, async (event, arg) => {
+  window.ipcRenderer.on(Recriut.TagsDetected, async (event, arg: recruitType) => {
     console.log(`RECEIVE: ${Recriut.TagsDetected}`)
     const tags = arg.details.tags
-    console.log(`检测到词条 ${tags}`)
+    console.log('检测到词条')
+    console.log(tags)
   })
 
   /** 公招 - 已确认招募 */
-  window.ipcRenderer.on(Recriut.Confirm, async (event, arg) => {
+  window.ipcRenderer.on(Recriut.Confirm, async (event, arg: recruitType) => {
     console.log(`RECEIVE: ${Recriut.Confirm}`)
     console.log(arg)
     const task = taskStore.getTask(arg.uuid, 'recruit')
     console.log(task)
-    const curProgress = task.progress
+    const curProgress: number = task.progress
     const times = task.configurations.maximum_times_of_recruitments
-    const newProgress = parseInt(curProgress + 100 / times)
+    const newProgress = _.round(Number(curProgress) + 100 / times)
     taskStore.updateTaskStatus(arg.uuid, 'recruit', 'processing', newProgress)
     console.log(arg)
   })
 
   /** 公招 - 已选择词条 */
-  window.ipcRenderer.on(Recriut.TagsSelected, async (event, arg) => {
+  window.ipcRenderer.on(Recriut.TagsSelected, async (event, arg: recruitType) => {
     const tags = arg.details.tags
-    console.log(`已选择词条 ${tags}`)
+    console.log('已选择词条')
+    console.log(tags)
   })
 
   /** 基建 - 已进入基建 */
-  window.ipcRenderer.on(Infrast.EnterFacility, async (event, arg) => {
+  window.ipcRenderer.on(Infrast.EnterFacility, async (event, arg: infrastType) => {
     const facilityTranslate: Record<string, string> = {
       Mfg: '制造站',
       Trade: '贸易站',
@@ -273,17 +312,17 @@ export default function useCallbackEvents () {
   })
 
   /** 基建 - 可用干员不足 */
-  window.ipcRenderer.on(Infrast.NotEnoughStaff, async (event, arg) => {
+  window.ipcRenderer.on(Infrast.NotEnoughStaff, async (event, arg: infrastType) => {
     console.log(`${arg.details.facility} ${arg.details.index} 可用干员不足`)
   })
 
   /** 访问好友 - 进入好友列表 */
-  window.ipcRenderer.on(Friend.EnterFriendList, async (event, arg) => {
+  window.ipcRenderer.on(Friend.EnterFriendList, async (event, arg: basicCallbackType) => {
     taskStore.updateTaskStatus(arg.uuid, 'visit', 'processing', 10)
   })
 
   /** 访问好友 - 寻找下位 */
-  window.ipcRenderer.on(Friend.VisitNext, async (event, arg) => {
+  window.ipcRenderer.on(Friend.VisitNext, async (event, arg: basicCallbackType) => {
     const curProgress = taskStore.getTaskProcess(arg.uuid, 'visit') as number
     const newProgress = curProgress < 90 ? curProgress + 10 : curProgress // 计数可能有误，玛丽如是说。
     taskStore.updateTaskStatus(arg.uuid, 'visit', 'processing', newProgress)
