@@ -9,10 +9,6 @@ import {
 } from 'electron'
 
 import {
-  IDownloadFile,
-  INewDownloadFile
-} from './@types'
-import {
   getFileExt,
   getFileName,
   isExistFile,
@@ -131,7 +127,7 @@ export const listenerDownload = (
         _sourceItem: null
       })
     })
-  }).catch(e => console.error(e))
+  })
 }
 
 /**

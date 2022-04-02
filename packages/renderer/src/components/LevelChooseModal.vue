@@ -1,9 +1,17 @@
 <script setup lang="ts">
-import { NButton, NCard, NInputNumber, NInput, NSpace, NTooltip, useThemeVars } from 'naive-ui'
+import {
+  NButton,
+  NCard,
+  NInputNumber,
+  NInput,
+  NSpace,
+  NTooltip
+  // useThemeVars
+} from 'naive-ui'
 import gamedata from '@/api/gamedata'
 import { computed, onMounted, Ref, ref } from 'vue'
 
-const themeVars = useThemeVars()
+// const themeVars = useThemeVars()
 
 const props = defineProps<{
   levels: Array<Level>

@@ -248,7 +248,7 @@ class Assistant {
   private static readonly defaultLibPath = path.join(app.getPath('appData'), app.getName(), 'core');
 
   public static get libPath (): string {
-    let libPath = Storage.get(Assistant.libPathKey)
+    let libPath = Storage.get(Assistant.libPathKey) as string
     if (!_.isString(libPath) || !existsSync(libPath)) {
       logger.error(`原资源路径： ${libPath}, 更新后：${this.defaultLibPath}`)
       libPath = this.defaultLibPath

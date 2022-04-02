@@ -1,12 +1,5 @@
 
 import { app, BrowserWindow, DownloadItem } from 'electron'
-import {
-  IAddDownloadItem,
-  IDownloadBytes,
-  IDownloadFile,
-  IPagination,
-  IUpdateDownloadItem
-} from './@types'
 import { getBase64Bytes, getFileName } from './util'
 import { uuidV4 } from '@common/uuid'
 

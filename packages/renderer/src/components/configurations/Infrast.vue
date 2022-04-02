@@ -84,9 +84,11 @@ function onFacilityEnableUpdate (name: string, enabled: boolean) {
   }
 }
 
+let sortable: Sortable | undefined
+
 onMounted(() => {
-  if (facilitiesRef.value) {
-    new Sortable(facilitiesRef.value, {
+  if (facilitiesRef.value && !sortable) {
+    sortable = new Sortable(facilitiesRef.value, {
       swapThreshold: 1,
       animation: 150,
       store: {

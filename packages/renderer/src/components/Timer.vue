@@ -17,7 +17,7 @@ const defaultFormatter: Formatter = ({ hours, minutes, seconds }) => {
 }
 
 export default defineComponent({
-  name: 'Timer',
+  name: 'TheTimer',
   props: {
     startTime: Number,
     endTime: Number,

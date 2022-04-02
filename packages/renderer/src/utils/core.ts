@@ -4,8 +4,8 @@ import downloader from '@/hooks/caller/download'
 import asst from '@/hooks/caller/asst'
 import version from '@/hooks/caller/version'
 
-export async function checkCoreVersion () {
-  const success = window.sessionStorage.getItem('coreIPCLoadStatus') == 'true' ? true : await asst.load()
+export async function checkCoreVersion (): Promise<boolean> {
+  const success = window.sessionStorage.getItem('coreIPCLoadStatus') === 'true' ? true : await asst.load()
   if (success) window.sessionStorage.setItem('coreIPCLoadStatus', 'true')
   const coreVersion = await version.core()
   if (success && coreVersion) {
@@ -15,7 +15,7 @@ export async function checkCoreVersion () {
   }
 }
 
-export async function installCore (currentVersion: string | undefined = undefined) {
+export async function installCore (currentVersion: string | undefined = undefined): Promise<void> {
   const message = window.$message.loading('开始下载Maa Core', { duration: 0 })
   const os = {
     arch: await window.ipcRenderer.invoke('os:arch') as Api.Maa.Arch,
@@ -44,15 +44,23 @@ export async function installCore (currentVersion: string | undefined = undefine
     }, 5000)
     return
   }
-  const getPackageInfo = async () => {
+  const getPackageInfo = async (): Promise<Error | {
+    platform: Api.Maa.Platform
+    arch: Api.Maa.Arch[]
+    version: string
+    url: string
+    hash: string
+  }> => {
     if (currentVersion) {
-      return await maa.download.getDiffPackage(os.platform, os.arch, currentVersion, supportedVersions[0].version, 'MaaCore')
+      return await maa.download.getDiffPackage(
+        os.platform, os.arch, currentVersion, supportedVersions[0].version, 'MaaCore'
+      )
     } else {
       return await maa.download.getCompletePackage(os.platform, os.arch, supportedVersions[0].version, 'MaaCore')
     }
   }
-  const package_info = await getPackageInfo()
-  if (_.isError(package_info)) {
+  const packageInfo = await getPackageInfo()
+  if (_.isError(packageInfo)) {
     message.type = 'error'
     message.content = '服务器睡着惹(￣o￣) . z Z，待会再试试'
     setTimeout(() => {
@@ -60,20 +68,20 @@ export async function installCore (currentVersion: string | undefined = undefine
     }, 5000)
     return
   }
-  const temp_dir = await window.ipcRenderer.invoke('path:app', 'temp')
-  const core_dir = await window.ipcRenderer.invoke('path:asst')
+  const tempdir = await window.ipcRenderer.invoke('path:app', 'temp')
+  const coredir = await window.ipcRenderer.invoke('path:asst')
   downloader.newDownloadFile({
-    url: package_info.url,
-    path: temp_dir
+    url: packageInfo.url,
+    path: tempdir
   })
-  const updateListener = (_: Electron.IpcRendererEvent, item: any) => {
+  const updateListener = (_: Electron.IpcRendererEvent, item: any): void => {
     message.content = `MaaCore下载中 ${Math.ceil(item.progress * 100)}%`
   }
-  const doneListener = (_: Electron.IpcRendererEvent, item: any) => {
+  const doneListener = (_: Electron.IpcRendererEvent, item: any): void => {
     message.content = 'MaaCore解压中...'
     asst.dispose()
     window.sessionStorage.setItem('coreIPCLoadStatus', 'false')
-    window.ipcRenderer.send('unzip:file', item.path, core_dir)
+    window.ipcRenderer.send('unzip:file', item.path, coredir)
   }
   window.ipcRenderer.on('download:itemUpdate', updateListener)
   window.ipcRenderer.on('download:itemDone', doneListener)
@@ -84,7 +92,7 @@ export async function installCore (currentVersion: string | undefined = undefine
 
     const success = await asst.load()
     if (success) {
-      message.content = `MaaCore ${await version.core()}安装完成`
+      message.content = `MaaCore ${await version.core() as string} 安装完成`
       message.type = 'success'
       setTimeout(() => {
         message.destroy()

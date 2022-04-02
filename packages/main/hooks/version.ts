@@ -1,5 +1,5 @@
 import { app, ipcMain } from 'electron'
-import { Assistant } from './interface'
+import { Assistant } from '../core/interface'
 
 export default function useVersionHooks (): void {
   ipcMain.handle('version:ui', async (event) => {

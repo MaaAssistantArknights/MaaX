@@ -16,5 +16,5 @@
       "@common/*": ["../common/*"],
     }
   },
-  "include": ["./**/*.ts", "./**/*.d.ts"]
+  "include": ["./**/*.ts", "@types/**/*.d.ts"]
 }

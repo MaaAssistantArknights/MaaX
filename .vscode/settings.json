@@ -2,5 +2,8 @@
   "css.validate": false,
   "less.validate": false,
   "volar.formatting.printWidth": 75,
-  "files.autoSave": "off"
+  "files.autoSave": "off",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
 }

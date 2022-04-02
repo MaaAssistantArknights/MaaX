@@ -2,72 +2,72 @@ import axios from 'axios'
 
 const baseUrl = 'https://prts.wiki/rest.php/v1/file/File:'
 
-export async function getOperatorAvatar (operator_code: string) {
-  const filename = `头像_${operator_code}.png`
+export async function getOperatorAvatar (operatorCode: string): Promise<string> {
+  const filename = `头像_${operatorCode}.png`
   const url = new URL(`${baseUrl}${filename}`)
   const response = await axios.get(url.href)
   if (response.status === 200 && response.data.preferred) {
-    return `http:${response.data.preferred.url}`
+    return `http:${response.data.preferred.url as string}`
   }
   return ''
 }
 
-export async function getOperatorHalfImage (operator_code: string) {
-  const filename = `半身像_${operator_code}.png`
+export async function getOperatorHalfImage (operatorCode: string): Promise<string> {
+  const filename = `半身像_${operatorCode}.png`
   const url = new URL(`${baseUrl}${filename}`)
   const response = await axios.get(url.href)
   if (response.status === 200 && response.data.preferred) {
-    return `http:${response.data.preferred.url}`
+    return `http:${response.data.preferred.url as string}`
   }
   return ''
 }
 
-export async function getOperatorFullImage (operator_code: string) {
-  const filename = `立绘_${operator_code}.png`
+export async function getOperatorFullImage (operatorCode: string): Promise<string> {
+  const filename = `立绘_${operatorCode}.png`
   const url = new URL(`${baseUrl}${filename}`)
   const response = await axios.get(url.href)
   if (response.status === 200 && response.data.preferred) {
-    return `http:${response.data.preferred.url}`
+    return `http:${response.data.preferred.url as string}`
   }
   return ''
 }
 
-export async function getSkillImage (skill_name: string) {
-  const filename = `技能_${skill_name}.png`
+export async function getSkillImage (skillName: string): Promise<string> {
+  const filename = `技能_${skillName}.png`
   const url = new URL(`${baseUrl}${filename}`)
   const response = await axios.get(url.href)
   if (response.status === 200 && response.data.preferred) {
-    return `http:${response.data.preferred.url}`
+    return `http:${response.data.preferred.url as string}`
   }
   return ''
 }
 
-export async function getItemBorderedImage (item_name: string) {
-  const filename = `道具_带框_${item_name}.png`
+export async function getItemBorderedImage (itemName: string): Promise<string> {
+  const filename = `道具_带框_${itemName}.png`
   const url = new URL(`${baseUrl}${filename}`)
   const response = await axios.get(url.href)
   if (response.status === 200 && response.data.preferred) {
-    return `http:${response.data.preferred.url}`
+    return `http:${response.data.preferred.url as string}`
   }
   return ''
 }
 
-export async function getActivityImage (activity_name: string) {
-  const filename = `活动名称_${activity_name}.png`
+export async function getActivityImage (activityName: string): Promise<string> {
+  const filename = `活动名称_${activityName}.png`
   const url = new URL(`${baseUrl}${filename}`)
   const response = await axios.get(url.href)
   if (response.status === 200 && response.data.preferred) {
-    return `http:${response.data.preferred.url}`
+    return `http:${response.data.preferred.url as string}`
   }
   return ''
 }
 
-export async function getMainlineImage (mainline_name: string) {
-  const filename = `章节名称_${mainline_name}.png`
+export async function getMainlineImage (mainlineName: string): Promise<string> {
+  const filename = `章节名称_${mainlineName}.png`
   const url = new URL(`${baseUrl}${filename}`)
   const response = await axios.get(url.href)
   if (response.status === 200 && response.data.preferred) {
-    return `http:${response.data.preferred.url}`
+    return `http:${response.data.preferred.url as string}`
   }
   return ''
 }

@@ -2,6 +2,7 @@ import type { BrowserWindowConstructorOptions, BrowserWindow } from 'electron'
 import { is } from 'electron-util'
 import { join } from 'path'
 
+// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 class WindowFactory {
   private static create (
     options?: BrowserWindowConstructorOptions

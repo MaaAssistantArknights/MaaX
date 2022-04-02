@@ -83,7 +83,7 @@ export const renameFile = (path: string, newPath: string): void => {
 export const openFile = (path: string): boolean => {
   if (!isExistFile(path)) return false
 
-  shell.openPath(path).catch(e => console.log(e))
+  shell.openPath(path)
   return true
 }
 

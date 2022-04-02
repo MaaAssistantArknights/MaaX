@@ -2,14 +2,14 @@
 import { ref } from 'vue'
 import {
   NButton,
-  NSwitch,
-  NCheckbox,
+  // NSwitch,
+  // NCheckbox,
   NModal,
   NForm,
   NFormItem,
   NInputNumber,
-  NSpace,
-  NAlert
+  NSpace
+  // NAlert
 } from 'naive-ui'
 import LevelChoose from '../LevelChooseModal.vue'
 import _ from 'lodash'

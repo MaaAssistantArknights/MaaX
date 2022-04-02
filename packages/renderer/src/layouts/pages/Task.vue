@@ -37,9 +37,11 @@ watch(router.currentRoute, () => {
   load()
 })
 
+let sortable: Sortable | undefined
+
 function load () {
-  if (cardsRef.value) {
-    new Sortable(cardsRef.value, {
+  if (cardsRef.value && !sortable) {
+    sortable = new Sortable(cardsRef.value, {
       swapThreshold: 1,
       animation: 150,
       filter: '.undraggable',
@@ -98,7 +100,7 @@ async function handleStart () {
       if (uiTasks.includes(singleTask.id)) return // TODO: ui限定任务，不发送给core执行
 
       // 作战任务单独处理
-      if (singleTask.id == 'fight') {
+      if (singleTask.id === 'fight') {
         taskIdStore.setMedicineAndStone(
           uuid.value,
           singleTask.configurations.medicine as number,

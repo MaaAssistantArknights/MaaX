@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NInputNumber, NCheckbox, NForm, NFormItem, NInput, NSelect, NSpace } from 'naive-ui'
+import { NForm, NFormItem, NInput, NSelect, NSpace } from 'naive-ui'
 import _ from 'lodash'
 
 interface EmulatorConfiguration {

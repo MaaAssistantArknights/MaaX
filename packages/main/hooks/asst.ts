@@ -1,7 +1,7 @@
 import Electron, { ipcMain } from 'electron'
 import path from 'path'
 import fs from 'fs'
-import { Assistant } from './interface'
+import { Assistant } from '../core/interface'
 
 const asstHooks: Record<
 string,

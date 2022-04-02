@@ -49,12 +49,14 @@ class ApiService {
     return this._instance.defaults.baseURL
   }
 
-  static updateUA = () => {
-    ApiService._ua = `MeoAssistantArknights v${version.ui()} ${getCoreVersion()}`
+  static updateUA = async () => {
+    ApiService._ua = `MeoAssistantArknights v${await version.ui()} ${await getCoreVersion()}`
   };
 
   private readonly _instance: AxiosInstance;
-  private static _ua: string = `MeoAssistantArknights v${version.ui()} ${getCoreVersion()}`;
+  private static _ua: string;
 }
+
+ApiService.updateUA()
 
 export default ApiService

@@ -27,13 +27,13 @@ if (!app.requestSingleInstanceLock()) {
 async function createWindow (): Promise<void> {
   const win = WindowFactory.getInstance()
   if (app.isPackaged || !is.development) {
-    win.loadFile(join(__dirname, '../renderer/index.html')).catch(e => console.error(e))
+    win.loadFile(join(__dirname, '../renderer/index.html'))
   } else {
     // 🚧 Use ['ENV_NAME'] avoid vite:define plugin
     const host = process.env.VITE_DEV_SERVER_HOST
     const port = process.env.VITE_DEV_SERVER_PORT
     const url = `http://${host ?? 'localhost'}:${port ?? '3344'}`
-    win.loadURL(url).catch(e => console.error(e))
+    win.loadURL(url)
   }
 
   useController(win)
@@ -47,12 +47,12 @@ async function createWindow (): Promise<void> {
 
   // Make all links open with the browser, not with the application
   win.webContents.setWindowOpenHandler(({ url }) => {
-    if (url.startsWith('https:')) shell.openExternal(url).catch(e => console.error(e))
+    if (url.startsWith('https:')) shell.openExternal(url)
     return { action: 'deny' }
   })
 }
 
-app.whenReady().then(createWindow).catch(e => console.error(e))
+app.whenReady().then(createWindow)
 
 app.on('window-all-closed', () => {
   // const win = WindowFactory.getInstance();
@@ -73,6 +73,6 @@ app.on('activate', () => {
   if (allWindows.length > 0) {
     allWindows[0].focus()
   } else {
-    createWindow().catch(e => console.error(e))
+    createWindow()
   }
 })

@@ -8,10 +8,10 @@ import {
   NModal,
   NSelect,
   NCard,
-  NImage,
-  NSkeleton,
+  // NImage,
+  // NSkeleton,
   NScrollbar,
-  NInputNumber,
+  // NInputNumber,
   NSpace,
   NTimePicker,
   NAvatar

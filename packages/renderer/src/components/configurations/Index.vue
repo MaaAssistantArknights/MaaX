@@ -22,6 +22,7 @@ const components: Record<string, Component> = {
 }
 
 export default defineComponent({
+  name: 'ConfigurationIndex',
   props: {
     taskId: {
       type: String,

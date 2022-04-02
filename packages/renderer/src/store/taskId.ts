@@ -1,6 +1,5 @@
 // 每个任务的taskid, 用于运行期间修改
 import { defineStore } from 'pinia'
-import _ from 'lodash'
 import logger from '@/hooks/caller/logger'
 
 export interface TaskIdState {
@@ -11,10 +10,10 @@ export interface TaskIdAction {
   newTaskId: (uuid: string) => void
   getTaskId: (uuid: string, taskName: string) => number | number[] | undefined
   updateTaskId: (uuid: string, taskName: string, newId: number | number[]) => void
-  appendFightId: (uuid: string, fightId: number) => void; // 添加一个新的作战id
-  onFightStart: (uuid: string, fightId: number) => void; // 触发作战开始事件，更新作战等待列表
-  setMedicineAndStone: (uuid: string, medicine: number, stone: number) => void; // 设置上限理智药和源石数量
-  useMedicineOrStone: (uuid: string, type: 'medicine' | 'stone') => void; // 触发使用理智药/源石事件，将剩余所有id可用理智药数量-1
+  appendFightId: (uuid: string, fightId: number) => void // 添加一个新的作战id
+  onFightStart: (uuid: string, fightId: number) => void // 触发作战开始事件，更新作战等待列表
+  setMedicineAndStone: (uuid: string, medicine: number, stone: number) => void // 设置上限理智药和源石数量
+  useMedicineOrStone: (uuid: string, type: 'medicine' | 'stone') => void // 触发使用理智药/源石事件，将剩余所有id可用理智药数量-1
 }
 
 export const defaultTaskId: TaskId[] = [

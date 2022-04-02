@@ -1,5 +1,12 @@
 <script setup lang="ts">
-import { NInputNumber, NCheckbox, NForm, NFormItem, NInput, NSelect } from 'naive-ui'
+import {
+  // NInputNumber,
+  // NCheckbox,
+  NForm,
+  NFormItem,
+  // NInput,
+  NSelect
+} from 'naive-ui'
 import _ from 'lodash'
 
 interface GameConfiguration {
@@ -54,11 +61,7 @@ const props = defineProps<{
     :label-placement="'left'"
     :label-width="'auto'"
   >
-
-    <NFormItem
-      label="服务器"
-      :show-label="true"
-    >
+    <NFormItem label="服务器" :show-label="true">
       <NSelect
         :value="props.configurations.server"
         @update:value="(value) => _.set(props.configurations, 'server', value)"

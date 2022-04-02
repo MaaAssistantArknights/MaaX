@@ -8,20 +8,18 @@ import {
   NIcon,
   NSpace,
   NPopconfirm,
-  useThemeVars,
-  useMessage
+  useThemeVars
 } from 'naive-ui'
 import useDeviceStore from '@/store/devices'
 import router from '@/router'
 import useTaskStore from '@/store/tasks'
 import useTaskIdStore from '@/store/taskId'
-import { hide, show } from '@/utils/message'
+import { show } from '@/utils/message'
 
 const props = defineProps<{
   uuid: string;
 }>()
 
-const message = useMessage()
 const themeVars = useThemeVars()
 const deviceStore = useDeviceStore()
 const taskStore = useTaskStore()
@@ -45,9 +43,9 @@ const disconnectedStatus: Set<DeviceStatus> = new Set([
   'unknown'
 ])
 
-function disconnectDevice (uuid: string) {}
+// function disconnectDevice (uuid: string) {}
 
-function connectDevice (uuid: string) {}
+// function connectDevice (uuid: string) {}
 
 function handleJumpToTask () {
   if (!connectedStatus.has(device.value?.status ?? 'unknown')) {
@@ -94,7 +92,9 @@ async function handleDeviceConnect () {
   )
 
   // 初始化掉落物存储
-  if (!window.sessionStorage.getItem(device.value?.uuid as string)) { window.sessionStorage.setItem(device.value?.uuid as string, '{"StageDrops":{}}') }
+  if (!window.sessionStorage.getItem(device.value?.uuid as string)) {
+    window.sessionStorage.setItem(device.value?.uuid as string, '{"StageDrops":{}}')
+  }
 
   // loadingMessage.destroy();
 }
@@ -162,7 +162,7 @@ async function handleDeviceConnect () {
         </template>
         {{
           (device?.status === "tasking" ? "当前设备正在进行任务，" : "") +
-          "确定断开连接？"
+            "确定断开连接？"
         }}
       </NPopconfirm>
       <NButton

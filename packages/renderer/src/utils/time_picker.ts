@@ -1,4 +1,4 @@
-export function formattedDurationToSeconds (time: string | null) {
+export function formattedDurationToSeconds (time: string | null): number {
   if (!time) return 0
   const [hour, minute, second] = time.split(':').map(v => {
     const num = Number(v)
@@ -7,7 +7,7 @@ export function formattedDurationToSeconds (time: string | null) {
   return hour * 3600 + minute * 60 + second
 }
 
-export function secondsToFormattedDuration (seconds: number) {
+export function secondsToFormattedDuration (seconds: number): string {
   if (seconds >= 86400 || seconds < 0) {
     return '00:00:00'
   }

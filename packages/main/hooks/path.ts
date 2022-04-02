@@ -1,5 +1,5 @@
 import { app, ipcMain } from 'electron'
-import { Assistant } from './interface'
+import { Assistant } from '../core/interface'
 
 type PathName =
   'home' |

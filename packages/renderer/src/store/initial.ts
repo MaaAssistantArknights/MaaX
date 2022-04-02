@@ -8,7 +8,7 @@ import type { ThemeState } from './theme'
 
 type Patcher<T> = (state: T, storage: T) => void
 
-export async function initialStore () {
+export async function initialStore (): Promise<void> {
   const stores: Record<string, Store> = {
     device: (await import('./devices')).default(),
     setting: (await import('./settings')).default(),

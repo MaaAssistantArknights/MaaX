@@ -1,6 +1,6 @@
 import useLoggerHooks from './logger'
 import useVersionHooks from './version'
-import getEmulatorHooks from './emulator'
+import getEmulatorHooks from '../core/emulator'
 import useAsstHooks from './asst'
 import useStorageHooks from './storage'
 import useOsHooks from './os'

@@ -1,6 +1,4 @@
 import { defineStore } from 'pinia'
-import _ from 'lodash'
-import gamedata from '@/api/gamedata'
 
 export interface TaskState {
   deviceTasks: Record<string, Task[]>

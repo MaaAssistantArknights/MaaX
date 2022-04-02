@@ -6,8 +6,8 @@ import {
   NButton,
   NTooltip,
   NText,
-  NTime,
-  useMessage
+  NTime
+  // useMessage
 } from 'naive-ui'
 import IconRefresh from '@/assets/icons/refresh.svg?component'
 import IconSettings from '@/assets/icons/settings.svg?component'
@@ -17,7 +17,7 @@ import useDeviceStore from '@/store/devices'
 import useSettingStore from '@/store/settings'
 
 import { installCore, checkCoreVersion } from '@/utils/core'
-import { hide, show } from '@/utils/message'
+import { show } from '@/utils/message'
 
 const connectedStatus: Set<DeviceStatus> = new Set(['connected', 'tasking'])
 const disconnectedStatus: Set<DeviceStatus> = new Set([
@@ -27,7 +27,7 @@ const disconnectedStatus: Set<DeviceStatus> = new Set([
 ])
 const deviceStore = useDeviceStore()
 const settingStore = useSettingStore()
-const message = useMessage()
+// const message = useMessage()
 const connectedDevices = computed(() =>
   deviceStore.devices.filter((device) => connectedStatus.has(device.status))
 )
