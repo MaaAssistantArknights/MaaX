@@ -5,7 +5,7 @@ import { is } from 'electron-util'
 
 import useTheme from './utils/theme'
 import useDebug from './utils/debug'
-import WindowFactory from './window/factory'
+import Window from './window/factory'
 import useController from './window/control'
 
 import useHooks from './hooks'
@@ -25,7 +25,7 @@ if (!app.requestSingleInstanceLock()) {
 }
 
 async function createWindow (): Promise<void> {
-  const win = WindowFactory.getInstance()
+  const win = new Window().get()
   if (app.isPackaged || !is.development) {
     win.loadFile(join(__dirname, '../renderer/index.html'))
   } else {
@@ -55,13 +55,13 @@ async function createWindow (): Promise<void> {
 app.whenReady().then(createWindow)
 
 app.on('window-all-closed', () => {
-  // const win = WindowFactory.getInstance();
+  // const win = new Window().get();
   // win = null;
   app.quit()
 })
 
 app.on('second-instance', () => {
-  const win = WindowFactory.getInstance()
+  const win = new Window().get()
 
   // Focus on the main window if the user tried to open another
   if (win?.isMinimized()) win?.restore()

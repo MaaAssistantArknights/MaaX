@@ -151,7 +151,7 @@ export const uiTasks = ['emulator', 'shutdown']
 // TODO: 等重构
 export const handleSingleTask: Record<
 string,
-(task: Task['configurations']) => object | void | object[]
+(task: Task['configurations']) => object | object[] | void
 > = {
   emulator: taskEmulator,
   startup: taskStartUp,

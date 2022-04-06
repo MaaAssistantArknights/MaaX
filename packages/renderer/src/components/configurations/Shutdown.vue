@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import {
-  NInputNumber,
-  NCheckbox,
   NForm,
   NFormItem,
-  NInput,
   NSelect,
   NTimePicker,
   NSpace

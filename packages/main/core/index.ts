@@ -2,8 +2,8 @@ import ffi, { DynamicLibrary } from 'ffi-napi'
 import ref from 'ref-napi'
 import path from 'path'
 import { existsSync, mkdirSync } from 'fs'
-import WindowFactory from '../window/factory'
-import logger from '../utils/logger'
+import Window from '@main/window/factory'
+import logger from '@main/utils/logger'
 import _ from 'lodash'
 import { app } from 'electron'
 import Storage from '../storage'
@@ -222,7 +222,7 @@ const cb = ffi.Callback(
     console.log(detail)
     const callback = handleCallback[msg as AsstMsg](msg, detail)
     // TODO: 一堆类型注解没写
-    WindowFactory.getInstance().webContents.send(
+    new Window().get().webContents.send(
       (callback as any).name.toString(),
       callback
     )
@@ -384,6 +384,7 @@ class Assistant {
   Destroy (uuid: string): void {
     if (this.MeoAsstPtr[uuid]) {
       this.MeoAsstLib.AsstDestroy(this.MeoAsstPtr[uuid])
+      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete this.MeoAsstPtr[uuid]
     }
   }

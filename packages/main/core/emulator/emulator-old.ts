@@ -1,6 +1,5 @@
-import { execSync, spawnSync, execFile } from 'child_process'
+import { execSync, spawnSync } from 'child_process'
 import { is } from 'electron-util'
-import { ipcMain } from 'electron'
 import path from 'path'
 import { existsSync, readFileSync } from 'fs'
 import { assert } from 'console'
@@ -19,16 +18,6 @@ const emulatorList = [
 ]
 const regPNamePid = /(.{3,25}[^\s*])\s*([0-9]*)\s.*\s*/g
 // get "HD-Player.exe  3396 Console    1  79,692 K"
-
-interface Emulator {
-  pname: string // "HD-Player.exe"
-  pid: string // "114514"
-  tag?: string // 标记模拟器具体型号，比如蓝叠hyperv
-  config?: string // 传给后端的标记
-  adb_path?: string // "E://bluestack//HD-Adb.exe"
-  address?: string // "127.0.0.1:11451"
-  uuid?: string
-}
 
 function exec (exp: string): string {
   // return execSync(exp, { shell: "powershell.exe" }).toString();
@@ -195,14 +184,14 @@ function getLdInfo (e: Emulator): void {
   e.tag = '雷电模拟器'
 }
 
-async function getEmulators (): Promise<Emulator[]> {
+export async function getEmulators (): Promise<Emulator[]> {
   inUsePorts = []
   const emulators: Emulator[] = []
   const { stdout: tasklist } = await execa('tasklist')
   tasklist
     .toString()
     .split('\n')
-    .forEach((line: string) => {
+    .forEach((line) => {
       const res = line.matchAll(regPNamePid)
       for (const match of res) {
         if (emulatorList.includes(match[1])) {
@@ -252,7 +241,7 @@ async function getEmulators (): Promise<Emulator[]> {
 //   return opened
 // }
 
-function adbDevices (): Emulator[] {
+export function adbDevices (): Emulator[] {
   const emulators: Emulator[] = []
   const e = {}
   getNoxInfo(e as Emulator)
@@ -276,7 +265,7 @@ function adbDevices (): Emulator[] {
 //   return false
 // }
 
-function getDeviceUuid (address: string, adbPath = defaultAdbPath): string | false {
+export function getDeviceUuid (address: string, adbPath = defaultAdbPath): string | false {
   if (!adbPath) {
     console.log('adb_path is null')
     return false
@@ -298,7 +287,7 @@ function getDeviceUuid (address: string, adbPath = defaultAdbPath): string | fal
   return false
 }
 
-function getEmulatorsDarwin (): Emulator[] {
+export function getEmulatorsDarwin (): Emulator[] {
   const playerList = ['NoxAppPlayer.app', 'NemuPlayer.app']
   const emulators: Emulator[] = []
   const { stdout } = execa.sync('pgrep', ['-lf', '.'])
@@ -333,45 +322,4 @@ function getEmulatorsDarwin (): Emulator[] {
   return emulators
 }
 
-function startEmulatorHook (): void {
-  ipcMain.handle('asst:startEmulator', async (event, arg) => {
-    console.log(arg)
-    execFile(
-      arg.emulator_path,
-      [arg.arg],
-      (err: any, stdout: string, stderr: string) => {
-        if (err) {
-          console.log(err)
-          return
-        }
-
-        console.log(`startEmu stdout:${stdout}`)
-        console.log(`startEmu stderr:${stderr}`)
-      }
-    )
-  })
-}
-
 // function killEmulatorHook (): void { }
-
-export default function getEmulatorHooks (): void {
-  ipcMain.handle('asst:getEmulators', async (event): Promise<Emulator[]> => {
-    if (is.windows) {
-      return await getEmulators()
-    } else if (is.macos) {
-      return getEmulatorsDarwin()
-    } else {
-      return adbDevices()
-    }
-  })
-  ipcMain.handle(
-    'asst:getDeviceUuid',
-    async (event, arg): Promise<string | boolean> => {
-      const ret = getDeviceUuid(arg.address, arg.adb_path)
-      console.log(ret)
-      return ret
-    }
-  )
-
-  startEmulatorHook()
-}

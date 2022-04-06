@@ -10,7 +10,7 @@
     "prebuild": "vue-tsc --project packages/renderer/tsconfig.json --noEmit && node scripts/build.mjs",
     "build": "electron-builder",
     "debug": "npm run prebuild && vite ./packages/renderer",
-    "lint": "eslint --fix --ext .js,.jsx,.ts,.tsx,.vue packages"
+    "lint": "eslint --fix packages/main packages/renderer"
   },
   "engines": {
     "node": ">=14.17.0"
@@ -67,6 +67,7 @@
     "electron-util": "^0.17.2",
     "execa": "^5.1.1",
     "ffi-napi": "^4.0.3",
+    "ps-list": "^7.2.0",
     "ref-array-napi": "^1.2.2",
     "ref-napi": "^3.0.3",
     "unzipper": "^0.10.11"

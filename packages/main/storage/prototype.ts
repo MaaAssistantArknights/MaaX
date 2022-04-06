@@ -3,7 +3,6 @@ import fs from 'fs'
 import { app } from 'electron'
 import _ from 'lodash'
 import logger from '@main/utils/logger'
-// import { Observable } from "object-observer";
 
 type StorageOption<T> = Partial<{
   defaults: T
@@ -35,16 +34,6 @@ class Storage<T extends Object> {
     } else {
       this.readFromFile()
     }
-
-    // this.m_watcher = fs.watch(this.filepath, (eventType) => {
-    //   if (eventType === "change") {
-    //     console.log("config file changed");
-    //     this.readFromFile();
-    //   }
-    // });
-
-    // this.m_observer = Observable.from(this.m_storage);
-    // Observable.observe(this.m_observer, )
   }
 
   get (key: string): any {
@@ -84,11 +73,7 @@ class Storage<T extends Object> {
   private readonly m_ext: string;
   private readonly m_serialize;
   private readonly m_deserialize;
-  private m_storage: T;
-
-  // private m_timer: number | null = null;
-  // private m_watcher: fs.FSWatcher;
-  // private m_observer;
+  private m_storage: T
 }
 
 export default Storage

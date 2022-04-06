@@ -3,7 +3,7 @@
   "compilerOptions": {
     "target": "esnext",
     "useDefineForClassFields": true,
-    "module": "commonJS",
+    "module": "esnext",
     "moduleResolution": "node",
     "strict": true,
     "sourceMap": true,
@@ -14,7 +14,9 @@
     "paths": {
       "@main/*": ["./*"],
       "@common/*": ["../common/*"],
-    }
+    },
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
   },
-  "include": ["./**/*.ts", "@types/**/*.d.ts"]
+  "include": ["./**/*.ts", "@types/**/*.d.ts", "../common/**/*.ts"]
 }

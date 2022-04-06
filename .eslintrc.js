@@ -13,8 +13,7 @@ module.exports = {
     sourceType: 'module',
     project: [
       path.join(__dirname, 'packages/renderer/tsconfig.json'),
-      path.join(__dirname, 'packages/main/tsconfig.json')
-    ]
+      path.join(__dirname, 'packages/main/tsconfig.json'),    ]
   },
   plugins: [
     'vue',

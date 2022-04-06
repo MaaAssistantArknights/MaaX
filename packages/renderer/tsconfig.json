@@ -15,7 +15,9 @@
     "paths": {
       "@/*": ["src/*"],
       "@common/*": ["../common/*"]
-    }
+    },
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
   },
   "include": ["src/**/*.ts", "@types/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
 }
