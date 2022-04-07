@@ -70,6 +70,7 @@
     "ps-list": "^7.2.0",
     "ref-array-napi": "^1.2.2",
     "ref-napi": "^3.0.3",
-    "unzipper": "^0.10.11"
+    "unzipper": "^0.10.11",
+    "zx": "^6.0.7"
   }
 }
