@@ -1,8 +1,9 @@
 abstract class EmulatorAdapter {
-  protected abstract getBluestack (pname: string, pid: string): Promise<Emulator>
-  protected abstract getNox (pname: string, pid: string): Promise<Emulator>
-  protected abstract getMumu (pname: string, pid: string): Promise<Emulator>
-  protected abstract getLd (pname: string, pid: string): Promise<Emulator>
+  protected abstract getBluestack (e: Emulator): Promise<void>
+  protected abstract getNox (e: Emulator): Promise<void>
+  protected abstract getMumu (e: Emulator): Promise<void>
+  protected abstract getLd (e: Emulator): Promise<void>
+  protected abstract getXY (e: Emulator): Promise<void>
   protected abstract getAdbDevices (): Promise<Emulator[]>
 
   abstract getEmulators (): Promise<Emulator[]>

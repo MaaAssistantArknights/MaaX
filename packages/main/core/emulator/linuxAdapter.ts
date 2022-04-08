@@ -4,19 +4,19 @@ import { Singleton } from '@common/singleton'
 
 @Singleton
 class WindowsEmulator extends EmulatorAdapter {
-  protected async getBluestack (): Promise<Emulator> {
+  protected async getBluestack (): Promise<void> {
 
   }
 
-  protected async getNox (): Promise<Emulator> {
+  protected async getNox (): Promise<void> {
 
   }
 
-  protected async getMumu (): Promise<Emulator> {
+  protected async getMumu (): Promise<void> {
 
   }
 
-  protected async getLd (): Promise<Emulator> {
+  protected async getLd (): Promise<void> {
 
   }
 
