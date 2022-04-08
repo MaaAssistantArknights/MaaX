@@ -6,4 +6,5 @@ interface Emulator {
   adb_path?: string // "E://bluestack//HD-Adb.exe"
   address?: string // "127.0.0.1:11451"
   uuid?: string
+  commandLine?: string // 命令行启动参数
 }
