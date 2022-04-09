@@ -58,10 +58,12 @@ async function handleRefreshDevices () {
           return {
             uuid: v.uuid,
             name: v.config,
-            tag: v.config,
+            tag: v.tag,
             status: 'available',
             adbPath: v.adb_path,
-            connectionString: v.address
+            connectionString: v.address,
+            emulatorPath: v.emulatorPah,
+            commandLine: v.commandLine
           }
         })
     )

@@ -88,6 +88,7 @@ class WindowsEmulator extends EmulatorAdapter {
       'HD-Adb.exe'
     )
     const cmd = await getCommandLine(e.pid)
+    e.commandLine = cmd // 从命令行启动的指令
     const arg = getBluestackInstanceName(await cmd)
     console.log('arg:')
     console.log(arg)
@@ -153,6 +154,7 @@ class WindowsEmulator extends EmulatorAdapter {
       const confPortInstanceExp = RegExp(`bst.instance.${arg}.status.adb_port="(\\d{4,6})"`)
       const confPort = conf.match(confPortInstanceExp)
       console.log('confport:')
+      e.tag = 'BlueStack Global'
       if (confPort) { e.address = `127.0.0.1:${confPort[1]}` }
       /**
       e.tag = 'BlueStack Global';
