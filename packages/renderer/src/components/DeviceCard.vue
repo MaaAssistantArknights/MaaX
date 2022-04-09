@@ -87,7 +87,7 @@ async function handleDeviceConnect () {
       address: device.value?.connectionString,
       uuid: device.value?.uuid,
       adb_path: device.value?.adbPath,
-      config: device.value?.tag
+      config: device.value?.config
     })
   )
 

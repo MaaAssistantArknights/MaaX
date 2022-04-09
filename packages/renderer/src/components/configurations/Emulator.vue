@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { NForm, NFormItem, NInput, NSelect, NSpace } from 'naive-ui'
 import _ from 'lodash'
+import router from '@/router'
+import useDeviceStore from '@/store/devices'
+
+const deviceStore = useDeviceStore()
 
 interface EmulatorConfiguration {
-  emulator_path: string; // 模拟器路径
-  arg: string; // 额外参数，用于启动指定模拟器
+  commandLine: string; // 启动参数，用于从命令行启动指定模拟器
   delay: 30 | 60 | 120 | 300 | 600; // 等待模拟器启动完成的延迟
 }
 
@@ -34,6 +37,14 @@ const delayOptions = [
 const props = defineProps<{
   configurations: EmulatorConfiguration;
 }>()
+
+const routeUuid = router.currentRoute.value.params.uuid as string
+
+const commandLine = deviceStore.getDevice(routeUuid)?.commandLine
+if (commandLine) {
+  _.set(props.configurations, 'commandLine', commandLine)
+}
+
 </script>
 <template>
   <NForm
@@ -45,29 +56,18 @@ const props = defineProps<{
     :label-width="'auto'"
   >
     <NSpace vertical>
-      <NFormItem label="模拟器路径">
-        <NInput
-          :value="configurations.emulator_path"
-          @update:value="
-            (value) => _.set(props.configurations, 'emulator_path', value)
-          "
-        />
-      </NFormItem>
-
-      <NFormItem label="启动参数">
-        <NInput
-          :value="configurations.arg"
-          @update:value="
-            (value) => _.set(props.configurations, 'arg', value)
-          "
-        />
-      </NFormItem>
 
       <NFormItem label="启动后延迟" :show-label="true">
         <NSelect
           :value="props.configurations.delay"
           @update:value="(value) => _.set(props.configurations, 'delay', value)"
           :options="delayOptions"
+        />
+      </NFormItem>
+       <NFormItem label="当前参数">
+        <NInput
+          :disabled="true"
+          :value="configurations.commandLine"
         />
       </NFormItem>
     </NSpace>

@@ -37,7 +37,8 @@ interface Device {
    */
   status: DeviceStatus
   /**
-   * @props 模拟器名称, 传给maa使其使用模拟器的自定配置, 自定义连接的设备为'General'
+   * @props 模拟器名称
+   * @description 比如："BlueStacks", "MuMuEmulator", "LDPlayer", "Nox", "XYAZ", "WSA", "General"
    */
   name: EmulatorName
   /**
@@ -46,9 +47,23 @@ interface Device {
   adbPath: string
   /**
    * @props 设备标签
-   * @description 可选，前端优先展示“设备标签”，如果不存在则展示“设备连接地址”
+   * @description 可选，前端优先展示“设备标签”，如果不存在则展示“设备连接地址”, 比如: "Blustacks Global"
    */
   tag?: string
+  /**
+   * @props 传给后端的标记
+   */
+  config: string
+  /**
+   * @props 模拟器路径
+   * @description 搜索模拟器时会尝试自动获取，比如："E://bluestack//HD-Player.exe"
+   */
+  emulatorPath?: string
+  /**
+   * @props 模拟器命令行参数
+   * @description 启动参数, 比如蓝叠启动指定实例的 "--instance" "114514"
+  */
+  commandLine?: string
 }
 
 interface NativeDevice {

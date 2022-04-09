@@ -26,9 +26,7 @@ export const defaultTask: Task[] = [
     status: 'idle',
     enable: false,
     configurations: {
-      emulator_path: '', // 模拟器路径
-      arg: '', // 启动参数, 用于启动指定模拟器
-      // adb_path: "",
+      commandLine: '',
       delay: 300 // 执行后续任务的等待延迟
     }
   },
