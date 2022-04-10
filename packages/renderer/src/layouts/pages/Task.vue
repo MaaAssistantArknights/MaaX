@@ -11,10 +11,12 @@ import Configuration from '@/components/configurations/Index.vue'
 import useTaskStore, { defaultTask } from '@/store/tasks'
 import useDeviceStore from '@/store/devices'
 import useTaskIdStore from '@/store/taskId'
-import { handleSingleTask, uiTasks } from '@/utils/converter/tasks'
+import { handleCoreTask, uiTasks } from '@/utils/converter/tasks'
 import { show } from '@/utils/message'
 
 import router from '@/router'
+import logger from '@/hooks/caller/logger'
+import { checkCoreVersion, installCore } from '@/utils/core'
 
 const taskStore = useTaskStore()
 const deviceStore = useDeviceStore()
@@ -76,68 +78,118 @@ const deviceStatus = computed(() => {
   return device.status
 })
 
-async function handleStart () {
-  const device = deviceStore.getDevice(uuid.value as string)
-  if (device && device.status === 'tasking') {
-    // todo: 取消显示message，直接停止任务
-    show('设备正在运行任务，请先停止任务', { type: 'warning', duration: 5000 })
+async function handleStartUnconnected (task: Task['configurations']) { // 未连接的设备启动任务
+  if (!(await checkCoreVersion())) {
+    installCore()
     return
   }
+  console.log('before start emu')
+  console.log(task)
+  window.ipcRenderer.send('10001', uuid.value, task.taskId) // 启动模拟器 子任务开始
+  console.log('after start')
 
+  deviceStore.updateDeviceStatus(uuid.value, 'tasking')
+  window.ipcRenderer.invoke('asst:startEmulator', task.commandLine)
+  logger.debug('after start emulators')
+  setTimeout(async () => {
+    logger.debug('before getEmulators')
+    const devices: any[] = await window.ipcRenderer.invoke('asst:getEmulators') // 等待时间结束后进行一次设备搜索，但不合并结果
+    const device = devices.find(device => device.uuid === uuid.value)// 检查指定uuid的设备是否存在
+    logger.debug('after getEmulators')
+    if (device) { // 设备活了
+      logger.debug('find device')
+      logger.debug('before create')
+      logger.debug(device)
+      await window.ipcRenderer.invoke('asst:createEx_connect', { // 创建连接
+        address: device.address,
+        uuid: device.uuid,
+        adb_path: device.adb_path,
+        config: device.config
+      })
+      logger.debug('after create')
+      window.ipcRenderer.send('10002', uuid.value, 'emulator') // 启动模拟器 子任务完成
+      logger.debug('after start emulator')
+      show('启动模拟器子任务结束', { type: 'success' })
+      await handleSubStart()
+    } else { // 设备没活
+      logger.debug('device not found')
+      show('启动设备失败, 请前往github上提交issue', { type: 'error', duration: 0 })
+    }
+  }, 10000)
+  // (task.delay as number)*1000
+}
+
+async function handleSubStart () {
   if (_.findIndex(tasks.value, (task) => task.enable === true) === -1) {
     show('请至少选择一个任务', { type: 'warning', duration: 5000 })
     return
   }
-  tasks.value?.forEach(async (singleTask) => {
+
+  const taskTranslate:Record<string, string> = {
+    startup: 'StartUp',
+    fight: 'Fight',
+    recruit: 'Recruit',
+    infrast: 'Infrast',
+    visit: 'Visit',
+    mall: 'Mall',
+    award: 'Award',
+    rogue: 'Roguelike'
+  }
+
+  for await (const singleTask of tasks.value) {
+    if (uiTasks.includes(singleTask.id)) continue
+
     if (singleTask.enable) {
+      logger.debug('enter task:')
+      console.log(singleTask.id)
       taskStore.updateTaskStatus(uuid.value, singleTask.id, 'waiting', 0)
-      const task = handleSingleTask[singleTask.id]({
+      const taskIter = handleCoreTask[singleTask.id]({
         ...singleTask.configurations,
         uuid: uuid.value,
         taskId: singleTask.id
       })
-      console.log(task)
-      if (uiTasks.includes(singleTask.id)) return // TODO: ui限定任务，不发送给core执行
 
-      // 作战任务单独处理
-      if (singleTask.id === 'fight') {
-        taskIdStore.setMedicineAndStone(
-          uuid.value,
-          singleTask.configurations.medicine as number,
-          singleTask.configurations.stone as number
-        );
-        (task as Array<object>).forEach(async (level: any) => {
-          const taskId = await window.ipcRenderer.invoke('asst:appendTask', {
-            uuid: uuid.value,
-            type: 'Fight',
-            params: level
-          })
-          taskIdStore.appendFightId(uuid.value, taskId)
+      let task = taskIter.next()
+      while (!task.done) {
+        const taskId = await window.ipcRenderer.invoke('asst:appendTask', {
+          uuid: uuid.value,
+          type: taskTranslate[singleTask.id],
+          params: task.value
         })
-        return
+        taskIdStore.updateTaskId(uuid.value, singleTask.id, taskId) // 记录任务id
+        task = taskIter.next()
       }
-
-      // 非作战普通任务
-      const taskId = await window.ipcRenderer.invoke('asst:appendTask', {
-        uuid: uuid.value,
-        type: {
-          startup: 'StartUp',
-          fight: 'Fight',
-          recruit: 'Recruit',
-          infrast: 'Infrast',
-          visit: 'Visit',
-          mall: 'Mall',
-          award: 'Award',
-          rogue: 'Roguelike'
-        }[singleTask.id],
-        params: task
-      })
-      taskIdStore.updateTaskId(uuid.value, singleTask.id, taskId) // 记录任务id
     }
-  })
+  }
   deviceStore.updateDeviceStatus(uuid.value as string, 'tasking')
 
   await window.ipcRenderer.invoke('asst:start', { uuid: uuid.value })
+}
+
+async function handleSubStop () {
+
+}
+
+async function handleStart () {
+  const device = deviceStore.getDevice(uuid.value as string)
+  if (device && device.status === 'tasking') { // 设备进行中, 可停止任务
+    await handleSubStop()
+  } else if (device && device.status === 'connected') { // 设备已连接, 可开始任务
+    await handleSubStart()
+  } else if (device && device.status === 'available') { // 设备可用但未连接, 先尝试连接再开始任务
+    // TODO:
+    show('请先连接设备', { type: 'warning', duration: 2000 })
+  } else { // 设备状态为 unknown 或 disconnect , 检查子任务'启动模拟器'是否开启，如果开启则先启动模拟器再开始任务
+    const task = taskStore.getTask(uuid.value as string, 'emulator') // 查找是否有启动模拟器任务
+    if (task && task.enable === true) { // 有启动模拟器任务
+      if (!task.configurations.commandLine) { // 设备没有获取到用于启动模拟器的命令行参数
+        // FIXME: 需要展开任务详情才能获取到CommandLine
+        show('该设备启动参数不可用', { type: 'warning', duration: 2000 })
+        return
+      }
+      await handleStartUnconnected(task.configurations)
+    } else { show("请先 '启动并搜索模拟器' 或 '勾选启动模拟器子任务'", { type: 'warning', duration: 3000 }) }
+  }
 }
 </script>
 

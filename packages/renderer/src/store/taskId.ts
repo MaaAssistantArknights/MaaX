@@ -9,22 +9,22 @@ export interface TaskIdState {
 export interface TaskIdAction {
   newTaskId: (uuid: string) => void
   getTaskId: (uuid: string, taskName: string) => number | number[] | undefined
-  updateTaskId: (uuid: string, taskName: string, newId: number | number[]) => void
-  appendFightId: (uuid: string, fightId: number) => void // 添加一个新的作战id
+  updateTaskId: (uuid: string, taskName: string, id: number) => void
+  removeTaskId: (uuid: string, taskName: string, id: number) => void
   onFightStart: (uuid: string, fightId: number) => void // 触发作战开始事件，更新作战等待列表
   setMedicineAndStone: (uuid: string, medicine: number, stone: number) => void // 设置上限理智药和源石数量
   useMedicineOrStone: (uuid: string, type: 'medicine' | 'stone') => void // 触发使用理智药/源石事件，将剩余所有id可用理智药数量-1
 }
 
 export const defaultTaskId: TaskId[] = [
-  { name: 'startup' },
+  { name: 'startup', id: [] },
   { name: 'fight', id: [] },
-  { name: 'recruit' },
-  { name: 'infrast' },
-  { name: 'visit' },
-  { name: 'mall' },
-  { name: 'award' },
-  { name: 'rogue' }
+  { name: 'recruit', id: [] },
+  { name: 'infrast', id: [] },
+  { name: 'visit', id: [] },
+  { name: 'mall', id: [] },
+  { name: 'award', id: [] },
+  { name: 'rogue', id: [] }
 ]
 
 const useTaskIdStore = defineStore<'taskId', TaskIdState, {}, TaskIdAction>(
@@ -40,12 +40,21 @@ const useTaskIdStore = defineStore<'taskId', TaskIdState, {}, TaskIdAction>(
         const { deviceTaskId } = this
         if (!deviceTaskId[uuid]) { deviceTaskId[uuid] = defaultTaskId }
       },
-      updateTaskId (uuid, taskName, newId) {
+      updateTaskId (uuid, taskName, id) {
         const { deviceTaskId } = this
         const origin = deviceTaskId[uuid]
         const task = origin?.find((task) => task.name === taskName)
         if (task != null) {
-          task.id = newId
+          task.id?.push(id)
+        }
+      },
+
+      removeTaskId (uuid, taskName, id) {
+        const { deviceTaskId } = this
+        const origin = deviceTaskId[uuid]
+        const task = origin?.find((task) => task.name === taskName)
+        if (task != null) {
+          task.id = task.id?.filter((i) => i !== id)
         }
       },
 
@@ -88,16 +97,7 @@ const useTaskIdStore = defineStore<'taskId', TaskIdState, {}, TaskIdAction>(
           }
         }
       },
-      appendFightId (uuid, fightId) {
-        const { deviceTaskId } = this
-        const origin = deviceTaskId[uuid]
-        const task = origin?.find((task) => task.name === 'fight')
-        if (task != null) {
-          if (!(task.id as number[]).includes(fightId)) {
-            (task.id as number[]).push(fightId)
-          }
-        }
-      },
+
       onFightStart (uuid, fightId) {
         const { deviceTaskId } = this
         const origin = deviceTaskId[uuid]

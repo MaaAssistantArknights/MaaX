@@ -14,7 +14,7 @@ export interface TaskAction {
   changeTaskOrder: (uuid: string, from: number, to: number) => void
   updateTask: (uuid: string, tasks: Task[]) => void
   newTask: (uuid: string) => void
-  getTask: (uuid: string, taskId: string) => any
+  getTask: (uuid: string, taskId: string) => Task | undefined
   getTaskProcess: (uuid: string, taskId: string) => number | undefined
   stopAllTasks: (uuid: string) => void
 }
@@ -22,7 +22,7 @@ export interface TaskAction {
 export const defaultTask: Task[] = [
   {
     id: 'emulator',
-    title: '启动模拟器 - 暂不支持',
+    title: '启动模拟器',
     status: 'idle',
     enable: false,
     configurations: {
@@ -234,7 +234,7 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
       const { deviceTasks } = this
       const origin = deviceTasks[uuid]
       const task = origin?.find((task) => task.id === taskId)
-      return (task != null) ? task : {}
+      return task
     },
     getTaskProcess (uuid, taskId) {
       const { deviceTasks } = this

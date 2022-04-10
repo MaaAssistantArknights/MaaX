@@ -3,5 +3,5 @@ interface TaskId {
   current_times?: number
   current_medicine?: number
   current_stone?: number
-  id?: number|number[]
+  id?: number[]
 }
