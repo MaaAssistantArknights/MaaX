@@ -20,7 +20,7 @@ export async function initialStore (): Promise<void> {
     device: (state: DeviceState, storage: DeviceState) => {
       state.devices = storage.devices.map((device) => ({
         ...device,
-        status: 'available'
+        status: 'unknown' // 启动时将所有设备状态设置成 unknown
       }))
     },
     setting: (state: SettingState, storage: SettingState) => {
