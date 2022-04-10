@@ -1,6 +1,7 @@
 import { ipcMain } from 'electron'
-import { execFile } from 'child_process'
 import { getEmulators, getDeviceUuid } from '@main/core/emulator'
+import { $ } from '@main/core/emulator/shell'
+import logger from '@main/utils/logger'
 
 export default function useEmulatorHooks (): void {
   ipcMain.handle('asst:getEmulators', async (event): Promise<Emulator[]> => {
@@ -16,20 +17,10 @@ export default function useEmulatorHooks (): void {
     }
   )
 
-  ipcMain.handle('asst:startEmulator', async (event, arg) => {
-    console.log(arg)
-    execFile(
-      arg.emulator_path,
-      [arg.arg],
-      (err: any, stdout: string, stderr: string) => {
-        if (err) {
-          console.log(err)
-          return
-        }
-
-        console.log(`startEmu stdout:${stdout}`)
-        console.log(`startEmu stderr:${stderr}`)
-      }
-    )
+  ipcMain.handle('asst:startEmulator', async (event, arg: string) => {
+    logger.debug(`Try start emulator on ${arg}`)
+    const ret = await $`${arg}`
+    logger.debug(`Start Emulator stdout: ${(ret).stdout}`)
+    logger.debug(`Start Emulator stderr: ${(ret).stderr}`)
   })
 }
