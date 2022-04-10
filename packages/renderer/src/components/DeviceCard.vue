@@ -48,9 +48,12 @@ const disconnectedStatus: Set<DeviceStatus> = new Set([
 // function connectDevice (uuid: string) {}
 
 function handleJumpToTask () {
+  // 未连接的设备也可以查看任务
+  /**
   if (!connectedStatus.has(device.value?.status ?? 'unknown')) {
     return
   }
+   */
   if (!isCurrent.value) router.push(`/task/${device.value?.uuid}`)
 }
 
