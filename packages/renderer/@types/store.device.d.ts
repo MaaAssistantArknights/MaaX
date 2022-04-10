@@ -72,4 +72,5 @@ interface NativeDevice {
   name: EmulatorName
   adbPath: string
   tag?: string
+  commandLine?: string
 }
