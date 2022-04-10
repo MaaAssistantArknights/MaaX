@@ -1,3 +1,4 @@
+import logger from '@/hooks/caller/logger'
 import { defineStore } from 'pinia'
 
 export interface DeviceState {
@@ -27,11 +28,19 @@ const useDeviceStore = defineStore<'device', DeviceState, {}, DeviceAction>(
         this.lastUpdate = Date.now()
         for (const device of devices) {
           const origin = this.devices.find((dev) => dev.uuid === device.uuid)
-          if (origin == null) {
+          if (origin == null) { // 不存在该设备，则添加
             this.devices.push({
               status: 'available',
+              config: '',
               ...device
             })
+          } else if (['disconnected', 'unknown'].includes(origin.status)) { // 曾今连过，更新
+            logger.debug(`uuid ${origin.uuid}  origin status: ${origin.status}`)
+            origin.status = 'available'
+            origin.adbPath = device.adbPath
+            origin.connectionString = device.connectionString
+            origin.name = device.name
+            origin.commandLine = device.commandLine
           }
         }
       },

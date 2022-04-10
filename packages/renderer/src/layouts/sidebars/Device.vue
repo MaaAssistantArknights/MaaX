@@ -48,24 +48,20 @@ async function handleRefreshDevices () {
       show(() => h('span', '检测到设备, 但唯一标识符获取失败, 可能是模拟器未启动完成导致, 请重试或重启模拟器'), { type: 'error' })
       return
     }
-
+    // FIXME
+    // TODO: 重写一下合并
     deviceStore.mergeSearchResult(
-      ret
-        .filter((v: any) => {
-          return !deviceStore.devices.find((dev) => dev.uuid === v.uuid)
-        })
-        .map((v: any) => {
-          return {
-            uuid: v.uuid,
-            name: v.config,
-            tag: v.tag,
-            status: 'available',
-            adbPath: v.adb_path,
-            connectionString: v.address,
-            emulatorPath: v.emulatorPah,
-            commandLine: v.commandLine
-          }
-        })
+      ret.map((v: any) => {
+        return {
+          uuid: v.uuid,
+          name: v.config,
+          tag: v.tag,
+          status: 'available',
+          adbPath: v.adb_path,
+          connectionString: v.address,
+          commandLine: v.commandLine
+        }
+      })
     )
 
     if (ret.length > 0) {
