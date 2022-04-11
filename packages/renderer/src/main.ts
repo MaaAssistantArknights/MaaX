@@ -16,7 +16,6 @@ app.use(pinia)
 app.use(router)
 app.mount('#app').$nextTick(() => {
   initialStore()
-  window.removeLoading()
   router.replace({ path: '/device' })
   // debug only
   window.onclick = (event) => {

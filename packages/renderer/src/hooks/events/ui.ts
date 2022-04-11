@@ -10,4 +10,9 @@ export default function useUiHooks (): void {
       type: arg.type
     })
   })
+
+  window.ipcRenderer.on('ui:loaded', () => {
+    console.log('ui:loaded')
+    window.removeLoading()
+  })
 }

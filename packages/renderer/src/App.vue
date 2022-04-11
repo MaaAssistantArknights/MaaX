@@ -9,13 +9,17 @@ import {
   NMessageProvider,
   GlobalThemeOverrides,
   darkTheme,
-  zhCN, dateZhCN,
+  zhCN,
+  dateZhCN,
   ThemeCommonVars
 } from 'naive-ui'
 import useThemeStore from '@/store/theme'
-
 import { initHook } from './hooks'
-initHook()
+import { onMounted } from 'vue'
+
+onMounted(() => {
+  initHook()
+})
 
 const themeStore = useThemeStore()
 
@@ -63,7 +67,6 @@ const darkThemeOverrides: GlobalThemeOverrides = {
     ...commonThemeOverrides
   }
 }
-
 </script>
 
 <template>
@@ -72,8 +75,11 @@ const darkThemeOverrides: GlobalThemeOverrides = {
     :locale="zhCN"
     :date-locale="dateZhCN"
     :theme="themeStore.theme === 'maa-light' ? null : darkTheme"
-    :theme-overrides="themeStore.theme === 'maa-light' ?
-    lightThemeOverrides : darkThemeOverrides"
+    :theme-overrides="
+      themeStore.theme === 'maa-light'
+        ? lightThemeOverrides
+        : darkThemeOverrides
+    "
   >
     <NMessageProvider>
       <NGlobalStyle />

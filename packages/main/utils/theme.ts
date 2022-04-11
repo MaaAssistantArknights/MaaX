@@ -14,6 +14,9 @@ export default function useTheme (window: BrowserWindow): void {
       })
     }
   }
-  window.webContents.on('did-finish-load', event)
+  window.webContents.on('did-finish-load', () => {
+    event()
+    window.webContents.send('ui:loaded')
+  })
   nativeTheme.on('updated', event)
 }
