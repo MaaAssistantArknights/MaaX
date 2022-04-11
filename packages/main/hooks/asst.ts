@@ -90,7 +90,6 @@ export default function useAsstHooks (): void {
     for (const eventName of Object.keys(asstHooks)) {
       ipcMain.removeHandler(eventName)
     }
-    window.sessionStorage.setItem('coreIPCLoadStatus', 'false')
   })
 }
 

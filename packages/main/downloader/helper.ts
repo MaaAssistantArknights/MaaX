@@ -173,6 +173,7 @@ export const updateDownloadItem = ({
   const receivedBytes = item.getReceivedBytes()
 
   downloadItem.receivedBytes = receivedBytes
+  downloadItem.totalBytes = item.getTotalBytes()
   // 计算每秒下载的速度
   downloadItem.speed = receivedBytes - prevReceivedBytes
 

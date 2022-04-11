@@ -25,6 +25,7 @@ interface INewDownloadFile {
   url: string
   fileName?: string
   path: string
+  displayName?: string
 }
 
 interface IDownloadFile {
@@ -39,6 +40,7 @@ interface IDownloadFile {
   totalBytes: number
   receivedBytes: number
   paused: boolean
+  displayName?: string
   _sourceItem?: import('electron').DownloadItem
 }
 

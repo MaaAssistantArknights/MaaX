@@ -1,5 +1,10 @@
 import { defineStore } from 'pinia'
 
+interface AppearanceSetting {
+  bgDifferenceWithTheme: boolean
+  backgroundImage: string | null
+  darkBackgroundImage: string | null
+}
 export interface SettingState {
   reportId: string
   version: {
@@ -12,11 +17,13 @@ export interface SettingState {
       latest?: string
     }
   }
+  appearance: AppearanceSetting
 }
 
 export interface SettingAction {
   checkUpdate: () => void
   setReportId: (reportId: string) => void
+  setAppearance: (appearance: AppearanceSetting) => void
 }
 
 const useSettingStore = defineStore<'setting', SettingState, {}, SettingAction>(
@@ -34,6 +41,11 @@ const useSettingStore = defineStore<'setting', SettingState, {}, SettingAction>(
             current: 'v1.0.0'
             // latest: "v1.0.0",
           }
+        },
+        appearance: {
+          bgDifferenceWithTheme: false,
+          backgroundImage: null,
+          darkBackgroundImage: null
         }
       }
     },
@@ -41,6 +53,9 @@ const useSettingStore = defineStore<'setting', SettingState, {}, SettingAction>(
       checkUpdate () {},
       setReportId (reportId) {
         this.reportId = reportId
+      },
+      setAppearance (appearance) {
+        this.appearance = appearance
       }
     }
   }

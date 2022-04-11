@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { NInput, NSpace, NIcon, NTooltip, NButton } from 'naive-ui'
+import { NForm, NFormItem, NInput, NSpace, NIcon, NTooltip, NButton, NSwitch, NImage } from 'naive-ui'
+import _ from 'lodash'
 import IconBinary from '@/assets/icons/binary.svg?component'
 import IconWindowUi from '@/assets/icons/window-ui.svg?component'
 
@@ -29,7 +30,7 @@ function versionString (version: { current?: string, latest?: string }) {
 </script>
 
 <template>
-  <div class="setting-form">
+  <NForm class="setting-form" :label-width="150" :show-feedback="false">
     <div id="penguin-report">
       <h2 class="title">企鹅物流数据上报</h2>
       <NSpace justify="center" align="center">
@@ -37,7 +38,7 @@ function versionString (version: { current?: string, latest?: string }) {
           企鹅数据汇报ID
           <br />(仅数字部分)
         </span>
-        <n-input v-model:value="settingStore.reportId" :placeholder="''" />
+        <NInput v-model:value="settingStore.reportId" :placeholder="''" />
       </NSpace>
     </div>
 
@@ -83,10 +84,50 @@ function versionString (version: { current?: string, latest?: string }) {
       </NTooltip>
     </div>
 
+    <div id="appearance">
+      <h2 class="title">外观</h2>
+      <NSpace vertical justify="center" align="center">
+        <NFormItem label="背景随主题变换" label-placement="left">
+          <NSwitch
+            :value="settingStore.appearance.bgDifferenceWithTheme"
+            @update:value="(value) => settingStore.setAppearance({
+              ...settingStore.appearance,
+              bgDifferenceWithTheme: value
+            })"
+          />
+        </NFormItem>
+        <NSpace>
+          <NFormItem
+            label="背景图片"
+            label-placement="top"
+            :label-style="{ justifyContent: 'center' }"
+          >
+            <NImage
+              :width="100"
+              :preview-disabled="true"
+              src="https://user-images.githubusercontent.com/18511905/148931479-23aef436-2fc1-4c1e-84c9-bae17be710a5.png"
+            />
+          </NFormItem>
+          <NFormItem
+            v-show="settingStore.appearance.bgDifferenceWithTheme"
+            label="深色背景图片"
+            label-placement="top"
+            :label-style="{ justifyContent: 'center' }"
+          >
+            <NImage
+              :width="100"
+              :preview-disabled="true"
+              src="https://user-images.githubusercontent.com/18511905/148931479-23aef436-2fc1-4c1e-84c9-bae17be710a5.png"
+            />
+          </NFormItem>
+        </NSpace>
+      </NSpace>
+    </div>
+
     <div id="develop">
       <h2 class="title">开发者</h2>
     </div>
-  </div>
+  </NForm>
 </template>
 
 <style lang="less" scoped>
@@ -96,5 +137,9 @@ function versionString (version: { current?: string, latest?: string }) {
 
 .title {
   text-align: left;
+}
+
+#appearance {
+  text-align: center;
 }
 </style>

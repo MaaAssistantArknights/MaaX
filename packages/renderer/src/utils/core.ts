@@ -62,7 +62,7 @@ export async function installCore (currentVersion: string | undefined = undefine
   const packageInfo = await getPackageInfo()
   if (_.isError(packageInfo)) {
     message.type = 'error'
-    message.content = '服务器睡着惹(￣o￣) . z Z，待会再试试'
+    message.content = '服务器睡着惹(￣o￣) . z Z，待会再试试吧'
     setTimeout(() => {
       message.destroy()
     }, 5000)
@@ -75,6 +75,7 @@ export async function installCore (currentVersion: string | undefined = undefine
     path: tempdir
   })
   const updateListener = (_: Electron.IpcRendererEvent, item: any): void => {
+    console.log(item.progress)
     message.content = `MaaCore下载中 ${Math.ceil(item.progress * 100)}%`
   }
   const doneListener = (_: Electron.IpcRendererEvent, item: any): void => {
@@ -86,7 +87,7 @@ export async function installCore (currentVersion: string | undefined = undefine
   window.ipcRenderer.on('download:itemUpdate', updateListener)
   window.ipcRenderer.on('download:itemDone', doneListener)
 
-  window.ipcRenderer.once('unzip:done', async (event) => {
+  const zipDoneListener = async (): Promise<void> => {
     window.ipcRenderer.off('download:itemUpdate', updateListener)
     window.ipcRenderer.off('download:itemDone', doneListener)
 
@@ -104,5 +105,15 @@ export async function installCore (currentVersion: string | undefined = undefine
         message.destroy()
       }, 5000)
     }
+    window.ipcRenderer.off('unzip:done', zipDoneListener)
+  }
+  window.ipcRenderer.on('unzip:done', zipDoneListener)
+  await new Promise<void>((resolve) => {
+    const timer = setInterval(() => {
+      if (window.ipcRenderer.listenerCount('unzip:done') === 0) {
+        clearInterval(timer)
+        resolve()
+      }
+    })
   })
 }

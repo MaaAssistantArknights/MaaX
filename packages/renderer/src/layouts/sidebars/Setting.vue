@@ -19,6 +19,7 @@ import { NButton, NIcon, NAnchor, NAnchorLink } from 'naive-ui'
     >
       <NAnchorLink title="企鹅物流数据上报" href="#penguin-report" />
       <NAnchorLink title="当前版本" href="#version" />
+      <NAnchorLink title="外观" href="#appearance" />
       <NAnchorLink title="开发者" href="#develop" />
     </NAnchor>
   </div>

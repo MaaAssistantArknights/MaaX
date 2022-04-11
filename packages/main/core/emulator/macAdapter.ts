@@ -3,8 +3,8 @@ import psList from 'ps-list'
 import { Singleton } from '@common/singleton'
 
 @Singleton
-class WindowsEmulator extends EmulatorAdapter {
-  protected async getBluestack (): Promise<void> {
+class MacEmulator extends EmulatorAdapter {
+  protected async getBluestack (): Promise<Emulator> {
 
   }
 
@@ -32,4 +32,4 @@ class WindowsEmulator extends EmulatorAdapter {
   }
 }
 
-export default new WindowsEmulator()
+export default new MacEmulator()
