@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron'
-import { getEmulators, getDeviceUuid } from '@main/core/emulator'
-import { $ } from '@main/core/emulator/shell'
+import { getEmulators, getDeviceUuid } from '@main/deviceDetector'
+import { $ } from '@main/utils/shell'
 import logger from '@main/utils/logger'
 
 export default function useEmulatorHooks (): void {

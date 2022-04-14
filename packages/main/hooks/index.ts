@@ -6,6 +6,7 @@ import useStorageHooks from './storage'
 import useOsHooks from './os'
 import usePathHooks from './path'
 import useUnzipHooks from './unzip'
+import useInstallerHooks from './installer'
 
 export default function useHooks (): void {
   useLoggerHooks()
@@ -16,4 +17,5 @@ export default function useHooks (): void {
   useOsHooks()
   usePathHooks()
   useUnzipHooks()
+  useInstallerHooks()
 }

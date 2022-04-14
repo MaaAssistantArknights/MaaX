@@ -23,5 +23,8 @@ export default function useUnzipHooks (): void {
         event.reply('unzip:done')
         fs.rmSync(src)
       })
+      .on('error', error => {
+        console.error(error)
+      })
   })
 }

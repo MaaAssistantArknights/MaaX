@@ -1,5 +1,5 @@
 import { app, ipcMain } from 'electron'
-import { Assistant } from '@main/core'
+import { Assistant } from '@main/coreLoader'
 import path from 'path'
 import { existsSync, mkdirSync } from 'fs'
 

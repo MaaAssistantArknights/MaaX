@@ -1,9 +1,9 @@
-import EmulatorAdapter from './adapter'
+import EmulatorAdapter from './adapterBase'
 import psList from 'ps-list'
-import { Singleton } from '@common/singleton'
+import { Singleton } from '@main/../common/function/singletonDecorator'
 
 @Singleton
-class LinuxEmulator extends EmulatorAdapter {
+class MacEmulator extends EmulatorAdapter {
   protected async getBluestack (): Promise<Emulator> {
 
   }
@@ -32,4 +32,4 @@ class LinuxEmulator extends EmulatorAdapter {
   }
 }
 
-export default new LinuxEmulator()
+export default new MacEmulator()

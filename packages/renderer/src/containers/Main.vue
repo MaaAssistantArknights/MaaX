@@ -8,10 +8,10 @@ import DownloadModal from '@/components/DownloadModal.vue'
 const themeVars = useThemeVars()
 window.$message = useMessage()
 
-const coreVersion: Ref<string | null | undefined> = ref('')
+const coreVersion: Ref<string | null> = ref('')
 
 onMounted(async () => {
-  // coreVersion.value = await version.core()
+  coreVersion.value = await version.core()
 })
 
 </script>

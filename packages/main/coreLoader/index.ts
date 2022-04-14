@@ -2,11 +2,11 @@ import ffi, { DynamicLibrary } from 'ffi-napi'
 import ref from 'ref-napi'
 import path from 'path'
 import { existsSync, mkdirSync } from 'fs'
-import Window from '@main/window/factory'
+import WindowManager from '@main/windowManager'
 import logger from '@main/utils/logger'
 import _ from 'lodash'
 import { app } from 'electron'
-import Storage from '../storage'
+import Storage from '@main/storageManager'
 
 /** Some types for core */
 const BoolType = ref.types.bool
@@ -222,7 +222,7 @@ const cb = ffi.Callback(
     console.log(detail)
     const callback = handleCallback[msg as AsstMsg](msg, detail)
     // TODO: 一堆类型注解没写
-    new Window().get().webContents.send(
+    new WindowManager().getWindow().webContents.send(
       (callback as any).name.toString(),
       callback
     )
@@ -271,10 +271,7 @@ class Assistant {
   }
 
   private constructor () {
-    console.log(Assistant.libPath)
-
     dependences[process.platform].forEach((lib) => {
-      console.log(lib)
       // ffi.Library(path.join(Assistant.libPath, lib));
       this.DepLibs.push(ffi.DynamicLibrary(path.join(Assistant.libPath, lib)))
     })

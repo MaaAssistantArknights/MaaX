@@ -1,7 +1,7 @@
 
 import { app, BrowserWindow, DownloadItem } from 'electron'
 import { getBase64Bytes, getFileName } from './util'
-import { uuidV4 } from '@common/uuid'
+import { uuidV4 } from '@common/function/uuid'
 
 /**
  * 获取下载中的字节数据
@@ -48,10 +48,8 @@ export const getDownloadIndex = (data: IDownloadFile[], id: string): number =>
  * @param url - 下载地址
  * @param data - 下载记录
  */
-export const isExistItem = (url: string, data: IDownloadFile[]): IDownloadFile | null => {
-  const item = data.filter(d => d.url === url)
-
-  return (item.length > 0) ? item[0] : null
+export const isExistItem = (url: string, data: IDownloadFile[]): IDownloadFile | undefined => {
+  return data.find(d => d.url === url)
 }
 
 /**

@@ -1,11 +1,11 @@
 /* eslint-disable vue/max-len */
-import EmulatorAdapter from './adapter'
-import { Singleton } from '@common/singleton'
+import EmulatorAdapter from './adapterBase'
+import { Singleton } from '@common/function/singletonDecorator'
 import path from 'path'
 import { readFileSync, existsSync } from 'fs'
 import { assert } from 'console'
 import _ from 'lodash'
-import { $ } from './shell'
+import { $ } from '@main/utils/shell'
 import logger from '@main/utils/logger'
 
 const defaultAdbPath = path.join(__dirname, '../platform-tools', 'adb.exe')
