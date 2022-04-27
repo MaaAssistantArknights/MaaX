@@ -3,7 +3,7 @@ abstract class ComponentInstaller {
 
   protected abstract onStart (): void
   protected abstract onProgress (progress: number): void
-  protected abstract onCancel (): void
+  protected abstract onException (): void
 }
 
 export default ComponentInstaller

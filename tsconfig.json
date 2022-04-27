@@ -8,11 +8,14 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "sourceMap": true,
-    "baseUrl": "./",
+    "baseUrl": ".",
     "strict": true,
-    "paths": {},
+    "paths": {
+      "@common/*": ["./packages/common/*"]
+    },
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "types": ["naive-ui/volar"]
-  }
+  },
+  "include": ["packages/@types/**/*.d.ts", "packages/common/**/*.ts"]
 }

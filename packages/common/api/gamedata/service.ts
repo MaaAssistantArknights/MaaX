@@ -1,4 +1,4 @@
-import ApiService from '@/api/ApiService'
+import ApiService from '@common/api/ApiService'
 
 /**
  * ! important:

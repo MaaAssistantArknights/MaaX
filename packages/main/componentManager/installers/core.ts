@@ -1,10 +1,14 @@
 import ComponentInstaller from '../componentInstaller'
 import { Singleton } from '@common/function/singletonDecorator'
+import axios from 'axios'
 
 @Singleton
 class CoreInstaller extends ComponentInstaller {
   public install (): void {
-
+    const os = {
+      arch: process.arch,
+      platform: process.platform
+    }
   }
 
   public get status (): InstallerStatus {
@@ -19,7 +23,7 @@ class CoreInstaller extends ComponentInstaller {
 
   }
 
-  protected onCancel (): void {
+  protected onException (): void {
 
   }
 

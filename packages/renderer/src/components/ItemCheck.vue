@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { NCheckbox, NPopover } from 'naive-ui'
-import { maa as MaaApi } from '@/api'
+import { maa as MaaApi } from '@common/api'
 import ItemCard from './ItemCard.vue'
 
 const props = defineProps<{

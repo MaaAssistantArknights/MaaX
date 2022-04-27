@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, Ref, onMounted } from 'vue'
-import { maa } from '@/api'
+import { maa } from '@common/api'
 import { NCard, NText, NTag, NSkeleton } from 'naive-ui'
 
 const props = defineProps<{

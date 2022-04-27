@@ -1,4 +1,4 @@
-import { maa } from '@/api'
+import { maa } from '@common/api'
 import _ from 'lodash'
 import downloader from '@/hooks/caller/download'
 import asst from '@/hooks/caller/asst'

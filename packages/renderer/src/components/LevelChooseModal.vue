@@ -8,7 +8,7 @@ import {
   NTooltip
   // useThemeVars
 } from 'naive-ui'
-import gamedata from '@/api/gamedata'
+import gamedata from '@common/api/gamedata'
 import { computed, onMounted, Ref, ref } from 'vue'
 
 // const themeVars = useThemeVars()

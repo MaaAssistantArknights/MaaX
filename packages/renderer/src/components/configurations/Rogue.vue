@@ -16,7 +16,7 @@ import {
   NTimePicker,
   NAvatar
 } from 'naive-ui'
-import gamedataApi from '@/api/gamedata'
+import gamedataApi from '@common/api/gamedata'
 import { getOperatorAvatar, getSkillImage } from '@/utils/game_image'
 import {
   secondsToFormattedDuration,
