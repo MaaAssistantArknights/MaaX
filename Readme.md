@@ -52,3 +52,7 @@
   4. 重启终端，输入`yarn dev`
 * 调试renderer
   1. 按照上述步骤启动即可，会帮你打开Chrome Devtools，且带有最新的Vue Dev插件
+
+### 开发者群
+
+QQ 群：655031753
