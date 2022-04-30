@@ -1,73 +1,25 @@
-import axios from 'axios'
+import { MD5 } from 'crypto-js'
 
-const baseUrl = 'https://prts.wiki/rest.php/v1/file/File:'
+const baseUrl = 'https://prts.wiki/images'
 
-export async function getOperatorAvatar (operatorCode: string): Promise<string> {
-  const filename = `头像_${operatorCode}.png`
-  const url = new URL(`${baseUrl}${filename}`)
-  const response = await axios.get(url.href)
-  if (response.status === 200 && response.data.preferred) {
-    return `http:${response.data.preferred.url as string}`
-  }
-  return ''
+const getFileUrl = (filename: string): string => {
+  const hash = String(MD5(filename))
+  return `${baseUrl}/${hash[0]}/${hash.substring(0, 2)}/${filename}`
 }
 
-export async function getOperatorHalfImage (operatorCode: string): Promise<string> {
-  const filename = `半身像_${operatorCode}.png`
-  const url = new URL(`${baseUrl}${filename}`)
-  const response = await axios.get(url.href)
-  if (response.status === 200 && response.data.preferred) {
-    return `http:${response.data.preferred.url as string}`
-  }
-  return ''
-}
+export const getOperatorAvatar = (operatorCode: string): string => getFileUrl(`头像_${operatorCode}.png`)
 
-export async function getOperatorFullImage (operatorCode: string): Promise<string> {
-  const filename = `立绘_${operatorCode}.png`
-  const url = new URL(`${baseUrl}${filename}`)
-  const response = await axios.get(url.href)
-  if (response.status === 200 && response.data.preferred) {
-    return `http:${response.data.preferred.url as string}`
-  }
-  return ''
-}
+export const getOperatorHalfImage = (operatorCode: string): string => getFileUrl(`半身像_${operatorCode}.png`)
 
-export async function getSkillImage (skillName: string): Promise<string> {
-  const filename = `技能_${skillName}.png`
-  const url = new URL(`${baseUrl}${filename}`)
-  const response = await axios.get(url.href)
-  if (response.status === 200 && response.data.preferred) {
-    return `http:${response.data.preferred.url as string}`
-  }
-  return ''
-}
+export const getOperatorFullImage = (operatorCode: string): string => getFileUrl(`立绘_${operatorCode}.png`)
 
-export async function getItemBorderedImage (itemName: string): Promise<string> {
-  const filename = `道具_带框_${itemName}.png`
-  const url = new URL(`${baseUrl}${filename}`)
-  const response = await axios.get(url.href)
-  if (response.status === 200 && response.data.preferred) {
-    return `http:${response.data.preferred.url as string}`
-  }
-  return ''
-}
+export const getSkillImage = (skillName: string): string => getFileUrl(`技能_${skillName}.png`)
 
-export async function getActivityImage (activityName: string): Promise<string> {
-  const filename = `活动名称_${activityName}.png`
-  const url = new URL(`${baseUrl}${filename}`)
-  const response = await axios.get(url.href)
-  if (response.status === 200 && response.data.preferred) {
-    return `http:${response.data.preferred.url as string}`
-  }
-  return ''
-}
+export const getItemBorderedImage = (itemName: string): string => getFileUrl(`道具_带框_${itemName}.png`)
 
-export async function getMainlineImage (mainlineName: string): Promise<string> {
-  const filename = `章节名称_${mainlineName}.png`
-  const url = new URL(`${baseUrl}${filename}`)
-  const response = await axios.get(url.href)
-  if (response.status === 200 && response.data.preferred) {
-    return `http:${response.data.preferred.url as string}`
-  }
-  return ''
-}
+export const getActivityImage = (activityName: string): string => getFileUrl(`活动名称_${activityName}.png`)
+
+export const getMainlineImage = (mainlineName: string): string => getFileUrl(`章节名称_${mainlineName}.png`)
+
+export const getProfessionImage = (professionName: string, isWhite = false): string =>
+  getFileUrl(`图标_职业_${professionName}_大图${isWhite ? '_白' : ''}.png`)

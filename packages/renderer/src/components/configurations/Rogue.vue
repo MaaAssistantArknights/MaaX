@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, Ref } from 'vue'
+import { ref, onMounted, Ref, h, computed } from 'vue'
 import _ from 'lodash'
 import {
   NForm,
@@ -8,12 +8,9 @@ import {
   NModal,
   NSelect,
   NCard,
-  // NImage,
-  // NSkeleton,
-  NScrollbar,
-  // NInputNumber,
   NSpace,
   NTimePicker,
+  NDataTable,
   NAvatar
 } from 'naive-ui'
 import gamedataApi from '@common/api/gamedata'
@@ -22,18 +19,19 @@ import {
   secondsToFormattedDuration,
   formattedDurationToSeconds
 } from '@/utils/time_picker'
+import OperatorSelector from '@/components/OperatorSelector.vue'
 
-type Strategies = 'ToTheEnd' | 'AfterFirstLevel' | 'AfterMoney'
+type Strategies = 'ToTheEnd' | 'AfterFirstLevel' | 'AfterMoney';
 
 interface RogueConfiguration {
-  strategy: Strategies
-  operators: Array<string>
-  duration: number
+  strategy: Strategies;
+  operators: Array<string>;
+  duration: number;
 }
 
 const strategyOptions: Array<{
-  label: string
-  value: Strategies
+  label: string;
+  value: Strategies;
 }> = [
   {
     label: '尽可能往后打',
@@ -49,34 +47,110 @@ const strategyOptions: Array<{
   }
 ]
 
+const skillUsageOptions: Array<{
+  label: string;
+  value: number;
+}> = [
+  {
+    label: '不自动使用',
+    value: 0
+  },
+  {
+    label: '好了就用，有多少次用多少次',
+    value: 1
+  },
+  {
+    label: '好了就用，仅使用一次',
+    value: 2
+  },
+  {
+    label: '自动判断使用时机',
+    value: 3
+  }
+]
+
 const props = defineProps<{
-  configurations: RogueConfiguration
+  configurations: RogueConfiguration;
 }>()
 
 const showModal = ref(false)
+const showSelectModal = ref(false)
 
-const operators: Ref<any[]> = ref([])
+const selectedOperators: Ref<unknown[]> = ref([])
 const allSkills: Ref<any> = ref()
+const loading = ref(false)
 
 onMounted(async () => {
-  operators.value = Object.values(
-    (await gamedataApi.getAllOperators()) as Object
-  ).filter((operator) => operator.nationId !== null)
+  loading.value = true
 
-  operators.value.forEach(async (operator) => {
-    operator.image = await getOperatorAvatar(operator.name)
-  })
-
-  allSkills.value = await gamedataApi.getAllSkills() as any
-  Object.keys(allSkills.value).forEach(async key => {
+  allSkills.value = (await gamedataApi.getAllSkills()) as any
+  Object.keys(allSkills.value).forEach((key) => {
     allSkills.value[key].name = allSkills.value[key].levels[0].name
-    try {
-      allSkills.value[key].image = await getSkillImage(allSkills.value[key].name)
-    } catch (e) {
-      allSkills.value[key].image = null
-    }
+    allSkills.value[key].image = getSkillImage(allSkills.value[key].name)
   })
+  loading.value = false
 })
+
+const addOperator = (operator: unknown) => {
+  console.log('emit add:operator')
+  selectedOperators.value.push({
+    operator,
+    skill: 1,
+    skillUsage: 0
+  })
+}
+
+const removeOperator = (operator: unknown) => {
+  console.log('emit remove:operator')
+  _.remove(selectedOperators.value, (op) => op.operator.name === operator.name)
+}
+
+const createColumns = () => [
+  {
+    title: '干员',
+    key: 'operator',
+    render: (row) => h(NAvatar, { size: 36, src: getOperatorAvatar(row.operator.name) })
+  },
+  {
+    title: '技能',
+    key: 'skill',
+    render: (row) => {
+      const skillAvatar = (skill: unknown, index: number) =>
+        h(NAvatar, {
+          size: 36,
+          src: allSkills.value[skill.skillId].image,
+          onClick: () => { row.skill = index + 1 },
+          class: `skill-avatar ${row.skill === index + 1 ? 'selected' : ''}`
+        })
+      return h(NSpace, {}, () => _.map(row.operator.skills, skillAvatar))
+    }
+  },
+  {
+    title: '技能用法',
+    key: 'skillUsage',
+    render: (row) => h(NSelect, {
+      value: row.skillUsage,
+      options: skillUsageOptions,
+      onUpdateValue: (value) => { row.skillUsage = value }
+    })
+  },
+  {
+    title: '操作',
+    key: 'actions',
+    render: (row) =>
+      h(
+        NButton,
+        {
+          size: 'small',
+          type: 'error',
+          onClick: () => removeOperator(row.operator)
+        },
+        {
+          default: () => '删除'
+        }
+      )
+  }
+]
 </script>
 
 <template>
@@ -98,11 +172,7 @@ onMounted(async () => {
           :actions="['confirm']"
           @update:formatted-value="
             (value) =>
-              _.set(
-                props.configurations,
-                'duration',
-                formattedDurationToSeconds(value)
-              )
+              _.set(props.configurations, 'duration', formattedDurationToSeconds(value))
           "
         />
       </NFormItem>
@@ -111,51 +181,34 @@ onMounted(async () => {
         <NSelect
           :value="props.configurations.strategy"
           :options="strategyOptions"
-          @update:value="
-            (value) => _.set(props.configurations, 'strategy', value)
-          "
+          @update:value="(value) => _.set(props.configurations, 'strategy', value)"
         />
       </NFormItem>
       <NFormItem :show-label="false">
-        <NButton
-          quaternary
-          type="primary"
-          @click="showModal = true"
-          :focusable="false"
-        >干员招募顺序...</NButton>
+        <NButton quaternary type="primary" @click="showModal = true" :focusable="false"
+          >选择优先招募干员...
+        </NButton>
       </NFormItem>
     </NSpace>
     <NModal
       v-model:show="showModal"
-      title="干员招募顺序"
+      title="优先招募干员"
       display-directive="show"
       role="dialog"
       aria-modal="true"
     >
-      <NCard
-        style="width: 600px"
-        role="dialog"
-        aria-modal="true"
-        title="干员招募顺序"
-      >
-        <NScrollbar :style="{ maxHeight: '600px' }">
-          <NSpace
-            :align="'center'"
-            v-for="operator in operators.reverse()"
-            :key="operator.name"
-            class="operator-row"
-          >
-            <!-- <span>{{ operator.name }}</span> -->
-            <NAvatar :src="operator.image" :size="48" />
-            <NSpace class="operator-skills">
-              <NAvatar
-                v-for="(skill, index) in operator.skills"
-                :key="index"
-                :src="allSkills[skill.skillId].image"
-              />
-            </NSpace>
-          </NSpace>
-        </NScrollbar>
+      <NCard style="width: 600px" role="dialog" aria-modal="true" title="优先招募干员">
+        <template #header-extra>
+          <NButton @click="() => (showSelectModal = true)">选择</NButton>
+        </template>
+        <NDataTable class="operator-table" :data="selectedOperators" :columns="createColumns()" />
+        <OperatorSelector
+          :show="showSelectModal"
+          :selected-operators="selectedOperators.map((value) => value.operator)"
+          @update:show="(value) => (showSelectModal = value)"
+          @add:operator="addOperator"
+          @remove:operator="removeOperator"
+        />
       </NCard>
     </NModal>
   </NForm>
@@ -169,5 +222,17 @@ onMounted(async () => {
 
 .operator-skills {
   flex: 1;
+}
+
+.operator-table :deep(.skill-avatar) {
+  position: relative;
+  &.selected::before {
+    content: '';
+    box-sizing: border-box;
+    position: absolute;
+    border: 2px solid rgb(234, 173, 61);
+    width: 100%;
+    height: 100%;
+  }
 }
 </style>

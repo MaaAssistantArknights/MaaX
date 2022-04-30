@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "@types/cron": "^1.7.3",
+    "@types/crypto-js": "^4.1.1",
     "@types/ffi-napi": "^4.0.5",
     "@types/sortablejs": "^1.10.7",
     "@types/unzipper": "^0.10.5",
@@ -61,6 +62,7 @@
   ],
   "dependencies": {
     "cron": "^1.8.2",
+    "crypto-js": "^4.1.1",
     "electron-acrylic-window": "^0.5.11",
     "electron-log": "^4.4.6",
     "electron-store": "^8.0.1",

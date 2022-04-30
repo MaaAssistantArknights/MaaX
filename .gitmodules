@@ -1,0 +1,3 @@
+[submodule "packages/common/ArknightsGameData"]
+	path = packages/common/ArknightsGameData
+	url = https://github.com/Kengxxiao/ArknightsGameData.git

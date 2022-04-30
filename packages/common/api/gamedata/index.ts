@@ -1,22 +1,20 @@
-import service from './service'
-
 export default {
   async getAllStages () {
-    return await service.get('/stage_table.json')
+    return (await import('@common/ArknightsGameData/zh_CN/gamedata/excel/stage_table.json')).default
   },
   async getAllActivities () {
-    return await service.get('/activity_table.json')
+    return (await import('@common/ArknightsGameData/zh_CN/gamedata/excel/activity_table.json')).default
   },
   async getAllItems () {
-    return await service.get('/item_table.json')
+    return (await import('@common/ArknightsGameData/zh_CN/gamedata/excel/item_table.json')).default
   },
   async getAllOperators () {
-    return await service.get('/character_table.json')
+    return (await import('@common/ArknightsGameData/zh_CN/gamedata/excel/character_table.json')).default
   },
   async getAllSkills () {
-    return await service.get('/skill_table.json')
+    return (await import('@common/ArknightsGameData/zh_CN/gamedata/excel/skill_table.json')).default
   },
   async getAllZones () {
-    return await service.get('/zone_table.json')
+    return (await import('@common/ArknightsGameData/zh_CN/gamedata/excel/zone_table.json')).default
   }
 }

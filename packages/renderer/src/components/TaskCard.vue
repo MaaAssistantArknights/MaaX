@@ -105,7 +105,7 @@ const processBarColor = (taskStatus: TaskStatus) => {
         </div>
       </template>
       <div class="card-content">
-        <NScrollbar style="height: 100px">
+        <NScrollbar style="height: 105px">
           <slot></slot>
         </NScrollbar>
       </div>
