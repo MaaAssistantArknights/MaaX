@@ -189,7 +189,7 @@ class WindowsEmulator extends EmulatorAdapter {
     console.log(`XY adb_path: ${e.adb_path}`)
 
     const regExp = /127.0.0.1:(\d{4,5})\s*/g;
-    [...(await $`${e.adb_path} devices`).stdout.matchAll(regExp)]
+    [...(await $`"${e.adb_path}" devices`).stdout.matchAll(regExp)]
       .map((v) => v[1])
       .some((v) => {
         if (!inUsePorts.includes(v)) {
@@ -213,7 +213,7 @@ class WindowsEmulator extends EmulatorAdapter {
     )
     logger.debug(`nox adb_path: ${e.adb_path}`)
     const regExp = /127.0.0.1:(\d{4,5})\s*/g;
-    [...(await $`${e.adb_path} devices`).stdout.matchAll(regExp)]
+    [...(await $`"${e.adb_path}" devices`).stdout.matchAll(regExp)]
       .map((v) => v[1])
       .some((v) => {
         if (!inUsePorts.includes(v)) {
