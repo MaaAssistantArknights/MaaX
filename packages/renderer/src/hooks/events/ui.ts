@@ -6,9 +6,7 @@
 export default function useUiHooks (): void {
   window.ipcRenderer.on('ui:message', (event, arg) => {
     // ? 是否需要用string包裹防止xss
-    event.returnValue = window.$message.create(String(arg.message), {
-      type: arg.type
-    })
+    event.returnValue = window.$message.create(String(arg.message), arg.options)
   })
 
   window.ipcRenderer.on('ui:loaded', () => {

@@ -7,18 +7,14 @@ const components: Record<ComponentName, Component> = {
   adb: componentAdb
 }
 
-export default function registerComponentManager (): void {
-  ipcMainHandle({
-    name: 'componentManager:getStatus',
-    listener: async (event, componentName: ComponentName) => {
+export const registerComponentManager = (): void => {
+  ipcMainHandle('componentManager:getStatus',
+    async (event, componentName: ComponentName) => {
       return components[componentName]?.status
-    }
-  })
+    })
 
-  ipcMainHandle({
-    name: 'componentManager:install',
-    listener: async (event, componentName: ComponentName) => {
+  ipcMainHandle('componentManager:install',
+    async (event, componentName: ComponentName) => {
       components[componentName]?.installer?.install()
-    }
-  })
+    })
 }

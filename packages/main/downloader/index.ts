@@ -190,7 +190,7 @@ const retryDownloadFile = (data: IDownloadFile): boolean => {
  * 下载文件
  * @param newItem - 新下载项
  */
-const downloadFile = (newItem: INewDownloadFile): null => {
+export const downloadFile = (newItem: INewDownloadFile): null => {
   const { url, fileName, path: savePath } = newItem
   const newFileName = getFileName(fileName ?? '', url) // 处理文件名
 

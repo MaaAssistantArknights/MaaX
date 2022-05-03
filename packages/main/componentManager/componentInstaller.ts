@@ -1,5 +1,5 @@
 abstract class ComponentInstaller {
-  public abstract install (): void
+  public abstract install (): Promise<void>
 
   protected abstract onStart (): void
   protected abstract onProgress (progress: number): void

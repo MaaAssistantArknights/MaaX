@@ -1,5 +1,5 @@
 // 通过ipcMain.handle定义的事件名称
-type IpcMainEventName =
+type IpcMainHandleEvent =
   | 'coreLoader:getCorePath'
   | 'coreLoader:getCoreVersion'
   | 'coreLoader:loadResource'
@@ -42,15 +42,16 @@ type IpcMainEventName =
   | 'windowManager:isMaximized'
 
 // 通过ipcRenderer.on定义的事件名称
-type IpcRendererEventName =
+type IpcRendererHandleEvent =
   | 'windowManager:updateMaximized'
+  | 'ui:message'
 
 interface IpcMainEvent<T> {
-  name: IpcMainEventName
+  name: IpcMainHandleEvent
   listener: (event: import('electron').IpcMainInvokeEvent, ...args: any[]) => Promise<T> | T | undefined
 }
 
 interface IpcRendererEvent<T> {
-  name: IpcRendererEventName
+  name: IpcRendererHandleEvent
   listener: (event: import('electron').IpcRendererEvent, ...args: any[]) => Promise<T> | T | undefined
 }

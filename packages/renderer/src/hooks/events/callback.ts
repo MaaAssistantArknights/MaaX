@@ -277,7 +277,7 @@ export default function useCallbackEvents (): void {
     const task = taskStore.getTask(arg.uuid, 'recruit')
     console.log(task)
     const curProgress: number = task.progress
-    const times = task.configurations.maximum_times_of_recruitments
+    const times = task?.configurations.maximum_times_of_recruitments
     const newProgress = _.round(Number(curProgress) + 100 / times)
     taskStore.updateTaskStatus(arg.uuid, 'recruit', 'processing', newProgress)
     console.log(arg)

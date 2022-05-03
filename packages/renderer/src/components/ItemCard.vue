@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { ref, Ref, onMounted } from 'vue'
-import { maa } from '@common/api'
+import { gamedata } from '@common/api'
 import { NCard, NText, NTag, NSkeleton } from 'naive-ui'
 
 const props = defineProps<{
   name: string;
 }>()
 
-const itemApi = maa.gamedata.items
+const itemApi = gamedata.getAllItems()
 
 const info: Ref<Api.Maa.Item | undefined> = ref()
 const loading = ref(true)

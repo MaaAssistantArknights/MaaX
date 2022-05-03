@@ -53,6 +53,10 @@ function handleCustomConnect () {
   }
 }
 
+function install () {
+  window.ipcRenderer.invoke('componentManager:install', 'core')
+}
+
 </script>
 
 <template>
@@ -88,6 +92,7 @@ function handleCustomConnect () {
           </NButton>
         </NFormItem>
       </NForm>
+      <NButton @click="install">安装</NButton>
     </div>
   </div>
 </template>

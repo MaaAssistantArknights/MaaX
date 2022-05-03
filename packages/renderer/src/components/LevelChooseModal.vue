@@ -8,17 +8,17 @@ import {
   NTooltip
   // useThemeVars
 } from 'naive-ui'
-import gamedata from '@common/api/gamedata'
+import { gamedata } from '@common/api'
 import { computed, onMounted, Ref, ref } from 'vue'
 
 // const themeVars = useThemeVars()
 
 const props = defineProps<{
-  levels: Array<Level>
+  levels: Array<Level>;
   special: {
     times: number;
-    type: 'current' | 'last'
-  }
+    type: 'current' | 'last';
+  };
 }>()
 
 const allZones: Ref<Api.Maa.Zone[]> = ref([])
@@ -27,18 +27,22 @@ const allStages: Ref<Api.Maa.Stage[]> = ref([])
 onMounted(async () => {
   const zoneRes = await gamedata.getAllZones()
   const stageRes = await gamedata.getAllStages()
-  allZones.value = Object.values(zoneRes.zones)
-  allStages.value = Object.values(stageRes.stages)
+  allZones.value = Object.values(zoneRes.zones) as Api.Maa.Zone[]
+  allStages.value = Object.values(stageRes.stages) as Api.Maa.Stage[]
 })
 
 const stages = computed(() => {
-  const stageCodes = props.levels.map(level => level.code)
-  return allStages.value.filter(stage => stageCodes.findIndex(code => code === stage.code) !== -1)
+  const stageCodes = props.levels.map((level) => level.code)
+  return allStages.value.filter(
+    (stage) => stageCodes.findIndex((code) => code === stage.code) !== -1
+  )
 })
 
 const zones = computed(() => {
-  const zoneIds = stages.value.map(stage => stage.zoneId)
-  return allZones.value.filter(zone => zoneIds.findIndex(id => id === zone.zoneID) !== -1)
+  const zoneIds = stages.value.map((stage) => stage.zoneId)
+  return allZones.value.filter(
+    (zone) => zoneIds.findIndex((id) => id === zone.zoneID) !== -1
+  )
 })
 
 const emit = defineEmits(['update:special_type'])
@@ -56,7 +60,7 @@ function handleSpecialTypeChange () {
   <NCard
     class="level-choose"
     title="关卡选择"
-    style="width: 600px;"
+    style="width: 600px"
     role="dialog"
     aria-modal="true"
   >
@@ -68,26 +72,15 @@ function handleSpecialTypeChange () {
       <div class="level-card">
         <NTooltip>
           <template #trigger>
-            <NButton
-              text
-              :focusable="false"
-              @click="handleSpecialTypeChange"
-            >
-              {{
-                special.type ===
-                  'current' ? '当前关卡' : '上次作战'
-              }}
+            <NButton text :focusable="false" @click="handleSpecialTypeChange">
+              {{ special.type === "current" ? "当前关卡" : "上次作战" }}
             </NButton>
           </template>
-          {{ `点击切换到“${special.type !== 'current' ? '当前关卡' : '上次作战'}”` }}
+          {{ `点击切换到“${special.type !== "current" ? "当前关卡" : "上次作战"}”` }}
         </NTooltip>
         <NInputNumber v-model:value="$props.special.times" size="small" />
       </div>
-      <div
-        class="level-card"
-        v-for="(level, index) in props.levels"
-        :key="level.code"
-      >
+      <div class="level-card" v-for="(level, index) in props.levels" :key="level.code">
         <NSpace :size="2">
           <span>
             {{ zones[index]?.zoneNameFirst || "" }}

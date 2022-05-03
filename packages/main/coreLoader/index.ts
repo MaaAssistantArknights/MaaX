@@ -261,7 +261,7 @@ class Assistant {
     if (!_.isString(libPath) || !existsSync(libPath)) {
       logger.error(`原资源路径： ${libPath}, 更新后：${this.defaultLibPath}`)
       libPath = this.defaultLibPath
-      mkdirSync(libPath)
+      if (!existsSync(libPath)) mkdirSync(libPath)
     }
     if (path.isAbsolute(libPath)) {
       libPath = path.resolve(libPath)

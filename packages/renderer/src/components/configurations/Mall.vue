@@ -3,7 +3,7 @@ import { computed, ref } from 'vue'
 import { NButton, NModal, NCard, NText, NDivider } from 'naive-ui'
 import useTaskStore from '@/store/tasks'
 import router from '@/router'
-import ItemCheck from '../ItemCheck.vue'
+// import ItemCheck from '../ItemCheck.vue'
 
 const taskStore = useTaskStore()
 
@@ -99,13 +99,13 @@ function handleItemCheckUpdate (item: string, checked: boolean) {
           <NDivider />
           <div class="item-group">
             <NText>{{ group.title }}</NText>
-            <ItemCheck
+            <!-- <ItemCheck
               v-for="(item) in group.items"
               :key="item"
               :name="item"
               :checked="!configuration.exclude.has(item)"
               @update:checked="(checked) => handleItemCheckUpdate(item, checked)"
-            />
+            /> -->
           </div>
         </div>
       </NCard>

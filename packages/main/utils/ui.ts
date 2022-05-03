@@ -1,10 +1,9 @@
-import WindowManager from '@main/windowManager'
-
-type MessageType = 'info' | 'success' | 'warning' | 'error' | 'loading' | 'default'
+import { ipcMainSend } from '@main/utils/ipc-main'
+import type { MessageOptions } from 'naive-ui/lib/message/index'
 
 export default {
-  message: (message: string, type: MessageType) => new WindowManager().getWindow().webContents.send('ui:message', {
+  message: (message: string, options: MessageOptions = {}) => ipcMainSend('ui:message', {
     message,
-    type
+    options
   })
 }
