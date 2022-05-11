@@ -13,7 +13,7 @@ import {
   NDataTable,
   NAvatar
 } from 'naive-ui'
-import gamedataApi from '@common/api/gamedata'
+import gamedataApi from '@/api/gamedata'
 import { getOperatorAvatar, getSkillImage } from '@/utils/game_image'
 import {
   secondsToFormattedDuration,

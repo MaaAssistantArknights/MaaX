@@ -70,6 +70,7 @@
     "electron-util": "^0.17.2",
     "execa": "^5.1.1",
     "ffi-napi": "^4.0.3",
+    "nodejs-file-downloader": "^4.9.3",
     "ps-list": "^7.2.0",
     "ref-array-napi": "^1.2.2",
     "ref-napi": "^3.0.3",

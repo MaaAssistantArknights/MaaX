@@ -349,7 +349,7 @@
   resolved "https://registry.npmmirror.com/@types/sortablejs/-/sortablejs-1.10.7.tgz#ab9039c85429f0516955ec6dbc0bb20139417b15"
   integrity sha512-lGCwwgpj8zW/ZmaueoPVSP7nnc9t8VqVWXS+ASX3eoUUENmiazv0rlXyTRludXzuX9ALjPsMqBu85TgJNWbTOg==
 
-"@types/superagent@^4.1.15":
+"@types/superagent@^4.1.14":
   version "4.1.14"
   resolved "https://registry.npmmirror.com/@types/superagent/-/superagent-4.1.14.tgz#ca2eed4fad671e704d3d0f33aaf099edb4a5b857"
   integrity sha512-iiXaOL2wSbnSY4qg0mFPWJHL9iwyEsoNYwaHF2w58/fsVAQJlj+KUfFAFZu+nzbz+b7dUprJEAc+O9vhHHhQTA==
@@ -2485,6 +2485,11 @@ flatted@^3.1.0:
   resolved "https://registry.npmmirror.com/flatted/-/flatted-3.2.5.tgz#76c8584f4fc843db64702a6bd04ab7a8bd666da3"
   integrity sha512-WIWGi2L3DyTUvUrwRKgGi9TwxQMUEqPOPQBVi71R96jZXJdFskXEmf54BoZaS1kknGODoIGASGEzBUYdyMCBJg==
 
+follow-redirects@^1.13.0:
+  version "1.15.0"
+  resolved "https://registry.npmmirror.com/follow-redirects/-/follow-redirects-1.15.0.tgz#06441868281c86d0dda4ad8bdaead2d02dca89d4"
+  integrity sha512-aExlJShTV4qOUOL7yF1U5tvLCB0xQuudbf6toyYA0E/acBNw71mvjFTnLaRp50aQaYocMR0a/RMMBIHeZnGyjQ==
+
 follow-redirects@^1.14.9:
   version "1.14.9"
   resolved "https://registry.npmmirror.com/follow-redirects/-/follow-redirects-1.14.9.tgz#dd4ea157de7bfaf9ea9b3fbd85aa16951f78d8d7"
@@ -3520,7 +3525,7 @@ mime-db@1.52.0:
   resolved "https://registry.npmmirror.com/mime-db/-/mime-db-1.52.0.tgz#bbabcdc02859f4987301c856e3387ce5ec43bf70"
   integrity sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==
 
-mime-types@^2.1.12:
+mime-types@^2.1.12, mime-types@^2.1.27:
   version "2.1.35"
   resolved "https://registry.npmmirror.com/mime-types/-/mime-types-2.1.35.tgz#381a871b62a734450660ae3deee44813f70d959a"
   integrity sha512-ZDY+bPm5zTTF+YpCrAU9nK0UgICYPT0QtT1NZWFv4s++TNkcgVaT0g6+4R2uI4MjQjzysHB1zxuWL50hzaeXiw==
@@ -3771,6 +3776,16 @@ node-gyp@^8.1.0, node-gyp@^8.4.1:
     semver "^7.3.5"
     tar "^6.1.2"
     which "^2.0.2"
+
+nodejs-file-downloader@^4.9.3:
+  version "4.9.3"
+  resolved "https://registry.npmmirror.com/nodejs-file-downloader/-/nodejs-file-downloader-4.9.3.tgz#0aee8232e5a3539b606520d15dc0a3a96b8c4a53"
+  integrity sha512-1agDW6TDkdNdyMm20iF70bpRHsA8WwVdezFTcBD4FPf/nAPwV/cDK7tUeALemK1DX1k8MfhAiYTB/jmyBkgmJw==
+  dependencies:
+    follow-redirects "^1.13.0"
+    https-proxy-agent "^5.0.0"
+    mime-types "^2.1.27"
+    sanitize-filename "^1.6.3"
 
 nopt@^5.0.0:
   version "5.0.0"

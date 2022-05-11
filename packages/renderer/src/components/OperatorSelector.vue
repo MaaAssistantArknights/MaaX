@@ -11,7 +11,7 @@ import {
   NTabPane,
   NAvatar
 } from 'naive-ui'
-import gamedataApi from '@common/api/gamedata'
+import gamedataApi from '@/api/gamedata'
 import { getOperatorAvatar, getProfessionImage } from '@/utils/game_image'
 import useThemeStore from '@/store/theme'
 

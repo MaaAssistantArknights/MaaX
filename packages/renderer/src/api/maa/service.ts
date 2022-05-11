@@ -1,4 +1,4 @@
-import ApiService from '@common/api/ApiService'
+import ApiService from '@/api/ApiService'
 
 const service = new ApiService('https://maa.alisaqaq.moe')
 
