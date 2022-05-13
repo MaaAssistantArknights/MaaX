@@ -20,8 +20,9 @@ export async function initialStore (): Promise<void> {
     device: (state: DeviceState, storage: DeviceState) => {
       state.devices = storage.devices.map((device) => ({
         ...device,
-        status: 'available',
-        connectionString: ''
+        status: 'unknown',
+        connectionString: '',
+        pid: ''
       }))
     },
     setting: (state: SettingState, storage: SettingState) => {
