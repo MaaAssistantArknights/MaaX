@@ -28,7 +28,7 @@ const getPnamePath = async (pname: string): Promise<string> => {
   return path.length > 1 ? path[0].ExecutablePath : path.ExecutablePath
 }
 
-async function getCommandLine (pid: string | number): Promise<any> {
+async function getCommandLine (pid: string | number): Promise<string> {
   // 获取进程启动参数
   const commandLineExp = `Get-WmiObject -Query "select CommandLine FROM Win32_Process where ProcessID='${pid}'" | Select-Object -Property CommandLine | ConvertTo-Json`
   const ret: string = JSON.parse((await $`${commandLineExp}`).stdout).CommandLine
@@ -39,6 +39,10 @@ async function getCommandLine (pid: string | number): Promise<any> {
 async function getDeviceUuid (address: string, adbPath = defaultAdbPath): Promise<string | false> {
   if (!adbPath) {
     logger.error('adb_path is null')
+    return false
+  }
+  if (!address) {
+    logger.debug('address is null')
     return false
   }
   const connectResult = (await $`"${adbPath}" connect ${address}`).stdout
@@ -81,7 +85,7 @@ class WindowsEmulator extends EmulatorAdapter {
     // const confPortExp = /bst.instance.Nougat64_?\d?.status.adb_port="(\d{4,6})"/g
     // const e: Emulator = { pname, pid }
     e.config = 'BlueStacks'
-    e.adb_path = path.join(
+    e.adbPath = path.join(
       path.dirname(JSON.parse(
         (await $`Get-WmiObject -Query "select ExecutablePath FROM Win32_Process where ProcessID=${e.pid}" | Select-Object -Property ExecutablePath | ConvertTo-Json`).stdout
       ).ExecutablePath),
@@ -98,7 +102,7 @@ class WindowsEmulator extends EmulatorAdapter {
       ).UserDefinedDir),
       'bluestacks.conf'
     )
-    if (e.adb_path.includes('BluestacksCN')) {
+    if (e.adbPath.includes('BluestacksCN')) {
       // 蓝叠CN特供版本 读注册表 Computer\HKEY_LOCAL_MACHINE\SOFTWARE\BlueStacks_china_gmgr\Guests\Android\Network\0 中的InboundRules
       // 搞两套方案，先读注册表拿adb端口, 如果读失败了可能是打包复制导致，再使用 netstat 尝试
       let success: boolean = false
@@ -125,7 +129,7 @@ class WindowsEmulator extends EmulatorAdapter {
               console.log('use bs cn')
               inUsePorts.push(port)
               e.address = `127.0.0.1:${port}`
-              e.tag = 'BlueStack CN [regedit]'
+              e.displayName = 'BlueStack CN [regedit]'
               success = true
             }
             if (success) break
@@ -143,7 +147,7 @@ class WindowsEmulator extends EmulatorAdapter {
         const regExp = '\\s*TCP\\s*127.0.0.1:(5\\d{3,4})\\s*' // 提取端口
         const port = (await $`netstat -ano | findstr ${e.pid}`).stdout.match(regExp)
         e.address = port != null ? `127.0.0.1:${port[1]}` : '127.0.0.1:5555'
-        e.tag = 'BlueStack CN [no regedit]'
+        e.displayName = 'BlueStack CN [no regedit]'
       }
     } else {
       assert(
@@ -154,7 +158,7 @@ class WindowsEmulator extends EmulatorAdapter {
       const confPortInstanceExp = RegExp(`bst.instance.${arg}.status.adb_port="(\\d{4,6})"`)
       const confPort = conf.match(confPortInstanceExp)
       console.log('confport:')
-      e.tag = 'BlueStack Global'
+      e.displayName = 'BlueStack Global'
       if (confPort) { e.address = `127.0.0.1:${confPort[1]}` }
       /**
       e.tag = 'BlueStack Global';
@@ -181,39 +185,50 @@ class WindowsEmulator extends EmulatorAdapter {
   }
 
   protected async getXY (e: Emulator): Promise<void> {
-    logger.debug('get XY info')
-    e.adb_path = path.resolve(
+    /**
+     * 逍遥模拟器获取流程：
+     *  1. 根据"MEmuHeadless.exe"获取pid
+     *  2. 通过GetCommandLine获取命令行, 其--comment参数为模拟器实际文件夹名, 假设为vm1
+     *  3. 构造路径"F:\EMULATORS\xyaz\Microvirt\MEmu\MemuHyperv VMs\vm1"
+     *  4. 在路径下面有Memu.memu文件，构造正则提取以下示例行中的hostport
+     *  <Forwarding name="ADB" proto="1" hostip="127.0.0.1" hostport="21503" guestip="10.0.2.15" guestport="5555"/>
+     */
+    logger.debug('Get XY info')
+    e.adbPath = path.resolve(
       path.dirname(await getPnamePath('Memu.exe')),
       'adb.exe'
     )
-    console.log(`XY adb_path: ${e.adb_path}`)
+    logger.debug('XY adb_path: ', e.adbPath)
 
-    const regExp = /127.0.0.1:(\d{4,5})\s*/g;
-    [...(await $`"${e.adb_path}" devices`).stdout.matchAll(regExp)]
-      .map((v) => v[1])
-      .some((v) => {
-        if (!inUsePorts.includes(v)) {
-          inUsePorts.push(v)
-          e.address = `127.0.0.1:${v}`
-          return true
-        }
-        return false
-      })
+    e.commandLine = await getCommandLine(e.pid)
+    const confName = e.commandLine.match(/--comment ([^\s]+)/)
+    if (confName) {
+      const confPath = path.resolve(path.dirname(await getPnamePath('Memu.exe')), 'MemuHyperv VMs', confName[1], `${confName[1]}.memu`)
+      logger.debug(`XY conf_path: ${confPath}`)
+      assert(
+        existsSync(confPath),
+        `Memu.memu not exist! path: ${confPath}`
+      )
+      const confDetail = readFileSync(confPath, 'utf-8') // 读Memu.memu文件
+      const confPortExp = confDetail.match(/<Forwarding name="ADB" proto="1" hostip="127.0.0.1" hostport="(\d+)"/)
+      if (confPortExp) {
+        e.address = `127.0.0.1:${confPortExp[1]}`
+      }
+    }
     e.config = 'XYAZ'
-    e.tag = '逍遥模拟器'
-    // return e
+    e.displayName = '逍遥模拟器'
   }
 
   protected async getNox (e: Emulator): Promise<void> {
     // const e: Emulator = { pname, pid }
 
-    e.adb_path = path.resolve(
+    e.adbPath = path.resolve(
       path.dirname(await getPnamePath('Nox.exe')),
       'nox_adb.exe'
     )
-    logger.debug(`nox adb_path: ${e.adb_path}`)
+    logger.debug(`nox adb_path: ${e.adbPath}`)
     const regExp = /127.0.0.1:(\d{4,5})\s*/g;
-    [...(await $`"${e.adb_path}" devices`).stdout.matchAll(regExp)]
+    [...(await $`"${e.adbPath}" devices`).stdout.matchAll(regExp)]
       .map((v) => v[1])
       .some((v) => {
         if (!inUsePorts.includes(v)) {
@@ -224,7 +239,7 @@ class WindowsEmulator extends EmulatorAdapter {
         return false
       })
     e.config = 'Nox'
-    e.tag = '夜神模拟器'
+    e.displayName = '夜神模拟器'
     // return e
   }
 
@@ -233,9 +248,9 @@ class WindowsEmulator extends EmulatorAdapter {
     // MuMu无法多开，且adb端口仅限7555
     // 流程: 有"NemuHeadless.exe"进程后，就去抓'NemuPlayer.exe'的路径.
     const emuPathExp = await getPnamePath('NemuPlayer.exe')
-    e.adb_path = path.resolve(emuPathExp, '../../vmonitor/bin/adb_server.exe')
+    e.adbPath = path.resolve(emuPathExp, '../../vmonitor/bin/adb_server.exe')
     e.address = '127.0.0.1:7555' // 不测端口了，唯一指定7555
-    e.tag = 'MuMu模拟器'
+    e.displayName = 'MuMu模拟器'
     e.config = 'MuMuEmulator'
     // return e
   }
@@ -245,17 +260,16 @@ class WindowsEmulator extends EmulatorAdapter {
     // 雷电模拟器识别
     const portExp = /\s*TCP\s*0.0.0.0:(5\d{3,4})\s*0.0.0.0:0\s*/g
     const emulatorPath = await getPnamePath('dnplayer.exe')
-    e.adb_path = path.resolve(path.dirname(emulatorPath), 'adb.exe')
+    e.adbPath = path.resolve(path.dirname(emulatorPath), 'adb.exe')
     const port = (await $`netstat -ano | findstr ${e.pid}`).stdout.match(portExp)
     e.address = port != null ? `127.0.0.1:${port[1]}` : ''
     e.config = 'LDPlayer'
-    e.tag = '雷电模拟器'
+    e.displayName = '雷电模拟器'
     // return e
   }
 
   protected async getAdbDevices (): Promise<Emulator[]> {
     const emulators: Emulator[] = []
-    const e = await this.getNox({})
     return emulators
   }
 
@@ -289,7 +303,7 @@ class WindowsEmulator extends EmulatorAdapter {
     }
 
     for await (const e of emulators) {
-      const uuid = await getDeviceUuid(e.address as string, e.adb_path)
+      const uuid = await getDeviceUuid(e.address as string, defaultAdbPath) // 不再使用模拟器自带的adb来获取uuid
       if (uuid) {
         e.uuid = uuid
       }
