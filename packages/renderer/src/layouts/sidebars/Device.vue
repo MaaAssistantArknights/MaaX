@@ -36,6 +36,11 @@ const disconnectedDevices = computed(() =>
   deviceStore.devices.filter((device) => disconnectedStatus.has(device.status))
 )
 
+// const unknownDevices = computed(() =>
+//   deviceStore.devices.filter((device) => device.status === 'unknown')
+// )
+// TODO: 从maa启动模拟器的支持
+
 async function handleRefreshDevices () {
   if (!(await checkCoreVersion())) {
     await installCore()
@@ -55,11 +60,12 @@ async function handleRefreshDevices () {
     deviceStore.mergeSearchResult(
       ret.map((v: any) => {
         return {
-          uuid: v.uuid,
-          name: v.config,
-          tag: v.tag,
           status: 'available',
-          adbPath: v.adb_path,
+          uuid: v.uuid,
+          pid: v.pid,
+          displayName: v.displayName,
+          config: v.config,
+          adbPath: v.adbPath,
           connectionString: v.address,
           commandLine: v.commandLine
         }
@@ -125,6 +131,13 @@ setInterval(() => {
         :key="device.uuid"
       />
     </div>
+    <!-- <div class="unknown-devices">
+      <DeviceCard
+        v-for="device in unknownDevices"
+        :uuid="device.uuid"
+        :key="device.uuid"
+      />
+    </div> -->
     <div :style="{ textAlign: 'center' }">
       <NText depth="2">
         最后更新：
