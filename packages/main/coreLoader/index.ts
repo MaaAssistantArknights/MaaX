@@ -157,7 +157,7 @@ const dependences: Record<string, string[]> = {
 const libName: Record<string, string> = {
   win32: 'MeoAssistant',
   darwin: 'MeoAssistant.dylib',
-  linux: 'MeoAssistant'
+  linux: 'libMeoAssistant.so'
 }
 
 /**
@@ -221,7 +221,7 @@ const cb = ffi.Callback(
     const detail = JSON.parse(_detail as string)
     console.log(detail)
     const callback = handleCallback[msg as AsstMsg](msg, detail)
-    // TODO: 一堆类型注解没写
+
     new WindowManager().getWindow().webContents.send(
       (callback as any).name.toString(),
       callback
@@ -465,6 +465,19 @@ class Assistant {
    */
   CtrlerClick (uuid: string, x: number, y: number, block: boolean): boolean {
     return this.MeoAsstLib.AsstCtrlerClick(this.GetUUID(uuid), x, y, block)
+  }
+
+  GetImage (uuid: string): string {
+    logger.debug('enter GetImage')
+    const buf = Buffer.alloc(1024000)
+    logger.debug(`allocated size ${buf.length}`)
+    const len = this.MeoAsstLib.AsstGetImage(this.GetUUID(uuid), buf, buf.length)
+    const buf2 = buf.slice(0, len as number)
+    logger.debug('received image len: ', len)
+    console.log(buf2)
+    const v2 = buf2.toString('base64')
+    // logger.debug(v2)
+    return v2
   }
 
   /**

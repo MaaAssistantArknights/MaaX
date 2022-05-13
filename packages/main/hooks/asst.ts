@@ -70,6 +70,9 @@ string,
       /[A-Z0-9]+-([A-Z0-9]+-?)?[0-9]/.test(s)
     )
     return stages
+  },
+  'asst:getImage': async (_event, arg) => {
+    return Assistant.getInstance()?.GetImage(arg.uuid)
   }
 }
 
