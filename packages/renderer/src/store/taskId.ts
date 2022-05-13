@@ -8,7 +8,7 @@ export interface TaskIdState {
 
 export interface TaskIdAction {
   newTaskId: (uuid: string) => void
-  getTaskId: (uuid: string, taskName: string) => number | number[] | undefined
+  getTaskId: (uuid: string, taskName: string) => number[] | undefined
   updateTaskId: (uuid: string, taskName: string, id: number) => void
   removeTaskId: (uuid: string, taskName: string, id: number) => void
   onFightStart: (uuid: string, fightId: number) => void // 触发作战开始事件，更新作战等待列表
@@ -24,7 +24,8 @@ export const defaultTaskId: TaskId[] = [
   { name: 'visit', id: [] },
   { name: 'mall', id: [] },
   { name: 'award', id: [] },
-  { name: 'rogue', id: [] }
+  { name: 'rogue', id: [] },
+  { name: 'shutdown', id: [] }
 ]
 
 const useTaskIdStore = defineStore<'taskId', TaskIdState, {}, TaskIdAction>(

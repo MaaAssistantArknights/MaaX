@@ -141,6 +141,14 @@ enum Friend {
   VisitNext = 'Visit:Completed:VisitNext', // 访问下位
 }
 
+enum Shutdown {
+  Emulator = 'Shutdown:Emulator',
+}
+
+async function shutdown (option: string, pid: string): Promise<void> {
+  await window.ipcRenderer.invoke('asst:shutdown', { option: option, pid: pid })
+}
+
 export default function useCallbackEvents (): void {
   const deviceStore = useDeviceStore()
   const taskStore = useTaskStore()
@@ -151,6 +159,23 @@ export default function useCallbackEvents (): void {
 
   // 初始化失败
   window.ipcRenderer.on(CallbackMsg.InitFailed, (event, arg) => {})
+
+  // 全部任务完成
+  window.ipcRenderer.on(CallbackMsg.AllTasksCompleted, (event, arg) => {
+    const task = taskStore.getTask(arg.uuid, 'shutdown')
+    const device = deviceStore.getDevice(arg.uuid)
+
+    // 检测是否有关机任务
+    if (task?.enable && task?.configurations.enable) {
+      logger.debug('enable shutdown option')
+      const option = task.configurations.option as string
+      const pid = device?.pid
+      const id = setTimeout(shutdown, 30000, option, pid)
+      logger.debug('shutdown taskid', id)
+      taskIdStore.updateTaskId(arg.uuid, 'shutdown', id)
+    }
+    // TODO: 状态归位
+  })
 
   /** 获取到uuid, 作为连接成功的标志 */
   window.ipcRenderer.on(Connection.UuidGetted, async (event, arg: uuidType) => {
@@ -276,8 +301,8 @@ export default function useCallbackEvents (): void {
     console.log(arg)
     const task = taskStore.getTask(arg.uuid, 'recruit')
     console.log(task)
-    const curProgress: number = task.progress
-    const times = task?.configurations.maximum_times_of_recruitments
+    const curProgress: number = task?.progress as number
+    const times = task?.configurations.maximum_times_of_recruitments as number
     const newProgress = _.round(Number(curProgress) + 100 / times)
     taskStore.updateTaskStatus(arg.uuid, 'recruit', 'processing', newProgress)
     console.log(arg)
