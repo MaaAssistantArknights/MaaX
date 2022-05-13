@@ -17,7 +17,7 @@ export async function taskEmulator (task: Task['configurations']): Promise<void>
       const connectStatus = await window.ipcRenderer.invoke('asst:createEx_connect', { // 创建连接
         address: device.address,
         uuid: device.uuid,
-        adb_path: device.adb_path,
+        adb_path: device.adbPath,
         config: device.config
       })
       logger.debug(connectStatus)

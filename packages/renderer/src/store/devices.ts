@@ -31,15 +31,16 @@ const useDeviceStore = defineStore<'device', DeviceState, {}, DeviceAction>(
           if (origin == null) { // 不存在该设备，则添加
             this.devices.push({
               status: 'available',
-              config: '',
+              config: 'General',
               ...device
-            })
+            }) // TODO: 对于曾连过设备的合并，要改改，比如先删掉原来的，然后再push？
           } else if (['disconnected', 'unknown'].includes(origin.status)) { // 曾今连过，更新
             logger.debug(`uuid ${origin.uuid}  origin status: ${origin.status}`)
             origin.status = 'available'
+            origin.pid = device.pid
             origin.adbPath = device.adbPath
             origin.connectionString = device.connectionString
-            origin.name = device.name
+            // origin.displayName = device.displayName
             origin.commandLine = device.commandLine
           }
         }

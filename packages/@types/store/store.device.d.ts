@@ -23,6 +23,10 @@ interface Device {
    */
   uuid: string
   /**
+   * @props 进程Pid
+   */
+  pid?: string
+  /**
    * @props 设备连接地址
    */
   connectionString: string
@@ -37,23 +41,19 @@ interface Device {
    */
   status: DeviceStatus
   /**
-   * @props 模拟器名称
-   * @description 比如："BlueStacks", "MuMuEmulator", "LDPlayer", "Nox", "XYAZ", "WSA", "General"
-   */
-  name: EmulatorName
-  /**
    * @props adb路径
    */
   adbPath: string
   /**
-   * @props 设备标签
-   * @description 可选，前端优先展示“设备标签”，如果不存在则展示“设备连接地址”, 比如: "Blustacks Global"
+   * @props 设备展示名称
+   * @description 前端优先展示“设备展示名称”，如果不存在则展示“设备连接地址”, 比如: "Blustacks Global"
    */
-  tag?: string
+  displayName?: string
   /**
-   * @props 传给后端的标记
+   * @props 模拟器名称, 传给core
+   * @description 比如："BlueStacks", "MuMuEmulator", "LDPlayer", "Nox", "XYAZ", "WSA", "General"。 "General"不支持关闭模拟器功能
    */
-  config: string
+  config: EmulatorName
   /**
    * @props 模拟器路径
    * @description 搜索模拟器时会尝试自动获取，比如："E://bluestack//HD-Player.exe"
@@ -68,6 +68,7 @@ interface Device {
 
 interface NativeDevice {
   uuid: string
+  pid: string
   connectionString: string
   name: EmulatorName
   adbPath: string

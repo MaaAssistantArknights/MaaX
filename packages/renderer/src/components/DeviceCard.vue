@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import IconDisconnect from '@/assets/icons/disconnect.svg?component'
+import DeviceDetail from '@/components/DeviceDetailModal.vue'
 import IconLink from '@/assets/icons/link.svg?component'
 import {
   NButton,
@@ -8,7 +9,8 @@ import {
   NIcon,
   NSpace,
   NPopconfirm,
-  useThemeVars
+  useThemeVars,
+  NPopover
 } from 'naive-ui'
 import useDeviceStore from '@/store/devices'
 import router from '@/router'
@@ -28,7 +30,7 @@ const device = computed(() =>
   deviceStore.devices.find((device) => device.uuid === props.uuid)
 )
 const deviceDisplayName = computed(
-  () => device.value?.tag || device.value?.connectionString
+  () => device.value?.displayName || device.value?.connectionString
 )
 const routeUuid = computed(
   () => router.currentRoute.value.params.uuid as string | undefined
@@ -142,7 +144,15 @@ async function handleDeviceConnect () {
           })()
         }}
       </NTooltip>
-      <div class="device-name">{{ deviceDisplayName }}</div>
+      <!-- <NPopover
+      trigger="hover">
+        <template #trigger> -->
+          <div class="device-name">{{ deviceDisplayName }}</div>
+        <!-- </template>
+        <DeviceDetail
+        :uuid="props.uuid"
+        />
+      </NPopover> -->
     </NButton>
     <NSpace :align="'center'">
       <NPopconfirm
