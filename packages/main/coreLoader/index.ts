@@ -147,8 +147,8 @@ const dependences: Record<string, string[]> = {
     'mkldnn',
     'opencv_world453',
     'paddle_inference',
-    'ppocr',
-    'penguin-stats-recognize'
+    'ppocr'
+    // 'penguin-stats-recognize'
   ],
   linux: [],
   darwin: ['libpaddle_inference.dylib']
@@ -474,7 +474,6 @@ class Assistant {
     const len = this.MeoAsstLib.AsstGetImage(this.GetUUID(uuid), buf, buf.length)
     const buf2 = buf.slice(0, len as number)
     logger.debug('received image len: ', len)
-    console.log(buf2)
     const v2 = buf2.toString('base64')
     // logger.debug(v2)
     return v2
