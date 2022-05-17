@@ -28,6 +28,12 @@ const getPnamePath = async (pname: string): Promise<string> => {
   return path.length > 1 ? path[0].ExecutablePath : path.ExecutablePath
 }
 
+const getPidPath = async (pid: string): Promise<string> => {
+  const result = await $`Get-WmiObject -Query "select ExecutablePath FROM Win32_Process where ProcessId='${pid}'" | Select-Object -Property ExecutablePath | ConvertTo-Json`
+  const path = JSON.parse(result.stdout)
+  return path.ExecutablePath
+}
+
 async function getCommandLine (pid: string | number): Promise<string> {
   // 获取进程启动参数
   const commandLineExp = `Get-WmiObject -Query "select CommandLine FROM Win32_Process where ProcessID='${pid}'" | Select-Object -Property CommandLine | ConvertTo-Json`
@@ -244,28 +250,54 @@ class WindowsEmulator extends EmulatorAdapter {
   }
 
   protected async getMumu (e: Emulator): Promise<void> {
-    // const e: Emulator = { pname, pid }
-    // MuMu无法多开，且adb端口仅限7555
+    // MuMu的adb端口仅限7555, 所以, 请不要使用MuMu多开!
     // 流程: 有"NemuHeadless.exe"进程后，就去抓'NemuPlayer.exe'的路径.
-    const emuPathExp = await getPnamePath('NemuPlayer.exe')
-    e.adbPath = path.resolve(emuPathExp, '../../vmonitor/bin/adb_server.exe')
+    const emuPathExp = await getPnamePath('NemuPlayer.exe') // 模拟器启动器路径
+    e.adbPath = path.resolve(emuPathExp, '../../vmonitor/bin/adb_server.exe') // 模拟器adb路径
     e.address = '127.0.0.1:7555' // 不测端口了，唯一指定7555
+    const cmd = await getCommandLine(e.pid) // 启动命令, 提取出--startvm选项, 然后和emuPathExp拼接得到实际启动命令.
+    const startvm = cmd.match(/--startvm ([^\s]+)/) // FIXME: 写错了
+    if (startvm) {
+      e.commandLine = '"' + emuPathExp + '" -m ' + startvm[1] // 实际命令行启动指令
+    }
     e.displayName = 'MuMu模拟器'
     e.config = 'MuMuEmulator'
-    // return e
   }
 
   protected async getLd (e: Emulator): Promise<void> {
-    // const e: Emulator = { pname, pid }
     // 雷电模拟器识别
-    const portExp = /\s*TCP\s*0.0.0.0:(5\d{3,4})\s*0.0.0.0:0\s*/g
-    const emulatorPath = await getPnamePath('dnplayer.exe')
-    e.adbPath = path.resolve(path.dirname(emulatorPath), 'adb.exe')
-    const port = (await $`netstat -ano | findstr ${e.pid}`).stdout.match(portExp)
-    e.address = port != null ? `127.0.0.1:${port[1]}` : ''
     e.config = 'LDPlayer'
     e.displayName = '雷电模拟器'
-    // return e
+    const emulatorPath = await getPnamePath('dnplayer.exe') // dnplayer.exe路径, 和模拟器配置信息等在一起
+    const consolePath = path.resolve(path.dirname(emulatorPath), 'dnconsole.exe') // dnconsole.exe路径, 用于启动模拟器
+    e.adbPath = path.resolve(path.dirname(emulatorPath), 'adb.exe') // adb路径
+    const cmd = await getCommandLine(e.pid) // headless.exe的启动参数, 实际上是不可用的, 提取其中的comment为模拟器真实名称, statvm为模拟器uuid
+    const statvm = cmd.match(/--startvm (\w*-\w*-\w*-\w*-\w*)/) // 获取模拟器uuid, statvm
+    const realName = cmd.match(/--comment ([\d+\w]*) /) // 获取真实名称, realName
+    logger.debug('realname', realName)
+    logger.debug('startvm', statvm)
+    if (!realName || !statvm) return
+    const confPath = path.resolve(path.dirname(emulatorPath), 'vms', 'config', `${realName[1]}.config`) // 模拟器配置文件路径
+    logger.debug(`LD conf_path: ${confPath}`)
+    assert(
+      existsSync(confPath),
+      `${realName[1]}.config not exist! path: ${confPath}`
+    )
+    const confDetail = readFileSync(confPath, 'utf-8') // 读config
+    const displayName = confDetail.match(/"statusSettings.playerName":\s*"([^"]+)"/) // 读配置文件, 获取模拟器显示名称 displayName
+    if (displayName) { // 当新建模拟器时, 不一定会有此选项, 如果没有, 则取realName最后一个数字, 手动拼接
+      e.commandLine = '"' + consolePath + '" launch --name ' + displayName[1] // 真实命令行启动指令
+    } else {
+      e.commandLine = '"' + consolePath + '" launch --name 雷电模拟器-' + realName[1].slice(-1) // 真实命令行启动指令
+    }
+    const LdVBoxHeadlessPath = await getPnamePath('LdVBoxHeadless.exe') // LdVBoxHeadless.exe路径
+    const VBoxManagePath = path.resolve(path.dirname(LdVBoxHeadlessPath), 'VBoxManage.exe') // VBoxManage.exe路径
+    const port = (await $`"${VBoxManagePath}" showvminfo ${statvm[1]} --machinereadable`).stdout.match(/Forwarding\(1\)="tcp_5\d\d\d_5\d\d\d,tcp,,(\d*),,/)
+    logger.debug('port', port)
+    if (port) {
+      e.address = `127.0.0.1:${port[1]}`
+    }
+    console.log(e)
   }
 
   protected async getAdbDevices (): Promise<Emulator[]> {
@@ -288,6 +320,7 @@ class WindowsEmulator extends EmulatorAdapter {
           }
         }
       })
+    await $`"${defaultAdbPath}" disconnect`
     for await (const e of emulators) {
       if (e.pname === 'HD-Player.exe') {
         await this.getBluestack(e)
@@ -307,6 +340,7 @@ class WindowsEmulator extends EmulatorAdapter {
       if (uuid) {
         e.uuid = uuid
       }
+      logger.debug(`emulator: ${JSON.stringify(e)}`)
     }
     return emulators
   }
