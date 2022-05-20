@@ -78,7 +78,7 @@ async function testPort (
 }
 
 function getBluestackInstanceName (cmd: string): string {
-  const instanceExp = /".*"\s"?--instance"?\s"?([^"]*)"?/g
+  const instanceExp = /".*"\s"?--instance"?\s"?([^"\s]*)"?/g
   const res = [...cmd.matchAll(instanceExp)].map((v) => v[1])
   console.log('instance Name:')
   console.log(res)
