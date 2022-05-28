@@ -5,7 +5,7 @@ import path from 'path'
 import { readFileSync, existsSync } from 'fs'
 import { assert } from 'console'
 import _ from 'lodash'
-import { $ } from '@main/utils/shell'
+import { $, $$ } from '@main/utils/shell'
 import logger from '@main/utils/logger'
 
 const defaultAdbPath = path.join(__dirname, '../platform-tools', 'adb.exe')
@@ -51,7 +51,7 @@ async function getDeviceUuid (address: string, adbPath = defaultAdbPath): Promis
     logger.debug('address is null')
     return false
   }
-  const connectResult = (await $`"${adbPath}" connect ${address}`).stdout
+  const connectResult = (await $$(adbPath, ['connect', address])).stdout
   if (connectResult.includes('connected')) {
     const ret = await $`"${adbPath}" -s ${address} shell settings get secure android_id`
     console.log(ret.stdout)
@@ -320,7 +320,7 @@ class WindowsEmulator extends EmulatorAdapter {
           }
         }
       })
-    await $`"${defaultAdbPath}" disconnect`
+    // await $`"${defaultAdbPath}" disconnect`
     for await (const e of emulators) {
       if (e.pname === 'HD-Player.exe') {
         await this.getBluestack(e)

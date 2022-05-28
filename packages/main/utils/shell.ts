@@ -7,6 +7,11 @@ interface processOutput {
   stderr: string
 }
 
+/**
+ * 异步执行shell命令,
+ * 示例: $\`tasklist | findstr ${name}\`
+ * @returns Promise<{stdout:string, stderr:string}>
+ */
 export async function $ (pieces: TemplateStringsArray, ...args: string[]): Promise<processOutput> {
   const ret = { stderr: '', stdout: '' }
 
@@ -20,13 +25,29 @@ export async function $ (pieces: TemplateStringsArray, ...args: string[]): Promi
   logger.debug(`exec: ${cmd}`)
 
   try {
-    const { stdout } = await execa(cmd, { shell: is.windows ? 'powershell' : 'bash' })
-    ret.stdout = stdout
+    ret.stdout = (await execa(cmd, { shell: is.windows ? 'powershell' : 'bash' })).stdout
   } catch (err: any) {
-    logger.error(err)
-    ret.stderr = err.stderr
+    ret.stderr = err
   }
-  logger.debug('exec output:')
-  console.log(ret)
+  logger.debug(ret)
+  return ret
+}
+
+/**
+ * 以文件名+参数形式异步执行shell命令
+ * @param file 文件路径
+ * @param args 参数
+ * @returns Promise<{stdout:string, stderr:string}>
+ */
+export async function $$ (file: string, args?: string[]): Promise<processOutput> {
+  const ret = { stderr: '', stdout: '' }
+  logger.debug(`exec: ${file} ${args ? args.join(' ') : ''}`)
+
+  try {
+    ret.stdout = (await execa(file, args)).stdout
+  } catch (err: any) {
+    ret.stderr = err
+  }
+  logger.debug(ret)
   return ret
 }
