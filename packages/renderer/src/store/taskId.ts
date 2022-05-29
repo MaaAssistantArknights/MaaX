@@ -14,6 +14,7 @@ export interface TaskIdAction {
   onFightStart: (uuid: string, fightId: number) => void // 触发作战开始事件，更新作战等待列表
   setMedicineAndStone: (uuid: string, medicine: number, stone: number) => void // 设置上限理智药和源石数量
   useMedicineOrStone: (uuid: string, type: 'medicine' | 'stone') => void // 触发使用理智药/源石事件，将剩余所有id可用理智药数量-1
+  removeAllTaskId: (uuid: string) => void
 }
 
 export const defaultTaskId: TaskId[] = [
@@ -114,6 +115,15 @@ const useTaskIdStore = defineStore<'taskId', TaskIdState, {}, TaskIdAction>(
         if (task != null) {
           task.current_medicine = medicine
           task.current_stone = stone
+        }
+      },
+      removeAllTaskId (uuid) {
+        const { deviceTaskId } = this
+        if (deviceTaskId[uuid]) {
+          deviceTaskId[uuid].forEach((task) => { task.id = [] })
+          logger.debug('removeAllTaskId on uuid: ' + uuid)
+        } else {
+          logger.debug('removeAllTaskId on uuid: ' + uuid + ' not found')
         }
       }
     }

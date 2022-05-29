@@ -167,7 +167,16 @@ async function handleSubStart () {
 }
 
 async function handleSubStop () {
-
+  show('正在停止任务', { type: 'info', duration: 0 })
+  const status = await window.ipcRenderer.invoke('asst:stop', { uuid: uuid.value }) // 等待core停止任务
+  if (!status) {
+    show('停止任务失败', { type: 'error', duration: 5000 })
+  } else {
+    show('已停止任务', { type: 'success', duration: 5000 })
+  }
+  deviceStore.updateDeviceStatus(uuid.value as string, 'connected') // 将设备状态改为已连接
+  taskIdStore.removeAllTaskId(uuid.value as string) // 删除所有任务id
+  taskStore.stopAllTasks(uuid.value as string) // 停止所有任务
 }
 
 async function handleStart () {

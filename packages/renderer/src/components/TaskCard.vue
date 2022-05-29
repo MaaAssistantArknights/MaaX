@@ -21,6 +21,7 @@ const props = defineProps<{
 
 defineEmits(['update:enable'])
 
+// typo:progress?
 const processBarColor = (taskStatus: TaskStatus) => {
   switch (taskStatus) {
     case 'idle':
@@ -34,8 +35,19 @@ const processBarColor = (taskStatus: TaskStatus) => {
       return themeVars.value.infoColor
     case 'warning':
       return themeVars.value.warningColor
+    case 'stopped':
+      return themeVars.value.warningColor
   }
 }
+
+const resetTaskProgress = (taskInfo: Task) => {
+  if (taskInfo.status === 'idle') return
+  taskInfo.status = 'idle'
+  taskInfo.progress = 0
+  taskInfo.startTime = 0
+  taskInfo.endTime = 0
+}
+
 </script>
 
 <template>
@@ -73,27 +85,39 @@ const processBarColor = (taskStatus: TaskStatus) => {
                     switch (props.taskInfo.status) {
                       case "idle":
                         return "";
+                      case "waiting":
+                        return "等待中";
                       case "processing":
                         return `进行中 ${props.taskInfo.progress ?? 0}%`;
                       case "success":
                         return "已完成";
+                      case "warning":
+                        return "警告";
                       case "exception":
                         return "任务出错";
+                      case "stopped":
+                        return "手动取消";
                     }
                   })()
                 }}
               </span>
             </NSpace>
-            <NSwitch
-              v-if="props.taskInfo.status === 'idle'"
-              :value="props.taskInfo.enable"
-              @update:value="enabled => $emit('update:enable', enabled)"
-            />
-            <Timer
-              v-else
-              :start-time="props.taskInfo.startTime"
-              :end-time="props.taskInfo.endTime"
-            />
+            <NSpace
+              justify="end">
+              <Timer
+                v-if="props.taskInfo.status !== 'idle'"
+                :start-time="props.taskInfo.startTime"
+                :end-time="props.taskInfo.endTime"
+              />
+              <NSwitch
+                :disabled="['processing', 'waiting'].includes(props.taskInfo.status) "
+                :value="props.taskInfo.enable"
+                @update:value="enabled => {
+                  $emit('update:enable', enabled)
+                  resetTaskProgress(props.taskInfo)}"
+              />
+
+            </NSpace>
           </div>
           <NProgress
             :percentage="props.taskInfo.progress"

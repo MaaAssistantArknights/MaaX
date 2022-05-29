@@ -155,7 +155,9 @@ export default function useCallbackEvents (): void {
   const taskIdStore = useTaskIdStore()
 
   // 字面意思, 内部错误
-  window.ipcRenderer.on(CallbackMsg.InternalError, (event, arg) => {})
+  window.ipcRenderer.on(CallbackMsg.InternalError, (event, arg) => {
+    // deviceStore.updateDeviceStatus()
+  })
 
   // 初始化失败
   window.ipcRenderer.on(CallbackMsg.InitFailed, (event, arg) => {})
@@ -164,6 +166,7 @@ export default function useCallbackEvents (): void {
   window.ipcRenderer.on(CallbackMsg.AllTasksCompleted, (event, arg) => {
     const task = taskStore.getTask(arg.uuid, 'shutdown')
     const device = deviceStore.getDevice(arg.uuid)
+    deviceStore.updateDeviceStatus(arg.uuid, 'connected')
 
     // 检测是否有关机任务
     if (task?.enable && task?.configurations.enable) {

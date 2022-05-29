@@ -1,4 +1,4 @@
-type TaskStatus = 'idle' | 'waiting' | 'processing' | 'success' | 'warning' | 'exception'
+type TaskStatus = 'idle' | 'waiting' | 'processing' | 'success' | 'warning' | 'exception' | 'stopped'
 
 interface Task {
   /**
@@ -13,9 +13,12 @@ interface Task {
    * @props 任务状态
    * ---
    * @idle 空闲的，暂未进行到的，可编辑配置
+   * @waiting 等待执行的
    * @processing 正在进行的
    * @success 进行完成且成功执行的
-   * @exception 进行完成但失败的
+   * @warning 部分成功(子任务可能失败)
+   * @exception 任务出错
+   * @stopped 用户手动停止任务
    */
   status: TaskStatus
   /**
