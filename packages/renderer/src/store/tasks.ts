@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import _ from 'lodash'
 
 export interface TaskState {
   deviceTasks: Record<string, Task[]>
@@ -241,7 +242,7 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
     },
     newTask (uuid) {
       const { deviceTasks } = this
-      deviceTasks[uuid] = defaultTask
+      deviceTasks[uuid] = _.cloneDeep(defaultTask)
     },
     getTask (uuid, taskId) {
       const { deviceTasks } = this

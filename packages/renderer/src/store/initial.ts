@@ -1,19 +1,20 @@
 import storage from '@/hooks/caller/storage'
 import type { Store } from 'pinia'
+import _ from 'lodash'
 
-import type { DeviceState } from './devices'
-import type { SettingState } from './settings'
-import type { TaskState } from './tasks'
-import type { ThemeState } from './theme'
+import useDeviceStore, { DeviceState } from './devices'
+import useSettingStore, { SettingState } from './settings'
+import useTaskStore, { TaskState } from './tasks'
+import useThemeStore, { ThemeState } from './theme'
 
 type Patcher<T> = (state: T, storage: T) => void
 
 export async function initialStore (): Promise<void> {
   const stores: Record<string, Store> = {
-    device: (await import('./devices')).default(),
-    setting: (await import('./settings')).default(),
-    tasks: (await import('./tasks')).default(),
-    theme: (await import('./theme')).default()
+    device: useDeviceStore(),
+    setting: useSettingStore(),
+    tasks: useTaskStore(),
+    theme: useThemeStore()
   }
 
   const patcher: Record<string, Patcher<any>> = {
@@ -29,15 +30,15 @@ export async function initialStore (): Promise<void> {
       state = storage
     },
     tasks: (state: TaskState, storage: TaskState) => {
-      Object.values(storage.deviceTasks).forEach(tasks => {
-        tasks.forEach(task => {
+      for (const tasks of Object.values(storage.deviceTasks)) {
+        for (const task of tasks) {
           task.progress = 0
           task.startTime = undefined
           task.endTime = undefined
           task.status = 'idle'
-        })
-      })
-      state = storage
+        }
+      }
+      state.deviceTasks = storage.deviceTasks
     },
     theme: (state: ThemeState, storage: ThemeState) => {
       state = storage

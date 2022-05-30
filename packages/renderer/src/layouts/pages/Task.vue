@@ -8,7 +8,7 @@ import IconList from '@/assets/icons/list.svg?component'
 import IconGrid from '@/assets/icons/grid.svg?component'
 import Configuration from '@/components/configurations/Index.vue'
 
-import useTaskStore, { defaultTask } from '@/store/tasks'
+import useTaskStore from '@/store/tasks'
 import useDeviceStore from '@/store/devices'
 import useTaskIdStore from '@/store/taskId'
 import { handleCoreTask, uiTasks } from '@/utils/converter/tasks'
@@ -27,7 +27,7 @@ const cardsRef: Ref<HTMLElement | null> = ref(null)
 
 const uuid = computed(() => router.currentRoute.value.params.uuid as string)
 const tasks = computed(() => {
-  if (!taskStore.deviceTasks[uuid.value]) { taskStore.updateTask(uuid.value, defaultTask) }
+  if (!taskStore.deviceTasks[uuid.value]) { taskStore.newTask(uuid.value) }
   return taskStore.deviceTasks[uuid.value]
 })
 

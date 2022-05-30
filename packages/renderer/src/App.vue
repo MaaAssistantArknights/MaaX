@@ -13,6 +13,7 @@ import {
   dateZhCN,
   ThemeCommonVars
 } from 'naive-ui'
+import { initialStore } from '@/store/initial'
 import useThemeStore from '@/store/theme'
 import { initHook } from './hooks'
 import { onMounted } from 'vue'
@@ -20,6 +21,8 @@ import { onMounted } from 'vue'
 onMounted(() => {
   initHook()
 })
+
+initialStore()
 
 const themeStore = useThemeStore()
 

@@ -6,5 +6,5 @@ export default function watcher (context: PiniaPluginContext): void {
   context.store.$subscribe((mutation, state) => {
     storage.set(mutation.storeId, _.cloneDeep(state))
     console.log('configutation sync')
-  })
+  }, { deep: true })
 }
