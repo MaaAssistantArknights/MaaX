@@ -20,13 +20,20 @@ import {
   formattedDurationToSeconds
 } from '@/utils/time_picker'
 import OperatorSelector from '@/components/OperatorSelector.vue'
+import logger from '@/hooks/caller/logger'
 
 type Strategies = 'ToTheEnd' | 'AfterFirstLevel' | 'AfterMoney';
 
+interface OperatorOption {
+  name: string, // 干员名
+  skill: number, // 使用技能, 可选范围1-3
+  skill_usage: number // 技能用法 0-不自动使用, 1-好了就用, 2-好了就用,仅使用一次, 3-自动判断使用技能(饼)
+}
+
 interface RogueConfiguration {
   strategy: Strategies;
-  operators: Array<string>;
-  duration: number;
+  operators: Array<OperatorOption>;
+  duration: number; // TODO:最长运行时间, 暂不支持
 }
 
 const strategyOptions: Array<{
@@ -72,7 +79,6 @@ const skillUsageOptions: Array<{
 const props = defineProps<{
   configurations: RogueConfiguration;
 }>()
-
 const showModal = ref(false)
 const showSelectModal = ref(false)
 
@@ -81,6 +87,7 @@ const allSkills: Ref<any> = ref()
 const loading = ref(false)
 
 onMounted(async () => {
+  logger.debug('Rogue.vue mounted')
   loading.value = true
 
   allSkills.value = (await gamedataApi.getAllSkills()) as any

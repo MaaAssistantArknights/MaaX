@@ -53,7 +53,8 @@ function * taskFight (task: Task['configurations']): Generator<object, void, boo
     server: 'CN' // TODO: 企鹅物流上传区服
   }
 
-  if (ret.times !== 0) yield ret
+  //  if (ret.times !== 0)
+  yield ret
 
   for (const level of (task.levels as any)) {
     if (level.times !== 0) {

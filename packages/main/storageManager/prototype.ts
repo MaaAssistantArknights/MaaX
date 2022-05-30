@@ -30,7 +30,7 @@ class Storage<T extends Object> {
     }
 
     if (!fs.existsSync(this.filepath)) {
-      fs.writeFileSync(this.filepath, '{}')
+      this.saveToFile()
     } else {
       this.readFromFile()
     }
@@ -59,13 +59,12 @@ class Storage<T extends Object> {
   }, 200);
 
   private readonly readFromFile = () => {
-    fs.readFile(this.filepath, (error, data) => {
-      if (error != null) {
-        logger.error('error while read config file:', this.filepath, error)
-      } else {
-        this.m_storage = this.m_deserialize(data.toString())
-      }
-    })
+    try {
+      const data = fs.readFileSync(this.filepath)
+      this.m_storage = this.m_deserialize(data.toString())
+    } catch (error) {
+      logger.error('error while read config file:', this.filepath, error)
+    }
   };
 
   private readonly m_cwd: string;

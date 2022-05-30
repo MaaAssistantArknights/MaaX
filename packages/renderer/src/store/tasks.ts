@@ -60,7 +60,7 @@ export const defaultTask: Task[] = [
       originite_prime: true,
       levels: [
         {
-          code: 'CE-5', // 龙门币
+          code: 'CE-6', // 龙门币
           times: 0
         },
         {
@@ -72,7 +72,15 @@ export const defaultTask: Task[] = [
           times: 0
         },
         {
-          code: 'LS-5', // 作 战 记 录
+          code: 'LS-6', // 作 战 记 录
+          times: 0
+        },
+        {
+          code: '1-7', // 1 - 7
+          times: 0
+        },
+        {
+          code: 'SN-8',
           times: 0
         }
       ],
@@ -151,7 +159,8 @@ export const defaultTask: Task[] = [
     status: 'idle',
     enable: true,
     configurations: {
-      exclude: new Set([])
+      buy_first: new Set([]),
+      blacklist: new Set([])
     }
   },
   {
@@ -169,7 +178,7 @@ export const defaultTask: Task[] = [
     configurations: {
       duration: 3600,
       strategy: 'ToTheEnd',
-      operators: []
+      operators: [{ name: '煌', skill: 2, skill_usage: 0 }, { name: '棘刺', skill: 3, skill_usage: 1 }]
     }
   },
   {
@@ -200,6 +209,10 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
 
         if (statusChanged) {
           switch (status) {
+            case 'waiting':
+              task.startTime = 0
+              task.endTime = 0
+              break
             case 'processing':
               task.startTime = Date.now()
               break
@@ -247,7 +260,9 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
       const origin = deviceTasks[uuid]
       if (origin) {
         origin.forEach((task) => {
-          task.status = 'idle'
+          if (task.status !== 'idle') {
+            task.status = 'stopped'
+          }
         })
       }
     }
