@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import IconDisconnect from '@/assets/icons/disconnect.svg?component'
-import DeviceDetail from '@/components/DeviceDetailModal.vue'
+import DeviceDetailPopover from '@/components/DeviceDetailPopover.vue'
 import IconLink from '@/assets/icons/link.svg?component'
 import {
   NButton,
@@ -9,8 +9,7 @@ import {
   NIcon,
   NSpace,
   NPopconfirm,
-  useThemeVars,
-  NPopover
+  useThemeVars
 } from 'naive-ui'
 import useDeviceStore from '@/store/devices'
 import router from '@/router'
@@ -98,7 +97,10 @@ async function handleDeviceConnect () {
 
   // 初始化掉落物存储
   if (!window.sessionStorage.getItem(device.value?.uuid as string)) {
-    window.sessionStorage.setItem(device.value?.uuid as string, '{"StageDrops":{}}')
+    window.sessionStorage.setItem(
+      device.value?.uuid as string,
+      '{"StageDrops":{}}'
+    )
   }
 
   // loadingMessage.destroy();
@@ -144,15 +146,9 @@ async function handleDeviceConnect () {
           })()
         }}
       </NTooltip>
-      <!-- <NPopover
-      trigger="hover">
-        <template #trigger> -->
-          <div class="device-name">{{ deviceDisplayName }}</div>
-        <!-- </template>
-        <DeviceDetail
-        :uuid="props.uuid"
-        />
-      </NPopover> -->
+      <DeviceDetailPopover :uuid="props.uuid">
+        <div class="device-name">{{ deviceDisplayName }}</div>
+      </DeviceDetailPopover>
     </NButton>
     <NSpace :align="'center'">
       <NPopconfirm
@@ -175,7 +171,7 @@ async function handleDeviceConnect () {
         </template>
         {{
           (device?.status === "tasking" ? "当前设备正在进行任务，" : "") +
-            "确定断开连接？"
+          "确定断开连接？"
         }}
       </NPopconfirm>
       <NButton
@@ -200,6 +196,7 @@ async function handleDeviceConnect () {
   from {
     top: 0;
   }
+
   to {
     top: -8px;
   }
@@ -226,6 +223,7 @@ async function handleDeviceConnect () {
   width: 12px;
   opacity: 0.8;
   overflow: visible;
+
   &::before {
     content: "";
     position: absolute;
@@ -237,20 +235,25 @@ async function handleDeviceConnect () {
     left: 0;
     transition: background-color 0.3s var(--n-bezier);
   }
+
   &[data-status="available"]::before {
     background-color: #a8aaaf;
   }
+
   &[data-status="connecting"]::before {
     background-color: #28cd41;
     animation: connecting 1s cubic-bezier(0.46, 1, 0.76, 0.94) alternate
       infinite;
   }
+
   &[data-status="connected"]::before {
     background-color: #28cd41;
   }
+
   &[data-status="tasking"]::before {
     background-color: #66c7ff;
   }
+
   &[data-status="disconnected"]::before {
     background-color: #ff6b6b;
   }

@@ -32,7 +32,6 @@ module.exports = {
     }],
     "no-undef": "off", // 让ts检查undefined
     "@typescript-eslint/no-floating-promises": "off",
-    "@typescript-eslint/no-misused-promises": "off",
     '@typescript-eslint/strict-boolean-expressions': 'off'
   }
 }

@@ -16,11 +16,17 @@ export const ipcMainHandle = <T>(
   })
 }
 
+export const ipcMainRemove = (eventName: IpcMainHandleEvent): void => {
+  ipcMain.removeHandler(eventName)
+}
+
 export const ipcMainSend = (
   eventName: IpcRendererHandleEvent,
   ...args: any[]
 ): void => {
   const win = new WindowManager().getWindow()
-  logger.debug(`触发ipcRenderer事件: ${eventName}`)
-  win.webContents.send(eventName, ...args)
+  if (win.webContents.listeners(eventName).length > 0) {
+    logger.debug(`触发ipcRenderer事件: ${eventName}`)
+    win.webContents.send(eventName, ...args)
+  }
 }

@@ -1,7 +1,7 @@
 import type { BrowserWindowConstructorOptions, BrowserWindow } from 'electron'
 import { is } from 'electron-util'
 import { join } from 'path'
-import { Singleton } from '@main/../common/function/singletonDecorator'
+import { Singleton } from '@common/function/singletonDecorator'
 import useController from './control'
 import useTheme from './theme'
 

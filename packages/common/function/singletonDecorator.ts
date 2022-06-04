@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
 export const SINGLETON_KEY = Symbol('SINGLETON')
 
 type SingletonType<T extends new (...args: any[]) => any> = T & {
   [SINGLETON_KEY]: T extends new (...args: any[]) => infer I ? I : never
 }
 
-export const Singleton = <T extends new (...args: any[]) => any>(type: T) =>
+export const Singleton = <T extends new (...args: any[]) => any>(type: T): T =>
   new Proxy(type, {
     // this will hijack the constructor
     construct (target: SingletonType<T>, argsList, newTarget) {
