@@ -1,21 +1,39 @@
-import type EmulatorAdapter from './adapterBase'
-import { is } from 'electron-util'
+import type EmulatorAdapter from './adapters/adapterBase'
+import { Singleton } from '@common/function/singletonDecorator'
+import { useEmulatorHooks } from './hooks'
+import adapters from './adapters'
 
-const getAdapter = async (): Promise<EmulatorAdapter> => {
-  if (is.windows) {
-    return (await import('./winAdapter')).default
-  } else if (is.macos) {
-    return (await import('./macAdapter')).default
-  } else {
-    return (await import('./linuxAdapter')).default
+@Singleton
+class DeviceDetector {
+  private readonly adapter: Promise<EmulatorAdapter>
+  constructor () {
+    this.adapter = adapters
+    useEmulatorHooks(this.adapter)
+  }
+
+  public get name (): string {
+    return 'DeviceDetector'
+  }
+
+  public get version (): string {
+    return '114514'
+  }
+
+  /**
+   * @description 获取所有能识别到的模拟器信息
+   * @returns {Promise<Emulator[]>}
+   */
+  public async getEmulators (): Promise<Emulator[]> {
+    return await (await this.adapter).getEmulators()
+  }
+
+  /**
+   * @description 获取通过执行`adb devices`得到的设备
+   * @returns {Promise<Device[]>}
+   */
+  public async getAdbDevices (): Promise<Device[]> {
+    return await (await this.adapter).getAdbDevices()
   }
 }
 
-export const getEmulators =
-  async (): Promise<Emulator[]> => {
-    const adapter = await getAdapter()
-    return await adapter.getEmulators()
-  }
-
-export const getDeviceUuid =
-  async (): Promise<string> => ''
+export default DeviceDetector

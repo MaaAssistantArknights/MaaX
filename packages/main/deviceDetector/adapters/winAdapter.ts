@@ -8,6 +8,8 @@ import _ from 'lodash'
 import { $, $$ } from '@main/utils/shell'
 import logger from '@main/utils/logger'
 
+console.log('import deviceDetector')
+
 const defaultAdbPath = path.join(__dirname, '../platform-tools', 'adb.exe')
 
 const inUsePorts: string[] = [] // 本次识别已被使用的端口，将会在此暂存。
@@ -28,11 +30,11 @@ const getPnamePath = async (pname: string): Promise<string> => {
   return path.length > 1 ? path[0].ExecutablePath : path.ExecutablePath
 }
 
-const getPidPath = async (pid: string): Promise<string> => {
-  const result = await $`Get-WmiObject -Query "select ExecutablePath FROM Win32_Process where ProcessId='${pid}'" | Select-Object -Property ExecutablePath | ConvertTo-Json`
-  const path = JSON.parse(result.stdout)
-  return path.ExecutablePath
-}
+// const getPidPath = async (pid: string): Promise<string> => {
+//   const result = await $`Get-WmiObject -Query "select ExecutablePath FROM Win32_Process where ProcessId='${pid}'" | Select-Object -Property ExecutablePath | ConvertTo-Json`
+//   const path = JSON.parse(result.stdout)
+//   return path.ExecutablePath
+// }
 
 async function getCommandLine (pid: string | number): Promise<string> {
   // 获取进程启动参数
@@ -86,7 +88,7 @@ function getBluestackInstanceName (cmd: string): string {
 }
 
 @Singleton
-class WindowsEmulator extends EmulatorAdapter {
+class WindowsAdapter extends EmulatorAdapter {
   protected async getBluestack (e: Emulator): Promise<void> {
     // const confPortExp = /bst.instance.Nougat64_?\d?.status.adb_port="(\d{4,6})"/g
     // const e: Emulator = { pname, pid }
@@ -300,8 +302,8 @@ class WindowsEmulator extends EmulatorAdapter {
     console.log(e)
   }
 
-  protected async getAdbDevices (): Promise<Emulator[]> {
-    const emulators: Emulator[] = []
+  async getAdbDevices (): Promise<Device[]> {
+    const emulators: Device[] = []
     return emulators
   }
 
@@ -346,4 +348,4 @@ class WindowsEmulator extends EmulatorAdapter {
   }
 }
 
-export default new WindowsEmulator()
+export default new WindowsAdapter()

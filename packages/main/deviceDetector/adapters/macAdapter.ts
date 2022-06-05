@@ -4,7 +4,7 @@ import { Singleton } from '@main/../common/function/singletonDecorator'
 
 @Singleton
 class MacEmulator extends EmulatorAdapter {
-  protected async getBluestack (): Promise<Emulator> {
+  protected async getBluestack (): Promise<void> {
 
   }
 
@@ -20,8 +20,8 @@ class MacEmulator extends EmulatorAdapter {
 
   }
 
-  protected async getAdbDevices (): Promise<Emulator[]> {
-
+  async getAdbDevices (): Promise<Device[]> {
+    return []
   }
 
   async getEmulators (): Promise<Emulator[]> {
