@@ -62,6 +62,7 @@
     "arknights"
   ],
   "dependencies": {
+    "chalk": "^4.1.2",
     "cron": "^1.8.2",
     "crypto-js": "^4.1.1",
     "electron-acrylic-window": "^0.5.11",
@@ -70,6 +71,7 @@
     "electron-util": "^0.17.2",
     "execa": "^5.1.1",
     "ffi-napi": "^4.0.3",
+    "log4js": "^6.5.2",
     "nodejs-file-downloader": "^4.9.3",
     "ps-list": "^7.2.0",
     "ref-array-napi": "^1.2.2",

@@ -4,12 +4,18 @@ import { join } from 'path'
 import { is } from 'electron-util'
 
 import useDebug from './utils/debug'
-import WindowManager from './windowManager'
 
 import useHooks from './hooks'
 
 import { registerDownloadService } from './downloader'
 import logger from './utils/logger'
+
+// modules
+import WindowManager from '@main/windowManager'
+import StorageManager from '@main/storageManager'
+import ComponentManager from '@main/componentManager'
+// import CoreLoader from '@main/coreLoader'
+import DeviceDetector from '@main/deviceDetector'
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()
@@ -22,7 +28,7 @@ if (!app.requestSingleInstanceLock()) {
   process.exit(0)
 }
 
-async function createWindow (): Promise<void> {
+async function createApp (): Promise<void> {
   const win = new WindowManager().getWindow()
   if (app.isPackaged || !is.development) {
     win.loadFile(join(__dirname, '../renderer/index.html'))
@@ -33,7 +39,22 @@ async function createWindow (): Promise<void> {
     const url = `http://${host ?? 'localhost'}:${port ?? '3344'}`
     win.loadURL(url)
   }
+  const modulesCtor = [
+    WindowManager,
+    StorageManager,
+    ComponentManager,
+    // CoreLoader,
+    DeviceDetector
+  ]
 
+  for (const Ctor of modulesCtor) {
+    try {
+      const m = new Ctor()
+      logger.info(`module ${m.name}-v${m.version} loaded.`)
+    } catch (e) {
+      logger.error(`module ${Ctor.name} load failed!`)
+    }
+  }
   useHooks()
   registerDownloadService(win)
   if (is.development) {
@@ -48,7 +69,7 @@ async function createWindow (): Promise<void> {
   })
 }
 
-app.whenReady().then(createWindow)
+app.whenReady().then(createApp)
 
 app.on('window-all-closed', () => {
   // const win = new Window().get();
@@ -69,6 +90,6 @@ app.on('activate', () => {
   if (allWindows.length > 0) {
     allWindows[0].focus()
   } else {
-    createWindow()
+    createApp()
   }
 })

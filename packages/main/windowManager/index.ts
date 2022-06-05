@@ -14,7 +14,7 @@ const createWindow = (options?: BrowserWindowConstructorOptions): BrowserWindow 
 }
 
 @Singleton
-class WindowManager {
+class WindowManager implements Module {
   constructor () {
     this.window_ = createWindow({
       transparent: true,
@@ -33,6 +33,14 @@ class WindowManager {
     })
     useController(this.window_)
     useTheme(this.window_)
+  }
+
+  public get name (): string {
+    return 'WindowManager'
+  }
+
+  public get version (): string {
+    return '1.0.0'
   }
 
   private readonly window_: BrowserWindow

@@ -1,6 +1,5 @@
 import storage from '@/hooks/caller/storage'
 import type { Store } from 'pinia'
-import _ from 'lodash'
 
 import useDeviceStore, { DeviceState } from './devices'
 import useSettingStore, { SettingState } from './settings'

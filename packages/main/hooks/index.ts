@@ -8,8 +8,6 @@ import usePathHooks from './path'
 import useUnzipHooks from './unzip'
 import useShutdownHooks from './shutdown'
 
-import { registerComponentManager } from '@main/componentManager'
-
 export default function useHooks (): void {
   useLoggerHooks()
   useVersionHooks()
@@ -20,5 +18,4 @@ export default function useHooks (): void {
   usePathHooks()
   useUnzipHooks()
   useShutdownHooks()
-  registerComponentManager()
 }

@@ -4,7 +4,7 @@ import { useEmulatorHooks } from './hooks'
 import adapters from './adapters'
 
 @Singleton
-class DeviceDetector {
+class DeviceDetector implements Module {
   private readonly adapter: Promise<EmulatorAdapter>
   constructor () {
     this.adapter = adapters
@@ -16,7 +16,7 @@ class DeviceDetector {
   }
 
   public get version (): string {
-    return '114514'
+    return '1.0.0'
   }
 
   /**
