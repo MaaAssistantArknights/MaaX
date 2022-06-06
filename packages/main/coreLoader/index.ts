@@ -75,15 +75,15 @@ class CoreLoader {
   constructor () {
     // 在构造函数中创建core存储文件夹
     CoreLoader.loadStatus = false
-    const libPath = storage.get(CoreLoader.libPathKey) as string
-    if (!_.isString(libPath) || !existsSync(libPath)) {
-      logger.error(`Update resource folder: ${libPath} --> ${CoreLoader.defaultLibPath}`)
+    CoreLoader.libPath = storage.get(CoreLoader.libPathKey) as string
+    if (!_.isString(CoreLoader.libPath) || !existsSync(CoreLoader.libPath)) {
+      logger.error(`Update resource folder: ${CoreLoader.libPath} --> ${CoreLoader.defaultLibPath}`)
       CoreLoader.libPath = CoreLoader.defaultLibPath
-      if (!existsSync(libPath)) mkdirSync(libPath)
+      if (!existsSync(CoreLoader.libPath)) mkdirSync(CoreLoader.libPath)
     }
-    if (path.isAbsolute(libPath)) {
-      CoreLoader.libPath = path.resolve(libPath)
-      storage.set(CoreLoader.libPathKey, libPath)
+    if (path.isAbsolute(CoreLoader.libPath)) {
+      CoreLoader.libPath = path.resolve(CoreLoader.libPath)
+      storage.set(CoreLoader.libPathKey, CoreLoader.libPath)
     }
   }
 
