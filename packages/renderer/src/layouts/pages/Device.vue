@@ -32,7 +32,7 @@ function handleCustomConnect () {
       show('设备已经存在了哦', { type: 'warning', duration: 5000 })
       return
     }
-    const uuid = window.ipcRenderer.invoke('asst:getDeviceUuid', {
+    const uuid = window.ipcRenderer.invoke('main.CoreLoader:getDeviceUuid', {
       address: connectionString.value,
       adb_path: 'adb'
     })

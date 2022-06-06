@@ -11,7 +11,7 @@ export const ipcMainHandle = <T>(
   listener: (event: IpcMainInvokeEvent, ...args: any[]) => Promise<T> | void | T
 ): void => {
   ipcMain.handle(eventName, async (event, ...args: any[]) => {
-    logger.debug(`触发ipcMain事件: ${eventName}`)
+    logger.debug(`Receive ipcMain event: ${eventName}`)
     return await listener(event, ...args)
   })
 }
@@ -25,8 +25,8 @@ export const ipcMainSend = (
   ...args: any[]
 ): void => {
   const win = new WindowManager().getWindow()
-  if (win.webContents.listeners(eventName).length > 0) {
-    logger.debug(`发送ipcRenderer事件: ${eventName}`)
-    win.webContents.send(eventName, ...args)
-  }
+  // if (win.webContents.listeners(eventName).length > 0) {
+  logger.debug(`Send ipcRenderer event: ${eventName}`)
+  win.webContents.send(eventName, ...args)
+  // }
 }

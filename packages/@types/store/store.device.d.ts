@@ -68,7 +68,7 @@ interface Device {
 
 interface NativeDevice {
   uuid: string
-  pid: string
+  pid?: string
   connectionString: string
   name: EmulatorName
   adbPath: string
