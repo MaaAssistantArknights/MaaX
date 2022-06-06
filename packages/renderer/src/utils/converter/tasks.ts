@@ -138,7 +138,8 @@ function * taskMall (task: Task['configurations']): Generator<object, void, bool
 
   const ret = {
     shopping: true, // TODO: 可以只收取信用而不购物, UI中无选项, 虽然感觉这个功能没啥用
-    shopping_list: [...(task.exclude as Set<string>).keys()],
+    buy_first: [...(task.buy_first as Set<string>).keys()],
+    blacklist: [...(task.blacklist as Set<string>).keys()],
     is_black_list: true
   }
 

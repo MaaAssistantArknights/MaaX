@@ -5,15 +5,19 @@ import { NCard, NText, NTag, NSkeleton } from 'naive-ui'
 
 const props = defineProps<{
   name: string;
+  itemid: string;
 }>()
 
-const itemApi = gamedata.getAllItems()
+const items: Ref<Api.Maa.Item[]> = ref([])
 
 const info: Ref<Api.Maa.Item | undefined> = ref()
 const loading = ref(true)
 
 onMounted(async () => {
-  info.value = await itemApi.get(props.name)
+  const itemApi = await gamedata.getAllItems()
+  items.value = Object.values(itemApi.items) as unknown as Api.Maa.Item[]
+  console.log(items)
+  info.value = items.value.find(x => x.itemId === props.itemid)
   loading.value = false
 })
 
@@ -39,7 +43,7 @@ onMounted(async () => {
       <NText tag="div">{{ info?.description }}</NText>
       <br />
       <NText depth="3" tag="div">获取方式</NText>
-      <NText tag="div">{{ info?.obtain }}</NText>
+      <NText tag="div">{{ info?.obtainApproach }}</NText>
     </template>
   </NCard>
 </template>
