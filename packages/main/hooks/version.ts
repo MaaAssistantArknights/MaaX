@@ -1,5 +1,5 @@
 import { app, ipcMain } from 'electron'
-import { Assistant } from '@main/coreLoader'
+import CoreLoader from '@main/coreLoader'
 
 export default function useVersionHooks (): void {
   ipcMain.handle('version:ui', async (event) => {
@@ -7,6 +7,6 @@ export default function useVersionHooks (): void {
   })
 
   ipcMain.handle('version:core', async (event) => {
-    return Assistant.getInstance()?.GetVersion()
+    return (new CoreLoader()).GetVersion()
   })
 }

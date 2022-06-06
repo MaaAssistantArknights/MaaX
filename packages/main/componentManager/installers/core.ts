@@ -3,16 +3,17 @@ import { app } from 'electron'
 
 import { Singleton } from '@common/function/singletonDecorator'
 
-import { Assistant } from '@main/coreLoader'
+import CoreLoader from '@main/coreLoader'
 import { downloadFile } from '@main/utils/downloader'
 
 import ComponentInstaller from '../componentInstaller'
 
+const coreLoader = new CoreLoader()
 @Singleton
 class CoreInstaller extends ComponentInstaller {
   public async install (url: string): Promise<void> {
     const tempdir = app.getPath('temp')
-    const coredir = Assistant.libPath
+    const coredir = coreLoader.libPath
     downloadFile({
       url,
       path: tempdir,

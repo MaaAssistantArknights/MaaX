@@ -1,8 +1,8 @@
 import { $ } from '@main/utils/shell'
-import { ipcMain } from 'electron'
 import { is } from 'electron-util'
 import WindowManager from '@main/windowManager'
 import logger from '@main/utils/logger'
+import { ipcMainHandle } from '@main/utils/ipc-main'
 
 async function shutdownEmulator (pid: string): Promise<void> {
   logger.debug('Shutdown Emulator')
@@ -36,7 +36,7 @@ async function shutdownComputer (): Promise<void> {
 }
 
 export default function useShutdownHooks (): void {
-  ipcMain.handle('asst:shutdown', async (event, arg) => {
+  ipcMainHandle('main.ScheduleRunner:shutdown', async (event, arg) => {
     if (arg.option === 'shutdownEmulator') {
       await shutdownEmulator(arg.pid)
     } else if (arg.option === 'shutdownAll') {

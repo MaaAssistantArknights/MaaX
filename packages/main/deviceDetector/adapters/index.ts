@@ -1,4 +1,3 @@
-import type EmulatorAdapter from './adapterBase'
 import { is } from 'electron-util'
 
 const getAdapter = async (): Promise<EmulatorAdapter> => {

@@ -14,7 +14,7 @@ import logger from './utils/logger'
 import WindowManager from '@main/windowManager'
 import StorageManager from '@main/storageManager'
 import ComponentManager from '@main/componentManager'
-// import CoreLoader from '@main/coreLoader'
+import CoreLoader from '@main/coreLoader'
 import DeviceDetector from '@main/deviceDetector'
 
 // Disable GPU Acceleration for Windows 7
@@ -43,7 +43,7 @@ async function createApp (): Promise<void> {
     WindowManager,
     StorageManager,
     ComponentManager,
-    // CoreLoader,
+    CoreLoader,
     DeviceDetector
   ]
 

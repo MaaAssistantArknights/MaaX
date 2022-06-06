@@ -1,9 +1,8 @@
-import EmulatorAdapter from './adapterBase'
 import psList from 'ps-list'
 import { Singleton } from '@main/../common/function/singletonDecorator'
 
 @Singleton
-class LinuxEmulator extends EmulatorAdapter {
+class LinuxEmulator implements EmulatorAdapter {
   protected async getBluestack (): Promise<void> {
 
   }

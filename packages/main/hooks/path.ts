@@ -1,5 +1,5 @@
 import { app, ipcMain } from 'electron'
-import { Assistant } from '@main/coreLoader'
+import CoreLoader from '@main/coreLoader'
 import path from 'path'
 import { existsSync, mkdirSync } from 'fs'
 
@@ -27,7 +27,7 @@ export default function usePathHooks (): void {
   })
 
   ipcMain.handle('path:asst', async (event) => {
-    return Assistant.libPath
+    return (new CoreLoader()).libPath
   })
 
   ipcMain.handle('path:adb', async (event) => {

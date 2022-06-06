@@ -1,4 +1,3 @@
-import type EmulatorAdapter from './adapters/adapterBase'
 import { ipcMainHandle, ipcMainRemove } from '@main/utils/ipc-main'
 
 export function useEmulatorHooks (adapter: Promise<EmulatorAdapter>): void {

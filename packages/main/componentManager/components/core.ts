@@ -1,7 +1,9 @@
 import fs from 'fs'
 
-import { Assistant } from '@main/coreLoader'
+import CoreLoader from '@main/coreLoader'
 import CoreInstaller from '@main/componentManager/installers/core'
+
+const coreLoader = new CoreLoader()
 
 const componentCore: Component = {
   name: 'core',
@@ -9,12 +11,12 @@ const componentCore: Component = {
   installer: new CoreInstaller()
 }
 
-const installed = fs.existsSync(Assistant.libPath)
+const installed = fs.existsSync(coreLoader.libPath)
 if (installed) {
   componentCore.status = 'not-compatible'
 }
 
-const coreVersion = Assistant.getInstance()?.GetVersion()
+const coreVersion = coreLoader.GetVersion()
 
 if (coreVersion) {
   componentCore.status = 'installed'

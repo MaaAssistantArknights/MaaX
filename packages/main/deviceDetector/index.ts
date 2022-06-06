@@ -1,4 +1,3 @@
-import type EmulatorAdapter from './adapters/adapterBase'
 import { Singleton } from '@common/function/singletonDecorator'
 import { useEmulatorHooks } from './hooks'
 import adapters from './adapters'

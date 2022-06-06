@@ -1,5 +1,4 @@
 /* eslint-disable vue/max-len */
-import EmulatorAdapter from './adapterBase'
 import { Singleton } from '@common/function/singletonDecorator'
 import path from 'path'
 import { readFileSync, existsSync } from 'fs'
@@ -88,7 +87,7 @@ function getBluestackInstanceName (cmd: string): string {
 }
 
 @Singleton
-class WindowsAdapter extends EmulatorAdapter {
+class WindowsAdapter implements EmulatorAdapter {
   protected async getBluestack (e: Emulator): Promise<void> {
     // const confPortExp = /bst.instance.Nougat64_?\d?.status.adb_port="(\d{4,6})"/g
     // const e: Emulator = { pname, pid }
