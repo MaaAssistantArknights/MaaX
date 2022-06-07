@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { NCheckbox, NPopover } from 'naive-ui'
-import { maa as MaaApi } from '@/api'
+import { NCheckbox, NPopover, NText } from 'naive-ui'
+// import { maa as MaaApi } from '@/api'
 import ItemCard from './ItemCard.vue'
 
 const props = defineProps<{
   name: string;
   checked: boolean;
+  itemid: string;
 }>()
 
 const emit = defineEmits(['update:checked'])
@@ -21,13 +22,16 @@ const emit = defineEmits(['update:checked'])
           :checked="props.checked"
           @update:checked="checked => emit('update:checked', checked)"
         />
-        <img
+        <!-- <img
           :src="MaaApi.gamedata.items.imageLink(props.name)"
           @click="emit('update:checked', !props.checked)"
-        />
+        /> -->
+        <div>
+          <NText>    {{ props.name }} </NText>
+        </div>
       </div>
     </template>
-    <ItemCard :name="props.name" />
+    <ItemCard :name="props.name" :itemid="props.itemid" />
   </NPopover>
 </template>
 
@@ -44,7 +48,7 @@ const emit = defineEmits(['update:checked'])
 }
 
 .item-checkbox {
-  position: absolute;
+  // position: absolute;
   top: 0;
   left: 0;
 }

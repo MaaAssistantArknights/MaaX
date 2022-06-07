@@ -88,10 +88,10 @@ declare namespace Api.Maa {
   interface Item {
     category: string[]
     description: string
-    id: string
+    itemId: string
     image: string
     name: string
-    obtain: string
+    obtainApproach: string
     rarity: number
     usage: string
   }
