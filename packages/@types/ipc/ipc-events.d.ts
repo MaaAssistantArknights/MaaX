@@ -23,7 +23,7 @@ type IpcMainHandleEvent =
   | 'main.DeviceDetector:getAdbDevices'
   | 'main.DeviceDetector:getEmulators'
   // | 'main.deviceDetector:getDeviceUuid'
-  | 'main.deviceDetector:startEmulator'
+  | 'main.DeviceDetector:startEmulator'
   | 'logger:log'
   | 'logger:silly'
   | 'logger:debug'
@@ -47,7 +47,7 @@ type IpcMainHandleEvent =
 type IpcRendererHandleEvent =
   | 'windowManager:updateMaximized'
   | 'ui:message'
-  | 'renderer.CoreLoader.callback'
+  | 'renderer.CoreLoader:callback'
 
 interface IpcMainEvent<T> {
   name: IpcMainHandleEvent

@@ -34,67 +34,82 @@ const taskChainTranslate: Record<string, string> = {
 
 const callbackParse: taskchainProps = {
   [AsstMsg.InternalError]: (msg, detail): object => {
-    return { name: msg }
+    return { name: msg, data: {} }
   },
   [AsstMsg.InitFailed]: (msg, detail): object => {
-    return { name: msg, uuid: detail.uuid }
+    return { name: msg, data: { uuid: detail.uuid } }
   },
   [AsstMsg.ConnectionInfo]: (msg, detail): object => {
     return {
-      // name: msg,
-      name: detail.what, // 连接类型
-      address: detail.details.address,
-      ...{ UuidGetted: { uuid: detail.details.uuid }, ConnectFailed: {} }[
-        detail.what
-      ]
+      name: detail.what === 'UuidGetted' ? 'UuidGetted' : 'ConnectFailed',
+      data: {
+        address: detail.details.address,
+        ...{ UuidGetted: { uuid: detail.details.uuid }, ConnectFailed: {} }[
+          detail.what
+        ]
+      }
     }
   },
   [AsstMsg.AllTasksCompleted]: (msg, detail): object => {
-    return { name: msg, uuid: detail.uuid }
+    return { name: msg, data: { uuid: detail.uuid } }
   },
   [AsstMsg.TaskChainError]: (msg, detail): object => {
     return {
       name: msg,
-      task: taskChainTranslate[detail.taskchain],
-      uuid: detail.uuid
+      data: {
+        task: taskChainTranslate[detail.taskchain],
+        uuid: detail.uuid
+      }
     }
   },
   [AsstMsg.TaskChainStart]: (msg, detail): object => {
     return {
       name: msg,
-      task: taskChainTranslate[detail.taskchain],
-      uuid: detail.uuid
+      data: {
+        task: taskChainTranslate[detail.taskchain],
+        uuid: detail.uuid
+      }
     }
   },
   [AsstMsg.TaskChainCompleted]: (msg, detail): object => {
     return {
       name: msg,
-      task: taskChainTranslate[detail.taskchain],
-      uuid: detail.uuid
+      data: {
+        task: taskChainTranslate[detail.taskchain],
+        uuid: detail.uuid
+      }
     }
   },
   [AsstMsg.TaskChainExtraInfo]: (msg, detail): object => {
-    return { name: msg }
+    return { name: msg, data: {} }
   },
   [AsstMsg.SubTaskError]: (msg, detail): object => {
-    return { name: `${detail.taskchain}:${detail.details.task}` }
+    return { name: `${detail.taskchain}:${detail.details.task}`, data: {} }
   },
   [AsstMsg.SubTaskStart]: (msg, detail): object => {
     console.log(`CALL: ${detail.taskchain}:Start:${detail.details.task}`)
     return {
       name: `${detail.taskchain}:Start:${detail.details.task}`,
-      execTimes: detail.details.exec_times,
-      task: taskChainTranslate[detail.taskchain],
-      uuid: detail.uuid
+      data: {
+        execTimes: detail.details.exec_times,
+        task: taskChainTranslate[detail.taskchain],
+        uuid: detail.uuid
+      }
     }
   },
   [AsstMsg.SubTaskCompleted]: (msg, detail): object => {
     console.log(`CALL: ${detail.taskchain}:Completed:${detail.details.task}`)
-    return { name: `${detail.taskchain}:Completed:${detail.details.task}`, ...detail }
+    return {
+      name: `${detail.taskchain}:Completed:${detail.details.task}`,
+      data: { ...detail }
+    }
   },
   [AsstMsg.SubTaskExtraInfo]: (msg, detail): object => {
     console.log(`CALL: ${detail.taskchain}:Extra:${detail.what}`)
-    return { name: `${detail.taskchain}:Extra:${detail.what}`, ...detail }
+    return {
+      name: `${detail.taskchain}:Extra:${detail.what}`,
+      data: { ...detail }
+    }
   }
 }
 
@@ -107,8 +122,7 @@ const callbackHandle = ffi.Callback(
     logger.debug(_msg)
     logger.debug(_detail)
     const callback = callbackParse[msg as AsstMsg](msg, detail)
-
-    ipcMainSend('renderer.CoreLoader.callback', callback)
+    ipcMainSend('renderer.CoreLoader:callback', callback)
 
     // ipcMainSend((callback as any).name.toString(), callback)
 

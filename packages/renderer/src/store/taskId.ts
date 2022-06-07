@@ -80,7 +80,7 @@ const useTaskIdStore = defineStore<'taskId', TaskIdState, {}, TaskIdAction>(
 
             (task.id as number[]).forEach(async (id) => {
               const ret = await window.ipcRenderer.invoke(
-                'asst:setTaskParams',
+                'main.CoreLoader:setTaskParams',
                 {
                   uuid: uuid,
                   task_id: id,

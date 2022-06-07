@@ -64,7 +64,7 @@ function handleDeviceDisconnect () {
     type: 'loading',
     duration: 0
   })
-  window.ipcRenderer.send('disconnect_destroy', { uuid: device.value?.uuid })
+  window.ipcRenderer.send('main.CoreLoader:disconnectAndDestroy', { uuid: device.value?.uuid })
   taskStore.stopAllTasks(device.value?.uuid as string)
   deviceStore.updateDeviceStatus(device.value?.uuid as string, 'disconnected')
   show(`${deviceDisplayName.value}已断开连接 `, {
@@ -87,7 +87,7 @@ async function handleDeviceConnect () {
   })
 
   console.log(
-    await window.ipcRenderer.invoke('asst:createEx_connect', {
+    await window.ipcRenderer.invoke('main.CoreLoader:createExAndConnect', {
       address: device.value?.connectionString,
       uuid: device.value?.uuid,
       adb_path: device.value?.adbPath,

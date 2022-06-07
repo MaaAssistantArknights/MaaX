@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, Ref, watch } from 'vue'
-import { NSpace, NButton, NSwitch, NIcon, NTooltip } from 'naive-ui'
+import { NSpace, NButton, NSwitch, NIcon, NTooltip, NDropdown } from 'naive-ui'
 import _ from 'lodash'
 import Sortable from 'sortablejs'
 import TaskCard from '@/components/TaskCard.vue'
@@ -89,18 +89,18 @@ async function handleStartUnconnected (task: Task['configurations']) { // 未连
   console.log('after start')
 
   deviceStore.updateDeviceStatus(uuid.value, 'tasking')
-  window.ipcRenderer.invoke('asst:startEmulator', task.commandLine)
+  window.ipcRenderer.invoke('main.DeviceDetector:startEmulator', task.commandLine)
   logger.debug('after start emulators')
   setTimeout(async () => {
     logger.debug('before getEmulators')
-    const devices: any[] = await window.ipcRenderer.invoke('asst:getEmulators') // 等待时间结束后进行一次设备搜索，但不合并结果
+    const devices: any[] = await window.ipcRenderer.invoke('main.DeviceDetector:getEmulators') // 等待时间结束后进行一次设备搜索，但不合并结果
     const device = devices.find(device => device.uuid === uuid.value)// 检查指定uuid的设备是否存在
     logger.debug('after getEmulators')
     if (device) { // 设备活了
       logger.debug('find device')
       logger.debug('before create')
       logger.debug(device)
-      await window.ipcRenderer.invoke('asst:createEx_connect', { // 创建连接
+      await window.ipcRenderer.invoke('main.CoreLoader:createExAndConnect', { // 创建连接
         address: device.address,
         uuid: device.uuid,
         adb_path: device.adb_path,
@@ -151,7 +151,7 @@ async function handleSubStart () {
 
       let task = taskIter.next()
       while (!task.done) {
-        const taskId = await window.ipcRenderer.invoke('asst:appendTask', {
+        const taskId = await window.ipcRenderer.invoke('main.CoreLoader:appendTask', {
           uuid: uuid.value,
           type: taskTranslate[singleTask.id],
           params: task.value
@@ -163,12 +163,12 @@ async function handleSubStart () {
   }
   deviceStore.updateDeviceStatus(uuid.value as string, 'tasking')
 
-  await window.ipcRenderer.invoke('asst:start', { uuid: uuid.value })
+  await window.ipcRenderer.invoke('main.CoreLoader:start', { uuid: uuid.value })
 }
 
 async function handleSubStop () {
   show('正在停止任务', { type: 'info', duration: 0 })
-  const status = await window.ipcRenderer.invoke('asst:stop', { uuid: uuid.value }) // 等待core停止任务
+  const status = await window.ipcRenderer.invoke('main.CoreLoader:stop', { uuid: uuid.value }) // 等待core停止任务
   if (!status) {
     show('停止任务失败', { type: 'error', duration: 5000 })
   } else {
@@ -206,7 +206,11 @@ async function handleStart () {
   <div>
     <NSpace justify="space-between" align="center">
       <h2>任务</h2>
+
       <NSpace align="center">
+              <NDropdown>
+        <NButton type="primary">切换配置</NButton>
+      </NDropdown>
         <NTooltip class="detail-toggle-switch">
           <template #trigger>
             <NSwitch v-model:value="isGrid" size="large">

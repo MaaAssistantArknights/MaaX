@@ -32,7 +32,7 @@ string,
       arg.config
     )
   },
-  'main.CoreLoader:createEx_connect': async (_event, arg) => {
+  'main.CoreLoader:createExAndConnect': async (_event, arg) => {
     const createStatus = core.CreateEx(arg.uuid) ?? false
     if (!createStatus) console.log(`重复创建 ${JSON.stringify(arg)}`)
     return core.Connect(
@@ -42,7 +42,7 @@ string,
       arg.config
     )
   },
-  'main.CoreLoader:disconnect_destroy': async (_event, arg) => {
+  'main.CoreLoader:disconnectAndDestroy': async (_event, arg) => {
     core.Stop(arg.uuid)
     core.Destroy(arg.uuid)
     return true

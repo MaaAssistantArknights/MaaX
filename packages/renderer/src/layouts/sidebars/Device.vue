@@ -50,7 +50,7 @@ async function handleRefreshDevices () {
   show('正在更新设备列表...', { type: 'loading', duration: 0 })
 
   // console.log(deviceStore.devices);
-  window.ipcRenderer.invoke('asst:getEmulators').then((ret) => {
+  window.ipcRenderer.invoke('main.DeviceDetector:getEmulators').then((ret) => {
     if (!ret.every((v: any) => { return v.uuid })) {
       show(() => h('span', '检测到设备, 但唯一标识符获取失败, 可能是模拟器未启动完成导致, 请重试或重启模拟器'), { type: 'error' })
       return

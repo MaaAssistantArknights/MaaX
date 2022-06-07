@@ -5,27 +5,30 @@ export async function taskEmulator (task: Task['configurations']): Promise<void>
   console.log('before start emu')
   console.log(task)
   window.ipcRenderer.send('10001', task.uuid, task.taskId) // 启动模拟器 子任务开始
-  await window.ipcRenderer.invoke('asst:startEmulator', {
+  await window.ipcRenderer.invoke('main.CoreLoader:startEmulator', {
     emulator_path: task.emulator_path,
     arg: task.arg
   })
   console.log('after start')
-  setTimeout(async () => {
-    const devices: any[] = await window.ipcRenderer.invoke('asst:getEmulators') // 等待时间结束后进行一次设备搜索，但不合并结果
-    const device = devices.find(device => device.uuid === task.uuid)// 检查指定uuid的设备是否存在
-    if (device) { // 设备活了
-      const connectStatus = await window.ipcRenderer.invoke('asst:createEx_connect', { // 创建连接
-        address: device.address,
-        uuid: device.uuid,
-        adb_path: device.adbPath,
-        config: device.config
-      })
-      logger.debug(connectStatus)
-      window.ipcRenderer.send('10002', task.uuid, task.taskId) // 启动模拟器 子任务完成
-      await window.ipcRenderer.invoke('asst:start', { uuid: device.uuid }) // 启动后续任务
-    } else { // 设备没活
-      show('启动设备失败, 请前往github上提交issue', { type: 'error', duration: 0 })
-    }
+  setTimeout(() => {
+    (async () => {
+      const devices: any[] = await window.ipcRenderer.invoke('main.DeviceDetector:getEmulators')
+      // 等待时间结束后进行一次设备搜索，但不合并结果
+      const device = devices.find(device => device.uuid === task.uuid)// 检查指定uuid的设备是否存在
+      if (device) { // 设备活了
+        const connectStatus = await window.ipcRenderer.invoke('main.CoreLoader:createExAndConnect', { // 创建连接
+          address: device.address,
+          uuid: device.uuid,
+          adb_path: device.adbPath,
+          config: device.config
+        })
+        logger.debug(connectStatus)
+        window.ipcRenderer.send('10002', task.uuid, task.taskId) // 启动模拟器 子任务完成
+        await window.ipcRenderer.invoke('main.CoreLoader:start', { uuid: device.uuid }) // 启动后续任务
+      } else { // 设备没活
+        show('启动设备失败, 请前往github上提交issue', { type: 'error', duration: 0 })
+      }
+    })()
   }, (task.delay as number) * 1000)
 }
 
