@@ -1,9 +1,9 @@
 import { is } from 'electron-util'
 import { format } from 'date-fns'
 import log4js from 'log4js'
-// @ts-expect-error
-import chalk = require('chalk')
-import type { Chalk } from 'chalk'
+import chalk from 'chalk'
+import { app } from 'electron'
+import path from 'path'
 
 const timeFormat = 'yyyy-MM-dd HH:mm:ss.SSS'
 
@@ -16,7 +16,6 @@ class Logger {
         const timeStr = format(startTime, timeFormat)
         const message =
           typeof event.data[0] === 'string' ? event.data[0] : JSON.stringify(event.data[0])
-
         const line = `[${timeStr}] ${event.level.levelStr} > ${message}`
         let colored = (msg: string): string => msg
         let stackColored = (msg: string): string => msg
@@ -43,7 +42,7 @@ class Logger {
             break
         }
 
-        return `${colored(line)}${stackColored(event.level.level > 30000 ? '\n' + event.callStack : '')}`
+        return `${colored(line)}${stackColored(event.level.level > 30000 ? `\n${event.callStack ?? ''}` : '')}`
       }
     })
     log4js.addLayout('file', () => {
@@ -51,18 +50,25 @@ class Logger {
         const { startTime } = event
         const timeStr = format(startTime, timeFormat)
         const message =
-          typeof event.data[0] === 'string' ? `> ${event.data[0]}` : `:\n${JSON.stringify(event.data[0], null, 2)}`
-        return `[${timeStr}] ${event.level.levelStr} ${message}`
+          typeof event.data[0] === 'string' ? event.data[0] : JSON.stringify(event.data[0])
+
+        const line = `[${timeStr}] ${event.level.levelStr} > ${message}`
+        return `${line}${event.level.level > 30000 ? `\n${event.callStack ?? ''}` : ''}`
       }
     })
     log4js.configure({
       appenders: {
         stdout: { type: 'stdout', layout: { type: 'stdout' } },
-        file: { type: 'file', filename: 'ui.log', layout: { type: 'file' } }
+        file: {
+          type: 'fileSync',
+          filename: path.join(app.getPath('appData'), app.getName(),
+            'log', `ui-${format(new Date(), 'yyyyMMddhhmmss')}.log`),
+          layout: { type: 'file' }
+        }
       },
       categories: {
         default: {
-          appenders: ['stdout'].concat(is.development ? [] : ['file']),
+          appenders: ['file', 'stdout'],
           level: is.development ? 'trace' : 'info',
           enableCallStack: true
         }

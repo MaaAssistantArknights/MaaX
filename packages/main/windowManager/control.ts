@@ -1,5 +1,17 @@
+import { ipcMainHandle } from '@main/utils/ipc-main'
 import type { BrowserWindow } from 'electron'
-import { ipcMain } from 'electron'
+import { ipcMain, dialog } from 'electron'
+
+type DialogProperty =
+  | 'openFile'
+  | 'openDirectory'
+  | 'multiSelections'
+  | 'showHiddenFiles'
+  | 'createDirectory'
+  | 'promptToCreate'
+  | 'noResolveAliases'
+  | 'treatPackageAsDirectory'
+  | 'dontAddToRecent'
 
 export default function useController (window: BrowserWindow): void {
   ipcMain.on('window:close', () => {
@@ -37,5 +49,18 @@ export default function useController (window: BrowserWindow): void {
 
   window.on('unmaximize', () => {
     window.webContents.send('window:update-maximized', window.isMaximized())
+  })
+
+  ipcMainHandle('main.WindowManager:openDialog', async (
+    event,
+    title: string,
+    properties: DialogProperty[],
+    filters: Electron.FileFilter[]
+  ) => {
+    return await dialog.showOpenDialog(window, {
+      title: title,
+      properties: properties,
+      filters: filters
+    })
   })
 }

@@ -38,14 +38,16 @@ type IpcMainHandleEvent =
   | 'storageManager:get'
   | 'storageManager:set'
   | 'storageManager:has'
-  | 'windowManager:closeWindow'
-  | 'windowManager:toggleMaximized'
-  | 'windowManager:minimize'
-  | 'windowManager:isMaximized'
+  | 'main.WindowManager:closeWindow'
+  | 'main.WindowManager:toggleMaximized'
+  | 'main.WindowManager:minimize'
+  | 'main.WindowManager:isMaximized'
+  | 'main.WindowManager:openDialog'
+  | 'main.WindowManager:loaded'
 
 // 通过ipcRenderer.on定义的事件名称
 type IpcRendererHandleEvent =
-  | 'windowManager:updateMaximized'
+  | 'main.WindowManager:updateMaximized'
   | 'ui:message'
   | 'renderer.CoreLoader:callback'
 

@@ -66,7 +66,7 @@ class Storage<T extends Object> implements Module {
   private readonly saveToFile = _.debounce(() => {
     fs.writeFileSync(this.filepath, this.m_serialize(this.m_storage))
     logger.debug('configuration saved')
-  }, 200);
+  }, 50);
 
   private readonly readFromFile = () => {
     try {

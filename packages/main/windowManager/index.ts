@@ -4,9 +4,11 @@ import { join } from 'path'
 import { Singleton } from '@common/function/singletonDecorator'
 import useController from './control'
 import useTheme from './theme'
+import Storage from '@main/storageManager'
 
 const createWindow = (options?: BrowserWindowConstructorOptions): BrowserWindow => {
-  const module = is.windows
+  const storage = new Storage()
+  const module = is.windows && storage.get('theme.acrylic')
     ? require('electron-acrylic-window')
     : require('electron')
   const Ctor = module.BrowserWindow
@@ -16,10 +18,11 @@ const createWindow = (options?: BrowserWindowConstructorOptions): BrowserWindow 
 @Singleton
 class WindowManager implements Module {
   constructor () {
+    const storage = new Storage()
     this.window_ = createWindow({
       transparent: true,
       frame: false,
-      vibrancy: is.macos ? 'under-window' : 'appearance-based',
+      vibrancy: is.macos && storage.get('theme.acrylic') ? 'under-window' : 'appearance-based',
       width: 1024,
       height: 768,
       minWidth: 800,

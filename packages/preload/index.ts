@@ -11,8 +11,24 @@ const { appendLoading, removeLoading } = useLoading();
 })();
 
 // --------- Expose some API to the Renderer process. ---------
+
+const ipc = {
+  on: (channel: string, listener: (event: Electron.IpcRendererEvent, ...args: any[]) => void): Electron.IpcRenderer => {
+    ipcRenderer.send('log:debug', `ipcRenderer event "${channel}" registered`)
+    return ipcRenderer.on(channel, listener)
+  },
+  send: (channel: string, ...args: any[]): void => {
+    ipcRenderer.send('log:debug', `ipcMain event "${channel}" sent`)
+    ipcRenderer.send(channel, ...args)
+  },
+  invoke: (channel: string, ...args: any[]): Promise<any> => {
+    ipcRenderer.send('log:debug', `ipcMain event "${channel}" invoked`)
+    return ipcRenderer.invoke(channel, ...args)
+  }
+}
+
 contextBridge.exposeInMainWorld("removeLoading", removeLoading);
-contextBridge.exposeInMainWorld("ipcRenderer", withPrototype(ipcRenderer));
+contextBridge.exposeInMainWorld("ipcRenderer", withPrototype(ipc));
 
 // `exposeInMainWorld` can't detect attributes and methods of `prototype`, manually patching it.
 function withPrototype(obj: Record<string, any>) {

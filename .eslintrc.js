@@ -28,7 +28,7 @@ module.exports = {
   rules: {
     'vue/max-len': ['error', {
       code: 120,
-      template: 90
+      template: 120
     }],
     "no-undef": "off", // 让ts检查undefined
     "@typescript-eslint/no-floating-promises": "off",

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, Ref, h, computed } from 'vue'
+import { ref, onMounted, Ref, h } from 'vue'
 import _ from 'lodash'
 import {
   NForm,
@@ -11,7 +11,8 @@ import {
   NSpace,
   NTimePicker,
   NDataTable,
-  NAvatar
+  NAvatar,
+  DataTableColumns
 } from 'naive-ui'
 import gamedataApi from '@/api/gamedata'
 import { getOperatorAvatar, getSkillImage } from '@/utils/game_image'
@@ -82,7 +83,7 @@ const props = defineProps<{
 const showModal = ref(false)
 const showSelectModal = ref(false)
 
-const selectedOperators: Ref<unknown[]> = ref([])
+const selectedOperators: Ref<any[]> = ref([])
 const allSkills: Ref<any> = ref()
 const loading = ref(false)
 
@@ -98,7 +99,7 @@ onMounted(async () => {
   loading.value = false
 })
 
-const addOperator = (operator: unknown) => {
+const addOperator = (operator: any) => {
   console.log('emit add:operator')
   selectedOperators.value.push({
     operator,
@@ -107,12 +108,12 @@ const addOperator = (operator: unknown) => {
   })
 }
 
-const removeOperator = (operator: unknown) => {
+const removeOperator = (operator: any) => {
   console.log('emit remove:operator')
   _.remove(selectedOperators.value, (op) => op.operator.name === operator.name)
 }
 
-const createColumns = () => [
+const createColumns = (): DataTableColumns<any> => [
   {
     title: '干员',
     key: 'operator',
@@ -122,7 +123,7 @@ const createColumns = () => [
     title: '技能',
     key: 'skill',
     render: (row) => {
-      const skillAvatar = (skill: unknown, index: number) =>
+      const skillAvatar = (skill: any, index: number) =>
         h(NAvatar, {
           size: 36,
           src: allSkills.value[skill.skillId].image,

@@ -1,11 +1,12 @@
 import installExtension from 'electron-devtools-installer'
-import type { BrowserWindow } from 'electron'
+import { BrowserWindow } from 'electron'
+import logger from './logger'
 
 function useDebug (window: BrowserWindow): void {
   installExtension('nhdogjmejiglipccpnnnanhbledajbpd')
-    .then((name) => console.log(`Added Extension:  ${name}`))
-    .catch((err) =>
-      console.error('An error occurred while install extension: ', err)
+    .then((name) => logger.info(`Added Extension:  ${name}`))
+    .catch((err: Error) =>
+      logger.error(`An error occurred while install extension: ${err.message}`)
     )
   window.webContents.openDevTools({ mode: 'detach' })
   // Bypass CORS

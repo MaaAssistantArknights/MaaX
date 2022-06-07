@@ -28,7 +28,7 @@ onMounted(async () => {
   const zoneRes = await gamedata.getAllZones()
   const stageRes = await gamedata.getAllStages()
   allZones.value = Object.values(zoneRes.zones) as Api.Maa.Zone[]
-  allStages.value = Object.values(stageRes.stages) as Api.Maa.Stage[]
+  allStages.value = Object.values(stageRes.stages) as unknown as Api.Maa.Stage[]
 })
 
 const stages = computed(() => {

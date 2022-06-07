@@ -19,7 +19,7 @@ const themeStore = useThemeStore()
 
 const props = defineProps<{
   show: boolean;
-  selectedOperators: unknown[];
+  selectedOperators: any[];
 }>()
 
 const emit = defineEmits(['update:show', 'remove:operator', 'add:operator'])
@@ -62,7 +62,7 @@ const getProfessionTab = (professionCode: string, professionName: string): VNode
   ])
 }
 
-const toggleSelected = (operator: unknown) => {
+const toggleSelected = (operator: any) => {
   const find = _.find(props.selectedOperators, (op) => op.name === operator.name)
   if (find) {
     emit('remove:operator', operator)

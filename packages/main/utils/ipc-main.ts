@@ -25,8 +25,6 @@ export const ipcMainSend = (
   ...args: any[]
 ): void => {
   const win = new WindowManager().getWindow()
-  // if (win.webContents.listeners(eventName).length > 0) {
   logger.debug(`Send ipcRenderer event: ${eventName}`)
   win.webContents.send(eventName, ...args)
-  // }
 }

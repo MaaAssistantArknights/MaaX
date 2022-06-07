@@ -13,16 +13,16 @@ import {
   dateZhCN,
   ThemeCommonVars
 } from 'naive-ui'
-import { initialStore } from '@/store/initial'
 import useThemeStore from '@/store/theme'
-import { initHook } from './hooks'
-import { onMounted } from 'vue'
+import { initHook } from '@/hooks'
+import { onMounted, computed } from 'vue'
+import { transparentize } from 'color2k'
 
 onMounted(() => {
   initHook()
 })
 
-initialStore()
+// initialStore()
 
 const themeStore = useThemeStore()
 
@@ -70,20 +70,30 @@ const darkThemeOverrides: GlobalThemeOverrides = {
     ...commonThemeOverrides
   }
 }
+
+const style = computed(() => {
+  const bg = themeStore.bgFollowTheme && themeStore.theme === 'maa-dark'
+    ? themeStore.bgDark
+    : themeStore.bgLight
+  const bodyColor = themeStore.theme === 'maa-dark'
+    ? '#0f0f0f'
+    : '#f0f0f0'
+  return {
+    '--inner-bg': `url(${bg.url})`,
+    '--inner-opacity': bg.opacity,
+    background: transparentize(bodyColor, 1 - themeStore.themeColorOpacity)
+  }
+})
 </script>
 
 <template>
-  <NConfigProvider
-    class="app-provider"
-    :locale="zhCN"
-    :date-locale="dateZhCN"
-    :theme="themeStore.theme === 'maa-light' ? null : darkTheme"
-    :theme-overrides="
+  <NConfigProvider class="app-provider" :locale="zhCN" :date-locale="dateZhCN"
+    :theme="themeStore.theme === 'maa-light' ? null : darkTheme" :theme-overrides="
       themeStore.theme === 'maa-light'
         ? lightThemeOverrides
         : darkThemeOverrides
-    "
-  >
+    " :style="style">
+    <div class="background"></div>
     <NMessageProvider>
       <NGlobalStyle />
       <WindowController />
@@ -104,5 +114,18 @@ const darkThemeOverrides: GlobalThemeOverrides = {
   min-height: 100vh;
   min-width: 100vw;
   display: flex;
+  position: relative;
+}
+
+.background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-image: var(--inner-bg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: var(--inner-opacity);
 }
 </style>

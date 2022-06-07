@@ -1,12 +1,13 @@
 import storage from '@/hooks/caller/storage'
-import type { Store } from 'pinia'
+import { Store } from 'pinia'
 
 import useDeviceStore, { DeviceState } from './devices'
 import useSettingStore, { SettingState } from './settings'
 import useTaskStore, { TaskState } from './tasks'
 import useThemeStore, { ThemeState } from './theme'
+import logger from '@/hooks/caller/logger'
 
-type Patcher<T> = (state: T, storage: T) => void
+type Patcher<T> = (storage: T) => T
 
 export async function initialStore (): Promise<void> {
   const stores: Record<string, Store> = {
@@ -17,18 +18,19 @@ export async function initialStore (): Promise<void> {
   }
 
   const patcher: Record<string, Patcher<any>> = {
-    device: (state: DeviceState, storage: DeviceState) => {
-      state.devices = storage.devices.map((device) => ({
+    device: (storage: DeviceState) => {
+      storage.devices = storage.devices.map((device) => ({
         ...device,
         status: 'unknown',
         connectionString: '',
         pid: ''
       }))
+      return storage
     },
-    setting: (state: SettingState, storage: SettingState) => {
-      state = storage
+    setting: (storage: SettingState) => {
+      return storage
     },
-    tasks: (state: TaskState, storage: TaskState) => {
+    tasks: (storage: TaskState) => {
       for (const tasks of Object.values(storage.deviceTasks)) {
         for (const task of tasks) {
           task.progress = 0
@@ -37,17 +39,25 @@ export async function initialStore (): Promise<void> {
           task.status = 'idle'
         }
       }
-      state.deviceTasks = storage.deviceTasks
+      return storage
     },
-    theme: (state: ThemeState, storage: ThemeState) => {
-      state = storage
+    theme: (storage: ThemeState) => {
+      return storage
     }
   }
 
-  Object.entries(stores).forEach(async ([storeId, store]) => {
-    const s = await storage.get(storeId)
-    if (s) {
-      store.$patch((state: any) => patcher[storeId](state, s))
-    }
+  const promises = []
+
+  for (const [storeId, store] of Object.entries(stores)) {
+    promises.push(storage.get(storeId).then(s => {
+      if (s) {
+        store.$patch(patcher[storeId](s))
+      }
+    }))
+  }
+
+  Promise.all(promises).then(() => {
+    console.log('finish loading store')
+    window.ipcRenderer.invoke('main.WindowManager:loaded')
   })
 }
