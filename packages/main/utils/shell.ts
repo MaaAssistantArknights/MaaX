@@ -1,11 +1,14 @@
 import logger from '@main/utils/logger'
 import { is } from 'electron-util'
-import execa from 'execa'
+import execa, { ExecaError } from 'execa'
+import iconv from 'iconv-lite'
 
 interface processOutput {
   stdout: string
   stderr: string
 }
+
+const textDecoder = (buf: Buffer): string => iconv.decode(buf, is.windows ? 'gb2312' : 'utf8')
 
 /**
  * 异步执行shell命令,
@@ -25,9 +28,17 @@ export async function $ (pieces: TemplateStringsArray, ...args: string[]): Promi
   logger.debug(`exec: ${cmd}`)
 
   try {
-    ret.stdout = (await execa(cmd, { shell: is.windows ? 'powershell' : 'bash' })).stdout
+    const { stdout, stderr } = (await execa(cmd, {
+      shell: is.windows ? 'powershell' : 'bash',
+      encoding: null
+    }))
+    ret.stdout = textDecoder(stdout)
+    ret.stderr = textDecoder(stderr)
   } catch (err: any) {
-    ret.stderr = err
+    const error = err as ExecaError<Buffer>
+    const { stdout, stderr } = error
+    ret.stdout = textDecoder(stdout)
+    ret.stderr = textDecoder(stderr)
   }
   logger.debug(ret)
   return ret
@@ -42,11 +53,17 @@ export async function $ (pieces: TemplateStringsArray, ...args: string[]): Promi
 export async function $$ (file: string, args?: string[]): Promise<processOutput> {
   const ret = { stderr: '', stdout: '' }
   logger.debug(`exec: ${file} ${args ? args.join(' ') : ''}`)
-
   try {
-    ret.stdout = (await execa(file, args)).stdout
+    const { stdout, stderr } = (await execa(file, args, {
+      encoding: null
+    }))
+    ret.stdout = textDecoder(stdout)
+    ret.stderr = textDecoder(stderr)
   } catch (err: any) {
-    ret.stderr = err
+    const error = err as ExecaError<Buffer>
+    const { stdout, stderr } = error
+    ret.stdout = textDecoder(stdout)
+    ret.stderr = textDecoder(stderr)
   }
   logger.debug(ret)
   return ret
