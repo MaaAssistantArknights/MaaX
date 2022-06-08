@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { NCheckbox, NPopover, NText } from 'naive-ui'
+import { NCheckbox, NPopover, NScrollbar } from 'naive-ui'
 // import { maa as MaaApi } from '@/api'
 import ItemCard from './ItemCard.vue'
+import { getItemBorderedImage } from '@/utils/game_image'
 
 const props = defineProps<{
   name: string;
@@ -17,21 +18,18 @@ const emit = defineEmits(['update:checked'])
   <NPopover display-directive="show">
     <template #trigger>
       <div class="item-check">
-        <NCheckbox
-          class="item-checkbox"
-          :checked="props.checked"
-          @update:checked="checked => emit('update:checked', checked)"
-        />
-        <!-- <img
-          :src="MaaApi.gamedata.items.imageLink(props.name)"
-          @click="emit('update:checked', !props.checked)"
-        /> -->
-        <div>
+        <NCheckbox class="item-checkbox" :checked="props.checked"
+          @update:checked="checked => emit('update:checked', checked)" />
+        <img :src="getItemBorderedImage(props.name)"
+          @click="emit('update:checked', !props.checked)" />
+        <!-- <div>
           <NText>    {{ props.name }} </NText>
-        </div>
+        </div> -->
       </div>
     </template>
-    <ItemCard :name="props.name" :itemid="props.itemid" />
+    <NScrollbar :style="{ maxHeight: '50vh' }">
+      <ItemCard :name="props.name" :itemid="props.itemid" />
+    </NScrollbar>
   </NPopover>
 </template>
 
@@ -40,7 +38,8 @@ const emit = defineEmits(['update:checked'])
   display: inline-block;
   position: relative;
   padding: 4px;
-  & > img {
+
+  &>img {
     width: 60px;
     height: 60px;
     cursor: pointer;
@@ -48,7 +47,7 @@ const emit = defineEmits(['update:checked'])
 }
 
 .item-checkbox {
-  // position: absolute;
+  position: absolute;
   top: 0;
   left: 0;
 }

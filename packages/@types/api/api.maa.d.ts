@@ -94,5 +94,9 @@ declare namespace Api.Maa {
     obtainApproach: string
     rarity: number
     usage: string
+    stageDropList?: Array<{
+      stageId: string
+      occPer: string
+    }>
   }
 }

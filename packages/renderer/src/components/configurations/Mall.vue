@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { NButton, NModal, NCard, NText, NDivider } from 'naive-ui'
+import { NButton, NModal, NCard, NText, NDivider, NSpace } from 'naive-ui'
 import useTaskStore from '@/store/tasks'
 import router from '@/router'
 import ItemCheck from '../ItemCheck.vue'
@@ -88,73 +88,39 @@ function handleBuyFirstItemCheckUpdate (item: string, checked: boolean) {
 
 <template>
   <div class="configuration-form mall-configuration">
-    <NButton
-      quaternary
-      type="primary"
-      @click="showBlackListModal = true"
-      :focusable="false"
-    >信用商店黑名单...</NButton>
-    <NButton
-      quaternary
-      type="primary"
-      @click="showBuyFirstModal = true"
-      :focusable="false"
-    >信用商店优先购买...</NButton>
+    <NButton quaternary type="primary" @click="showBlackListModal = true" :focusable="false">
+      信用商店黑名单...</NButton>
+    <NButton quaternary type="primary" @click="showBuyFirstModal = true" :focusable="false">
+      信用商店优先购买...</NButton>
     <!-- 信用购买Modal -->
-    <NModal
-      v-model:show="showBlackListModal"
-      title="信用商店黑名单"
-      display-directive="show"
-      role="dialog"
-      aria-modal="true"
-    >
-      <NCard
-        style="width: 600px;"
-        role="dialog"
-        aria-modal="true"
-        title="信用商店黑名单"
-      >
+    <NModal v-model:show="showBlackListModal" title="信用商店黑名单" display-directive="show" role="dialog"
+      aria-modal="true">
+      <NCard style="width: 600px;" role="dialog" aria-modal="true" title="信用商店黑名单">
         <div v-for="(group, index) in mallItems" :key="index">
           <NDivider />
           <div class="item-group">
             <NText>{{ group.title }}</NText>
-            <ItemCheck
-              v-for="(item) in group.items"
-              :key="item.name"
-              :name="item.name"
-              :itemid="item.itemid"
-              :checked="configuration.blacklist.has(item.name)"
-              @update:checked="(checked) => handleBlackListItemCheckUpdate(item.name, checked)"
-            />
+            <NSpace>
+              <ItemCheck v-for="(item) in group.items" :key="item.name" :name="item.name"
+                :itemid="item.itemid" :checked="configuration.blacklist.has(item.name)"
+                @update:checked="(checked) => handleBlackListItemCheckUpdate(item.name, checked)" />
+            </NSpace>
           </div>
         </div>
       </NCard>
     </NModal>
-    <NModal
-      v-model:show="showBuyFirstModal"
-      title="信用商店优先购买"
-      display-directive="show"
-      role="dialog"
-      aria-modal="true"
-    >
-      <NCard
-        style="width: 600px;"
-        role="dialog"
-        aria-modal="true"
-        title="信用商店优先购买"
-      >
+    <NModal v-model:show="showBuyFirstModal" title="信用商店优先购买" display-directive="show" role="dialog"
+      aria-modal="true">
+      <NCard style="width: 600px;" role="dialog" aria-modal="true" title="信用商店优先购买">
         <div v-for="(group, index) in mallItems" :key="index">
           <NDivider />
           <div class="item-group">
             <NText>{{ group.title }}</NText>
-            <ItemCheck
-              v-for="(item) in group.items"
-              :key="item.name"
-              :name="item.name"
-              :itemid="item.itemid"
-              :checked="configuration.buy_first.has(item.name)"
-              @update:checked="(checked) => handleBuyFirstItemCheckUpdate(item.name, checked)"
-            />
+            <NSpace>
+              <ItemCheck v-for="(item) in group.items" :key="item.name" :name="item.name"
+                :itemid="item.itemid" :checked="configuration.buy_first.has(item.name)"
+                @update:checked="(checked) => handleBuyFirstItemCheckUpdate(item.name, checked)" />
+            </NSpace>
           </div>
         </div>
       </NCard>
