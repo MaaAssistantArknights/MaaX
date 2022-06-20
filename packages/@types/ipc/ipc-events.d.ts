@@ -1,4 +1,4 @@
-// 通过ipcMain.handle定义的事件名称
+// 通过ipcMainHandle定义的事件名称
 type IpcMainHandleEvent =
   | 'main.CoreLoader:load'
   | 'main.CoreLoader:dispose'
@@ -17,27 +17,20 @@ type IpcMainHandleEvent =
   | 'main.CoreLoader:stop'
   | 'main.CoreLoader:supportedStages'
   | 'main.ScheduleRunner:shutdown'
-  | 'componentManager:getStatus'
-  | 'componentManager:install'
+  | 'main.componentManager:getStatus'
+  | 'main.componentManager:install'
   | 'main.DeviceDetector:getAdbPath'
   | 'main.DeviceDetector:getAdbDevices'
   | 'main.DeviceDetector:getEmulators'
-  // | 'main.deviceDetector:getDeviceUuid'
+  | 'main.deviceDetector:getDeviceUuid'
   | 'main.DeviceDetector:startEmulator'
-  | 'logger:log'
-  | 'logger:silly'
-  | 'logger:debug'
-  | 'logger:verbose'
-  | 'logger:info'
-  | 'logger:warn'
-  | 'logger:error'
-  | 'util:getOsArch'
-  | 'util:getOsPlatform'
-  | 'util:getAppPath'
-  | 'util:getUiVersion'
-  | 'storageManager:get'
-  | 'storageManager:set'
-  | 'storageManager:has'
+  | 'main.Util:getOsArch'
+  | 'main.Util:getOsPlatform'
+  | 'main.Util:getAppPath'
+  | 'main.Util:getUiVersion'
+  | 'main.StorageManager:get'
+  | 'main.StorageManager:set'
+  | 'main.StorageManager:has'
   | 'main.WindowManager:closeWindow'
   | 'main.WindowManager:toggleMaximized'
   | 'main.WindowManager:minimize'
@@ -47,9 +40,14 @@ type IpcMainHandleEvent =
 
 // 通过ipcRenderer.on定义的事件名称
 type IpcRendererHandleEvent =
-  | 'main.WindowManager:updateMaximized'
-  | 'ui:message'
+  | 'renderer.WindowManager:updateMaximized'
+  | 'renderer.WindowManager:loaded'
+  | 'renderer.WindowManager:showMessage'
   | 'renderer.CoreLoader:callback'
+  | 'renderer.DeviceDetector:searched'
+  | 'renderer.DeviceDetector:changeStatus'
+  | 'renderer.TaskManager:changeStatus'
+  | 'renderer.AppearanceManager:themeUpdated'
 
 interface IpcMainEvent<T> {
   name: IpcMainHandleEvent

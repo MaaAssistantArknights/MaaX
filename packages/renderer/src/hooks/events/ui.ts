@@ -4,13 +4,12 @@
  */
 
 export default function useUiHooks (): void {
-  window.ipcRenderer.on('ui:message', (event, arg) => {
+  window.ipcRenderer.on('renderer.WindowManager:showMessage', (event, arg) => {
     // ? 是否需要用string包裹防止xss
     event.returnValue = window.$message.create(String(arg.message), arg.options)
   })
 
-  window.ipcRenderer.on('ui:loaded', () => {
-    console.log('ui:loaded')
+  window.ipcRenderer.on('renderer.WindowManager:loaded', () => {
     window.removeLoading()
   })
 }

@@ -21,7 +21,7 @@ import {
   formattedDurationToSeconds
 } from '@/utils/time_picker'
 import OperatorSelector from '@/components/OperatorSelector.vue'
-import logger from '@/hooks/caller/logger'
+const logger = console
 
 type Strategies = 'ToTheEnd' | 'AfterFirstLevel' | 'AfterMoney';
 

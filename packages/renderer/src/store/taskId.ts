@@ -1,6 +1,6 @@
 // 每个任务的taskid, 用于运行期间修改
 import { defineStore } from 'pinia'
-import logger from '@/hooks/caller/logger'
+const logger = console
 
 export interface TaskIdState {
   deviceTaskId: Record<string, TaskId[]>

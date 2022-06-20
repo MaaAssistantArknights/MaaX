@@ -1,4 +1,4 @@
-import logger from '@/hooks/caller/logger'
+const logger = console
 import { show } from '../message'
 
 export async function taskEmulator (task: Task['configurations']): Promise<void> {

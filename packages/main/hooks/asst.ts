@@ -1,4 +1,3 @@
-import { ipcMain } from 'electron'
 import path from 'path'
 import fs from 'fs'
 import CoreLoader from '@main/coreLoader'
@@ -93,7 +92,7 @@ export default function useAsstHooks (): void {
     return true
   })
 
-  ipcMain.handle('main.CoreLoader:dispose', (_event) => {
+  ipcMainHandle('main.CoreLoader:dispose', (_event) => {
     core.dispose()
     for (const eventName of Object.keys(asstHooks)) {
       ipcMainRemove(eventName as IpcMainHandleEvent)
@@ -103,11 +102,11 @@ export default function useAsstHooks (): void {
 
 /**
   export default function useAsstHooks() {
-  ipcMain.handle("main.CoreLoader:appendStartUp", (event, arg) => {
+  ipcMainHandle("main.CoreLoader:appendStartUp", (event, arg) => {
     return Assistant.getInstance().AppendStartUp(arg.uuid);
   });
 
-  ipcMain.handle("main.CoreLoader:AppendFight", (event, arg) => {
+  ipcMainHandle("main.CoreLoader:AppendFight", (event, arg) => {
     return Assistant.getInstance().AppendFight(
       arg.stage,
       arg.max_medicine,
@@ -117,22 +116,22 @@ export default function useAsstHooks (): void {
     );
   });
 
-  ipcMain.handle("main.CoreLoader:appendAward", (event, arg) => {
+  ipcMainHandle("main.CoreLoader:appendAward", (event, arg) => {
     return Assistant.getInstance().AppendAward(arg.uuid);
   });
 
-  ipcMain.handle("main.CoreLoader:appendVisit", (event, arg) => {
+  ipcMainHandle("main.CoreLoader:appendVisit", (event, arg) => {
     return Assistant.getInstance().AppendVisit(arg.uuid);
   });
 
-  ipcMain.handle("main.CoreLoader:appendMall", (event, arg) => {
+  ipcMainHandle("main.CoreLoader:appendMall", (event, arg) => {
     return Assistant.getInstance().AppendMall(
       arg.with_shopping,
       arg.uuid
     );
   });
 
-  ipcMain.handle("main.CoreLoader:appendInfrast", (event, arg) => {
+  ipcMainHandle("main.CoreLoader:appendInfrast", (event, arg) => {
     return Assistant.getInstance().AppendInfrast(
       arg.work_mode,
       arg.order,
@@ -143,7 +142,7 @@ export default function useAsstHooks (): void {
     );
   });
 
-  ipcMain.handle("main.CoreLoader:appendRecruit", (event, arg) => {
+  ipcMainHandle("main.CoreLoader:appendRecruit", (event, arg) => {
     return Assistant.getInstance().AppendRecruit(
       arg.max_times,
       arg.select_level,
@@ -155,14 +154,14 @@ export default function useAsstHooks (): void {
     );
   });
 
-  //ipcMain.handle("main.CoreLoader:appendRoguelike")
-  //ipcMain.handle("main.CoreLoader:appendDebug")
-  //ipcMain.handle("main.CoreLoader:startRecruitCalc")
+  //ipcMainHandle("main.CoreLoader:appendRoguelike")
+  //ipcMainHandle("main.CoreLoader:appendDebug")
+  //ipcMainHandle("main.CoreLoader:startRecruitCalc")
 
-  //ipcMain.handle("main.CoreLoader:setPenguinId")
-  //ipcMain.handle("main.CoreLoader:getImage")
-  //ipcMain.handle("main.CoreLoader:ctrlerClick")
-  //ipcMain.handle("main.CoreLoader:Log")
+  //ipcMainHandle("main.CoreLoader:setPenguinId")
+  //ipcMainHandle("main.CoreLoader:getImage")
+  //ipcMainHandle("main.CoreLoader:ctrlerClick")
+  //ipcMainHandle("main.CoreLoader:Log")
 // }
 
 */

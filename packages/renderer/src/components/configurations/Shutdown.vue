@@ -15,7 +15,7 @@ import {
 import useTaskIdStore from '@/store/taskId'
 import router from '@/router'
 import { show } from '@/utils/message'
-import logger from '@/hooks/caller/logger'
+const logger = console
 
 /**
  * 关机策略处理流程:

@@ -3,8 +3,9 @@ import useTaskStore from '@/store/tasks'
 import useTaskIdStore from '@/store/taskId'
 
 import { show } from '@/utils/message'
-import logger from '@/hooks/caller/logger'
 import _ from 'lodash'
+
+const logger = console
 
 // interface basicCallbackType {
 //   uuid: string
@@ -147,7 +148,7 @@ enum Friend {
 // }
 
 function shutdown (option: string, pid: string): void {
-  (async () => { await window.ipcRenderer.invoke('main.CoreLoader:shutdown', { option: option, pid: pid }) })()
+  (async () => { await window.ipcRenderer.invoke('main.CoreLoader:stop', { option: option, pid: pid }) })()
 }
 
 export default function useCallbackEvents (): void {

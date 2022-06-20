@@ -1,12 +1,13 @@
 import { app, ipcMain } from 'electron'
 import CoreLoader from '@main/coreLoader'
+import { ipcMainHandle } from '@main/utils/ipc-main'
 
 export default function useVersionHooks (): void {
-  ipcMain.handle('version:ui', async (event) => {
+  ipcMainHandle('main.Util:getUiVersion', async (event) => {
     return app.getVersion()
   })
 
-  ipcMain.handle('version:core', async (event) => {
+  ipcMainHandle('main.CoreLoader:getCoreVersion', async (event) => {
     return (new CoreLoader()).GetVersion()
   })
 }

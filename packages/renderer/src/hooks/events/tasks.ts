@@ -3,7 +3,7 @@ import useTaskStore from '@/store/tasks'
 export default function useTaskEvents (): void {
   const taskStore = useTaskStore()
   window.ipcRenderer.on(
-    'task:updateStatus',
+    'renderer.TaskManager:changeStatus',
     (
       event,
       uuid: string,

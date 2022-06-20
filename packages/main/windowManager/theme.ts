@@ -6,7 +6,7 @@ import Storage from '@main/storageManager'
 export default function useTheme (window: BrowserWindow): void {
   const themeEvent = (): void => {
     const isDark = nativeTheme.shouldUseDarkColors
-    ipcMainSend('theme:update', isDark ? 'maa-dark' : 'maa-light')
+    ipcMainSend('renderer.AppearanceManager:themeUpdated', isDark ? 'maa-dark' : 'maa-light')
     const storage = new Storage()
     if (is.windows && storage.get('theme.acrylic')) {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -20,7 +20,7 @@ export default function useTheme (window: BrowserWindow): void {
 
   ipcMainHandle('main.WindowManager:loaded', async (event) => {
     themeEvent()
-    ipcMainSend('ui:loaded')
+    ipcMainSend('renderer.WindowManager:loaded')
   })
   nativeTheme.on('updated', themeEvent)
 }

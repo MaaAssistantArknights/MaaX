@@ -5,7 +5,7 @@ import useDeviceStore, { DeviceState } from './devices'
 import useSettingStore, { SettingState } from './settings'
 import useTaskStore, { TaskState } from './tasks'
 import useThemeStore, { ThemeState } from './theme'
-import logger from '@/hooks/caller/logger'
+const logger = console
 
 type Patcher<T> = (storage: T) => T
 

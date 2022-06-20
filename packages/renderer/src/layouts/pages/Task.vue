@@ -15,7 +15,7 @@ import { handleCoreTask, uiTasks } from '@/utils/converter/tasks'
 import { show } from '@/utils/message'
 
 import router from '@/router'
-import logger from '@/hooks/caller/logger'
+const logger = console
 import { checkCoreVersion, installCore } from '@/utils/core'
 
 const taskStore = useTaskStore()

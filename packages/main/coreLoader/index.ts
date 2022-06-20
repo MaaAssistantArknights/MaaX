@@ -120,11 +120,12 @@ class CoreLoader {
       logger.debug('core already loaded, ignore..')
       return
     }
-    this.dependences[process.platform].forEach((lib) => {
-      this.DepLibs.push(ffi.DynamicLibrary(path.join(this.libPath, lib)))
-    })
-    this.DLib = ffi.DynamicLibrary(path.join(this.libPath, this.libName[process.platform]), ffi.RTLD_NOW)
-    this.MeoAsstLib =
+    try {
+      this.dependences[process.platform].forEach((lib) => {
+        this.DepLibs.push(ffi.DynamicLibrary(path.join(this.libPath, lib)))
+      })
+      this.DLib = ffi.DynamicLibrary(path.join(this.libPath, this.libName[process.platform]), ffi.RTLD_NOW)
+      this.MeoAsstLib =
       {
         AsstLoadResource: ffi.ForeignFunction(this.DLib.get('AsstLoadResource'), BoolType,
           [StringType], ffi.FFI_STDCALL),
@@ -156,8 +157,11 @@ class CoreLoader {
         AsstLog: ffi.ForeignFunction(this.DLib.get('AsstLog'), voidType,
           [StringType, StringType], ffi.FFI_STDCALL)
       }
-    this.LoadResource()
-    CoreLoader.loadStatus = true
+      this.LoadResource()
+      CoreLoader.loadStatus = true
+    } catch (error) {
+      logger.error(error)
+    }
   }
 
   /**
@@ -313,6 +317,7 @@ class CoreLoader {
    * @returns 版本
    */
   public GetVersion (): string | null {
+    if (!this.loadStatus) return null
     return this.MeoAsstLib.AsstGetVersion()
   }
 
