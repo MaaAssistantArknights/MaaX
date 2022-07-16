@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, h, ref } from 'vue'
+import { computed, ref } from 'vue'
 import {
   NIcon,
   NSpace,
@@ -41,6 +41,49 @@ const disconnectedDevices = computed(() =>
 // )
 // TODO: 从maa启动模拟器的支持
 
+/**
+ * @description 过滤不可用的连接设备，并在神谕上提示
+ */
+function deviceInfoParser (devices: Device[]):any[] {
+  const ret: any[] = []
+  devices.forEach(
+    (info) => {
+      let status = 'available'
+      if (!info.uuid) {
+        show(`设备 ${info.address} 连接失败, 请检查是否开启了 USB 调试, 或请详细阅读使用文档捏`, {
+          type: 'error',
+          duration: 0,
+          closable: true
+        }, false)
+        status = 'unknown'
+      } else {
+        ret.push({
+          status: status,
+          uuid: info.uuid,
+          connectionString: info.address,
+          config: info.config,
+          commandLine: info.commandLine,
+          adbPath: info.adbPath,
+          pid: info.pid,
+          displayName: info.displayName
+        })
+      }
+    }
+  )
+  if (ret.length === 0) {
+    show('未找到任何可用设备! 请重试', {
+      type: 'info',
+      duration: 0,
+      closable: true
+    }, false)
+  } else {
+    show(`已找到 ${ret.length} 台可用设备`, {
+      type: 'info'
+    }, false)
+  }
+  return ret
+}
+
 async function handleRefreshDevices () {
   if (!(await checkCoreVersion())) {
     await installCore()
@@ -49,34 +92,10 @@ async function handleRefreshDevices () {
   }
   show('正在更新设备列表...', { type: 'loading', duration: 0 })
 
-  // console.log(deviceStore.devices);
   window.ipcRenderer.invoke('main.DeviceDetector:getEmulators').then((ret) => {
-    if (!ret.every((v: any) => { return v.uuid })) {
-      show(() => h('span', '检测到设备, 但唯一标识符获取失败, 可能是模拟器未启动完成导致, 请重试或重启模拟器'), { type: 'error' })
-      return
-    }
-    // FIXME
-    // TODO: 重写一下合并
-    deviceStore.mergeSearchResult(
-      ret.map((v: any) => {
-        return {
-          status: 'available',
-          uuid: v.uuid,
-          pid: v.pid,
-          displayName: v.displayName,
-          config: v.config,
-          adbPath: v.adbPath,
-          connectionString: v.address,
-          commandLine: v.commandLine
-        }
-      })
-    )
-
-    if (ret.length > 0) {
-      show(`找到${ret.length}个设备`, { type: 'success', duration: 2000 })
-    } else {
-      show('未找到任何可用设备! 请重试', { type: 'warning', duration: 2000 })
-    }
+    show(`设备搜索完成, 共${ret.length}台设备`, { type: 'success', duration: 5000 }, true)
+    const devices = deviceInfoParser(ret)
+    deviceStore.mergeSearchResult(devices)
   })
 }
 

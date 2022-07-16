@@ -84,7 +84,8 @@ onMounted(async () => {
   })
 
   Object.entries(mallItems).forEach(([name, itemid]) => {
-    if (!props.configurations.buy_first.includes(name as itemNameType) && !props.configurations.blacklist.includes(name as itemNameType)) {
+    if (!props.configurations.buy_first.includes(name as itemNameType) &&
+     !props.configurations.blacklist.includes(name as itemNameType)) {
       otherItems.value.push(
         {
           name,
