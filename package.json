@@ -80,6 +80,7 @@
     "ref-napi": "^3.0.3",
     "superagent": "^7.1.3",
     "unzipper": "^0.10.11",
+    "vuedraggable": "^4.1.0",
     "zx": "^6.0.7"
   }
 }

@@ -123,13 +123,6 @@ const callbackHandle = ffi.Callback(
     logger.debug(_detail)
     const callback = callbackParse[msg as AsstMsg](msg, detail)
     ipcMainSend('renderer.CoreLoader:callback', callback)
-
-    // ipcMainSend((callback as any).name.toString(), callback)
-
-    // new WindowManager().getWindow().webContents.send(
-    //   (callback as any).name.toString(),
-    //   callback
-    // )
   }
 )
 

@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import _ from 'lodash'
 
 export interface TaskState {
+  selfIncreaseId: number // 奇怪的全局任务自增id, 用于查找任务
   deviceTasks: Record<string, Task[]>
 }
 
@@ -18,11 +19,18 @@ export interface TaskAction {
   getTask: (uuid: string, taskId: string) => Task | undefined
   getTaskProcess: (uuid: string, taskId: string) => number | undefined
   stopAllTasks: (uuid: string) => void
+  genUniqueId: () => number
+  copyTask: (uuid: string, id: number) => boolean
+  deleteTask: (uuid: string, id: number, name: string) => boolean
 }
+
+export const defaultSelfIncreaseId = 100000// 初始自增id
 
 export const defaultTask: Task[] = [
   {
     id: 'emulator',
+    ui_id: 0,
+    core_id: -1,
     title: '启动模拟器',
     status: 'idle',
     enable: false,
@@ -32,123 +40,112 @@ export const defaultTask: Task[] = [
     }
   },
   {
-    id: 'game',
-    title: '启动明日方舟 - 暂不支持',
-    status: 'idle',
-    enable: false,
-    configurations: {
-      server: 'CN'
-    }
-  },
-  {
     id: 'startup',
-    title: '开始唤醒',
+    ui_id: 0,
+    core_id: -1,
+    title: '启动客户端与自动唤醒',
     status: 'idle',
-
     enable: true,
     configurations: {
-      // server: "CN_OFFICIAL",
+      client_type: 'Official', // 区服 Official | Bilibili
+      start_game_enable: true // 模拟器启动游戏
     }
   },
   {
     id: 'fight',
-    title: '刷理智',
+    ui_id: 0,
+    core_id: -1,
+    title: '代理作战',
     status: 'idle',
     enable: true,
     configurations: {
+      stage: '', // 关卡名
       medicine: 0,
       stone: 0,
-      originite_prime: true,
-      levels: [
-        {
-          code: 'CE-6', // 龙门币
-          times: 0
-        },
-        {
-          code: 'AP-5', // 红票
-          times: 0
-        },
-        {
-          code: 'CA-5', // 技能书
-          times: 0
-        },
-        {
-          code: 'LS-6', // 作 战 记 录
-          times: 0
-        },
-        {
-          code: '1-7', // 1 - 7
-          times: 0
-        },
-        {
-          code: 'SN-8',
-          times: 0
-        }
-      ],
-      special: {
-        type: 'current',
-        times: 0
-      }
+      times: 0,
+      drops: {}, // "30011": 1, 只保留一个元素
+      report_to_penguin: true,
+      server: 'CN', // 影响掉落识别与上传
+      client_type: 'Official' // 断线重连服务器
     }
   },
   {
     id: 'recruit',
+    ui_id: 0,
+    core_id: -1,
     title: '自动公招',
     status: 'idle',
     enable: true,
     configurations: {
-      refresh_normal_tags: true,
-      use_expedited_plan: false,
-      maximum_times_of_recruitments: 6,
-      recognitions: {
-        '3 Stars': true,
-        '4 Stars': true,
-        '5 Stars': true
-      }
+      refresh: false, // 自动刷新三星词条
+      select: [3, 4],
+      confirm: [3, 4],
+      times: 0,
+      set_time: true,
+      expedite: false,
+      expedite_times: 0,
+      skip_robot: true
+      // refresh_normal_tags: true,
+      // use_expedited_plan: false,
+      // maximum_times_of_recruitments: 6,
+      // recognitions: {
+      //   '3 Stars': true,
+      //   '4 Stars': true,
+      //   '5 Stars': true
+      // }
     }
   },
   {
     id: 'infrast',
+    ui_id: 0,
+    core_id: -1,
     title: '基建换班',
     status: 'idle',
     enable: true,
     configurations: {
-      facilities: [
-        {
-          name: 'ManufacturingStation',
-          enabled: true
-        },
-        {
-          name: 'TradingStation',
-          enabled: true
-        },
-        {
-          name: 'ControlCenter',
-          enabled: true
-        },
-        {
-          name: 'PowerStation',
-          enabled: true
-        },
-        {
-          name: 'MeetingRoom',
-          enabled: true
-        },
-        {
-          name: 'Office',
-          enabled: true
-        },
-        {
-          name: 'Dormitory',
-          enabled: true
-        }
-      ],
+      mode: 0, // 保留模式
+      facility: ['Mfg', 'Trade', 'Power', 'Control', 'Reception', 'Office', 'Dorm'],
+      drones: '_NotUse', // 无人机用途
+      threshold: 0.3,
+      replenish: false, // 自动源石补货
+      // facilities: [
+      //   {
+      //     name: 'ManufacturingStation',
+      //     enabled: true
+      //   },
+      //   {
+      //     name: 'TradingStation',
+      //     enabled: true
+      //   },
+      //   {
+      //     name: 'ControlCenter',
+      //     enabled: true
+      //   },
+      //   {
+      //     name: 'PowerStation',
+      //     enabled: true
+      //   },
+      //   {
+      //     name: 'MeetingRoom',
+      //     enabled: true
+      //   },
+      //   {
+      //     name: 'Office',
+      //     enabled: true
+      //   },
+      //   {
+      //     name: 'Dormitory',
+      //     enabled: true
+      //   }
+      // ],
       drone_usage: 'None',
       mood_limit: 6
     }
   },
   {
     id: 'visit',
+    ui_id: 0,
+    core_id: -1,
     title: '访问好友',
     status: 'idle',
     enable: true,
@@ -156,16 +153,21 @@ export const defaultTask: Task[] = [
   },
   {
     id: 'mall',
+    ui_id: 0,
+    core_id: -1,
     title: '收取信用及购物',
     status: 'idle',
     enable: true,
     configurations: {
-      buy_first: new Set([]),
-      blacklist: new Set([])
+      shopping: true,
+      buy_first: ['龙门币', '招聘许可', '赤金'],
+      blacklist: ['家具零件', '加急许可']
     }
   },
   {
     id: 'award',
+    ui_id: 0,
+    core_id: -1,
     title: '领取日常奖励',
     status: 'idle',
     enable: true,
@@ -173,18 +175,23 @@ export const defaultTask: Task[] = [
   },
   {
     id: 'rogue',
-    title: '无限刷肉鸽 - 暂不支持',
+    ui_id: 0,
+    core_id: -1,
+    title: '无限刷肉鸽',
     status: 'idle',
     enable: true,
     configurations: {
-      duration: 3600,
-      strategy: 'ToTheEnd',
-      operators: [{ name: '煌', skill: 2, skill_usage: 0 }, { name: '棘刺', skill: 3, skill_usage: 1 }]
+      mode: 0
+      // duration: 3600,
+      // strategy: 'ToTheEnd',
+      // operators: [{ name: '煌', skill: 2, skill_usage: 0 }, { name: '棘刺', skill: 3, skill_usage: 1 }]
     }
   },
   {
     id: 'shutdown',
-    title: '关机/关闭模拟器 - 暂不支持',
+    ui_id: 0,
+    core_id: -1,
+    title: '关机/关闭模拟器',
     status: 'idle',
     enable: false,
     configurations: {
@@ -197,7 +204,8 @@ export const defaultTask: Task[] = [
 const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
   state: () => {
     return {
-      deviceTasks: {}
+      deviceTasks: {},
+      selfIncreaseId: 0
     }
   },
   actions: {
@@ -266,6 +274,35 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
           }
         })
       }
+    },
+    genUniqueId () {
+      this.selfIncreaseId++
+      return this.selfIncreaseId
+    },
+    copyTask (uuid, id) {
+      const { deviceTasks } = this
+      const origin = deviceTasks[uuid]
+      const task = origin?.find((task) => task.ui_id === id)
+      if (task) {
+        const newTask = _.cloneDeep(task)
+        newTask.ui_id = this.genUniqueId()
+        newTask.core_id = -1
+        origin.push(newTask)
+        return true
+      }
+      return false
+    },
+    deleteTask (uuid, id, name) {
+      const { deviceTasks } = this
+      const origin = deviceTasks[uuid]
+      const nameCount = origin?.filter((task) => task.id === name).length
+      if (nameCount < 2) return false
+      const task = origin?.find((task) => task.ui_id === id)
+      if (task) {
+        origin.splice(origin.indexOf(task), 1)
+        return true
+      }
+      return false
     }
   }
 })

@@ -6,82 +6,124 @@ import Sortable from 'sortablejs'
 
 const facilitiesRef: Ref<HTMLElement | null> = ref(null)
 
-type InfrastType =
-  | 'ManufacturingStation'
-  | 'TradingStation'
-  | 'ControlCenter'
-  | 'PowerStation'
-  | 'MeetingRoom'
+// type InfrastType =
+//   | 'ManufacturingStation'
+//   | 'TradingStation'
+//   | 'ControlCenter'
+//   | 'PowerStation'
+//   | 'MeetingRoom'
+//   | 'Office'
+//   | 'Dormitory';
+
+// interface InfrastConfiguration {
+//   facilities: Array<{
+//     name: InfrastType;
+//     enabled: boolean;
+//   }>;
+//   replenish: boolean;
+//   drone_usage:
+//   | 'None'
+//   | 'LMD'
+//   | 'Orumdum'
+//   | 'Battle Record'
+//   | 'Pure Gold'
+//   | 'Originium Shard'
+//   | 'Chip';
+//   mood_limit: number;
+// }
+
+type facilityType =
+  | 'Mfg'
+  | 'Trade'
+  | 'Control'
+  | 'Power'
+  | 'Reception'
   | 'Office'
-  | 'Dormitory';
+  | 'Dorm';
 
-interface InfrastConfiguration {
-  facilities: Array<{
-    name: InfrastType;
-    enabled: boolean;
-  }>;
-  replenish: boolean;
-  drone_usage:
-  | 'None'
-  | 'LMD'
-  | 'Orumdum'
-  | 'Battle Record'
-  | 'Pure Gold'
-  | 'Originium Shard'
-  | 'Chip';
-  mood_limit: number;
-}
-
-const infrastTranslation = {
-  ManufacturingStation: '制造站',
-  TradingStation: '贸易站',
-  ControlCenter: '控制中枢',
-  PowerStation: '发电站',
-  MeetingRoom: '会客室',
+const facilityOptions = {
+  Mfg: '制造站',
+  Trade: '贸易站',
+  Power: '发电站',
+  Control: '控制中枢',
+  Reception: '会客室',
   Office: '办公室',
   Dormitory: '宿舍'
 }
 
-const droneUsageOptions = [
+type droneUsageType =
+  | '_NotUse'
+  | 'Money'
+  | 'SyntheticJade'
+  | 'CombatRecord'
+  | 'PureGold'
+  | 'OriginStone'
+  | 'Chip';
+
+const droneUsageOptions: {
+  value: droneUsageType;
+  label: string;
+}[] = [
   {
-    value: 'None',
+    value: '_NotUse', // _NotUse
     label: '不使用无人机'
   },
   {
-    value: 'LMD',
+    value: 'Money', // LMD
     label: '贸易站 - 龙门币'
   },
   {
-    value: 'Orumdum',
+    value: 'SyntheticJade', // Orumdum
     label: '贸易站 - 合成玉'
   },
   {
-    value: 'Battle Record',
+    value: 'CombatRecord', // 'Battle Record'
     label: '制造站 - 作战记录'
   },
   {
-    value: 'Pure Gold',
+    value: 'PureGold', // 'Pure Gold',
     label: '制造站 - 赤金'
   },
   {
-    value: 'Originium Shard',
+    value: 'OriginStone', // 'Originium Shard'
     label: '制造站 - 源石碎片'
   },
   {
-    value: 'Chip',
+    value: 'Chip', // Chip
     label: '制造站 - 芯片'
   }
 ]
+
+interface InfrastConfiguration {
+  mode: number, // 保留模式, 暂无意义
+  facility: facilityType[], // 换班基建
+  drones: droneUsageType, // 无人机用途
+  threshold: number, // 换班阈值
+  replenish: boolean, // 自动源石补货
+}
+
+// const infrastTranslation = {
+//   ManufacturingStation: '制造站',
+//   TradingStation: '贸易站',
+//   ControlCenter: '控制中枢',
+//   PowerStation: '发电站',
+//   MeetingRoom: '会客室',
+//   Office: '办公室',
+//   Dormitory: '宿舍'
+// }
 
 const props = defineProps<{
   configurations: InfrastConfiguration;
 }>()
 
-function onFacilityEnableUpdate (name: string, enabled: boolean) {
-  const facility = props.configurations.facilities.find((f) => name === f.name)
-  if (facility) {
-    facility.enabled = enabled
+function onFacilityEnableUpdate (name: facilityType, enabled: boolean) {
+  const facilitySet = new Set(props.configurations.facility)
+  if (enabled) {
+    facilitySet.add(name)
+  } else {
+    facilitySet.delete(name)
   }
+  _.set(props.configurations, 'facility', Array.from(facilitySet))
 }
 
 let sortable: Sortable | undefined
@@ -93,8 +135,8 @@ onMounted(() => {
       animation: 150,
       store: {
         get () {
-          return props.configurations.facilities.map(
-            (facility) => facility.name
+          return props.configurations.facility.map(
+            (facility) => facility
           )
         },
         set (sortable) {
@@ -102,8 +144,8 @@ onMounted(() => {
           _.set(
             props.configurations,
             'facilities',
-            _.sortBy(props.configurations.facilities, (facility) =>
-              sort.findIndex((v) => facility.name === v)
+            _.sortBy(props.configurations.facility, (facility) =>
+              sort.findIndex((v) => facility === v)
             )
           )
         }
@@ -123,15 +165,15 @@ onMounted(() => {
     <NFormItem>
       <div class="facilities" ref="facilitiesRef">
         <NCheckbox
-          v-for="[id, name] of Object.entries(infrastTranslation)"
+          v-for="[id, name] of Object.entries(facilityOptions)"
           :key="id"
           :data-id="id"
           :value="id"
           :label="name"
           :checked="
-            configurations.facilities.find((f) => f.name === id)?.enabled
+            configurations.facility.includes(id as facilityType)
           "
-          @update:checked="(enabled) => onFacilityEnableUpdate(id, enabled)"
+          @update:checked="(enabled) => onFacilityEnableUpdate(id as facilityType, enabled)"
         />
       </div>
     </NFormItem>
@@ -142,9 +184,9 @@ onMounted(() => {
         :label-style="{ justifyContent: 'center' }"
       >
         <NSelect
-          :value="props.configurations.drone_usage"
+          :value="props.configurations.drones"
           @update:value="
-            (value) => _.set(props.configurations, 'drone_usage', value)
+            (value) => _.set(props.configurations, 'drones', value)
           "
           :options="droneUsageOptions"
         />
@@ -155,9 +197,9 @@ onMounted(() => {
         :label-style="{ justifyContent: 'center' }"
       >
         <NSlider
-          :value="props.configurations.mood_limit"
+          :value="props.configurations.threshold"
           @update:value="
-            (value) => _.set(props.configurations, 'mood_limit', value)
+            (value) => _.set(props.configurations, 'threshold', value)
           "
           :max="23"
           :min="0"

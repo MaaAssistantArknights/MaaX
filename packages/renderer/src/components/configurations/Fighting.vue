@@ -8,22 +8,50 @@ import {
   NForm,
   NFormItem,
   NInputNumber,
-  NSpace
+  NSpace,
+  NSelect
   // NAlert
 } from 'naive-ui'
 import LevelChoose from '../LevelChooseModal.vue'
 import _ from 'lodash'
 
+// interface FightingConfiguration {
+//   medicine: number;
+//   stone: number;
+//   originite_prime: boolean;
+//   levels: Array<Level>;
+//   special: {
+//     times: number;
+//     type: 'current' | 'last';
+//   };
+// }
+
 interface FightingConfiguration {
+  stage: string;
   medicine: number;
   stone: number;
-  originite_prime: boolean;
-  levels: Array<Level>;
-  special: {
-    times: number;
-    type: 'current' | 'last';
-  };
+  times: number;
+  drops: {};
+  report_to_penguin: boolean;
+  penguin_id: string;
+  server: string;
+  client_type: string;
 }
+
+// FIXME: 不应该硬编码(
+// 最好也整成图片的选择形式?
+const supportStages = [
+  { label: '当前关卡', value: '' },
+  { label: '上次作战', value: 'LastBattle' },
+  { label: 'LE-5', value: 'LE-5' },
+  { label: 'LE-7', value: 'LE-7' },
+  { label: 'LE-8', value: 'LE-8' },
+  { label: '1-7', value: '1-7' },
+  { label: '龙门币-6/5', value: 'CE-6' },
+  { label: '经验-6/5', value: 'LS-6' },
+  { label: '红票-5', value: 'AP-5' },
+  { label: '技能-5', value: 'CA-5' }
+]
 
 const props = defineProps<{
   configurations: FightingConfiguration;
@@ -32,7 +60,11 @@ const props = defineProps<{
 const showModal = ref(false)
 
 function handleConfigurationUpdate (key: string, value: any) {
+  if (value === null) value = 6
+  if (value < 0) value = 999
+  if (value > 999) value = 0
   // FIXME: 对props写入
+  // ↑ 这要fix个啥? @chingc
   _.set(props.configurations, key, value)
 }
 
@@ -49,6 +81,7 @@ function handleStoneUpdate (value: number | null) {
   if (value > 999) value = 0
   handleConfigurationUpdate('stone', value)
 }
+
 </script>
 
 <template>
@@ -60,7 +93,15 @@ function handleStoneUpdate (value: number | null) {
     :label-placement="'left'"
     :label-width="'auto'"
   >
+
     <NSpace vertical>
+          <NFormItem label="选择关卡" :show-label="true">
+      <NSelect
+        :value="props.configurations.stage"
+        @update:value="(value) => _.set(props.configurations, 'stage', value)"
+        :options="supportStages"
+      />
+    </NFormItem>
       <NFormItem label="使用理智液数量">
         <!-- <NCheckbox
         :checked="props.configurations.medicine"
@@ -115,7 +156,8 @@ function handleStoneUpdate (value: number | null) {
           type="primary"
           @click="showModal = true"
           :focusable="false"
-        >关卡选择...</NButton>
+        >掉落物选择...</NButton>
+        <!--FIXME 掉落物炸了-->
       </NFormItem>
     </NSpace>
     <NModal

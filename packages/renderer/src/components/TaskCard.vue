@@ -6,18 +6,27 @@ import {
   NCollapseItem,
   NScrollbar,
   NSpace,
-  useThemeVars
+  useThemeVars,
+  NIcon,
+  NTooltip,
+  NButton
 } from 'naive-ui'
+import router from '@/router'
 import useThemeStore from '@/store/theme'
 import Timer from './Timer.vue'
-
+import IconAdd from '@/assets/icons/add.svg?component'
+import IconRemove from '@/assets/icons/remove.svg?component'
+import useTaskStore from '@/store/tasks'
+import { show } from '@/utils/message'
 const themeVars = useThemeVars()
 const themeStore = useThemeStore()
-
 const props = defineProps<{
   isCollapsed: boolean;
   taskInfo: Task;
 }>()
+
+const logger = console
+const taskStore = useTaskStore()
 
 defineEmits(['update:enable'])
 
@@ -46,6 +55,19 @@ const resetTaskProgress = (taskInfo: Task) => {
   taskInfo.progress = 0
   taskInfo.startTime = 0
   taskInfo.endTime = 0
+}
+
+const uuid = router.currentRoute.value.params.uuid as string
+
+const copyTask = (taskInfo: Task) => {
+  taskStore.copyTask(uuid, taskInfo.ui_id)
+}
+
+const deleteTask = (taskInfo: Task) => {
+  const status = taskStore.deleteTask(uuid, taskInfo.ui_id, taskInfo.id)
+  if (!status) {
+    show('不可以删除只有一份的任务哦', { type: 'error' })
+  }
 }
 
 </script>
@@ -103,12 +125,43 @@ const resetTaskProgress = (taskInfo: Task) => {
               </span>
             </NSpace>
             <NSpace
+              v-if="props.taskInfo.status !== 'idle'"
               justify="end">
               <Timer
-                v-if="props.taskInfo.status !== 'idle'"
                 :start-time="props.taskInfo.startTime"
                 :end-time="props.taskInfo.endTime"
               />
+            </NSpace>
+            <NSpace v-else
+            justify="end">
+              <NTooltip>
+                <template #trigger>
+                  <NButton
+                    text
+                    style="font-size: 25px"
+                    @click=" () => { copyTask(props.taskInfo) }"
+                  >
+                    <NIcon>
+                      <IconAdd />
+                    </NIcon>
+                  </NButton>
+                </template>
+                复制当前任务
+              </NTooltip>
+               <NTooltip>
+                <template #trigger>
+                  <NButton
+                    text
+                    style="font-size: 25px"
+                    @click=" () => { deleteTask(props.taskInfo) }"
+                  >
+                    <NIcon>
+                      <IconRemove />
+                    </NIcon>
+                  </NButton>
+                </template>
+                删除当前任务
+              </NTooltip>
               <NSwitch
                 :disabled="['processing', 'waiting'].includes(props.taskInfo.status) "
                 :value="props.taskInfo.enable"
@@ -116,7 +169,6 @@ const resetTaskProgress = (taskInfo: Task) => {
                   $emit('update:enable', enabled)
                   resetTaskProgress(props.taskInfo)}"
               />
-
             </NSpace>
           </div>
           <NProgress

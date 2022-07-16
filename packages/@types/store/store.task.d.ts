@@ -2,9 +2,17 @@ type TaskStatus = 'idle' | 'waiting' | 'processing' | 'success' | 'warning' | 'e
 
 interface Task {
   /**
-   * @props 任务唯一string id
+   * @props 任务对应卡片名
    */
   id: string
+  /**
+   * @props ui层唯一id
+   */
+  ui_id: number
+  /**
+   * @props core层唯一id
+   */
+  core_id: number
   /**
    * @props 任务title（可能为i18n字符串，i18n example: `t("task.mall")`）
    */

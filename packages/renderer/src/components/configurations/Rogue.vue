@@ -9,49 +9,49 @@ import {
   NSelect,
   NCard,
   NSpace,
-  NTimePicker,
   NDataTable,
   NAvatar,
   DataTableColumns
 } from 'naive-ui'
 import gamedataApi from '@/api/gamedata'
 import { getOperatorAvatar, getSkillImage } from '@/utils/game_image'
-import {
-  secondsToFormattedDuration,
-  formattedDurationToSeconds
-} from '@/utils/time_picker'
+// import {
+//   secondsToFormattedDuration,
+//   formattedDurationToSeconds
+// } from '@/utils/time_picker'
 import OperatorSelector from '@/components/OperatorSelector.vue'
-const logger = console
+// const logger = console
 
-type Strategies = 'ToTheEnd' | 'AfterFirstLevel' | 'AfterMoney';
+// type Strategies = 'ToTheEnd' | 'AfterFirstLevel' | 'AfterMoney';
 
-interface OperatorOption {
-  name: string, // 干员名
-  skill: number, // 使用技能, 可选范围1-3
-  skill_usage: number // 技能用法 0-不自动使用, 1-好了就用, 2-好了就用,仅使用一次, 3-自动判断使用技能(饼)
-}
+// interface OperatorOption {
+//   name: string, // 干员名
+//   skill: number, // 使用技能, 可选范围1-3
+//   skill_usage: number // 技能用法 0-不自动使用, 1-好了就用, 2-好了就用,仅使用一次, 3-自动判断使用技能(饼)
+// }
 
 interface RogueConfiguration {
-  strategy: Strategies;
-  operators: Array<OperatorOption>;
-  duration: number; // TODO:最长运行时间, 暂不支持
+  // strategy: Strategies;
+  // operators: Array<OperatorOption>;
+  mode: number;
+  // duration: number; // TODO:最长运行时间, 暂不支持
 }
 
 const strategyOptions: Array<{
   label: string;
-  value: Strategies;
+  value: number;
 }> = [
   {
     label: '尽可能往后打',
-    value: 'ToTheEnd'
+    value: 0
   },
   {
     label: '刷源石锭投资，第一层商店后退出',
-    value: 'AfterFirstLevel'
+    value: 1
   },
   {
     label: '刷源石锭投资，投资后退出',
-    value: 'AfterMoney'
+    value: 2
   }
 ]
 
@@ -88,7 +88,6 @@ const allSkills: Ref<any> = ref()
 const loading = ref(false)
 
 onMounted(async () => {
-  logger.debug('Rogue.vue mounted')
   loading.value = true
 
   allSkills.value = (await gamedataApi.getAllSkills()) as any
@@ -171,7 +170,7 @@ const createColumns = (): DataTableColumns<any> => [
     :label-width="'150px'"
   >
     <NSpace vertical>
-      <NFormItem label="运行时间">
+      <!-- <NFormItem label="运行时间">
         <NTimePicker
           :style="{ width: '100%' }"
           :default-formatted-value="
@@ -183,20 +182,20 @@ const createColumns = (): DataTableColumns<any> => [
               _.set(props.configurations, 'duration', formattedDurationToSeconds(value))
           "
         />
-      </NFormItem>
+      </NFormItem> -->
 
       <NFormItem label="通关策略">
         <NSelect
-          :value="props.configurations.strategy"
+          :value="props.configurations.mode"
           :options="strategyOptions"
-          @update:value="(value) => _.set(props.configurations, 'strategy', value)"
+          @update:value="(value) => _.set(props.configurations, 'mode', value)"
         />
       </NFormItem>
-      <NFormItem :show-label="false">
+      <!-- <NFormItem :show-label="false">
         <NButton quaternary type="primary" @click="showModal = true" :focusable="false"
           >选择优先招募干员...
         </NButton>
-      </NFormItem>
+      </NFormItem> -->
     </NSpace>
     <NModal
       v-model:show="showModal"

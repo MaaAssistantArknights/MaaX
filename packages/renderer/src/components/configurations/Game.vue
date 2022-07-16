@@ -1,50 +1,25 @@
 <script setup lang="ts">
 import {
-  // NInputNumber,
-  // NCheckbox,
+  NCheckbox,
   NForm,
   NFormItem,
-  // NInput,
   NSelect
 } from 'naive-ui'
 import _ from 'lodash'
 
 interface GameConfiguration {
-  server: string; // 服务器
+  client_type: string; // 服务器
+  start_game_enable: boolean; // 是否自动启动客户端
 }
 
 const serverOptions = [
   {
     value: 'CN',
-    label: '官服'
+    label: 'CN'
   },
   {
-    value: 'BILIBILI',
-    label: 'BiliBili服'
-  },
-  {
-    value: 'JP',
-    label: '日服'
-  },
-  {
-    value: 'GLOBAL',
-    label: '国际服'
-  },
-  {
-    value: 'CN_WSA',
-    label: '官服 - WSA'
-  },
-  {
-    value: 'BILIBILI_WSA',
-    label: 'BiliBili服 - WSA'
-  },
-  {
-    value: 'JP_WSA',
-    label: '日服 - WSA'
-  },
-  {
-    value: 'GLOBAL_WSA',
-    label: '国际服 - WSA'
+    value: 'BiliBili',
+    label: 'BiliBili'
   }
 ]
 
@@ -61,12 +36,22 @@ const props = defineProps<{
     :label-placement="'left'"
     :label-width="'auto'"
   >
-    <NFormItem label="服务器" :show-label="true">
+    <NFormItem label="客户端类型" :show-label="true">
       <NSelect
-        :value="props.configurations.server"
-        @update:value="(value) => _.set(props.configurations, 'server', value)"
+        :value="props.configurations.client_type"
+        @update:value="(value) => _.set(props.configurations, 'client_type', value)"
         :options="serverOptions"
       />
     </NFormItem>
+    <NFormItem>
+    <NCheckbox
+          :checked="props.configurations.start_game_enable"
+          @update:checked="
+            (checked) =>
+              _.set(props.configurations, 'start_game_enable', checked)
+          "
+        >自动启动客户端</NCheckbox>
+        </NFormItem>
+
   </NForm>
 </template>

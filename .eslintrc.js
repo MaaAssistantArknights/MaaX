@@ -32,6 +32,7 @@ module.exports = {
     }],
     "no-undef": "off", // 让ts检查undefined
     "@typescript-eslint/no-floating-promises": "off",
-    '@typescript-eslint/strict-boolean-expressions': 'off'
+    '@typescript-eslint/strict-boolean-expressions': 'off',
+    "vue/multi-word-component-names": 'off'
   }
 }

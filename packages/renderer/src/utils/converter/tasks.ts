@@ -1,5 +1,5 @@
-const logger = console
 import { show } from '../message'
+const logger = console
 
 export async function taskEmulator (task: Task['configurations']): Promise<void> {
   console.log('before start emu')

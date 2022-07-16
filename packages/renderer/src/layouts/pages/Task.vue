@@ -15,8 +15,8 @@ import { handleCoreTask, uiTasks } from '@/utils/converter/tasks'
 import { show } from '@/utils/message'
 
 import router from '@/router'
-const logger = console
 import { checkCoreVersion, installCore } from '@/utils/core'
+const logger = console
 
 const taskStore = useTaskStore()
 const deviceStore = useDeviceStore()
@@ -49,7 +49,9 @@ function load () {
       filter: '.undraggable',
       store: {
         get () {
-          return tasks.value?.map((task) => task.id) || []
+          // FIXME: 排序时，没有更新 taskStore
+          // 这里本来是字符串，但是ui_id是数字(
+          return tasks.value?.map((task) => task.ui_id.toString()) || []
         },
         set (sortable) {
           const sort = sortable.toArray()
@@ -57,7 +59,7 @@ function load () {
             taskStore.updateTask(
               uuid.value,
               _.sortBy(tasks.value, (task) =>
-                sort.findIndex((v) => v === task.id)
+                sort.findIndex((v) => v === task.ui_id.toString())
               )
             )
           }
@@ -208,9 +210,9 @@ async function handleStart () {
       <h2>任务</h2>
 
       <NSpace align="center">
-              <NDropdown>
+              <!-- <NDropdown>
         <NButton type="primary">切换配置</NButton>
-      </NDropdown>
+      </NDropdown> -->
         <NTooltip class="detail-toggle-switch">
           <template #trigger>
             <NSwitch v-model:value="isGrid" size="large">
