@@ -1,5 +1,10 @@
 import { defineStore } from 'pinia'
 
+enum Locale {
+  zhCN ='ZhCN',
+  enUS = 'EnUS'
+}
+
 export interface SettingState {
   reportId: string
   version: {
@@ -12,6 +17,7 @@ export interface SettingState {
       latest?: string
     }
   }
+  locale: Locale
 }
 
 export interface SettingAction {
@@ -34,11 +40,12 @@ const useSettingStore = defineStore<'setting', SettingState, {}, SettingAction>(
             current: 'v1.0.0'
             // latest: "v1.0.0",
           }
-        }
+        },
+        locale: Locale.zhCN
       }
     },
     actions: {
-      checkUpdate () {},
+      checkUpdate () { },
       setReportId (reportId) {
         this.reportId = reportId
       }
