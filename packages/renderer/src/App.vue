@@ -2,7 +2,6 @@
 import WindowController from './components/WindowController.vue'
 import Main from './containers/Main.vue'
 import SideBar from './containers/SideBar.vue'
-import I18nProvider from './components/I18nProvider.vue'
 
 import {
   NGlobalStyle,
@@ -14,13 +13,10 @@ import {
 } from 'naive-ui'
 import { naiveUiLocale } from '@/i18n'
 import useThemeStore from '@/store/theme'
-import useSettingStore from '@/store/settings'
+import useSettingStore, { Locale } from '@/store/settings'
 import { initHook } from '@/hooks'
 import { onMounted, computed } from 'vue'
 import { transparentize } from 'color2k'
-onMounted(() => {
-  initHook()
-})
 
 // initialStore()
 
@@ -73,12 +69,11 @@ const darkThemeOverrides: GlobalThemeOverrides = {
 }
 
 const style = computed(() => {
-  const bg = themeStore.bgFollowTheme && themeStore.theme === 'maa-dark'
-    ? themeStore.bgDark
-    : themeStore.bgLight
-  const bodyColor = themeStore.theme === 'maa-dark'
-    ? '#0f0f0f'
-    : '#f0f0f0'
+  const bg =
+    themeStore.bgFollowTheme && themeStore.theme === 'maa-dark'
+      ? themeStore.bgDark
+      : themeStore.bgLight
+  const bodyColor = themeStore.theme === 'maa-dark' ? '#0f0f0f' : '#f0f0f0'
   return {
     '--inner-bg': `url(${bg.url})`,
     '--inner-opacity': bg.opacity,
@@ -86,25 +81,32 @@ const style = computed(() => {
   }
 })
 
+onMounted(() => {
+  initHook()
+  settingStore.changeLocale(Locale.zhCN)
+})
 </script>
 
 <template>
-  <NConfigProvider class="app-provider" :locale="naiveUiLocale[`N${settingStore.locale}`]"
+  <NConfigProvider
+    class="app-provider"
+    :locale="naiveUiLocale[`N${settingStore.locale}`]"
     :date-locale="naiveUiLocale[`NDate${settingStore.locale}`]"
-    :theme="themeStore.theme === 'maa-light' ? null : darkTheme" :theme-overrides="
+    :theme="themeStore.theme === 'maa-light' ? null : darkTheme"
+    :theme-overrides="
       themeStore.theme === 'maa-light'
         ? lightThemeOverrides
         : darkThemeOverrides
-    " :style="style">
-    <I18nProvider :locale="settingStore.locale">
-      <div class="background"></div>
-      <NMessageProvider>
-        <NGlobalStyle />
-        <WindowController />
-        <SideBar />
-        <Main />
-      </NMessageProvider>
-    </I18nProvider>
+    "
+    :style="style"
+  >
+    <div class="background"></div>
+    <NMessageProvider>
+      <NGlobalStyle />
+      <WindowController />
+      <SideBar />
+      <Main />
+    </NMessageProvider>
   </NConfigProvider>
 </template>
 

@@ -16,6 +16,7 @@
     "node": ">=14.17.0"
   },
   "devDependencies": {
+    "@intlify/vite-plugin-vue-i18n": "^5.0.0",
     "@types/cron": "^1.7.3",
     "@types/crypto-js": "^4.1.1",
     "@types/ffi-napi": "^4.0.5",
@@ -47,7 +48,7 @@
     "vite-plugin-resolve": "^1.4.4",
     "vite-svg-loader": "^3.1.2",
     "vue": "^3.2.31",
-    "vue-i18n": "9",
+    "vue-i18n": "^v9.2.0-beta.39",
     "vue-router": "4",
     "vue-tsc": "^0.31.4",
     "wikiparse": "^1.0.27"

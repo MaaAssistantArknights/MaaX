@@ -9,6 +9,7 @@ import {
   NTime
   // useMessage
 } from 'naive-ui'
+// import { useI18n } from 'vue-i18n'
 import IconRefresh from '@/assets/icons/refresh.svg?component'
 import IconSettings from '@/assets/icons/settings.svg?component'
 import DeviceCard from '@/components/DeviceCard.vue'
@@ -20,6 +21,7 @@ import { installCore, checkCoreVersion } from '@/utils/core'
 import { installAdb } from '@/utils/adb'
 import { show } from '@/utils/message'
 
+// const { t } = useI18n()
 const connectedStatus: Set<DeviceStatus> = new Set(['connected', 'tasking'])
 const disconnectedStatus: Set<DeviceStatus> = new Set([
   'available',
@@ -44,42 +46,52 @@ const disconnectedDevices = computed(() =>
 /**
  * @description 过滤不可用的连接设备，并在神谕上提示
  */
-function deviceInfoParser (devices: Device[]):any[] {
+function deviceInfoParser (devices: Device[]): any[] {
   const ret: any[] = []
-  devices.forEach(
-    (info) => {
-      let status = 'available'
-      if (!info.uuid) {
-        show(`设备 ${info.address} 连接失败, 请检查是否开启了 USB 调试, 或请详细阅读使用文档捏`, {
+  devices.forEach((info) => {
+    let status = 'available'
+    if (!info.uuid) {
+      show(
+        `设备 ${info.address} 连接失败, 请检查是否开启了 USB 调试, 或请详细阅读使用文档捏`,
+        {
           type: 'error',
           duration: 0,
           closable: true
-        }, false)
-        status = 'unknown'
-      } else {
-        ret.push({
-          status: status,
-          uuid: info.uuid,
-          connectionString: info.address,
-          config: info.config,
-          commandLine: info.commandLine,
-          adbPath: info.adbPath,
-          pid: info.pid,
-          displayName: info.displayName
-        })
-      }
+        },
+        false
+      )
+      status = 'unknown'
+    } else {
+      ret.push({
+        status: status,
+        uuid: info.uuid,
+        connectionString: info.address,
+        config: info.config,
+        commandLine: info.commandLine,
+        adbPath: info.adbPath,
+        pid: info.pid,
+        displayName: info.displayName
+      })
     }
-  )
+  })
   if (ret.length === 0) {
-    show('未找到任何可用设备! 请重试', {
-      type: 'info',
-      duration: 0,
-      closable: true
-    }, false)
+    show(
+      '未找到任何可用设备! 请重试',
+      {
+        type: 'info',
+        duration: 0,
+        closable: true
+      },
+      false
+    )
   } else {
-    show(`已找到 ${ret.length} 台可用设备`, {
-      type: 'info'
-    }, false)
+    show(
+      `已找到 ${ret.length} 台可用设备`,
+      {
+        type: 'info'
+      },
+      false
+    )
   }
   return ret
 }
@@ -93,7 +105,11 @@ async function handleRefreshDevices () {
   show('正在更新设备列表...', { type: 'loading', duration: 0 })
 
   window.ipcRenderer.invoke('main.DeviceDetector:getEmulators').then((ret) => {
-    show(`设备搜索完成, 共${ret.length}台设备`, { type: 'success', duration: 5000 }, true)
+    show(
+      `设备搜索完成, 共${ret.length}台设备`,
+      { type: 'success', duration: 5000 },
+      true
+    )
     const devices = deviceInfoParser(ret)
     deviceStore.mergeSearchResult(devices)
   })
@@ -159,7 +175,7 @@ setInterval(() => {
     </div> -->
     <div :style="{ textAlign: 'center' }">
       <NText depth="2">
-        最后更新：
+        {{ $t("Last Update") }}:&nbsp;
         <span v-if="deviceStore.lastUpdate === null">从不</span>
         <NTime
           v-else

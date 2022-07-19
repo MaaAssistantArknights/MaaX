@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia'
+import { useI18n } from 'vue-i18n'
 
-enum Locale {
-  zhCN ='ZhCN',
-  enUS = 'EnUS'
+export enum Locale {
+  zhCN = 'ZhCN',
+  enUS = 'EnUS',
 }
 
 export interface SettingState {
@@ -23,6 +24,7 @@ export interface SettingState {
 export interface SettingAction {
   checkUpdate: () => void
   setReportId: (reportId: string) => void
+  changeLocale: (locale: Locale) => void
 }
 
 const useSettingStore = defineStore<'setting', SettingState, {}, SettingAction>(
@@ -45,9 +47,14 @@ const useSettingStore = defineStore<'setting', SettingState, {}, SettingAction>(
       }
     },
     actions: {
-      checkUpdate () { },
+      checkUpdate () {},
       setReportId (reportId) {
         this.reportId = reportId
+      },
+      changeLocale (locale: Locale) {
+        this.locale = locale
+        const i18n = useI18n()
+        i18n.locale.value = locale
       }
     }
   }
