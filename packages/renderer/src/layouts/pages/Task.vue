@@ -49,8 +49,6 @@ function load () {
       filter: '.undraggable',
       store: {
         get () {
-          // FIXME: 排序时，没有更新 taskStore
-          // 这里本来是字符串，但是ui_id是数字(
           return tasks.value?.map((task) => task.ui_id.toString()) || []
         },
         set (sortable) {
@@ -59,7 +57,7 @@ function load () {
             taskStore.updateTask(
               uuid.value,
               _.sortBy(tasks.value, (task) =>
-                sort.findIndex((v) => v === task.ui_id.toString())
+                sort.findIndex((v) => _.toNumber(v) === task.ui_id)
               )
             )
           }
@@ -244,7 +242,7 @@ async function handleStart () {
         :key="task.id"
         :task-info="task"
         @update:enable="(enabled) => (task.enable = enabled)"
-        :data-id="task.id"
+        :data-id="task.ui_id"
       >
         <Configuration
           :taskId="task.id"
