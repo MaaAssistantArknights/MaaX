@@ -1,6 +1,6 @@
 {
   "common": {
-    "Last Update": "最后更新",
+    "lastUpdate": "最后更新",
     "success": "成功",
     "failure": "失败",
     "confirm": "确认",
