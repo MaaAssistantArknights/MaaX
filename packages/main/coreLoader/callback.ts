@@ -2,6 +2,7 @@ import ffi from 'ffi-napi'
 import ref from 'ref-napi'
 import logger from '@main/utils/logger'
 import { ipcMainSend } from '@main/utils/ipc-main'
+import _ from 'lodash'
 
 enum AsstMsg {
   /* Global Info */
@@ -41,10 +42,10 @@ const callbackParse: taskchainProps = {
   },
   [AsstMsg.ConnectionInfo]: (msg, detail): object => {
     return {
-      name: detail.what === 'UuidGetted' ? 'UuidGetted' : 'ConnectFailed',
+      name: detail.what === 'UuidGot' ? 'UuidGot' : 'ConnectFailed',
       data: {
         address: detail.details.address,
-        ...{ UuidGetted: { uuid: detail.details.uuid }, ConnectFailed: {} }[
+        ...{ UuidGot: { uuid: _.trim(detail.details.uuid) }, ConnectFailed: {} }[
           detail.what
         ]
       }

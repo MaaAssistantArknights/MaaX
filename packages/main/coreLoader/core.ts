@@ -76,7 +76,7 @@
 //       // name: msg,
 //       name: detail.what, // 连接类型
 //       address: detail.details.address,
-//       ...{ UuidGetted: { uuid: detail.details.uuid }, ConnectFailed: {} }[
+//       ...{ UuidGot: { uuid: detail.details.uuid }, ConnectFailed: {} }[
 //         detail.what
 //       ]
 //     }
@@ -155,7 +155,7 @@
 // // 下面注释起来的key应该是用不上的回调信息.
 
 // const handleConnectionInfo: handleCallback = {
-//   UuidGetted: (detail) => {
+//   UuidGot: (detail) => {
 //     return { what: detail.what, address: detail.details.address, uuid: detail.details.uuid };
 //   },
 //   ConnectFailed: (detail) => {

@@ -63,7 +63,7 @@ enum CallbackMsg {
 }
 
 enum Connection {
-  UuidGetted = 'UuidGetted',
+  UuidGot = 'UuidGot',
   ConnectFailed = 'ConnectFailed',
 }
 
@@ -179,9 +179,9 @@ export default function useCallbackEvents (): void {
       }
       // TODO: 状态归位
     },
-    [Connection.UuidGetted]: (data: Record<string, string>): void => {
+    [Connection.UuidGot]: (data: Record<string, string>): void => {
       // 获取到uuid, 作为连接成功的标志
-      show(`设备${data.address}已连接`, { type: 'success', duration: 3000 })
+      show(`设备${data.address}已连接`, { type: 'success', duration: 3000 }, true)
       deviceStore.updateDeviceStatus(data.uuid, 'connected')
     },
     [Connection.ConnectFailed]: (data: Record<string, string>): void => {
