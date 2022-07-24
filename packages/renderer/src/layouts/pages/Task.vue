@@ -16,6 +16,7 @@ import { show } from '@/utils/message'
 
 import router from '@/router'
 import { checkCoreVersion, installCore } from '@/utils/core'
+import Progress from '@/components/progress/Index.vue'
 const logger = console
 
 const taskStore = useTaskStore()
@@ -125,7 +126,7 @@ async function handleSubStart () {
     return
   }
 
-  const taskTranslate:Record<string, string> = {
+  const taskTranslate: Record<string, string> = {
     startup: 'StartUp',
     fight: 'Fight',
     recruit: 'Recruit',
@@ -208,7 +209,7 @@ async function handleStart () {
       <h2>任务</h2>
 
       <NSpace align="center">
-              <!-- <NDropdown>
+        <!-- <NDropdown>
         <NButton type="primary">切换配置</NButton>
       </NDropdown> -->
         <NTooltip class="detail-toggle-switch">
@@ -236,18 +237,12 @@ async function handleStart () {
     </NSpace>
 
     <div class="cards" :class="isGrid ? 'cards-grid' : ''" ref="cardsRef">
-      <TaskCard
-        :is-collapsed="!isGrid"
-        v-for="task in tasks"
-        :key="task.id"
-        :task-info="task"
-        @update:enable="(enabled) => (task.enable = enabled)"
-        :data-id="task.ui_id"
-      >
-        <Configuration
-          :taskId="task.id"
-          :configurations="task.configurations"
-        />
+      <TaskCard :is-collapsed="!isGrid" v-for="task in tasks" :key="task.id" :task-info="task"
+        @update:enable="(enabled) => (task.enable = enabled)" :data-id="task.ui_id">
+        <!-- TODO: 添加一个切换配置与进度的按钮 -->
+        <Configuration :taskId="task.id" :configurations="task.configurations"
+          v-if="task.status !== 'processing'" />
+        <Progress :taskId="task.id" :progress="{}" v-else />
       </TaskCard>
     </div>
   </div>
@@ -258,14 +253,17 @@ async function handleStart () {
   padding: 4px;
   text-align: center;
   line-height: 1;
+
   & :deep(.task-card) {
     margin-bottom: 8px;
   }
+
   &.cards-grid :deep(.task-card) {
     display: inline-block;
     width: 48%;
     margin: min(1%, 10px);
   }
+
   &.cards-grid :deep(.task-card:nth-child(odd)) {
     float: left;
   }
