@@ -11,14 +11,19 @@ const components: Record<ComponentName, Component> = {
 @Singleton
 class ComponentManager implements Module {
   constructor () {
-    ipcMainHandle('componentManager:getStatus',
+    ipcMainHandle('main.componentManager:getStatus',
       async (event, componentName: ComponentName) => {
         return components[componentName]?.status
       })
 
-    ipcMainHandle('componentManager:install',
+    ipcMainHandle('main.componentManager:install',
       async (event, componentName: ComponentName) => {
         components[componentName]?.installer?.install()
+      })
+
+    ipcMainHandle('main.componentManager:checkUpdate',
+      async (event, componentName: ComponentName) => {
+        return components[componentName]?.installer?.checkUpdate()
       })
   }
 

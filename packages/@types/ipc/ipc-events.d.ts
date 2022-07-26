@@ -19,6 +19,7 @@ type IpcMainHandleEvent =
   | 'main.ScheduleRunner:shutdown'
   | 'main.componentManager:getStatus'
   | 'main.componentManager:install'
+  | 'main.componentManager:checkUpdate'
   | 'main.DeviceDetector:getAdbPath'
   | 'main.DeviceDetector:getAdbDevices'
   | 'main.DeviceDetector:getEmulators'

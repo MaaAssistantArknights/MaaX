@@ -26,7 +26,7 @@ const installButtonText = computed(() => {
 })
 
 const handleInstall = () => {
-
+  window.ipcRenderer.invoke('main.componentManager:checkUpdate', 'core')
 }
 </script>
 
@@ -36,6 +36,7 @@ const handleInstall = () => {
       <template #footer>
         <NSpace :justify="'end'">
           <NButton
+            @click="handleInstall"
             type="primary"
             :disabled="status === 'installing'"
           >{{ installButtonText }}</NButton>
