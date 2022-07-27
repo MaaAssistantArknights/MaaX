@@ -28,6 +28,9 @@
       "buyFirst": "优先购买",
       "blackList": "黑名单",
       "others": "随缘购买"
+    },
+    "common": {
+      "fixTask": "任务 {0} 字段发生更新, 已将配置重置为默认值, 请前往详情页面查看捏"
     }
   },
   "device": {

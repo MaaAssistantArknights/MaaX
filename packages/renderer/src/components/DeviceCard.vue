@@ -55,6 +55,8 @@ function handleJumpToTask () {
     return
   }
    */
+
+  taskStore.fixTaskList(props.uuid)
   if (!isCurrent.value) router.push(`/task/${device.value?.uuid}`)
 }
 
