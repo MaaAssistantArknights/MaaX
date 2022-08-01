@@ -1,10 +1,27 @@
-type TaskStatus = 'idle' | 'waiting' | 'processing' | 'success' | 'warning' | 'exception' | 'stopped'
-
+type TaskStatus =
+  | 'idle'
+  | 'waiting'
+  | 'processing'
+  | 'success'
+  | 'warning'
+  | 'exception'
+  | 'stopped'
+type TaskId =
+  | 'emulator'
+  | 'startup'
+  | 'fight'
+  | 'recruit'
+  | 'infrast'
+  | 'visit'
+  | 'mall'
+  | 'award'
+  | 'rogue'
+  | 'shutdown'
 interface Task {
   /**
    * @props 任务对应卡片名
    */
-  id: string
+  id: TaskId
   /**
    * @props ui层唯一id
    */
@@ -17,6 +34,10 @@ interface Task {
    * @props 任务title（可能为i18n字符串，i18n example: `t("task.mall")`）
    */
   title: string
+  /**
+   * @props 是否显示任务结果
+   */
+  showResult?: boolean
   /**
    * @props 任务状态
    * ---

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, Ref, watch } from 'vue'
-import { NSpace, NButton, NSwitch, NIcon, NTooltip, NDropdown } from 'naive-ui'
+import { NSpace, NButton, NSwitch, NIcon, NTooltip } from 'naive-ui'
 import _ from 'lodash'
 import Sortable from 'sortablejs'
 import TaskCard from '@/components/TaskCard.vue'
@@ -241,7 +241,7 @@ async function handleStart () {
         @update:enable="(enabled) => (task.enable = enabled)" :data-id="task.ui_id">
         <!-- TODO: 添加一个切换配置与进度的按钮 -->
         <Configuration :taskId="task.id" :configurations="task.configurations"
-          v-if="task.status !== 'processing'" />
+          v-if="task.status !== 'processing' || !task.showResult" />
         <Progress :taskId="task.id" :progress="{}" v-else />
       </TaskCard>
     </div>

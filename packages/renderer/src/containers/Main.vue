@@ -18,6 +18,6 @@ onMounted(async () => {
 <template>
   <NScrollbar class="main">
     <router-view name="Main" />
-    <DownloadModal :show="_.isNil(coreVersion)" />
+    <!-- <DownloadModal :show="_.isNil(coreVersion)" /> -->
   </NScrollbar>
 </template>

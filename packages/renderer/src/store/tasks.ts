@@ -31,7 +31,7 @@ export interface TaskAction {
 
 export const defaultSelfIncreaseId = 100000// 初始自增id
 
-const defautTaskConf = {
+const defaultTaskConf = {
   emulator: {
     id: 'emulator',
     ui_id: 0,
@@ -390,7 +390,7 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
     newTask (uuid) {
       const { deviceTasks } = this
       deviceTasks[uuid] = []
-      for (const [, v] of Object.entries(defautTaskConf)) {
+      for (const [, v] of Object.entries(defaultTaskConf)) {
         deviceTasks[uuid].push(_.cloneDeep(v as Task))
       }
     },
@@ -451,10 +451,9 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
       const { deviceTasks } = this
       const origin = deviceTasks[uuid]
       origin?.forEach((task) => {
-        // FIXME: i hate type(╯‵□′)╯︵┻━┻
-        if (!compareObjKey(task.configurations, defautTaskConf[task.id].configurations)) {
+        if (!compareObjKey(task.configurations, defaultTaskConf[task.id].configurations)) {
           show(t('task.common.fixTask', [task.title]), { type: 'warning', duration: 0, closable: true }, false)
-          task.configurations = defautTaskConf[task.id].configurations
+          task.configurations = defaultTaskConf[task.id].configurations
         }
       })
     }
