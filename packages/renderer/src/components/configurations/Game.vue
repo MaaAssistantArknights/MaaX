@@ -14,12 +14,12 @@ interface GameConfiguration {
 
 const serverOptions = [
   {
-    value: 'CN',
-    label: 'CN'
+    value: 'Official',
+    label: 'Official'
   },
   {
-    value: 'BiliBili',
-    label: 'BiliBili'
+    value: 'Bilibili',
+    label: 'Bilibili'
   }
 ]
 
