@@ -42,12 +42,10 @@ const callbackParse: taskchainProps = {
   },
   [AsstMsg.ConnectionInfo]: (msg, detail): object => {
     return {
-      name: detail.what === 'UuidGot' ? 'UuidGot' : 'ConnectFailed',
+      name: detail.what,
       data: {
         address: detail.details.address,
-        ...{ UuidGot: { uuid: _.trim(detail.details.uuid) }, ConnectFailed: {} }[
-          detail.what
-        ]
+        ...({ UuidGot: { uuid: _.trim(detail.details.uuid) }, ConnectFailed: {} }[detail.what] ?? {})
       }
     }
   },

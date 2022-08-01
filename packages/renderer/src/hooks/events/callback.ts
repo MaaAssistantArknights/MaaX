@@ -190,6 +190,7 @@ export default function useCallbackEvents (): void {
         await window.ipcRenderer.invoke('main.CoreLoader:destroy', { uuid: data.address })
         deviceStore.updateDeviceStatus(data.address, 'unknown')
       })()
+      show(`设备${data.address}连接失败`, { type: 'error', duration: 3000 }, true)
     },
     [CallbackMsg.TaskChainStart]: (data: Record<string, any>): void => {
       // 任务链开始
