@@ -16,7 +16,7 @@ import { show } from '@/utils/message'
 
 import router from '@/router'
 import { checkCoreVersion, installCore } from '@/utils/core'
-import Progress from '@/components/progress/Index.vue'
+import Result from '@/components/result/Index.vue'
 const logger = console
 
 const taskStore = useTaskStore()
@@ -28,7 +28,9 @@ const cardsRef: Ref<HTMLElement | null> = ref(null)
 
 const uuid = computed(() => router.currentRoute.value.params.uuid as string)
 const tasks = computed(() => {
-  if (!taskStore.deviceTasks[uuid.value]) { taskStore.newTask(uuid.value) }
+  if (!taskStore.deviceTasks[uuid.value]) {
+    taskStore.newTask(uuid.value)
+  }
   return taskStore.deviceTasks[uuid.value]
 })
 
@@ -79,7 +81,8 @@ const deviceStatus = computed(() => {
   return device.status
 })
 
-async function handleStartUnconnected (task: Task['configurations']) { // 未连接的设备启动任务
+async function handleStartUnconnected (task: Task['configurations']) {
+  // 未连接的设备启动任务
   if (!(await checkCoreVersion())) {
     installCore()
     return
@@ -90,18 +93,25 @@ async function handleStartUnconnected (task: Task['configurations']) { // 未连
   console.log('after start')
 
   deviceStore.updateDeviceStatus(uuid.value, 'tasking')
-  window.ipcRenderer.invoke('main.DeviceDetector:startEmulator', task.commandLine)
+  window.ipcRenderer.invoke(
+    'main.DeviceDetector:startEmulator',
+    task.commandLine
+  )
   logger.debug('after start emulators')
   setTimeout(async () => {
     logger.debug('before getEmulators')
-    const devices: any[] = await window.ipcRenderer.invoke('main.DeviceDetector:getEmulators') // 等待时间结束后进行一次设备搜索，但不合并结果
-    const device = devices.find(device => device.uuid === uuid.value)// 检查指定uuid的设备是否存在
+    const devices: any[] = await window.ipcRenderer.invoke(
+      'main.DeviceDetector:getEmulators'
+    ) // 等待时间结束后进行一次设备搜索，但不合并结果
+    const device = devices.find((device) => device.uuid === uuid.value) // 检查指定uuid的设备是否存在
     logger.debug('after getEmulators')
-    if (device) { // 设备活了
+    if (device) {
+      // 设备活了
       logger.debug('find device')
       logger.debug('before create')
       logger.debug(device)
-      await window.ipcRenderer.invoke('main.CoreLoader:createExAndConnect', { // 创建连接
+      await window.ipcRenderer.invoke('main.CoreLoader:createExAndConnect', {
+        // 创建连接
         address: device.address,
         uuid: device.uuid,
         adb_path: device.adb_path,
@@ -112,9 +122,13 @@ async function handleStartUnconnected (task: Task['configurations']) { // 未连
       logger.debug('after start emulator')
       show('启动模拟器子任务结束', { type: 'success' })
       await handleSubStart()
-    } else { // 设备没活
+    } else {
+      // 设备没活
       logger.debug('device not found')
-      show('启动设备失败, 请前往github上提交issue', { type: 'error', duration: 0 })
+      show('启动设备失败, 请前往github上提交issue', {
+        type: 'error',
+        duration: 0
+      })
     }
   }, 10000)
   // (task.delay as number)*1000
@@ -152,11 +166,14 @@ async function handleSubStart () {
 
       let task = taskIter.next()
       while (!task.done) {
-        const taskId = await window.ipcRenderer.invoke('main.CoreLoader:appendTask', {
-          uuid: uuid.value,
-          type: taskTranslate[singleTask.id],
-          params: task.value
-        })
+        const taskId = await window.ipcRenderer.invoke(
+          'main.CoreLoader:appendTask',
+          {
+            uuid: uuid.value,
+            type: taskTranslate[singleTask.id],
+            params: task.value
+          }
+        )
         taskIdStore.updateTaskId(uuid.value, singleTask.id, taskId) // 记录任务id
         task = taskIter.next()
       }
@@ -164,12 +181,16 @@ async function handleSubStart () {
   }
   deviceStore.updateDeviceStatus(uuid.value as string, 'tasking')
 
-  await window.ipcRenderer.invoke('main.CoreLoader:start', { uuid: uuid.value })
+  await window.ipcRenderer.invoke('main.CoreLoader:start', {
+    uuid: uuid.value
+  })
 }
 
 async function handleSubStop () {
   show('正在停止任务', { type: 'info', duration: 0 })
-  const status = await window.ipcRenderer.invoke('main.CoreLoader:stop', { uuid: uuid.value }) // 等待core停止任务
+  const status = await window.ipcRenderer.invoke('main.CoreLoader:stop', {
+    uuid: uuid.value
+  }) // 等待core停止任务
   if (!status) {
     show('停止任务失败', { type: 'error', duration: 5000 })
   } else {
@@ -182,23 +203,34 @@ async function handleSubStop () {
 
 async function handleStart () {
   const device = deviceStore.getDevice(uuid.value as string)
-  if (device && device.status === 'tasking') { // 设备进行中, 可停止任务
+  if (device && device.status === 'tasking') {
+    // 设备进行中, 可停止任务
     await handleSubStop()
-  } else if (device && device.status === 'connected') { // 设备已连接, 可开始任务
+  } else if (device && device.status === 'connected') {
+    // 设备已连接, 可开始任务
     await handleSubStart()
-  } else if (device && device.status === 'available') { // 设备可用但未连接, 先尝试连接再开始任务
+  } else if (device && device.status === 'available') {
+    // 设备可用但未连接, 先尝试连接再开始任务
     // TODO:
     show('请先连接设备', { type: 'warning', duration: 2000 })
-  } else { // 设备状态为 unknown 或 disconnect , 检查子任务'启动模拟器'是否开启，如果开启则先启动模拟器再开始任务
+  } else {
+    // 设备状态为 unknown 或 disconnect , 检查子任务'启动模拟器'是否开启，如果开启则先启动模拟器再开始任务
     const task = taskStore.getTask(uuid.value as string, 'emulator') // 查找是否有启动模拟器任务
-    if (task && task.enable === true) { // 有启动模拟器任务
-      if (!task.configurations.commandLine) { // 设备没有获取到用于启动模拟器的命令行参数
+    if (task && task.enable === true) {
+      // 有启动模拟器任务
+      if (!task.configurations.commandLine) {
+        // 设备没有获取到用于启动模拟器的命令行参数
         // FIXME: 需要展开任务详情才能获取到CommandLine
         show('该设备启动参数不可用', { type: 'warning', duration: 2000 })
         return
       }
       await handleStartUnconnected(task.configurations)
-    } else { show("请先 '启动并搜索模拟器' 或 '勾选启动模拟器子任务'", { type: 'warning', duration: 3000 }) }
+    } else {
+      show("请先 '启动并搜索模拟器' 或 '勾选启动模拟器子任务'", {
+        type: 'warning',
+        duration: 3000
+      })
+    }
   }
 }
 </script>
@@ -237,12 +269,21 @@ async function handleStart () {
     </NSpace>
 
     <div class="cards" :class="isGrid ? 'cards-grid' : ''" ref="cardsRef">
-      <TaskCard :is-collapsed="!isGrid" v-for="task in tasks" :key="task.id" :task-info="task"
-        @update:enable="(enabled) => (task.enable = enabled)" :data-id="task.ui_id">
+      <TaskCard
+        :is-collapsed="!isGrid"
+        v-for="task in tasks"
+        :key="task.id"
+        :task-info="task"
+        @update:enable="(enabled) => (task.enable = enabled)"
+        :data-id="task.ui_id"
+      >
         <!-- TODO: 添加一个切换配置与进度的按钮 -->
-        <Configuration :taskId="task.id" :configurations="task.configurations"
-          v-if="task.status !== 'processing' || !task.showResult" />
-        <Progress :taskId="task.id" :progress="{}" v-else />
+        <Configuration
+          :taskId="task.id"
+          :configurations="task.configurations"
+          v-if="task.status !== 'processing' || !task.showResult"
+        />
+        <Result :taskId="task.id" :result="{}" v-else />
       </TaskCard>
     </div>
   </div>
