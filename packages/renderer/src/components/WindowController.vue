@@ -88,7 +88,7 @@ window.ipcRenderer.on('window:update-maximized', (_, maximized) => {
 .window-controller {
   display: flex;
   position: fixed;
-  z-index: 50;
+  z-index: 10;
   top: 0;
   justify-content: end;
   align-items: center;
@@ -103,8 +103,9 @@ window.ipcRenderer.on('window:update-maximized', (_, maximized) => {
 }
 
 .drag-bar {
-  height: 100%;
+  height: 50%;
   flex: 1;
+  align-self: flex-start;
   -webkit-app-region: drag;
 }
 

@@ -12,7 +12,7 @@ import Shutdown from './Shutdown.vue'
 
 const components: Record<string, Component> = {
   emulator: Emulator,
-  startup: Game,
+  game: Game,
   fight: Fighting,
   recruit: Recruit,
   infrast: Infrast,

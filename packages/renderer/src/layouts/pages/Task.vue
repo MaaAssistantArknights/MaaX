@@ -3,10 +3,10 @@ import { computed, onMounted, ref, Ref, watch } from 'vue'
 import { NSpace, NButton, NSwitch, NIcon, NTooltip } from 'naive-ui'
 import _ from 'lodash'
 import Sortable from 'sortablejs'
-import TaskCard from '@/components/TaskCard.vue'
+import TaskCard from '@/components/Task/TaskCard.vue'
 import IconList from '@/assets/icons/list.svg?component'
 import IconGrid from '@/assets/icons/grid.svg?component'
-import Configuration from '@/components/configurations/Index.vue'
+import Configuration from '@/components/Task/configurations/Index.vue'
 
 import useTaskStore from '@/store/tasks'
 import useDeviceStore from '@/store/devices'
@@ -16,7 +16,7 @@ import { show } from '@/utils/message'
 
 import router from '@/router'
 import { checkCoreVersion, installCore } from '@/utils/core'
-import Result from '@/components/result/Index.vue'
+import Result from '@/components/Task/results/Index.vue'
 const logger = console
 
 const taskStore = useTaskStore()
@@ -276,14 +276,15 @@ async function handleStart () {
         :task-info="task"
         @update:enable="(enabled) => (task.enable = enabled)"
         :data-id="task.ui_id"
+        v-model:showResult="task.showResult"
       >
         <!-- TODO: 添加一个切换配置与进度的按钮 -->
+        <Result :taskId="task.id" :result="{}" v-show="task.showResult" />
         <Configuration
           :taskId="task.id"
           :configurations="task.configurations"
-          v-if="task.status !== 'processing' || !task.showResult"
+          v-show="!task.showResult"
         />
-        <Result :taskId="task.id" :result="{}" v-else />
       </TaskCard>
     </div>
   </div>

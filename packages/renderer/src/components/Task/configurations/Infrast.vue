@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, Ref } from 'vue'
-import { NCheckbox, NForm, NFormItem, NSelect, NSlider } from 'naive-ui'
+import { NCheckbox, NFormItem, NSelect, NSlider, NSpace } from 'naive-ui'
 import _ from 'lodash'
 import Sortable from 'sortablejs'
 
@@ -156,13 +156,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <NForm
-    class="configuration-form infrast-configuration"
-    size="small"
-    :show-feedback="false"
-    :show-label="false"
-  >
-    <NFormItem>
+  <div class="configuration-form infrast-configuration">
+    <NFormItem :show-label="true"
+      size="small"
+      label-align="left"
+      label-placement="left"
+       :show-feedback="false">
       <div class="facilities" ref="facilitiesRef">
         <NCheckbox
           v-for="[id, name] of Object.entries(facilityOptions)"
@@ -177,10 +176,14 @@ onMounted(() => {
         />
       </div>
     </NFormItem>
-    <div class="infra-left">
+    <NSpace class="infra-left" vertical>
       <NFormItem
         label="无人机用途"
         :show-label="true"
+      size="small"
+      label-align="left"
+      label-placement="top"
+       :show-feedback="false"
         :label-style="{ justifyContent: 'center' }"
       >
         <NSelect
@@ -194,7 +197,11 @@ onMounted(() => {
       <NFormItem
         label="进驻宿舍理智阈值"
         :show-label="true"
-        :label-style="{ justifyContent: 'center' }"
+        :label-style="{ justifyContent: 'center', padding: 0 }"
+      size="small"
+      label-align="left"
+      label-placement="top"
+       :show-feedback="false"
       >
         <NSlider
           :value="props.configurations.threshold"
@@ -205,7 +212,9 @@ onMounted(() => {
           :min="0"
         />
       </NFormItem>
-      <NFormItem :show-label="false">
+      <NFormItem :show-label="false"
+      size="small"
+       :show-feedback="false">
         <NCheckbox
           :checked="props.configurations.replenish"
           @update:checked="
@@ -214,8 +223,8 @@ onMounted(() => {
           "
         >源石碎片自动补货</NCheckbox>
       </NFormItem>
-    </div>
-  </NForm>
+    </NSpace>
+  </div>
 </template>
 
 <style lang="less" scoped>

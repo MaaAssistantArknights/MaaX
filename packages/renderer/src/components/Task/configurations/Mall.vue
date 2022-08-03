@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { NButton, NFormItem, NCheckbox, NForm } from 'naive-ui'
+import { NButton, NFormItem, NCheckbox } from 'naive-ui'
 // import router from '@/router'
 import _ from 'lodash'
 import { getItemBorderedImage } from '@/utils/game_image'
@@ -51,9 +51,9 @@ const props = defineProps<{
   configurations: MallConfiguration;
 }>()
 
-const buyFirst = ref()
-const blackList = ref()
-const otherItems = ref()
+const buyFirst = ref([])
+const blackList = ref([])
+const otherItems = ref([])
 
 const loading = ref(false)
 
@@ -63,25 +63,17 @@ onMounted(async () => {
   blackList.value = []
   otherItems.value = []
 
-  props.configurations.buy_first.forEach((item) => {
-    buyFirst.value.push(
-      {
-        name: item,
-        item_id: mallItems[item],
-        image: getItemBorderedImage(item)
-      }
-    )
-  })
+  props.configurations.buy_first.map((item) => ({
+    name: item,
+    item_id: mallItems[item],
+    image: getItemBorderedImage(item)
+  }))
 
-  props.configurations.blacklist.forEach((item) => {
-    blackList.value.push(
-      {
-        name: item,
-        item_id: mallItems[item],
-        image: getItemBorderedImage(item)
-      }
-    )
-  })
+  props.configurations.blacklist.map((item) => ({
+    name: item,
+    item_id: mallItems[item],
+    image: getItemBorderedImage(item)
+  }))
 
   Object.entries(mallItems).forEach(([name, itemid]) => {
     if (!props.configurations.buy_first.includes(name as itemNameType) &&
@@ -106,15 +98,14 @@ function onItemChange () {
 </script>
 
 <template>
-  <NForm
+  <div
     class="configuration-form"
-    size="small"
-    :show-feedback="false"
-    :label-align="'left'"
-    :label-placement="'left'"
-    :label-width="'auto'"
   >
-    <NFormItem label="自动购物">
+    <NFormItem label="自动购物" :show-label="true"
+      size="small"
+      label-align="left"
+      label-placement="left"
+       :show-feedback="false">
       <NCheckbox
         :checked="props.configurations.shopping"
         @update:checked="
@@ -124,14 +115,18 @@ function onItemChange () {
       />
     </NFormItem>
 
-    <NFormItem :show-label="false">
+    <NFormItem :show-label="false"
+      size="small"
+      label-align="left"
+      label-placement="left"
+       :show-feedback="false">
       <NButton quaternary type="primary" @click="showModal = true" :focusable="false">管理购买选项...
       </NButton>
       <MallSelect v-model:show="showModal" :buy_first="buyFirst" :blacklist="blackList" :others="otherItems"
         @onChange:Item="onItemChange">
       </MallSelect>
     </NFormItem>
-  </NForm>
+  </div>
 </template>
 
 <style lang="less" scoped>

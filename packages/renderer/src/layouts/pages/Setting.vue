@@ -11,13 +11,14 @@ import {
   NSwitch,
   NImage,
   NSlider,
+  NSelect,
   NInputNumber
 } from 'naive-ui'
 import _ from 'lodash'
 import IconBinary from '@/assets/icons/binary.svg?component'
 import IconWindowUi from '@/assets/icons/window-ui.svg?component'
 
-import useSettingStore from '@/store/settings'
+import useSettingStore, { Locale } from '@/store/settings'
 import useThemeStore from '@/store/theme'
 
 const settingStore = useSettingStore()
@@ -55,7 +56,8 @@ async function openBgFileSelector (): Promise<URL | undefined> {
     [
       { name: 'Images', extensions: ['jpg', 'png', 'jpeg'] },
       { name: 'All Files', extensions: ['*'] }
-    ])
+    ]
+  )
   if (filePaths?.length <= 0) {
     return undefined
   }
@@ -80,6 +82,21 @@ function handleUpdateBgDarkOpacity (value: number | null) {
   themeStore.updateBgDark({ url: themeStore.bgDark.url, opacity: value ?? 1 })
 }
 
+const localeOptions = [
+  {
+    label: '简体中文',
+    value: Locale.zhCN
+  },
+  {
+    label: 'English',
+    value: Locale.enUS
+  }
+]
+
+function handleChangeLocale (locale: Locale) {
+  settingStore.changeLocale(locale)
+}
+
 onMounted(() => {
   handleWindowResize()
   window.addEventListener('resize', _.throttle(handleWindowResize, 16))
@@ -88,6 +105,14 @@ onMounted(() => {
 
 <template>
   <NForm class="setting-form" :label-width="150" :show-feedback="false">
+    <div id="general">
+      <h2 class="title">通用</h2>
+      <NSpace justify="center" align="center">
+        <div>语言</div>
+        <NSelect :value="settingStore.locale" @update:value="handleChangeLocale"
+          :options="localeOptions" :style="{ width: '200px' }" />
+      </NSpace>
+    </div>
     <div id="penguin-report">
       <h2 class="title">企鹅物流数据上报</h2>
       <NSpace justify="center" align="center">

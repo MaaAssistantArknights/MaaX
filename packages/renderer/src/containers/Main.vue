@@ -3,7 +3,7 @@ import { NScrollbar, useMessage } from 'naive-ui'
 import version from '@/hooks/caller/version'
 import { onMounted, ref, Ref } from 'vue'
 import _ from 'lodash'
-import DownloadModal from '@/components/DownloadModal.vue'
+import DownloadModal from '@/components/Setting/DownloadModal.vue'
 
 window.$message = useMessage()
 

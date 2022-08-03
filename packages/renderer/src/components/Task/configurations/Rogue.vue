@@ -2,7 +2,6 @@
 import { ref, onMounted, Ref, h } from 'vue'
 import _ from 'lodash'
 import {
-  NForm,
   NFormItem,
   NButton,
   NModal,
@@ -19,7 +18,7 @@ import { getOperatorAvatar, getSkillImage } from '@/utils/game_image'
 //   secondsToFormattedDuration,
 //   formattedDurationToSeconds
 // } from '@/utils/time_picker'
-import OperatorSelector from '@/components/OperatorSelector.vue'
+import OperatorSelector from '@/components/Task/OperatorSelector.vue'
 // const logger = console
 
 // type Strategies = 'ToTheEnd' | 'AfterFirstLevel' | 'AfterMoney';
@@ -161,14 +160,7 @@ const createColumns = (): DataTableColumns<any> => [
 </script>
 
 <template>
-  <NForm
-    class="configuration-form rogue-configuration"
-    size="small"
-    :show-feedback="false"
-    :label-align="'left'"
-    :label-placement="'top'"
-    :label-width="'150px'"
-  >
+  <div class="configuration-form rogue-configuration">
     <NSpace vertical>
       <!-- <NFormItem label="运行时间">
         <NTimePicker
@@ -184,7 +176,11 @@ const createColumns = (): DataTableColumns<any> => [
         />
       </NFormItem> -->
 
-      <NFormItem label="通关策略">
+      <NFormItem label="通关策略" :show-label="true"
+      size="small"
+      label-align="left"
+      label-placement="left"
+       :show-feedback="false">
         <NSelect
           :value="props.configurations.mode"
           :options="strategyOptions"
@@ -218,7 +214,7 @@ const createColumns = (): DataTableColumns<any> => [
         />
       </NCard>
     </NModal>
-  </NForm>
+  </div>
 </template>
 
 <style lang="less" scoped>

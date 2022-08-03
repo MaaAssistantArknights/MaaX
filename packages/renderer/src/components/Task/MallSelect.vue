@@ -6,7 +6,7 @@ import {
   NDivider
 } from 'naive-ui'
 
-import MallItems from '@/components/MallItems.vue'
+import MallItems from '@/components/Task/MallItems.vue'
 
 interface Item {
   name: string,

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NInputNumber, NCheckbox, NForm, NFormItem } from 'naive-ui'
+import { NInputNumber, NCheckbox, NFormItem } from 'naive-ui'
 import _ from 'lodash'
 
 interface RecruitConfiguration {
@@ -57,22 +57,25 @@ function handleExpediteUpdate (value: number | null) {
 </script>
 
 <template>
-  <NForm
+  <div
     class="configuration-form"
-    size="small"
-    :show-feedback="false"
-    :label-align="'left'"
-    :label-placement="'left'"
-    :label-width="'auto'"
   >
-      <NFormItem label="招募次数">
+      <NFormItem label="招募次数" :show-label="true"
+      size="small"
+      label-align="left"
+      label-placement="left"
+       :show-feedback="false">
       <NInputNumber
         :value="configurations.times"
         @update:value="handleRecruitTimesUpdate"
       />
     </NFormItem>
 
-    <NFormItem label="使用加急许可">
+    <NFormItem label="使用加急许可" :show-label="true"
+      size="small"
+      label-align="left"
+      label-placement="left"
+       :show-feedback="false">
       <NCheckbox
         :checked="configurations.expedite"
         @update:checked="
@@ -81,7 +84,11 @@ function handleExpediteUpdate (value: number | null) {
         "
       />
     </NFormItem>
-    <NFormItem label="使用加急许可数量">
+    <NFormItem label="使用加急许可数量" :show-label="true"
+      size="small"
+      label-align="left"
+      label-placement="left"
+       :show-feedback="false">
         <!-- <NCheckbox
         :checked="props.configurations.medicine"
         @update:checked="
@@ -94,7 +101,11 @@ function handleExpediteUpdate (value: number | null) {
           @update:value="handleExpediteUpdate"
         />
       </NFormItem>
-    <NFormItem label="自动刷新3星tag">
+    <NFormItem label="自动刷新3星tag" :show-label="true"
+      size="small"
+      label-align="left"
+      label-placement="left"
+       :show-feedback="false">
       <NCheckbox
         :checked="configurations.refresh"
         @update:checked="
@@ -105,7 +116,11 @@ function handleExpediteUpdate (value: number | null) {
         "
       />
     </NFormItem>
-    <NFormItem label="跳过小车">
+    <NFormItem label="跳过小车" :show-label="true"
+      size="small"
+      label-align="left"
+      label-placement="left"
+       :show-feedback="false">
       <NCheckbox
         :checked="configurations.skip_robot"
         @update:checked="
@@ -116,7 +131,11 @@ function handleExpediteUpdate (value: number | null) {
         "
       />
     </NFormItem>
-    <NFormItem label="自动确认3星">
+    <NFormItem label="自动确认3星" :show-label="true"
+      size="small"
+      label-align="left"
+      label-placement="left"
+       :show-feedback="false">
       <NCheckbox
         :checked="configurations.confirm.find(v => v === 3)"
         @update:checked="
@@ -127,7 +146,11 @@ function handleExpediteUpdate (value: number | null) {
         "
       />
     </NFormItem>
-    <NFormItem label="自动确认4星">
+    <NFormItem label="自动确认4星" :show-label="true"
+      size="small"
+      label-align="left"
+      label-placement="left"
+       :show-feedback="false">
       <NCheckbox
         :checked="configurations.confirm.find(v => v === 4)"
         @update:checked="
@@ -138,7 +161,11 @@ function handleExpediteUpdate (value: number | null) {
         "
       />
     </NFormItem>
-    <NFormItem label="自动确认5星">
+    <NFormItem label="自动确认5星" :show-label="true"
+      size="small"
+      label-align="left"
+      label-placement="left"
+       :show-feedback="false">
       <NCheckbox
         :checked="configurations.confirm.find(v => v === 5)"
         @update:checked="
@@ -149,5 +176,5 @@ function handleExpediteUpdate (value: number | null) {
         "
       />
     </NFormItem>
-  </NForm>
+  </div>
 </template>

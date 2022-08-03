@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {
-  NForm,
   NFormItem,
   NSelect,
   NTimePicker,
@@ -64,16 +63,15 @@ const props = defineProps<{
 }>()
 </script>
 <template>
-  <NForm
+  <div
     class="configuration-form"
-    size="small"
-    :show-feedback="false"
-    :label-align="'left'"
-    :label-placement="'left'"
-    :label-width="'auto'"
   >
     <NSpace vertical>
-      <NFormItem label="关闭策略" :show-label="true">
+      <NFormItem label="关闭策略" :show-label="true"
+      size="small"
+      label-align="left"
+      label-placement="left"
+       :show-feedback="false">
         <NSelect
           :value="props.configurations.option"
           @update:value="
@@ -83,7 +81,11 @@ const props = defineProps<{
         />
       </NFormItem>
 
-      <NFormItem label="关闭延迟">
+      <NFormItem label="关闭延迟" :show-label="true"
+      size="small"
+      label-align="left"
+      label-placement="left"
+       :show-feedback="false">
         <NTimePicker
           :style="{ width: '100%' }"
           :default-formatted-value="
@@ -100,7 +102,11 @@ const props = defineProps<{
           "
         />
       </NFormItem>
-      <NFormItem>
+      <NFormItem :show-label="true"
+      size="small"
+      label-align="left"
+      label-placement="left"
+       :show-feedback="false">
         <NButton
           quaternary
           type="primary"
@@ -110,5 +116,5 @@ const props = defineProps<{
         >
       </NFormItem>
     </NSpace>
-  </NForm>
+  </div>
 </template>

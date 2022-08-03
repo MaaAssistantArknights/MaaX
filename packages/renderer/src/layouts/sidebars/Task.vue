@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import IconSettings from '@/assets/icons/settings.svg?component'
 import IconDevices from '@/assets/icons/devices.svg?component'
 import { NIcon, NSpace, NButton, NTooltip } from 'naive-ui'
-import DeviceCard from '@/components/DeviceCard.vue'
+import DeviceCard from '@/components/Device/DeviceCard.vue'
 
 import useDeviceStore from '@/store/devices'
 

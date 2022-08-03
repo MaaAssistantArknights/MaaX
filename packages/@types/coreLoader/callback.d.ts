@@ -1,4 +1,4 @@
-interface callbackDetail {
+interface CallbackDetail {
   uuid: string
   what: string
   taskchain: string
@@ -11,5 +11,11 @@ interface callbackDetail {
 }
 
 type taskchainProps = {
-  [key in AsstMsg]: (msg: number, detail: callbackDetail) => object;
+  [key in import('../../common/enum/callback').AsstMsg]: (detail: CallbackDetail) => object;
+}
+
+interface Callback {
+  code: import('../../common/enum/callback').AsstMsg
+  detail: CallbackDetail
+  customArgs: string | int | object
 }

@@ -135,4 +135,7 @@ onMounted(() => {
   background-size: cover;
   opacity: var(--inner-opacity);
 }
+.n-message-wrapper {
+  z-index: 20;
+}
 </style>

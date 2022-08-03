@@ -12,7 +12,7 @@ import {
 // import { useI18n } from 'vue-i18n'
 import IconRefresh from '@/assets/icons/refresh.svg?component'
 import IconSettings from '@/assets/icons/settings.svg?component'
-import DeviceCard from '@/components/DeviceCard.vue'
+import DeviceCard from '@/components/Device/DeviceCard.vue'
 
 import useDeviceStore from '@/store/devices'
 import useSettingStore from '@/store/settings'
@@ -82,7 +82,7 @@ function deviceInfoParser (devices: Device[]): any[] {
         duration: 0,
         closable: true
       },
-      false
+      true
     )
   } else {
     show(
@@ -90,7 +90,7 @@ function deviceInfoParser (devices: Device[]): any[] {
       {
         type: 'info'
       },
-      false
+      true
     )
   }
   return ret
@@ -105,11 +105,6 @@ async function handleRefreshDevices () {
   show('正在更新设备列表...', { type: 'loading', duration: 0 })
 
   window.ipcRenderer.invoke('main.DeviceDetector:getEmulators').then((ret) => {
-    show(
-      `设备搜索完成, 共${ret.length}台设备`,
-      { type: 'success', duration: 5000 },
-      true
-    )
     const devices = deviceInfoParser(ret)
     deviceStore.mergeSearchResult(devices)
   })

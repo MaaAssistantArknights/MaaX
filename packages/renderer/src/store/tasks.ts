@@ -44,6 +44,18 @@ const defaultTaskConf = {
       delay: 300 // 执行后续任务的等待延迟
     }
   },
+  game: {
+    id: 'game',
+    ui_id: 0,
+    core_id: -1,
+    title: '启动明日方舟',
+    status: 'idle',
+    enable: false,
+    configurations: {
+      commandLine: '',
+      delay: 300 // 执行后续任务的等待延迟
+    }
+  },
   startup: {
     id: 'startup',
     ui_id: 0,

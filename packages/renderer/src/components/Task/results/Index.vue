@@ -38,7 +38,7 @@ export default defineComponent({
     const { result } = this
     if (component) {
       // @ts-ignore
-      return h(component, { Progress })
+      return h(component, { result })
     } else {
       return h(NoProgress)
     }
@@ -47,7 +47,7 @@ export default defineComponent({
 </script>
 
 <style lang="less">
-.Progress-form {
+.progress-form {
   padding: 8px 2px;
 }
 </style>
