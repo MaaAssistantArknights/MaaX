@@ -60,7 +60,7 @@ enum CallbackMsg {
   SubTaskError = 'core:SubTaskError', // 原子任务执行/识别错误
   SubTaskStart = 'core:SubTaskStart', // 原子任务开始
   SubTaskCompleted = 'core:SubTaskCompleted', // 原子任务完成
-  SubTaskExtraInfo = '20003' // 原子任务额外信息
+  SubTaskExtraInfo = '20003', // 原子任务额外信息
   /* Task Info */
 }
 
@@ -86,7 +86,7 @@ enum StartUp {
   TodaysSupplies = 'StartUp:Start:TodaysSupplies',
   ReturnToTerminal = 'StartUp:Start:ReturnToTerminal',
   OfflineConfirm = 'StartUp:Start:OfflineConfirm',
-  ExtraExceededLimit = 'StartUp:Extra:ExceededLimit'
+  ExtraExceededLimit = 'StartUp:Extra:ExceededLimit',
 }
 
 enum Fight {
@@ -153,14 +153,27 @@ enum Friend {
 //   Emulator = 'Shutdown:Emulator',
 // }
 
-type CallbackCode = CallbackMsg | StartUp | Connection | Fight | Recruit | Infrast | Penguin | Friend
+type CallbackCode =
+  | CallbackMsg
+  | StartUp
+  | Connection
+  | Fight
+  | Recruit
+  | Infrast
+  | Penguin
+  | Friend
 
 interface callbackProps {
   [x: string]: (data: object) => void
 }
 
 function shutdown (option: string, pid: string): void {
-  (async () => { await window.ipcRenderer.invoke('main.CoreLoader:stop', { option: option, pid: pid }) })()
+  (async () => {
+    await window.ipcRenderer.invoke('main.CoreLoader:stop', {
+      option: option,
+      pid: pid
+    })
+  })()
 }
 
 const messages: Record<string, MessageReactive> = {}
@@ -361,11 +374,11 @@ export default function useCallbackEvents (): void {
   // }
 
   const callbackFn = {
-    [AsstMsg.InternalError]: (callback: Callback) => { },
-    [AsstMsg.InitFailed]: (callback: Callback) => { },
-    [AsstMsg.ConnectionInfo]: (callback: Callback) => {
-      const uuid = callback.detail.uuid.trim()
-      switch (callback.detail.what) {
+    [AsstMsg.InternalError]: (data: Callback.InternalError) => {},
+    [AsstMsg.InitFailed]: (data: Callback.InitFailed) => {},
+    [AsstMsg.ConnectionInfo]: (data: Callback.ConnectionInfo) => {
+      const uuid = data.uuid.trim()
+      switch (data.what) {
         case 'UuidGot': {
           break
         }
@@ -374,7 +387,11 @@ export default function useCallbackEvents (): void {
         }
         case 'Connected': {
           const device = deviceStore.getDevice(uuid)
-          show(`${device?.displayName ?? ''}连接成功`, { type: 'success' }, true)
+          show(
+            `${device?.displayName ?? ''}连接成功`,
+            { type: 'success' },
+            true
+          )
           deviceStore.updateDeviceStatus(uuid, 'connected')
           break
         }
@@ -391,7 +408,9 @@ export default function useCallbackEvents (): void {
             messages[uuid].destroy()
           }
           const device = deviceStore.getDevice(uuid)
-          messages[uuid] = show(`${device?.displayName ?? ''}尝试重连中...`, { type: 'loading' })
+          messages[uuid] = show(`${device?.displayName ?? ''}尝试重连中...`, {
+            type: 'loading'
+          })
           deviceStore.updateDeviceStatus(uuid, 'connecting')
           break
         }
@@ -410,23 +429,28 @@ export default function useCallbackEvents (): void {
             messages[uuid]?.destroy()
             show(`${device?.displayName ?? ''}重连失败`, { type: 'error' })
           } else {
-            show(`${device?.displayName ?? ''}已断开连接`, { type: 'info' }, true)
+            show(
+              `${device?.displayName ?? ''}已断开连接`,
+              { type: 'info' },
+              true
+            )
           }
           deviceStore.updateDeviceStatus(uuid, 'disconnected')
           break
         }
-        default: break
+        default:
+          break
       }
     },
-    [AsstMsg.AllTasksCompleted]: (callback: Callback) => { },
-    [AsstMsg.TaskChainError]: (callback: Callback) => { },
-    [AsstMsg.TaskChainStart]: (callback: Callback) => { },
-    [AsstMsg.TaskChainCompleted]: (callback: Callback) => { },
-    [AsstMsg.TaskChainExtraInfo]: (callback: Callback) => { },
-    [AsstMsg.SubTaskError]: (callback: Callback) => { },
-    [AsstMsg.SubTaskStart]: (callback: Callback) => { },
-    [AsstMsg.SubTaskCompleted]: (callback: Callback) => { },
-    [AsstMsg.SubTaskExtraInfo]: (callback: Callback) => { }
+    [AsstMsg.AllTasksCompleted]: (data: Callback.AllTasksCompleted) => {},
+    [AsstMsg.TaskChainError]: (data: Callback.TaskChainError) => {},
+    [AsstMsg.TaskChainStart]: (data: Callback.TaskChainStart) => {},
+    [AsstMsg.TaskChainCompleted]: (data: Callback.TaskChainCompleted) => {},
+    [AsstMsg.TaskChainExtraInfo]: (data: Callback.TaskChainExtraInfo) => {},
+    [AsstMsg.SubTaskError]: (data: Callback.SubTaskError) => {},
+    [AsstMsg.SubTaskStart]: (data: Callback.SubTaskStart) => {},
+    [AsstMsg.SubTaskCompleted]: (data: Callback.SubTaskCompleted) => {},
+    [AsstMsg.SubTaskExtraInfo]: (data: Callback.SubTaskExtraInfo) => {}
   }
 
   window.ipcRenderer.on(
@@ -436,10 +460,11 @@ export default function useCallbackEvents (): void {
       if (callbackFn[code]) {
         logger.debug(`[callback] handle ${AsstMsg[code]}:`)
         logger.debug(callback)
-        callbackFn[code](callback)
+        callbackFn[code](callback.data)
       } else {
         logger.debug(`[callback] unhandle ${AsstMsg[code]}`)
         logger.debug(callback)
       }
-    })
+    }
+  )
 }

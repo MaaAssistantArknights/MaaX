@@ -15,3 +15,14 @@ export enum AsstMsg {
   SubTaskCompleted, // 原子任务完成
   SubTaskExtraInfo, // 原子任务额外信息
 }
+
+export enum TaskChain {
+  StartUp = 'startup',
+  Fight = 'fight',
+  Mall = 'mall',
+  Recruit = 'recruit',
+  RecruitCalc = 'recruit_calc',
+  Infrast = 'infrast',
+  Roguelike = 'rogue',
+  Debug = 'debug'
+}
