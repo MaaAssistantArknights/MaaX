@@ -3,7 +3,7 @@ import useTaskStore from '@/store/tasks'
 import useTaskIdStore from '@/store/taskId'
 
 import { show } from '@/utils/message'
-import _ from 'lodash'
+// import _ from 'lodash'
 import { AsstMsg } from '@common/enum/callback'
 import type { MessageReactive } from 'naive-ui'
 
@@ -373,6 +373,13 @@ export default function useCallbackEvents (): void {
   //   }
   // }
 
+  const subTaskFn = {
+    [AsstMsg.SubTaskError]: (data: Callback.SubTaskError) => {},
+    [AsstMsg.SubTaskStart]: (data: Callback.SubTaskStart) => {},
+    [AsstMsg.SubTaskCompleted]: (data: Callback.SubTaskCompleted) => {},
+    [AsstMsg.SubTaskExtraInfo]: (data: Callback.SubTaskExtraInfo) => {}
+  }
+
   const callbackFn = {
     [AsstMsg.InternalError]: (data: Callback.InternalError) => {},
     [AsstMsg.InitFailed]: (data: Callback.InitFailed) => {},
@@ -442,7 +449,9 @@ export default function useCallbackEvents (): void {
           break
       }
     },
-    [AsstMsg.AllTasksCompleted]: (data: Callback.AllTasksCompleted) => {},
+    [AsstMsg.AllTasksCompleted]: (data: Callback.AllTasksCompleted) => {
+      show('所有任务完成了OvO', { type: 'info' })
+    },
     [AsstMsg.TaskChainError]: (data: Callback.TaskChainError) => {},
     [AsstMsg.TaskChainStart]: (data: Callback.TaskChainStart) => {},
     [AsstMsg.TaskChainCompleted]: (data: Callback.TaskChainCompleted) => {},

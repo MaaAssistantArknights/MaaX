@@ -6,7 +6,7 @@ type TaskStatus =
   | 'warning'
   | 'exception'
   | 'stopped'
-type TaskId =
+type TaskName =
   | 'emulator'
   | 'startup'
   | 'fight'
@@ -17,19 +17,20 @@ type TaskId =
   | 'award'
   | 'rogue'
   | 'shutdown'
+
+interface SubTaskResult {
+  status: TaskStatus
+  extra: unknown
+}
 interface Task {
   /**
    * @props 任务对应卡片名
    */
-  id: TaskId
+  name: TaskName
   /**
-   * @props ui层唯一id
+   * @props core传回来的taskid
    */
-  ui_id: number
-  /**
-   * @props core层唯一id
-   */
-  core_id: number
+  taskid: number
   /**
    * @props 任务title（可能为i18n字符串，i18n example: `t("task.mall")`）
    */
@@ -77,4 +78,5 @@ interface Task {
    * ]
    */
   configurations: Record<string, unknown>
+  results: Record<string, SubTaskResult>
 }

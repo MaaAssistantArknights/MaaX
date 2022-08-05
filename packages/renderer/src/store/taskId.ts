@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 const logger = console
 
 export interface TaskIdState {
-  deviceTaskId: Record<string, TaskId[]>
+  deviceTaskId: Record<string, TaskName[]>
 }
 
 export interface TaskIdAction {
@@ -17,7 +17,7 @@ export interface TaskIdAction {
   removeAllTaskId: (uuid: string) => void
 }
 
-export const defaultTaskId: TaskId[] = [
+export const defaultTaskId: TaskName[] = [
   { name: 'startup', id: [] },
   { name: 'fight', id: [] },
   { name: 'recruit', id: [] },

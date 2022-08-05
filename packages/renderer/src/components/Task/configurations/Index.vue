@@ -24,7 +24,7 @@ const components: Record<string, Component> = {
 export default defineComponent({
   name: 'ConfigurationIndex',
   props: {
-    taskId: {
+    name: {
       type: String,
       required: true
     },
@@ -34,7 +34,7 @@ export default defineComponent({
     }
   },
   render () {
-    const component = components[this.taskId]
+    const component = components[this.name]
     const { configurations } = this
     if (component) {
       // @ts-ignore

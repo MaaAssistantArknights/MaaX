@@ -24,7 +24,7 @@ const deviceStore = useDeviceStore()
 const taskIdStore = useTaskIdStore()
 
 const isGrid = ref<boolean>(false)
-const cardsRef: Ref<HTMLElement | null> = ref(null)
+const sortableRef: Ref<HTMLElement | null> = ref(null)
 
 const uuid = computed(() => router.currentRoute.value.params.uuid as string)
 const tasks = computed(() => {
@@ -45,30 +45,36 @@ watch(router.currentRoute, () => {
 let sortable: Sortable | undefined
 
 function load () {
-  if (cardsRef.value && !sortable) {
-    sortable = new Sortable(cardsRef.value, {
+  if (sortableRef.value && !sortable) {
+    sortable = new Sortable(sortableRef.value, {
       swapThreshold: 1,
       animation: 150,
       filter: '.undraggable',
-      store: {
-        get () {
-          return tasks.value?.map((task) => task.ui_id.toString()) || []
-        },
-        set (sortable) {
-          const sort = sortable.toArray()
-          if (tasks.value && uuid.value) {
-            taskStore.updateTask(
-              uuid.value,
-              _.sortBy(tasks.value, (task) =>
-                sort.findIndex((v) => _.toNumber(v) === task.ui_id)
-              )
-            )
-          }
-        }
-      },
+      // store: {
+      //   get () {
+      //     return tasks.value?.map((task) => task.ui_id.toString()) || []
+      //   },
+      //   set (sortable) {
+      //     const sort = sortable.toArray()
+      //     if (tasks.value && uuid.value) {
+      //       taskStore.updateTask(
+      //         uuid.value,
+      //         _.sortBy(tasks.value, (task) =>
+      //           sort.findIndex((v) => _.toNumber(v) === task.ui_id)
+      //         )
+      //       )
+      //     }
+      //   }
+      // },
       onMove: (event) => {
         if (event.related.classList.contains('undraggable')) {
           return false
+        }
+      },
+      onSort: (event) => {
+        const { oldIndex, newIndex } = event
+        if (newIndex !== undefined && oldIndex !== undefined) {
+          [tasks.value[oldIndex], tasks.value[newIndex]] = [tasks.value[newIndex], tasks.value[oldIndex]]
         }
       }
     })
@@ -152,16 +158,16 @@ async function handleSubStart () {
   }
 
   for await (const singleTask of tasks.value) {
-    if (uiTasks.includes(singleTask.id)) continue
+    if (uiTasks.includes(singleTask.name)) continue
 
     if (singleTask.enable) {
       logger.debug('enter task:')
-      console.log(singleTask.id)
-      taskStore.updateTaskStatus(uuid.value, singleTask.id, 'waiting', 0)
-      const taskIter = handleCoreTask[singleTask.id]({
+      console.log(singleTask.name)
+      taskStore.updateTaskStatus(uuid.value, singleTask.name, 'waiting', 0)
+      const taskIter = handleCoreTask[singleTask.name]({
         ...singleTask.configurations,
         uuid: uuid.value,
-        taskId: singleTask.id
+        taskId: singleTask.name
       })
 
       let task = taskIter.next()
@@ -170,11 +176,11 @@ async function handleSubStart () {
           'main.CoreLoader:appendTask',
           {
             uuid: uuid.value,
-            type: taskTranslate[singleTask.id],
+            type: taskTranslate[singleTask.name],
             params: task.value
           }
         )
-        taskIdStore.updateTaskId(uuid.value, singleTask.id, taskId) // 记录任务id
+        taskIdStore.updateTaskId(uuid.value, singleTask.name, taskId) // 记录任务id
         task = taskIter.next()
       }
     }
@@ -233,6 +239,17 @@ async function handleStart () {
     }
   }
 }
+
+function handleTaskCopy (index: number) {
+  taskStore.copyTask(uuid.value, index)
+}
+
+function handleTaskDelete (index: number) {
+  const status = taskStore.deleteTask(uuid.value, index)
+  if (!status) {
+    show('不可以删除只有一份的任务哦', { type: 'error' })
+  }
+}
 </script>
 
 <template>
@@ -268,20 +285,21 @@ async function handleStart () {
       </NSpace>
     </NSpace>
 
-    <div class="cards" :class="isGrid ? 'cards-grid' : ''" ref="cardsRef">
+    <div class="cards" :class="isGrid ? 'cards-grid' : ''" ref="sortableRef">
       <TaskCard
         :is-collapsed="!isGrid"
-        v-for="task in tasks"
-        :key="task.id"
+        v-for="(task, index) in tasks"
+        :key="index"
         :task-info="task"
         @update:enable="(enabled) => (task.enable = enabled)"
-        :data-id="task.ui_id"
         v-model:showResult="task.showResult"
+        @copy="() => handleTaskCopy(index)"
+        @delete="() => handleTaskDelete(index)"
       >
         <!-- TODO: 添加一个切换配置与进度的按钮 -->
-        <Result :taskId="task.id" :result="{}" v-show="task.showResult" />
+        <Result :name="task.name" :result="{}" v-show="task.showResult" />
         <Configuration
-          :taskId="task.id"
+          :name="task.name"
           :configurations="task.configurations"
           v-show="!task.showResult"
         />

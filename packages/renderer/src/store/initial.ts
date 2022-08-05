@@ -3,7 +3,7 @@ import { Store } from 'pinia'
 
 import useDeviceStore, { DeviceState } from './devices'
 import useSettingStore, { SettingState } from './settings'
-import useTaskStore, { defaultSelfIncreaseId, TaskState } from './tasks'
+import useTaskStore, { TaskState } from './tasks'
 import useThemeStore, { ThemeState } from './theme'
 const logger = console
 
@@ -31,11 +31,9 @@ export async function initialStore (): Promise<void> {
       return storage
     },
     tasks: (storage: TaskState) => {
-      storage.selfIncreaseId = defaultSelfIncreaseId
       for (const tasks of Object.values(storage.deviceTasks)) {
         for (const task of tasks) {
-          task.ui_id = storage.selfIncreaseId
-          task.core_id = -1
+          task.taskid = -1
           storage.selfIncreaseId++
           task.progress = 0
           task.startTime = undefined

@@ -18,9 +18,8 @@ import useThemeStore from '@/store/theme'
 import Timer from './Timer.vue'
 import IconAdd from '@/assets/icons/add.svg?component'
 import IconRemove from '@/assets/icons/remove.svg?component'
-import useTaskStore from '@/store/tasks'
+// import useTaskStore from '@/store/tasks'
 import useDeviceStore from '@/store/devices'
-import { show } from '@/utils/message'
 const themeVars = useThemeVars()
 const themeStore = useThemeStore()
 const props = defineProps<{
@@ -29,11 +28,11 @@ const props = defineProps<{
   taskInfo: Task;
 }>()
 
-const logger = console
-const taskStore = useTaskStore()
+// const logger = console
+// const taskStore = useTaskStore()
 const deviceStore = useDeviceStore()
 
-const emit = defineEmits(['update:enable', 'update:showResult'])
+const emit = defineEmits(['update:enable', 'update:showResult', 'copy', 'delete'])
 
 const dropdownPosition = ref({
   x: 0,
@@ -90,17 +89,6 @@ const resetTaskProgress = (taskInfo: Task) => {
 
 const uuid = router.currentRoute.value.params.uuid as string
 
-const copyTask = (taskInfo: Task) => {
-  taskStore.copyTask(uuid, taskInfo.ui_id)
-}
-
-const deleteTask = (taskInfo: Task) => {
-  const status = taskStore.deleteTask(uuid, taskInfo.ui_id, taskInfo.id)
-  if (!status) {
-    show('不可以删除只有一份的任务哦', { type: 'error' })
-  }
-}
-
 const deviceStatus = deviceStore.getDevice(uuid)?.status ?? 'disconnected'
 
 </script>
@@ -152,7 +140,7 @@ const deviceStatus = deviceStore.getDevice(uuid)?.status ?? 'disconnected'
             <NSpace v-else justify="end">
               <NTooltip>
                 <template #trigger>
-                  <NButton text style="font-size: 25px" @click="() => { copyTask(props.taskInfo) }">
+                  <NButton text style="font-size: 25px" @click="() => $emit('copy')">
                     <NIcon>
                       <IconAdd />
                     </NIcon>
@@ -163,7 +151,7 @@ const deviceStatus = deviceStore.getDevice(uuid)?.status ?? 'disconnected'
               <NTooltip>
                 <template #trigger>
                   <NButton text style="font-size: 25px"
-                    @click="() => { deleteTask(props.taskInfo) }">
+                    @click="() => $emit('delete')">
                     <NIcon>
                       <IconRemove />
                     </NIcon>

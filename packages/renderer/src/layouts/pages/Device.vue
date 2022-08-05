@@ -24,7 +24,7 @@ function connectionStringChecker (cs: string) {
   return ip.split('.').every((v, i, a) => !isNaN(Number(v)) && a.length === 4)
 }
 
-function handleCustomConnect () {
+async function handleCustomConnect () {
   console.log(connectionString.value)
   if (connectionStringChecker(connectionString.value)) {
     show('正在连接', { type: 'loading', duration: 0 })
@@ -32,7 +32,7 @@ function handleCustomConnect () {
       show('设备已经存在了哦', { type: 'warning', duration: 5000 })
       return
     }
-    const uuid = window.ipcRenderer.invoke('main.CoreLoader:getDeviceUuid', {
+    const uuid = await window.ipcRenderer.invoke('main.CoreLoader:getDeviceUuid', {
       address: connectionString.value,
       adb_path: 'adb'
     })
@@ -92,7 +92,7 @@ function install () {
           </NButton>
         </NFormItem>
       </NForm>
-      <NButton @click="install">安装</NButton>
+      <!-- <NButton @click="install">安装</NButton> -->
     </div>
   </div>
 </template>
