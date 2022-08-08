@@ -62,5 +62,18 @@
     "warning": "警告",
     "exception": "任务出错",
     "stopped": "已取消" 
+  },
+  "download": {
+    "MaaCore": "Maa 核心组件",
+    "adb": "Android 设备连接组件",
+    "MaaUI": "Maa 界面组件",
+    "downloading": "下载中 {0}%",
+    "waiting": "等待中",
+    "downloaded": "已下载",
+    "upgrading": "更新中",
+    "startInstall": "开始安装",
+    "needInstallAll": "必须安装完所需组件才能继续",
+    "btnNotInstall": "开始安装",
+    "btnInstalling": "正在安装"
   }
 }
