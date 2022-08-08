@@ -53,7 +53,11 @@ class CoreLoader {
       'ppocr'
       // 'penguin-stats-recognize'
     ],
-    linux: [],
+    linux: [
+      'libiomp5.so',
+      'libmklml_intel.so',
+      'libmkldnn.so',
+    ],
     darwin: ['libpaddle_inference.dylib']
   }
 
@@ -159,8 +163,11 @@ class CoreLoader {
       }
       this.LoadResource()
       CoreLoader.loadStatus = true
+      const version = this.GetVersion()
+      logger.info(`core loaded: version ${version}`)
     } catch (error) {
-      logger.error(error)
+      // console.error()
+      logger.error((error as Error).message)
     }
   }
 
