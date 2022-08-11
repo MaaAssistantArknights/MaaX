@@ -23,3 +23,12 @@ export const i18n = createI18n({
   locale: 'EnUS',
   messages: appLocale
 })
+
+export const showBoolean = (value: boolean, option: BooleanDisplayOption = 'Yes/No'): string => {
+  switch (option) {
+    case 'Right/Wrong':
+      return value ? i18n.global.t('Common.Boolean.Right') : i18n.global.t('Common.Boolean.Wrong')
+    case 'Yes/No':
+      return value ? i18n.global.t('Common.Boolean.Yes') : i18n.global.t('Common.Boolean.No')
+  }
+}

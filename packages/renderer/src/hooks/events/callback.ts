@@ -1,6 +1,6 @@
 import useDeviceStore from '@/store/devices'
 import useTaskStore from '@/store/tasks'
-import useTaskIdStore from '@/store/taskId'
+// import useTaskIdStore from '@/store/taskId'
 
 import { show } from '@/utils/message'
 // import _ from 'lodash'
@@ -181,7 +181,7 @@ const messages: Record<string, MessageReactive> = {}
 export default function useCallbackEvents (): void {
   const deviceStore = useDeviceStore()
   const taskStore = useTaskStore()
-  const taskIdStore = useTaskIdStore()
+  // const taskIdStore = useTaskIdStore()
 
   // const callbackFn: callbackProps = {
   //   [CallbackMsg.InternalError]: (data) => {

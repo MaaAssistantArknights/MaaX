@@ -1,5 +1,5 @@
 {
-  "common": {
+  "Common": {
     "lastUpdate": "最后更新",
     "success": "成功",
     "failure": "失败",
@@ -29,7 +29,7 @@
       "blackList": "黑名单",
       "others": "随缘购买"
     },
-    "common": {
+    "Common": {
       "fixTask": "任务 {0} 字段发生更新, 已将配置重置为默认值, 请前往详情页面查看捏"
     }
   },

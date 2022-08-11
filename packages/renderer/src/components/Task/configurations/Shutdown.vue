@@ -11,7 +11,7 @@ import {
   secondsToFormattedDuration,
   formattedDurationToSeconds
 } from '@/utils/time_picker'
-import useTaskIdStore from '@/store/taskId'
+// import useTaskIdStore from '@/store/taskId'
 import router from '@/router'
 import { show } from '@/utils/message'
 const logger = console
@@ -31,7 +31,7 @@ interface ShutdownConfiguration {
 }
 
 const routeUuid = router.currentRoute.value.params.uuid as string
-const taskIdStore = useTaskIdStore()
+// const taskIdStore = useTaskIdStore()
 
 const shutdownOptions = [
   {

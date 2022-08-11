@@ -170,7 +170,7 @@ setInterval(() => {
     </div> -->
     <div :style="{ textAlign: 'center' }">
       <NText depth="2">
-        {{ $t("common.lastUpdate") }}:&nbsp;
+        {{ $t("Common.lastUpdate") }}:&nbsp;
         <span v-if="deviceStore.lastUpdate === null">从不</span>
         <NTime
           v-else

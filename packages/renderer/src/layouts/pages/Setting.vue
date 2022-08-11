@@ -20,6 +20,7 @@ import IconWindowUi from '@/assets/icons/window-ui.svg?component'
 
 import useSettingStore, { Locale } from '@/store/settings'
 import useThemeStore from '@/store/theme'
+import Developer from '@/components/Setting/Developer.vue'
 
 const settingStore = useSettingStore()
 const themeStore = useThemeStore()
@@ -27,14 +28,14 @@ const themeStore = useThemeStore()
 const versionCore = computed(() => settingStore.version.core)
 const versionUi = computed(() => settingStore.version.ui)
 
-function needUpdate (version: { current?: string; latest?: string }) {
+function needUpdate(version: { current?: string; latest?: string }) {
   if (!version.latest || !version.current) {
     return false
   }
   return version.current !== version.latest
 }
 
-function versionString (version: { current?: string; latest?: string }) {
+function versionString(version: { current?: string; latest?: string }) {
   let str = version.current || '未知'
   if (needUpdate(version)) {
     str += ` -> ${version.latest}`
@@ -44,11 +45,11 @@ function versionString (version: { current?: string; latest?: string }) {
 
 const bgPreviewWidth = ref(0)
 
-function handleWindowResize () {
+function handleWindowResize() {
   bgPreviewWidth.value = window.innerWidth - 352
 }
 
-async function openBgFileSelector (): Promise<URL | undefined> {
+async function openBgFileSelector(): Promise<URL | undefined> {
   const { filePaths } = await window.ipcRenderer.invoke(
     'main.WindowManager:openDialog',
     '选择背景图片',
@@ -64,21 +65,21 @@ async function openBgFileSelector (): Promise<URL | undefined> {
   return new URL(filePaths[0])
 }
 
-async function handleLightBgSelect () {
+async function handleLightBgSelect() {
   const url = await openBgFileSelector()
   themeStore.updateBgLight({ url: url?.href, opacity: themeStore.bgLight.opacity })
 }
 
-async function handleDarkBgSelect () {
+async function handleDarkBgSelect() {
   const url = await openBgFileSelector()
   themeStore.updateBgDark({ url: url?.href, opacity: themeStore.bgDark.opacity })
 }
 
-function handleUpdateBgLightOpacity (value: number | null) {
+function handleUpdateBgLightOpacity(value: number | null) {
   themeStore.updateBgLight({ url: themeStore.bgLight.url, opacity: value ?? 1 })
 }
 
-function handleUpdateBgDarkOpacity (value: number | null) {
+function handleUpdateBgDarkOpacity(value: number | null) {
   themeStore.updateBgDark({ url: themeStore.bgDark.url, opacity: value ?? 1 })
 }
 
@@ -93,7 +94,7 @@ const localeOptions = [
   }
 ]
 
-function handleChangeLocale (locale: Locale) {
+function handleChangeLocale(locale: Locale) {
   settingStore.changeLocale(locale)
 }
 
@@ -109,8 +110,8 @@ onMounted(() => {
       <h2 class="title">通用</h2>
       <NSpace justify="center" align="center">
         <div>语言</div>
-        <NSelect :value="settingStore.locale" @update:value="handleChangeLocale"
-          :options="localeOptions" :style="{ width: '200px' }" />
+        <NSelect :value="settingStore.locale" @update:value="handleChangeLocale" :options="localeOptions"
+          :style="{ width: '200px' }" />
       </NSpace>
     </div>
     <div id="penguin-report">
@@ -129,8 +130,7 @@ onMounted(() => {
       <NTooltip :disabled="!needUpdate(versionCore)">
         <template #trigger>
           <div>
-            <NButton quaternary :focusable="false"
-              :type="needUpdate(versionCore) ? 'info' : 'default'">
+            <NButton quaternary :focusable="false" :type="needUpdate(versionCore) ? 'info' : 'default'">
               <NSpace justify="center" align="center">
                 <NIcon size="18px">
                   <IconBinary />
@@ -145,8 +145,7 @@ onMounted(() => {
       <NTooltip :disabled="!needUpdate(versionUi)">
         <template #trigger>
           <div>
-            <NButton quaternary :focusable="false"
-              :type="needUpdate(versionUi) ? 'info' : 'default'">
+            <NButton quaternary :focusable="false" :type="needUpdate(versionUi) ? 'info' : 'default'">
               <NSpace justify="center" align="center">
                 <NIcon size="18px">
                   <IconWindowUi />
@@ -166,16 +165,13 @@ onMounted(() => {
         <NFormItem label="主题色不透明度" label-placement="left">
           <NSlider :value="themeStore.themeColorOpacity" :min="0" :max="1" :step="0.01"
             @update:value="(value) => themeStore.updateColorOpacity(value)"
-            :format-tooltip="(value) => `${Math.floor(value * 100)}%`"
-            :style="{ width: '300px' }" />
+            :format-tooltip="(value) => `${Math.floor(value * 100)}%`" :style="{ width: '300px' }" />
         </NFormItem>
         <NFormItem label="开启亚克力效果（重启应用生效）" label-placement="left" label-width="210">
-          <NSwitch :value="themeStore.acrylic"
-            @update:value="(value) => themeStore.updateAcrylic(value)" />
+          <NSwitch :value="themeStore.acrylic" @update:value="(value) => themeStore.updateAcrylic(value)" />
         </NFormItem>
         <NFormItem label="背景随主题变换" label-placement="left">
-          <NSwitch :value="themeStore.bgFollowTheme"
-            @update:value="(value) => themeStore.updateBgFollowTheme(value)" />
+          <NSwitch :value="themeStore.bgFollowTheme" @update:value="(value) => themeStore.updateBgFollowTheme(value)" />
         </NFormItem>
         <NSpace vertical align="center">
           <NFormItem label="背景图片" label-placement="top" :label-style="{ justifyContent: 'center' }"
@@ -185,8 +181,7 @@ onMounted(() => {
           </NFormItem>
           <NFormItem label="不透明度" label-placement="left">
             <NInputNumber :value="themeStore.bgLight.opacity" :min="0" :max="1" :step="0.01"
-              @update:value="handleUpdateBgLightOpacity"
-              :format="(value) => `${Math.floor((value ?? 0) * 100)}%`"
+              @update:value="handleUpdateBgLightOpacity" :format="(value) => `${Math.floor((value ?? 0) * 100)}%`"
               :parse="(input) => Number(input.replace('%', '')) / 100" />
           </NFormItem>
           <NFormItem v-show="themeStore.bgFollowTheme" label="深色背景图片" label-placement="top"
@@ -196,16 +191,15 @@ onMounted(() => {
           </NFormItem>
           <NFormItem v-show="themeStore.bgFollowTheme" label="不透明度" label-placement="left">
             <NInputNumber :value="themeStore.bgDark.opacity" :min="0" :max="1" :step="0.01"
-              @update:value="handleUpdateBgDarkOpacity"
-              :format="(value) => `${Math.floor((value ?? 0) * 100)}%`"
+              @update:value="handleUpdateBgDarkOpacity" :format="(value) => `${Math.floor((value ?? 0) * 100)}%`"
               :parse="(input) => Number(input.replace('%', '')) / 100" />
           </NFormItem>
         </NSpace>
       </NSpace>
     </div>
-
     <div id="develop">
       <h2 class="title">开发者</h2>
+      <Developer />
     </div>
   </NForm>
 </template>
@@ -215,11 +209,15 @@ onMounted(() => {
   text-align: center;
 }
 
-.title {
-  text-align: left;
-}
-
 #appearance {
   text-align: center;
+}
+</style>
+
+<style lang="less">
+.setting-form {
+  .title, .subtitle {
+    text-align: left;
+  }
 }
 </style>

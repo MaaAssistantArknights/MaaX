@@ -10,27 +10,27 @@ import IconScaleExtend from '@/assets/icons/scale-extend.svg?component'
 const isMaximized = ref(false)
 
 onMounted(() => {
-  window.ipcRenderer.invoke('window:is-maximized').then(result => {
+  window.ipcRenderer.invoke('main.WindowManager:isMaximized').then(result => {
     isMaximized.value = result
   })
 })
 
 const onClose = () => {
-  window.ipcRenderer.send('window:close')
+  window.ipcRenderer.send('main.WindowManager:closeWindow')
 }
 
 const onToggleMaximized = async () => {
-  const result = await window.ipcRenderer.invoke('window:toggle-maximized')
+  const result = await window.ipcRenderer.invoke('main.WindowManager:toggleMaximized')
   if (result instanceof Error) {
     console.log()
   }
 }
 
 const onMinimize = () => {
-  window.ipcRenderer.invoke('window:minimize')
+  window.ipcRenderer.invoke('main.WindowManager:minimize')
 }
 
-window.ipcRenderer.on('window:update-maximized', (_, maximized) => {
+window.ipcRenderer.on('renderer.WindowManager:updateMaximized', (_, maximized) => {
   isMaximized.value = maximized
 })
 </script>

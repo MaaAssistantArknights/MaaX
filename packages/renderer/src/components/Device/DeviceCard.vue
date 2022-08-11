@@ -14,7 +14,7 @@ import {
 import useDeviceStore from '@/store/devices'
 import router from '@/router'
 import useTaskStore from '@/store/tasks'
-import useTaskIdStore from '@/store/taskId'
+// import useTaskIdStore from '@/store/taskId'
 import { show } from '@/utils/message'
 
 const props = defineProps<{
@@ -24,7 +24,7 @@ const props = defineProps<{
 const themeVars = useThemeVars()
 const deviceStore = useDeviceStore()
 const taskStore = useTaskStore()
-const taskIdStore = useTaskIdStore()
+// const taskIdStore = useTaskIdStore()
 const device = computed(() =>
   deviceStore.devices.find((device) => device.uuid === props.uuid)
 )
@@ -80,7 +80,7 @@ async function handleDeviceConnect () {
     return
   }
 
-  taskIdStore.newTaskId(device.value?.uuid as string)
+  // taskIdStore.newTaskId(device.value?.uuid as string)
 
   deviceStore.updateDeviceStatus(device.value?.uuid as string, 'connecting')
   show(`${deviceDisplayName.value}连接中...`, {

@@ -9,12 +9,6 @@ import { i18n } from '@/i18n'
 
 import './App.less'
 
-// const i18n = createI18n({
-//   legacy: false, // must set to `false`
-//   locale: 'EnUS',
-//   messages: appLocale
-// })
-
 const pinia = createPinia()
 pinia.use(watcher)
 

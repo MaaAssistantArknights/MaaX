@@ -29,6 +29,8 @@ type IpcMainHandleEvent =
   | 'main.Util:getOsPlatform'
   | 'main.Util:getAppPath'
   | 'main.Util:getUiVersion'
+  | 'main.Util:getSystemInformation'
+  | 'main.Util:getSystemStatus'
   | 'main.StorageManager:get'
   | 'main.StorageManager:set'
   | 'main.StorageManager:has'

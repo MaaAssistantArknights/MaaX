@@ -1,3 +1,5 @@
+import SystemInformation from "systeminformation"
+
 export const getArch = (): Api.Maa.Arch => {
   let arch: Api.Maa.Arch = 'NoArch'
   switch (process.arch) {
@@ -25,4 +27,12 @@ export const getPlatform = (): Api.Maa.Platform => {
       break
   }
   return platform
+}
+
+export const getSystemInformation = async () => {
+  return await SystemInformation.getStaticData()
+}
+
+export const getSystemStatus = async () => {
+  return await SystemInformation.getDynamicData()
 }
