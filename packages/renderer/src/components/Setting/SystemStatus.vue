@@ -12,7 +12,7 @@ let timer: number | null = null
 
 const { t } = useI18n()
 
-async function refreshSystemStatus() {
+async function refreshSystemStatus () {
   ssLoading.value = true
   const data = await getSystemStatus()
   ssRef.value = data
@@ -20,7 +20,7 @@ async function refreshSystemStatus() {
   console.log(data)
 }
 
-function ss(key: string): string | Array<any> {
+function ss (key: string): string | number | Array<any> {
   if (!ssRef.value) {
     return t('Common.N/A')
   }
@@ -31,9 +31,9 @@ function ss(key: string): string | Array<any> {
   return showValue(value)
 }
 
-function showValue(value: any): string {
-  if (typeof value === 'number' && value === 0) {
-    return '0'
+function showValue (value: any): string {
+  if (typeof value === 'number') {
+    if (value === 0) { return '0' }
   }
   if (typeof value === 'boolean') {
     return showBoolean(value)
@@ -47,7 +47,7 @@ function showValue(value: any): string {
   return value
 }
 
-function formatBytes(bytes: number): string {
+function formatBytes (bytes: number): string {
   const units = ['Bytes', 'KiB', 'MiB', 'GiB']
   let index = 0
   while (bytes > 1024 && index < 3) {
@@ -60,7 +60,8 @@ function formatBytes(bytes: number): string {
 onMounted(() => {
   timer = window.setInterval(async () => {
     await refreshSystemStatus()
-  }, 1000)
+  }, 10000)
+  refreshSystemStatus()
 })
 
 onUnmounted(() => {
@@ -73,7 +74,7 @@ onUnmounted(() => {
 <template>
   <h3 class="subtitle">系统状态</h3>
   <NCollapse display-directive="show">
-    <NCollapseItem :title="$t('SystemStatus.Battery.Title')" name="battery">
+    <NCollapseItem :title="$t('SystemStatus.Battery.Title')" name="battery" v-if="ssRef?.battery.hasBattery">
       <NTable striped>
         <tbody>
           <tr>
@@ -82,7 +83,8 @@ onUnmounted(() => {
             </td>
             <td>
               <div>
-                <NEllipsis>{{ `${ss('battery.precent')}% (${ss('battery.timeRemain')} min)` }}</NEllipsis>
+                <NEllipsis>{{ `${ss('battery.precent')}% (${ss('battery.timeRemain')} min)` }}
+                </NEllipsis>
               </div>
               <div>
                 <NEllipsis>
@@ -143,99 +145,40 @@ onUnmounted(() => {
         <tbody>
           <tr>
             <td>
-              <NEllipsis></NEllipsis>
+              <NEllipsis>{{ $t('SystemStatus.Cpu.Usage') }}</NEllipsis>
             </td>
             <td>
-              <NEllipsis></NEllipsis>
+              <NEllipsis>
+                {{
+                    ssRef?.currentLoad.currentLoad ?
+                      Number(ssRef.currentLoad.currentLoad).toFixed(2) :
+                      $t('Common.N/A')
+                }}%
+              </NEllipsis>
             </td>
           </tr>
         </tbody>
       </NTable>
     </NCollapseItem>
-    <NCollapseItem :title="$t('SystemStatus.Load.Title')" name="load">
+    <NCollapseItem :title="$t('SystemStatus.Memory.Title')" name="memory">
       <NTable striped>
         <tbody>
           <tr>
             <td>
-              <NEllipsis></NEllipsis>
+              <NEllipsis>{{ $t('SystemStatus.Memory.Usage') }}</NEllipsis>
             </td>
             <td>
-              <NEllipsis></NEllipsis>
+              <NEllipsis>
+                {{ ssRef?.mem.used ? formatBytes(ssRef.mem.used) : $t('Common.N/A') }}
+                &nbsp;/&nbsp;
+                {{ ssRef?.mem.total ? formatBytes(ssRef.mem.total) : $t('Common.N/A') }}
+              </NEllipsis>
             </td>
           </tr>
         </tbody>
       </NTable>
     </NCollapseItem>
-    <NCollapseItem :title="$t('SystemStatus.Cpu.Title')" name="cpu">
-      <NTable striped>
-        <tbody>
-          <tr>
-            <td>
-              <NEllipsis></NEllipsis>
-            </td>
-            <td>
-              <NEllipsis></NEllipsis>
-            </td>
-          </tr>
-        </tbody>
-      </NTable>
-    </NCollapseItem>
-    <NCollapseItem :title="$t('SystemStatus.Cpu.Title')" name="cpu">
-      <NTable striped>
-        <tbody>
-          <tr>
-            <td>
-              <NEllipsis></NEllipsis>
-            </td>
-            <td>
-              <NEllipsis></NEllipsis>
-            </td>
-          </tr>
-        </tbody>
-      </NTable>
-    </NCollapseItem>
-    <NCollapseItem :title="$t('SystemStatus.Cpu.Title')" name="cpu">
-      <NTable striped>
-        <tbody>
-          <tr>
-            <td>
-              <NEllipsis></NEllipsis>
-            </td>
-            <td>
-              <NEllipsis></NEllipsis>
-            </td>
-          </tr>
-        </tbody>
-      </NTable>
-    </NCollapseItem>
-    <NCollapseItem :title="$t('SystemStatus.Cpu.Title')" name="cpu">
-      <NTable striped>
-        <tbody>
-          <tr>
-            <td>
-              <NEllipsis></NEllipsis>
-            </td>
-            <td>
-              <NEllipsis></NEllipsis>
-            </td>
-          </tr>
-        </tbody>
-      </NTable>
-    </NCollapseItem>
-    <NCollapseItem :title="$t('SystemStatus.Cpu.Title')" name="cpu">
-      <NTable striped>
-        <tbody>
-          <tr>
-            <td>
-              <NEllipsis></NEllipsis>
-            </td>
-            <td>
-              <NEllipsis></NEllipsis>
-            </td>
-          </tr>
-        </tbody>
-      </NTable>
-    </NCollapseItem>
+
   </NCollapse>
 </template>
 
