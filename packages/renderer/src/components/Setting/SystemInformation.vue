@@ -288,7 +288,7 @@ onMounted(() => {
         <tbody>
           <tr>
             <td>
-              <NEllipsis>{{ $t('SystemInformation.Os.Kernal') }}</NEllipsis>
+              <NEllipsis>{{ $t('SystemInformation.Os.Kernel') }}</NEllipsis>
             </td>
             <td>
               <NEllipsis>{{ si('os.kernel') }}</NEllipsis>
@@ -581,14 +581,6 @@ onMounted(() => {
                 </td>
                 <td>
                   <NEllipsis>{{ showValue(adapter.mac) }}</NEllipsis>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <NEllipsis>{{ $t('SystemInformation.Net.Virtual') }}</NEllipsis>
-                </td>
-                <td>
-                  <NEllipsis>{{ showValue(adapter.virtual) }}</NEllipsis>
                 </td>
               </tr>
               <tr>

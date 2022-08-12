@@ -4,7 +4,14 @@
     "success": "成功",
     "failure": "失败",
     "confirm": "确认",
-    "cancel": "取消"
+    "cancel": "取消",
+    "N/A": "N/A",
+    "Boolean": {
+      "Yes": "是",
+      "No": "否",
+      "Right": "正确",
+      "Wrong": "错误"
+    }
   },
   "componentManager": {
     "adbNotSupport": "这个系统 {0} Adb好像不支持...",
@@ -61,7 +68,7 @@
     "success": "已完成",
     "warning": "警告",
     "exception": "任务出错",
-    "stopped": "已取消" 
+    "stopped": "已取消"
   },
   "download": {
     "MaaCore": "Maa 核心组件",
@@ -75,5 +82,112 @@
     "needInstallAll": "必须安装完所需组件才能继续",
     "btnNotInstall": "开始安装",
     "btnInstalling": "正在安装"
+  },
+  "SystemInformation": {
+    "System": {
+      "Title": "基本信息",
+      "Manufacturer": "制造商",
+      "Model": "型号",
+      "Version": "版本",
+      "Serial": "序列号",
+      "Uuid": "唯一表示符",
+      "Sku": "产品参数",
+      "Virtual": "虚拟机"
+    },
+    "Bios": {
+      "Title": "BIOS",
+      "Vendor": "供应商",
+      "Version": "BIOS版本",
+      "ReleaseDate": "发布日期",
+      "Serial": "序列号",
+      "Revision": "修订版本号"
+    },
+    "Baseboard": {
+      "Title": "主板",
+      "Manufacturer": "制造商",
+      "Model": "型号",
+      "Version": "版本",
+      "Serial": "序列号",
+      "MemMax": "最大支持内存",
+      "MemSlots": "内存插槽数"
+    },
+    "Chassis": {
+      "Title": "机箱",
+      "Manufacturer": "制造商",
+      "Model": "型号",
+      "Version": "版本",
+      "Serial": "序列号",
+      "Type": "机箱类型",
+      "Sku": "产品参数"
+    },
+    "Os": {
+      "Title": "操作系统",
+      "Kernel": "内核",
+      "Platform": "平台",
+      "Arch": "架构",
+      "Codename": "内核名称",
+      "ReleaseDate": "发布日期",
+      "Serial": "序列号",
+      "Uefi": "开启UEFI",
+      "Codepage": "默认代码页"
+    },
+    "Uuid": {
+      "Title": "唯一标识符",
+      "Os": "操作系统唯一标识符",
+      "Hardware": "硬件唯一标识符"
+    },
+    "Cpu": {
+      "Title": "CPU",
+      "Brand": "名称",
+      "Processors": "处理器数量",
+      "Cores": "内核数量",
+      "PhysicalCores": "物理核心数量",
+      "Speed": "频率",
+      "Flags": "支持的指令集"
+    },
+    "Graphics": {
+      "Title": "显卡",
+      "Vendor": "供应商",
+      "Bus": "总线类型",
+      "VRAM": "显存大小"
+    },
+    "Monitor": {
+      "Title": "显示器",
+      "Size": "尺寸大小",
+      "Resolution": "分辨率",
+      "RefreshRate": "刷新率",
+      "PixelDepth": "颜色深度",
+      "Connection": "连接方式",
+      "IsBuiltin": "内置显示器",
+      "Vendor": "供应商"
+    },
+    "Net": {
+      "Title": "网络",
+      "Ip4": "ipv4地址",
+      "Ip4Subnet": "ipv4子网掩码",
+      "Ip6": "ipv6地址",
+      "Ip6Subnet": "ipv6子网掩码",
+      "MAC": "物理地址",
+      "State": "启用状态",
+      "Type": "类型",
+      "DHCP": "开启DHCP",
+      "Speed": "连接速度"
+    },
+    "MemLayout": {
+      "Title": "内存",
+      "Size": "内存大小",
+      "Type": "类型（标准版本）",
+      "Ecc": "支持ECC",
+      "ClockSpeed": "时钟频率",
+      "Manufacturer": "制造商",
+      "Serial": "序列号"
+    },
+    "DiskLayout": {
+      "Title": "磁盘",
+      "Vendor": "供应商",
+      "Type": "类型",
+      "InterfaceType": "连接方式",
+      "Size": "磁盘大小"
+    }
   }
 }
