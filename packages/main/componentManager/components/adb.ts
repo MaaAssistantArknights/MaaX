@@ -1,6 +1,6 @@
 
 const componentAdb: Component = {
-  name: 'core',
+  type: 'core',
   status: 'not-installed'
   // installer: new CoreInstaller()
 }

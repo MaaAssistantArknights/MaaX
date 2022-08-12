@@ -3,7 +3,7 @@ import { ipcMainHandle } from '@main/utils/ipc-main'
 import componentAdb from './components/adb'
 import componentCore from './components/core'
 
-const components: Record<ComponentName, Component> = {
+const components: Record<ComponentType, Component> = {
   core: componentCore,
   adb: componentAdb
 }
@@ -11,18 +11,18 @@ const components: Record<ComponentName, Component> = {
 @Singleton
 class ComponentManager implements Module {
   constructor () {
-    ipcMainHandle('main.componentManager:getStatus',
-      async (event, componentName: ComponentName) => {
+    ipcMainHandle('main.ComponentManager:getStatus',
+      async (event, componentName: ComponentType) => {
         return components[componentName]?.status
       })
 
-    ipcMainHandle('main.componentManager:install',
-      async (event, componentName: ComponentName) => {
+    ipcMainHandle('main.ComponentManager:install',
+      async (event, componentName: ComponentType) => {
         components[componentName]?.installer?.install()
       })
 
-    ipcMainHandle('main.componentManager:checkUpdate',
-      async (event, componentName: ComponentName) => {
+    ipcMainHandle('main.ComponentManager:checkUpdate',
+      async (event, componentName: ComponentType) => {
         return components[componentName]?.installer?.checkUpdate()
       })
   }

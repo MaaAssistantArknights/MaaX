@@ -4,12 +4,11 @@ import path from 'path'
 import { readFileSync, existsSync } from 'fs'
 import { assert } from 'console'
 import _ from 'lodash'
-import { $, $$ } from '@main/utils/shell'
+import { $ } from '@main/utils/shell'
 import logger from '@main/utils/logger'
+import { getDeviceUuid } from '../utils'
 
 console.log('import deviceDetector')
-
-const defaultAdbPath = path.join(__dirname, '../platform-tools', 'adb.exe')
 
 const inUsePorts: string[] = [] // 本次识别已被使用的端口，将会在此暂存。
 
@@ -35,7 +34,7 @@ const getPnamePath = async (pname: string): Promise<string> => {
 //   return path.ExecutablePath
 // }
 
-async function getCommandLine (pid: string | number): Promise<string> {
+async function getCommandLine(pid: string | number): Promise<string> {
   // 获取进程启动参数
   const commandLineExp = `Get-WmiObject -Query "select CommandLine FROM Win32_Process where ProcessID='${pid}'" | Select-Object -Property CommandLine | ConvertTo-Json`
   const ret: string = JSON.parse((await $`${commandLineExp}`).stdout).CommandLine
@@ -43,25 +42,7 @@ async function getCommandLine (pid: string | number): Promise<string> {
   return ret
 }
 
-async function getDeviceUuid (address: string, adbPath = defaultAdbPath): Promise<string | false> {
-  if (!adbPath) {
-    logger.error('adb_path is null')
-    return false
-  }
-  if (!address) {
-    logger.debug('address is null')
-    return false
-  }
-  const connectResult = (await $$(adbPath, ['connect', address])).stdout
-  if (connectResult.includes('connected')) {
-    const ret = await $`"${adbPath}" -s ${address} shell settings get secure android_id`
-    console.log(ret.stdout)
-    if (ret) return _.trim(ret.stdout)
-  }
-  return false
-}
-
-async function testPort (
+async function testPort(
   hostname: string,
   port: number | string,
   timeout: number = 100
@@ -78,7 +59,7 @@ async function testPort (
   return _.trim((await $`${exp}`).stdout).includes('True')
 }
 
-function getBluestackInstanceName (cmd: string): string {
+function getBluestackInstanceName(cmd: string): string {
   const instanceExp = /".*"\s"?--instance"?\s"?([^"\s]*)"?/g
   const res = [...cmd.matchAll(instanceExp)].map((v) => v[1])
   console.log('instance Name:')
@@ -88,7 +69,7 @@ function getBluestackInstanceName (cmd: string): string {
 
 @Singleton
 class WindowsAdapter implements EmulatorAdapter {
-  protected async getBluestack (e: Emulator): Promise<void> {
+  protected async getBluestack(e: Emulator): Promise<void> {
     // const confPortExp = /bst.instance.Nougat64_?\d?.status.adb_port="(\d{4,6})"/g
     // const e: Emulator = { pname, pid }
     e.config = 'BlueStacks'
@@ -191,7 +172,7 @@ class WindowsAdapter implements EmulatorAdapter {
     // return e
   }
 
-  protected async getXY (e: Emulator): Promise<void> {
+  protected async getXY(e: Emulator): Promise<void> {
     /**
      * 逍遥模拟器获取流程：
      *  1. 根据"MEmuHeadless.exe"获取pid
@@ -226,7 +207,7 @@ class WindowsAdapter implements EmulatorAdapter {
     e.displayName = '逍遥模拟器'
   }
 
-  protected async getNox (e: Emulator): Promise<void> {
+  protected async getNox(e: Emulator): Promise<void> {
     // const e: Emulator = { pname, pid }
 
     e.adbPath = path.resolve(
@@ -250,7 +231,7 @@ class WindowsAdapter implements EmulatorAdapter {
     // return e
   }
 
-  protected async getMumu (e: Emulator): Promise<void> {
+  protected async getMumu(e: Emulator): Promise<void> {
     // MuMu的adb端口仅限7555, 所以, 请不要使用MuMu多开!
     // 流程: 有"NemuHeadless.exe"进程后，就去抓'NemuPlayer.exe'的路径.
     const emuPathExp = await getPnamePath('NemuPlayer.exe') // 模拟器启动器路径
@@ -265,7 +246,7 @@ class WindowsAdapter implements EmulatorAdapter {
     e.config = 'MuMuEmulator'
   }
 
-  protected async getLd (e: Emulator): Promise<void> {
+  protected async getLd(e: Emulator): Promise<void> {
     // 雷电模拟器识别
     e.config = 'LDPlayer'
     e.displayName = '雷电模拟器'
@@ -301,12 +282,12 @@ class WindowsAdapter implements EmulatorAdapter {
     console.log(e)
   }
 
-  async getAdbDevices (): Promise<Device[]> {
+  async getAdbDevices(): Promise<Device[]> {
     const emulators: Device[] = []
     return emulators
   }
 
-  async getEmulators (): Promise<Emulator[]> {
+  async getEmulators(): Promise<Emulator[]> {
     inUsePorts.splice(0, inUsePorts.length)
     const emulators: Emulator[] = []
     const { stdout: tasklist } = await $`tasklist`

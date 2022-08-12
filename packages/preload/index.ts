@@ -23,6 +23,10 @@ const ipc = {
   invoke: (channel: IpcMainHandleEvent, ...args: any[]): Promise<any> => {
     ipcRenderer.send('log:debug', `ipcMain event "${channel}" invoked`)
     return ipcRenderer.invoke(channel, ...args)
+  },
+  off: (channel: IpcRendererHandleEvent, listener: (event: Electron.IpcRendererEvent, ...args: any[]) => void): Electron.IpcRenderer => {
+    ipcRenderer.send('log:debug', `ipcRenderer event "${channel}" unregistered`)
+    return ipcRenderer.off(channel, listener)
   }
 }
 

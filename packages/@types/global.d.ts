@@ -11,6 +11,10 @@ declare global {
       ) => Electron.IpcRenderer
       send: (channel: IpcMainHandleEvent, ...args: any[]) => void
       invoke: (channel: IpcMainHandleEvent, ...args: any[]) => Promise<any>
+      off: (
+        channel: IpcRendererHandleEvent,
+        listener: (event: Electron.IpcRendererEvent, ...args: any[]) => void
+      ) => Electron.IpcRenderer
     }
     removeLoading: () => void
     $message: MessageApiInjection

@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import _ from 'lodash'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { NEllipsis, NTable, NCollapse, NCollapseItem } from 'naive-ui'
 import { getSystemInformation } from '@/hooks/caller/os'
 import { showBoolean } from '@/i18n'
 
-const siRef = ref(null)
+const siRef: Ref<any> = ref(null)
 const siLoading = ref(false)
 
 const { t } = useI18n()
@@ -479,7 +479,7 @@ onMounted(() => {
             <tbody>
               <tr>
                 <td>
-                  <NEllipsis>{{ $t('SystemInformation.Graphics.Size') }}</NEllipsis>
+                  <NEllipsis>{{ $t('SystemInformation.Monitor.Size') }}</NEllipsis>
                 </td>
                 <td>
                   <NEllipsis>{{ `${monitor.sizeX}mm * ${monitor.sizeY}mm` }}</NEllipsis>
@@ -487,7 +487,7 @@ onMounted(() => {
               </tr>
               <tr>
                 <td>
-                  <NEllipsis>{{ $t('SystemInformation.Graphics.Resolution') }}</NEllipsis>
+                  <NEllipsis>{{ $t('SystemInformation.Monitor.Resolution') }}</NEllipsis>
                 </td>
                 <td>
                   <NEllipsis>{{ `${monitor.resolutionX}x${monitor.resolutionY}` }}</NEllipsis>
@@ -495,7 +495,7 @@ onMounted(() => {
               </tr>
               <tr>
                 <td>
-                  <NEllipsis>{{ $t('SystemInformation.Graphics.RefreshRate') }}</NEllipsis>
+                  <NEllipsis>{{ $t('SystemInformation.Monitor.RefreshRate') }}</NEllipsis>
                 </td>
                 <td>
                   <NEllipsis>{{ `${monitor.currentRefreshRate}Hz` }}</NEllipsis>
@@ -503,7 +503,7 @@ onMounted(() => {
               </tr>
               <tr>
                 <td>
-                  <NEllipsis>{{ $t('SystemInformation.Graphics.PixelDepth') }}</NEllipsis>
+                  <NEllipsis>{{ $t('SystemInformation.Monitor.PixelDepth') }}</NEllipsis>
                 </td>
                 <td>
                   <NEllipsis>{{ showValue(monitor.pixelDepth) }}</NEllipsis>
@@ -511,7 +511,7 @@ onMounted(() => {
               </tr>
               <tr>
                 <td>
-                  <NEllipsis>{{ $t('SystemInformation.Graphics.Connection') }}</NEllipsis>
+                  <NEllipsis>{{ $t('SystemInformation.Monitor.Connection') }}</NEllipsis>
                 </td>
                 <td>
                   <NEllipsis>{{ showValue(monitor.connection) }}</NEllipsis>
@@ -519,7 +519,7 @@ onMounted(() => {
               </tr>
               <tr>
                 <td>
-                  <NEllipsis>{{ $t('SystemInformation.Graphics.IsBuiltin') }}</NEllipsis>
+                  <NEllipsis>{{ $t('SystemInformation.Monitor.IsBuiltin') }}</NEllipsis>
                 </td>
                 <td>
                   <NEllipsis>{{ showValue(monitor.builtin) }}</NEllipsis>
@@ -527,7 +527,7 @@ onMounted(() => {
               </tr>
               <tr>
                 <td>
-                  <NEllipsis>{{ $t('SystemInformation.Graphics.Vendor') }}</NEllipsis>
+                  <NEllipsis>{{ $t('SystemInformation.Monitor.Vendor') }}</NEllipsis>
                 </td>
                 <td>
                   <NEllipsis>{{ showValue(monitor.vendor) }}</NEllipsis>

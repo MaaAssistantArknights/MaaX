@@ -6,7 +6,7 @@ import CoreInstaller from '@main/componentManager/installers/core'
 const coreLoader = new CoreLoader()
 
 const componentCore: Component = {
-  name: 'core',
+  type: 'core',
   status: 'not-installed',
   installer: new CoreInstaller()
 }

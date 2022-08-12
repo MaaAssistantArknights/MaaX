@@ -33,10 +33,10 @@ const installButtonText = computed(() => {
 })
 
 const handleInstall = () => {
-  window.ipcRenderer.invoke('main.componentManager:checkUpdate', 'core')
+  window.ipcRenderer.invoke('main.ComponentManager:checkUpdate', 'core')
 }
 
-const handleUpdateStatus = (event, data) => {
+const handleUpdateStatus = (event: Electron.IpcRendererEvent, data: any) => {
   const text = _.clone(data.data.text)
   const progress = _.clone(data.data.progress)
   switch (data.type) {
@@ -61,11 +61,11 @@ onMounted(
   }
 )
 
-// onUnmounted(
-//   () => {
-//     window.ipcRenderer.removeAllListeners('renderer.DownloadModel:updateStatus')
-//   }
-// )
+onUnmounted(
+  () => {
+    window.ipcRenderer.off('renderer.DownloadModel:updateStatus', handleUpdateStatus)
+  }
+)
 
 </script>
 

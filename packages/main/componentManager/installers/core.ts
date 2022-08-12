@@ -1,6 +1,6 @@
 /* eslint-disable vue/max-len */
 import _ from 'lodash'
-import { app, ipcMain } from 'electron'
+import { app, ipcMain, net } from 'electron'
 import axios, { AxiosInstance } from 'axios'
 
 import { Singleton } from '@common/function/singletonDecorator'
@@ -136,7 +136,7 @@ class CoreInstaller extends ComponentInstaller {
     this.releaseInfo = response.data
   }
 
-  public async install (url: string): Promise<void> {
+  public async install (): Promise<void> {
     const tempdir = app.getPath('temp')
     const coredir = coreLoader.libPath
   }

@@ -17,9 +17,9 @@ type IpcMainHandleEvent =
   | 'main.CoreLoader:stop'
   | 'main.CoreLoader:supportedStages'
   | 'main.ScheduleRunner:shutdown'
-  | 'main.componentManager:getStatus'
-  | 'main.componentManager:install'
-  | 'main.componentManager:checkUpdate'
+  | 'main.ComponentManager:getStatus'
+  | 'main.ComponentManager:install'
+  | 'main.ComponentManager:checkUpdate'
   | 'main.DeviceDetector:getAdbPath'
   | 'main.DeviceDetector:getAdbDevices'
   | 'main.DeviceDetector:getEmulators'
@@ -52,6 +52,7 @@ type IpcRendererHandleEvent =
   | 'renderer.TaskManager:changeStatus'
   | 'renderer.AppearanceManager:themeUpdated'
   | 'renderer.DownloadModel:updateStatus'
+  | 'renderer.ComponentManager:updateStatus'
 
 interface IpcMainEvent<T> {
   name: IpcMainHandleEvent

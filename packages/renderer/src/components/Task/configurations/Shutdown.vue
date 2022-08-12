@@ -49,12 +49,12 @@ const shutdownOptions = [
 ]
 
 function handleCancelShutdown () {
-  const taskId = taskIdStore.getTaskId(routeUuid, 'shutdown')
+  // const taskId = taskIdStore.getTaskId(routeUuid, 'shutdown')
   logger.debug('cancel shutdown task on uuid', routeUuid)
-  logger.debug('cancel taskid', taskId?.[0])
-  taskId?.forEach((id) => {
-    clearInterval(id)
-  })
+  // logger.debug('cancel taskid', taskId?.[0])
+  // taskId?.forEach((id) => {
+  //   clearInterval(id)
+  // })
   show('已取消定时任务', { type: 'success' })
 }
 
