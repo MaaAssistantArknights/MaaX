@@ -43,16 +43,16 @@ const useSettingStore = defineStore<'setting', SettingState, {}, SettingAction>(
       }
     },
     actions: {
-      checkUpdate() { },
-      setReportId(reportId) {
+      checkUpdate () { },
+      setReportId (reportId) {
         this.reportId = reportId
       },
-      changeLocale(locale: Locale) {
+      changeLocale (locale: Locale) {
         this.locale = locale
         const i18n = useI18n()
         i18n.locale.value = locale
       },
-      async updateVersionInfo() {
+      async updateVersionInfo () {
         this.version.core.current = await version.core() ?? undefined
         this.version.ui.current = await version.ui()
       }

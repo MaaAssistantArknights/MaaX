@@ -67,25 +67,31 @@ const props = defineProps<{
     class="configuration-form"
   >
     <NSpace vertical>
-      <NFormItem label="关闭策略" :show-label="true"
-      size="small"
-      label-align="left"
-      label-placement="left"
-       :show-feedback="false">
+      <NFormItem
+        label="关闭策略"
+        :show-label="true"
+        size="small"
+        label-align="left"
+        label-placement="left"
+        :show-feedback="false"
+      >
         <NSelect
           :value="props.configurations.option"
+          :options="shutdownOptions"
           @update:value="
             (value) => _.set(props.configurations, 'option', value)
           "
-          :options="shutdownOptions"
         />
       </NFormItem>
 
-      <NFormItem label="关闭延迟" :show-label="true"
-      size="small"
-      label-align="left"
-      label-placement="left"
-       :show-feedback="false">
+      <NFormItem
+        label="关闭延迟"
+        :show-label="true"
+        size="small"
+        label-align="left"
+        label-placement="left"
+        :show-feedback="false"
+      >
         <NTimePicker
           :style="{ width: '100%' }"
           :default-formatted-value="
@@ -102,18 +108,21 @@ const props = defineProps<{
           "
         />
       </NFormItem>
-      <NFormItem :show-label="true"
-      size="small"
-      label-align="left"
-      label-placement="left"
-       :show-feedback="false">
+      <NFormItem
+        :show-label="true"
+        size="small"
+        label-align="left"
+        label-placement="left"
+        :show-feedback="false"
+      >
         <NButton
           quaternary
           type="primary"
-          @click="handleCancelShutdown"
           :focusable="false"
-          >取消定时</NButton
+          @click="handleCancelShutdown"
         >
+          取消定时
+        </NButton>
       </NFormItem>
     </NSpace>
   </div>

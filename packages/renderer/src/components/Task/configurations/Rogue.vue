@@ -176,11 +176,14 @@ const createColumns = (): DataTableColumns<any> => [
         />
       </NFormItem> -->
 
-      <NFormItem label="通关策略" :show-label="true"
-      size="small"
-      label-align="left"
-      label-placement="left"
-       :show-feedback="false">
+      <NFormItem
+        label="通关策略"
+        :show-label="true"
+        size="small"
+        label-align="left"
+        label-placement="left"
+        :show-feedback="false"
+      >
         <NSelect
           :value="props.configurations.mode"
           :options="strategyOptions"
@@ -200,11 +203,22 @@ const createColumns = (): DataTableColumns<any> => [
       role="dialog"
       aria-modal="true"
     >
-      <NCard style="width: 600px" role="dialog" aria-modal="true" title="优先招募干员">
+      <NCard
+        style="width: 600px"
+        role="dialog"
+        aria-modal="true"
+        title="优先招募干员"
+      >
         <template #header-extra>
-          <NButton @click="() => (showSelectModal = true)">选择</NButton>
+          <NButton @click="() => (showSelectModal = true)">
+            选择
+          </NButton>
         </template>
-        <NDataTable class="operator-table" :data="selectedOperators" :columns="createColumns()" />
+        <NDataTable
+          class="operator-table"
+          :data="selectedOperators"
+          :columns="createColumns()"
+        />
         <OperatorSelector
           :show="showSelectModal"
           :selected-operators="selectedOperators.map((value) => value.operator)"

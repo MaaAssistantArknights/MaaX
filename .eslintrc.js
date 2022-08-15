@@ -13,7 +13,8 @@ module.exports = {
     sourceType: 'module',
     project: [
       path.join(__dirname, 'packages/renderer/tsconfig.json'),
-      path.join(__dirname, 'packages/main/tsconfig.json'),    ]
+      path.join(__dirname, 'packages/main/tsconfig.json'),
+    ]
   },
   plugins: [
     'vue',
@@ -21,6 +22,7 @@ module.exports = {
   ],
   extends: [
     'eslint:recommended',
+    'plugin:vue/vue3-recommended',
     'plugin:vue/vue3-essential',
     'standard-with-typescript',
     '@vue/eslint-config-typescript'
@@ -33,6 +35,14 @@ module.exports = {
     "no-undef": "off", // 让ts检查undefined
     "@typescript-eslint/no-floating-promises": "off",
     '@typescript-eslint/strict-boolean-expressions': 'off',
-    "vue/multi-word-component-names": 'off'
+    "vue/multi-word-component-names": 'off',
+    "vue/max-attributes-per-line": ["error", {
+      "singleline": {
+        "max": 3
+      },      
+      "multiline": {
+        "max": 1
+      }
+    }]
   }
 }

@@ -26,7 +26,10 @@ const connectedDevices = computed(() =>
         <IconSettings />
       </NIcon>
     </NButton>
-    <NSpace justify="space-between" align="center">
+    <NSpace
+      justify="space-between"
+      align="center"
+    >
       <h2>当前连接的设备</h2>
       <NTooltip>
         <template #trigger>
@@ -46,8 +49,8 @@ const connectedDevices = computed(() =>
     <div class="connected-devices">
       <DeviceCard
         v-for="device in connectedDevices"
-        :uuid="device.uuid"
         :key="device.uuid"
+        :uuid="device.uuid"
       />
     </div>
   </div>

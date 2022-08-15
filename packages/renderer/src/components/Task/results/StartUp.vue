@@ -10,7 +10,5 @@ const props = defineProps<StartUpResultProps>()
 
 </script>
 <template>
-  <Space class="progress-form">
-
-  </Space>
+  <Space class="progress-form" />
 </template>

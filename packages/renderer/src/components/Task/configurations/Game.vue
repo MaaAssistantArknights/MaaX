@@ -30,22 +30,28 @@ const props = defineProps<{
       size="small"
       label-align="left"
       label-placement="left"
-       :show-feedback="false"
+      :show-feedback="false"
     >
       <NSelect
         :value="props.configurations.client_type"
-        @update:value="(value) => _.set(props.configurations, 'client_type', value)"
         :options="serverOptions"
+        @update:value="(value) => _.set(props.configurations, 'client_type', value)"
       />
     </NFormItem>
-    <NFormItem size="small" label-align="left" label-placement="left" :show-feedback="false">
+    <NFormItem
+      size="small"
+      label-align="left"
+      label-placement="left"
+      :show-feedback="false"
+    >
       <NCheckbox
         :checked="props.configurations.start_game_enable"
         @update:checked="
           (checked) => _.set(props.configurations, 'start_game_enable', checked)
         "
-        >自动启动客户端</NCheckbox
       >
+        自动启动客户端
+      </NCheckbox>
     </NFormItem>
   </div>
 </template>

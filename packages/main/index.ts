@@ -16,6 +16,7 @@ import StorageManager from '@main/storageManager'
 import ComponentManager from '@main/componentManager'
 import CoreLoader from '@main/coreLoader'
 import DeviceDetector from '@main/deviceDetector'
+import DownloadManager from './downloadManager'
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()
@@ -42,9 +43,10 @@ async function createApp (): Promise<void> {
   const modulesCtor = [
     WindowManager,
     StorageManager,
-    ComponentManager,
     CoreLoader,
-    DeviceDetector
+    DeviceDetector,
+    DownloadManager,
+    ComponentManager
   ]
 
   for (const Ctor of modulesCtor) {

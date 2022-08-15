@@ -43,13 +43,35 @@ onMounted(async () => {
 </script>
 
 <template>
-  <NModal :show="props.show" @update:show="(value) => $emit('update:show', value)">
-    <n-card style="width: 600px" title="信用购买" :bordered="false" size="medium" role="dialog" aria-modal="true">
-      <MallItems text="优先购买" :items="props.buy_first" @onChange:Item="onItemChange" />
+  <NModal
+    :show="props.show"
+    @update:show="(value) => $emit('update:show', value)"
+  >
+    <n-card
+      style="width: 600px"
+      title="信用购买"
+      :bordered="false"
+      size="medium"
+      role="dialog"
+      aria-modal="true"
+    >
+      <MallItems
+        text="优先购买"
+        :items="props.buy_first"
+        @onChange:Item="onItemChange"
+      />
       <n-divider />
-      <MallItems text="黑名单" :items="props.blacklist" @onChange:Item="onItemChange" />
+      <MallItems
+        text="黑名单"
+        :items="props.blacklist"
+        @onChange:Item="onItemChange"
+      />
       <n-divider />
-      <MallItems text="随缘购买" :items="props.others" @onChange:Item="onItemChange" />
+      <MallItems
+        text="随缘购买"
+        :items="props.others"
+        @onChange:Item="onItemChange"
+      />
     </n-card>
   </NModal>
 </template>

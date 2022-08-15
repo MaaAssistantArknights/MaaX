@@ -5,7 +5,11 @@ import { NButton, NIcon, NAnchor, NAnchorLink } from 'naive-ui'
 
 <template>
   <div>
-    <NButton text style="font-size: 24px" @click="$router.back()">
+    <NButton
+      text
+      style="font-size: 24px"
+      @click="$router.back()"
+    >
       <NIcon>
         <IconChevronLeft />
       </NIcon>
@@ -17,10 +21,22 @@ import { NButton, NIcon, NAnchor, NAnchorLink } from 'naive-ui'
       type="block"
       :bound="80"
     >
-      <NAnchorLink title="企鹅物流数据上报" href="#penguin-report" />
-      <NAnchorLink title="当前版本" href="#version" />
-      <NAnchorLink title="外观" href="#appearance" />
-      <NAnchorLink title="开发者" href="#develop" />
+      <NAnchorLink
+        title="企鹅物流数据上报"
+        href="#penguin-report"
+      />
+      <NAnchorLink
+        title="版本信息"
+        href="#version"
+      />
+      <NAnchorLink
+        title="外观"
+        href="#appearance"
+      />
+      <NAnchorLink
+        title="开发者"
+        href="#develop"
+      />
     </NAnchor>
   </div>
 </template>

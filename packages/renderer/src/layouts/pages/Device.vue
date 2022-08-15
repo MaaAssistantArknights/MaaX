@@ -61,9 +61,23 @@ function install () {
 
 <template>
   <div>
-    <NAlert title="连接一个设备 / 模拟器以继续" type="info" closable>
-      <NText tag="div" :depth="3">1. 双击可用设备快速连接</NText>
-      <NText tag="div" :depth="3">2. 连接到自定义设备地址</NText>
+    <NAlert
+      title="连接一个设备 / 模拟器以继续"
+      type="info"
+      closable
+    >
+      <NText
+        tag="div"
+        :depth="3"
+      >
+        1. 双击可用设备快速连接
+      </NText>
+      <NText
+        tag="div"
+        :depth="3"
+      >
+        2. 连接到自定义设备地址
+      </NText>
     </NAlert>
     <div class="form-connect">
       <NForm

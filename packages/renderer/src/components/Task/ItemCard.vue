@@ -30,23 +30,49 @@ function getStageInfo (stageId: string): Api.Maa.Stage | undefined {
 </script>
 
 <template>
-  <NCard style="width: 300px;" :content-style="{ padding: '4px' }"
-    :header-style="{ padding: '4px' }" :bordered="false">
+  <NCard
+    style="width: 300px;"
+    :content-style="{ padding: '4px' }"
+    :header-style="{ padding: '4px' }"
+    :bordered="false"
+  >
     <template #header>
-      <NSkeleton v-if="loading" width="33%" text />
+      <NSkeleton
+        v-if="loading"
+        width="33%"
+        text
+      />
       <template v-else>
         <NTag>{{ info?.name }}</NTag>
       </template>
     </template>
-    <NSkeleton v-if="loading" :repeat="5" text />
+    <NSkeleton
+      v-if="loading"
+      :repeat="5"
+      text
+    />
     <template v-else>
-      <NText tag="div">{{ info?.usage }}</NText>
-      <br />
-      <NText tag="div">{{ info?.description.replaceAll('\\n', '') }}</NText>
-      <br />
-      <NText depth="3" tag="div">获取方式</NText>
-      <NText tag="div">{{ info?.obtainApproach }}</NText>
-      <NSpace v-for="(dropList, index) in (info?.stageDropList ?? [])" :key="index">
+      <NText tag="div">
+        {{ info?.usage }}
+      </NText>
+      <br>
+      <NText tag="div">
+        {{ info?.description.replaceAll('\\n', '') }}
+      </NText>
+      <br>
+      <NText
+        depth="3"
+        tag="div"
+      >
+        获取方式
+      </NText>
+      <NText tag="div">
+        {{ info?.obtainApproach }}
+      </NText>
+      <NSpace
+        v-for="(dropList, index) in (info?.stageDropList ?? [])"
+        :key="index"
+      >
         <NText tag="div">
           {{ getStageInfo(dropList.stageId)?.code }}
         </NText>

@@ -81,8 +81,16 @@ const toggleSelected = (operator: any) => {
     aria-modal="true"
     @update:show="(value) => $emit('update:show', value)"
   >
-    <NCard style="width: 600px" role="dialog" aria-modal="true" title="选择干员">
-      <NTabs :bar-width="28" type="line">
+    <NCard
+      style="width: 600px"
+      role="dialog"
+      aria-modal="true"
+      title="选择干员"
+    >
+      <NTabs
+        :bar-width="28"
+        type="line"
+      >
         <NTabPane
           v-for="[code, name] of Object.entries(professions)"
           :key="code"
@@ -90,7 +98,12 @@ const toggleSelected = (operator: any) => {
           :tab="getProfessionTab(code, name)"
         >
           <NScrollbar :style="{ maxHeight: '400px' }">
-            <NSkeleton v-if="loading" height="40px" :repeat="4" :sharp="false" />
+            <NSkeleton
+              v-if="loading"
+              height="40px"
+              :repeat="4"
+              :sharp="false"
+            />
             <div class="grid-wrapper">
               <NAvatar
                 v-for="operator of operators.filter((op) => op.profession === code)"

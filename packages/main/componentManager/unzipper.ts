@@ -17,6 +17,9 @@ export default async function unzip (src: string, dist: string): Promise<void> {
       }
       entry.autodrain()
     })
+    .on('data', (chunk) => {
+      logger.debug(chunk)
+    })
     .on('finish', () => {
       fs.rmSync(src)
       Promise.resolve()

@@ -51,8 +51,10 @@ type IpcRendererHandleEvent =
   | 'renderer.DeviceDetector:changeStatus'
   | 'renderer.TaskManager:changeStatus'
   | 'renderer.AppearanceManager:themeUpdated'
-  | 'renderer.DownloadModel:updateStatus'
+  | 'renderer.DownloadModal:updateStatus'
   | 'renderer.ComponentManager:updateStatus'
+  | 'renderer.ComponentManager:installInterrupted'
+  | 'renderer.ComponentManager:installDone'
 
 interface IpcMainEvent<T> {
   name: IpcMainHandleEvent

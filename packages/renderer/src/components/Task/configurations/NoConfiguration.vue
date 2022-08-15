@@ -4,7 +4,9 @@ import { NText } from 'naive-ui'
 
 <template>
   <div class="no-configuration">
-    <NText :depth="3">没有设置项</NText>
+    <NText :depth="3">
+      没有设置项
+    </NText>
   </div>
 </template>
 

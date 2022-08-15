@@ -11,12 +11,12 @@ import CoreInstaller from '@main/componentManager/installers/core'
 import { Singleton } from '@common/function/singletonDecorator'
 
 @Singleton
-class DownloaderManager {
+class DownloadManager {
   constructor () {
     // initialize variables
     this.window_ = new WindowManager().getWindow()
     this.tasks_ = {
-      'Maa Bundle': {
+      'Maa App': {
         state: 'interrupted',
         paused: false,
         progress: {
@@ -25,22 +25,6 @@ class DownloaderManager {
         }
       },
       'Maa Core': {
-        state: 'interrupted',
-        paused: false,
-        progress: {
-          prevReceivedBytes: 0,
-          receivedBytes: 0
-        }
-      },
-      'Maa Resource': {
-        state: 'interrupted',
-        paused: false,
-        progress: {
-          prevReceivedBytes: 0,
-          receivedBytes: 0
-        }
-      },
-      'Maa Dependency': {
         state: 'interrupted',
         paused: false,
         progress: {
@@ -60,26 +44,38 @@ class DownloaderManager {
     this.installers_ = {
       'Maa Core': new CoreInstaller()
     }
+
+    for (const installer of Object.values(this.installers_)) {
+      installer.downloader_ = this
+    }
     // register hook
     this.window_.webContents.session.on('will-download', this.handleWillDownload)
   }
 
-  public downloadComponent (component: ComponentType): void {
+  public get name (): string {
+    return 'DownloadManager'
+  }
+
+  public get version (): string {
+    return '1.0.0'
+  }
+
+  public downloadComponent (url: string, component: ComponentType): void {
     this.will_download_ = component
-    // this.window_.webContents.downloadURL()
+    this.window_.webContents.downloadURL(url)
   }
 
   // 用于应对强制关闭
-  public pauseDownload (component: ComponentType): void {
+  public pauseDownload = (component: ComponentType): void => {
     this.tasks_[component]._sourceItem?.pause()
   }
 
   // 用于应对强制关闭
-  public cancelDownload (component: ComponentType): void {
+  public cancelDownload = (component: ComponentType): void => {
     this.tasks_[component]._sourceItem?.cancel()
   }
 
-  private handleWillDownload (event: Electron.Event, item: Electron.DownloadItem): void {
+  private readonly handleWillDownload = (event: Electron.Event, item: Electron.DownloadItem): void => {
     const component = this.will_download_
     if (!component) {
       event.preventDefault()
@@ -125,12 +121,12 @@ class DownloaderManager {
     this.will_download_ = undefined
   }
 
-  private handleDownloadUpdate (
+  private readonly handleDownloadUpdate = (
     event: Electron.Event,
     state: 'interrupted' | 'progressing',
     item: Electron.DownloadItem,
     component: ComponentType
-  ): void {
+  ): void => {
     const receivedBytes = item.getReceivedBytes()
     const totalBytes = item.getTotalBytes()
 
@@ -142,35 +138,33 @@ class DownloaderManager {
     this.tasks_[component].progress.precent = totalBytes ? (receivedBytes / totalBytes) : undefined
     this.tasks_[component].paused = item.isPaused()
 
-    // TODO: 通知对应的ComponentInstaller
     const installer = this.installers_[component]
     if (installer) {
-      // TODO: installer的回调函数
+      installer.downloadHandle.handleDownloadUpdate(this.tasks_[component])
     }
   }
 
-  private handleDownloadInterrupted (
+  private readonly handleDownloadInterrupted = (
     event: Electron.Event,
     item: Electron.DownloadItem,
     component: ComponentType
-  ): void {
+  ): void => {
     fs.rmSync(path.join(item.getSavePath(), item.getFilename()))
-    // TODO: 通知对应的ComponentInstaller
     const installer = this.installers_[component]
     if (installer) {
-      // TODO: installer的回调函数
+      installer.downloadHandle.handleDownloadInterrupted(this.tasks_[component])
     }
   }
 
-  private handleDownloadCompleted (
+  private readonly handleDownloadCompleted = (
     event: Electron.Event,
     item: Electron.DownloadItem,
     component: ComponentType
-  ): void {
+  ): void => {
     // TODO: 通知对应的ComponentInstaller
     const installer = this.installers_[component]
     if (installer) {
-      // TODO: installer的回调函数
+      installer.downloadHandle.handleDownloadCompleted(this.tasks_[component])
     }
   }
 
@@ -186,4 +180,4 @@ class DownloaderManager {
   private readonly download_path = path.join(app.getPath('appData'), app.getName(), 'download')
 }
 
-export default DownloaderManager
+export default DownloadManager

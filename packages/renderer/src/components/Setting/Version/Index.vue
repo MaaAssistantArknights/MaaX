@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, computed } from 'vue'
+import { onMounted, computed, ref } from 'vue'
 import useSettingStore from '@/store/settings'
 import {
   NSpace,
@@ -11,6 +11,7 @@ import {
 } from 'naive-ui'
 import IconBinary from '@/assets/icons/binary.svg?component'
 import IconWindowUi from '@/assets/icons/window-ui.svg?component'
+import DownloadModal from './DownloadModal.vue'
 
 const themeVars = useThemeVars()
 
@@ -18,20 +19,25 @@ const settingStore = useSettingStore()
 
 const versionCore = computed(() => settingStore.version.core)
 const versionUi = computed(() => settingStore.version.ui)
+const show = ref(false)
 
-function needUpdate(version: { current?: string; latest?: string }) {
+function needUpdate (version: { current?: string; latest?: string }) {
   if (!version.latest || !version.current) {
     return false
   }
   return version.current !== version.latest
 }
 
-function versionString(version: { current?: string; latest?: string }) {
+function versionString (version: { current?: string; latest?: string }) {
   let str = version.current || '未知'
   if (needUpdate(version)) {
     str += ` -> ${version.latest}`
   }
   return str
+}
+
+function showDownloadModal () {
+  show.value = true
 }
 
 onMounted(async () => {
@@ -41,38 +47,72 @@ onMounted(async () => {
 
 <template>
   <div id="version">
-    <h2 class="title">当前版本</h2>
-    <NTooltip :disabled="!needUpdate(versionCore)">
-      <template #trigger>
-        <div>
-          <NButton quaternary :focusable="false" :type="needUpdate(versionCore) ? 'info' : 'default'">
-            <NSpace justify="center" align="center">
-              <NIcon size="18px" :color="themeVars.infoColor">
+    <h2 class="title">
+      版本信息
+    </h2>
+    <div
+      :style="{ display: 'inline-flex', flexDirection: 'column', alignItems: 'flex-start', width: 'fit-content', textAlign: 'left' }"
+    >
+      <NTooltip
+        :disabled="!needUpdate(versionCore)"
+        :width="'trigger'"
+      >
+        <template #trigger>
+          <NButton
+            quaternary
+            :focusable="false"
+            :type="needUpdate(versionCore) ? 'info' : 'default'"
+            @click="showDownloadModal"
+          >
+            <NSpace
+              justify="center"
+              align="center"
+            >
+              <NIcon
+                size="18px"
+                :color="themeVars.infoColor"
+              >
                 <IconBinary />
               </NIcon>
-              <NText type="info">Maa Core:</NText>
+              <NText type="info">
+                Maa Core:
+              </NText>
               <span>{{ versionString(versionCore) }}</span>
             </NSpace>
           </NButton>
-        </div>
-      </template>
-      {{ `Core可更新至${versionCore.latest}，点击以更新` }}
-    </NTooltip>
-    <NTooltip :disabled="!needUpdate(versionUi)">
-      <template #trigger>
-        <div>
-          <NButton quaternary :focusable="false" :type="needUpdate(versionUi) ? 'info' : 'default'">
-            <NSpace justify="center" align="center">
-              <NIcon size="18px" :color="themeVars.infoColor">
+        </template>
+        {{ `Core可更新至${versionCore.latest}，点击以更新` }}
+      </NTooltip>
+      <NTooltip
+        :disabled="!needUpdate(versionUi)"
+        :width="'trigger'"
+      >
+        <template #trigger>
+          <NButton
+            quaternary
+            :focusable="false"
+            :type="needUpdate(versionUi) ? 'info' : 'default'"
+          >
+            <NSpace
+              justify="center"
+              align="center"
+            >
+              <NIcon
+                size="18px"
+                :color="themeVars.infoColor"
+              >
                 <IconWindowUi />
               </NIcon>
-              <NText type="info">Maa App:</NText>
+              <NText type="info">
+                Maa App:
+              </NText>
               <span>{{ versionString(versionUi) }}</span>
             </NSpace>
           </NButton>
-        </div>
-      </template>
-      {{ `UI可更新至${versionUi.latest}，点击以更新` }}
-    </NTooltip>
+        </template>
+        {{ `UI可更新至${versionUi.latest}，点击以更新` }}
+      </NTooltip>
+    </div>
+    <DownloadModal v-model:show="show" />
   </div>
 </template>

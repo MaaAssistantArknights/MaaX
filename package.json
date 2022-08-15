@@ -10,7 +10,7 @@
     "prebuild": "vue-tsc --project packages/renderer/tsconfig.json --noEmit && node scripts/build.mjs",
     "build": "electron-builder",
     "debug": "npm run prebuild && vite ./packages/renderer",
-    "lint": "eslint --fix packages/main packages/renderer"
+    "lint": "eslint --ext .js,.ts,.vue --fix packages/main packages/renderer"
   },
   "engines": {
     "node": ">=14.17.0"

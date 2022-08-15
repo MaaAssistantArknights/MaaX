@@ -254,7 +254,10 @@ function handleTaskDelete (index: number) {
 
 <template>
   <div>
-    <NSpace justify="space-between" align="center">
+    <NSpace
+      justify="space-between"
+      align="center"
+    >
       <h2>任务</h2>
 
       <NSpace align="center">
@@ -263,7 +266,10 @@ function handleTaskDelete (index: number) {
       </NDropdown> -->
         <NTooltip class="detail-toggle-switch">
           <template #trigger>
-            <NSwitch v-model:value="isGrid" size="large">
+            <NSwitch
+              v-model:value="isGrid"
+              size="large"
+            >
               <template #checked-icon>
                 <NIcon size="16">
                   <IconGrid />
@@ -279,29 +285,41 @@ function handleTaskDelete (index: number) {
           <span>切换到{{ isGrid ? "简单" : "详细" }}信息</span>
         </NTooltip>
 
-        <NButton type="primary" round @click="handleStart">
+        <NButton
+          type="primary"
+          round
+          @click="handleStart"
+        >
           <span>{{ deviceStatus === "tasking" ? "停止" : "开始" }}</span>
         </NButton>
       </NSpace>
     </NSpace>
 
-    <div class="cards" :class="isGrid ? 'cards-grid' : ''" ref="sortableRef">
+    <div
+      ref="sortableRef"
+      class="cards"
+      :class="isGrid ? 'cards-grid' : ''"
+    >
       <TaskCard
-        :is-collapsed="!isGrid"
         v-for="(task, index) in tasks"
         :key="index"
+        v-model:showResult="task.showResult"
+        :is-collapsed="!isGrid"
         :task-info="task"
         @update:enable="(enabled) => (task.enable = enabled)"
-        v-model:showResult="task.showResult"
         @copy="() => handleTaskCopy(index)"
         @delete="() => handleTaskDelete(index)"
       >
         <!-- TODO: 添加一个切换配置与进度的按钮 -->
-        <Result :name="task.name" :result="{}" v-show="task.showResult" />
+        <Result
+          v-show="task.showResult"
+          :name="task.name"
+          :result="{}"
+        />
         <Configuration
+          v-show="!task.showResult"
           :name="task.name"
           :configurations="task.configurations"
-          v-show="!task.showResult"
         />
       </TaskCard>
     </div>

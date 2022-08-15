@@ -14,7 +14,7 @@ const emit = defineEmits(['update:show'])
 <template>
   <NPopover>
     <template #trigger>
-      <slot></slot>
+      <slot />
     </template>
   </NPopover>
 </template>

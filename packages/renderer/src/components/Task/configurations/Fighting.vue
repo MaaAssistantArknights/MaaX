@@ -86,22 +86,39 @@ function handleStoneUpdate (value: number | null) {
 <template>
   <div class="configuration-form">
     <NSpace vertical>
-      <NFormItem label="选择关卡" :show-label="true" size="small" label-align="left"
-        label-placement="left" :show-feedback="false">
-        <NSelect :value="props.configurations.stage"
+      <NFormItem
+        label="选择关卡"
+        :show-label="true"
+        size="small"
+        label-align="left"
+        label-placement="left"
+        :show-feedback="false"
+      >
+        <NSelect
+          :value="props.configurations.stage"
+          :options="supportStages"
           @update:value="(value) => _.set(props.configurations, 'stage', value)"
-          :options="supportStages" />
+        />
       </NFormItem>
-      <NFormItem label="使用理智液数量" :show-label="true" size="small" label-align="left"
-        label-placement="left" :show-feedback="false">
+      <NFormItem
+        label="使用理智液数量"
+        :show-label="true"
+        size="small"
+        label-align="left"
+        label-placement="left"
+        :show-feedback="false"
+      >
         <!-- <NCheckbox
         :checked="props.configurations.medicine"
         @update:checked="
           (checked) => handleConfigurationUpdate('medicine', checked)
         "
         />-->
-        <NInputNumber :value="props.configurations.medicine" :update-value-on-input="false"
-          @update:value="handleMedicineUpdate" />
+        <NInputNumber
+          :value="props.configurations.medicine"
+          :update-value-on-input="false"
+          @update:value="handleMedicineUpdate"
+        />
       </NFormItem>
       <!-- 不提供设置，Core暂不支持 -->
       <!-- <NFormItem>
@@ -125,29 +142,55 @@ function handleStoneUpdate (value: number | null) {
         :disabled="!props.configurations.medicine"
       >过期时间优先</NButton>
       </NFormItem>-->
-      <NFormItem label="使用源石数量" :show-label="true" size="small" label-align="left"
-        label-placement="left" :show-feedback="false">
+      <NFormItem
+        label="使用源石数量"
+        :show-label="true"
+        size="small"
+        label-align="left"
+        label-placement="left"
+        :show-feedback="false"
+      >
         <!-- <NCheckbox
         :checked="props.configurations.originite_prime"
         @update:checked="
           (checked) => handleConfigurationUpdate('originite_prime', checked)
         "
         />-->
-        <NInputNumber :value="props.configurations.stone" :update-value-on-input="false"
-          @update:value="handleStoneUpdate" />
+        <NInputNumber
+          :value="props.configurations.stone"
+          :update-value-on-input="false"
+          @update:value="handleStoneUpdate"
+        />
       </NFormItem>
-      <NFormItem :show-feedback="false" :show-label="false">
-        <NButton quaternary type="primary" @click="showModal = true" :focusable="false">掉落物选择...
+      <NFormItem
+        :show-feedback="false"
+        :show-label="false"
+      >
+        <NButton
+          quaternary
+          type="primary"
+          :focusable="false"
+          @click="showModal = true"
+        >
+          掉落物选择...
         </NButton>
         <!--FIXME 掉落物炸了-->
       </NFormItem>
     </NSpace>
-    <NModal v-model:show="showModal" display-directive="show" title="关卡选择" role="dialog"
-      aria-modal="true">
-      <LevelChoose :levels="props.configurations.levels" :special="props.configurations.special"
+    <NModal
+      v-model:show="showModal"
+      display-directive="show"
+      title="关卡选择"
+      role="dialog"
+      aria-modal="true"
+    >
+      <LevelChoose
+        :levels="props.configurations.levels"
+        :special="props.configurations.special"
         @update:special_type="
           (type) => handleConfigurationUpdate('special.type', type)
-        " />
+        "
+      />
     </NModal>
   </div>
 </template>

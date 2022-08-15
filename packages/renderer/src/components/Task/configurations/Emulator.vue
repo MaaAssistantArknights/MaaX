@@ -49,14 +49,28 @@ if (commandLine) {
 <template>
   <div class="configuration-form">
     <NSpace vertical>
-      <NFormItem label="启动后延迟" :show-label="true" size="small" label-align="left" label-placement="left" :show-feedback="false">
+      <NFormItem
+        label="启动后延迟"
+        :show-label="true"
+        size="small"
+        label-align="left"
+        label-placement="left"
+        :show-feedback="false"
+      >
         <NSelect
           :value="props.configurations.delay"
-          @update:value="(value) => _.set(props.configurations, 'delay', value)"
           :options="delayOptions"
+          @update:value="(value) => _.set(props.configurations, 'delay', value)"
         />
       </NFormItem>
-       <NFormItem label="当前参数" :show-label="true" size="small" label-align="left" label-placement="left" :show-feedback="false">
+      <NFormItem
+        label="当前参数"
+        :show-label="true"
+        size="small"
+        label-align="left"
+        label-placement="left"
+        :show-feedback="false"
+      >
         <NInput
           :disabled="true"
           :value="configurations.commandLine"

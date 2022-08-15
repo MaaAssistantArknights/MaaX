@@ -1,7 +1,7 @@
 import { ipcMainHandle, ipcMainRemove } from '@main/utils/ipc-main'
 import { getDeviceUuid } from './utils'
 
-export function useEmulatorHooks(adapter: Promise<EmulatorAdapter>): void {
+export function useEmulatorHooks (adapter: Promise<EmulatorAdapter>): void {
   ipcMainHandle('main.DeviceDetector:getEmulators',
     async (event): Promise<Emulator[]> => {
       return await (await adapter).getEmulators()
@@ -15,7 +15,7 @@ export function useEmulatorHooks(adapter: Promise<EmulatorAdapter>): void {
     async (event, address: string, adbPath?: string) => await getDeviceUuid(address, adbPath))
 }
 
-export function removeEmulatorHooks(): void {
+export function removeEmulatorHooks (): void {
   ipcMainRemove('main.DeviceDetector:getEmulators')
   ipcMainRemove('main.DeviceDetector:getAdbDevices')
 }

@@ -60,22 +60,28 @@ function handleExpediteUpdate (value: number | null) {
   <div
     class="configuration-form"
   >
-      <NFormItem label="招募次数" :show-label="true"
+    <NFormItem
+      label="招募次数"
+      :show-label="true"
       size="small"
       label-align="left"
       label-placement="left"
-       :show-feedback="false">
+      :show-feedback="false"
+    >
       <NInputNumber
         :value="configurations.times"
         @update:value="handleRecruitTimesUpdate"
       />
     </NFormItem>
 
-    <NFormItem label="使用加急许可" :show-label="true"
+    <NFormItem
+      label="使用加急许可"
+      :show-label="true"
       size="small"
       label-align="left"
       label-placement="left"
-       :show-feedback="false">
+      :show-feedback="false"
+    >
       <NCheckbox
         :checked="configurations.expedite"
         @update:checked="
@@ -84,28 +90,34 @@ function handleExpediteUpdate (value: number | null) {
         "
       />
     </NFormItem>
-    <NFormItem label="使用加急许可数量" :show-label="true"
+    <NFormItem
+      label="使用加急许可数量"
+      :show-label="true"
       size="small"
       label-align="left"
       label-placement="left"
-       :show-feedback="false">
-        <!-- <NCheckbox
+      :show-feedback="false"
+    >
+      <!-- <NCheckbox
         :checked="props.configurations.medicine"
         @update:checked="
           (checked) => handleConfigurationUpdate('medicine', checked)
         "
         />-->
-        <NInputNumber
-          :value="props.configurations.expedite_times"
-          :update-value-on-input="false"
-          @update:value="handleExpediteUpdate"
-        />
-      </NFormItem>
-    <NFormItem label="自动刷新3星tag" :show-label="true"
+      <NInputNumber
+        :value="props.configurations.expedite_times"
+        :update-value-on-input="false"
+        @update:value="handleExpediteUpdate"
+      />
+    </NFormItem>
+    <NFormItem
+      label="自动刷新3星tag"
+      :show-label="true"
       size="small"
       label-align="left"
       label-placement="left"
-       :show-feedback="false">
+      :show-feedback="false"
+    >
       <NCheckbox
         :checked="configurations.refresh"
         @update:checked="
@@ -116,11 +128,14 @@ function handleExpediteUpdate (value: number | null) {
         "
       />
     </NFormItem>
-    <NFormItem label="跳过小车" :show-label="true"
+    <NFormItem
+      label="跳过小车"
+      :show-label="true"
       size="small"
       label-align="left"
       label-placement="left"
-       :show-feedback="false">
+      :show-feedback="false"
+    >
       <NCheckbox
         :checked="configurations.skip_robot"
         @update:checked="
@@ -131,11 +146,14 @@ function handleExpediteUpdate (value: number | null) {
         "
       />
     </NFormItem>
-    <NFormItem label="自动确认3星" :show-label="true"
+    <NFormItem
+      label="自动确认3星"
+      :show-label="true"
       size="small"
       label-align="left"
       label-placement="left"
-       :show-feedback="false">
+      :show-feedback="false"
+    >
       <NCheckbox
         :checked="configurations.confirm.find(v => v === 3)"
         @update:checked="
@@ -146,11 +164,14 @@ function handleExpediteUpdate (value: number | null) {
         "
       />
     </NFormItem>
-    <NFormItem label="自动确认4星" :show-label="true"
+    <NFormItem
+      label="自动确认4星"
+      :show-label="true"
       size="small"
       label-align="left"
       label-placement="left"
-       :show-feedback="false">
+      :show-feedback="false"
+    >
       <NCheckbox
         :checked="configurations.confirm.find(v => v === 4)"
         @update:checked="
@@ -161,11 +182,14 @@ function handleExpediteUpdate (value: number | null) {
         "
       />
     </NFormItem>
-    <NFormItem label="自动确认5星" :show-label="true"
+    <NFormItem
+      label="自动确认5星"
+      :show-label="true"
       size="small"
       label-align="left"
       label-placement="left"
-       :show-feedback="false">
+      :show-feedback="false"
+    >
       <NCheckbox
         :checked="configurations.confirm.find(v => v === 5)"
         @update:checked="

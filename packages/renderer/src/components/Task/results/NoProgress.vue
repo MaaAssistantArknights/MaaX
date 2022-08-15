@@ -4,7 +4,9 @@ import { NText } from 'naive-ui'
 
 <template>
   <div class="no-progress">
-    <NText :depth="3">无进度展示</NText>
+    <NText :depth="3">
+      无进度展示
+    </NText>
   </div>
 </template>
 

@@ -111,8 +111,8 @@ async function handleDeviceConnect () {
 
 <template>
   <div
-    class="device-card"
     v-if="device"
+    class="device-card"
     :class="isCurrent ? 'current' : ''"
     :style="{
       backgroundColor: isCurrent ? themeVars.hoverColor : 'transparent',
@@ -120,36 +120,41 @@ async function handleDeviceConnect () {
   >
     <NButton
       class="device-info"
-      @click="handleJumpToTask"
-      @dblclick="handleDeviceConnect"
       text
       :focusable="false"
+      @click="handleJumpToTask"
+      @dblclick="handleDeviceConnect"
     >
       <NTooltip>
         <template #trigger>
-          <div class="device-status" :data-status="device?.status"></div>
+          <div
+            class="device-status"
+            :data-status="device?.status"
+          />
         </template>
         {{
           (() => {
             switch (device?.status) {
-              case "available":
-                return "点击右边按钮连接设备";
-              case "connected":
-                return "设备已连接";
-              case "connecting":
-                return "设备正在连接中...";
-              case "disconnected":
-                return "设备已断开连接";
-              case "tasking":
-                return "任务进行中...";
-              default:
-                return "设备状态未知";
+            case "available":
+              return "点击右边按钮连接设备";
+            case "connected":
+              return "设备已连接";
+            case "connecting":
+              return "设备正在连接中...";
+            case "disconnected":
+              return "设备已断开连接";
+            case "tasking":
+              return "任务进行中...";
+            default:
+              return "设备状态未知";
             }
           })()
         }}
       </NTooltip>
       <!-- <DeviceDetailPopover :uuid="props.uuid"> -->
-        <div class="device-name">{{ deviceDisplayName }}</div>
+      <div class="device-name">
+        {{ deviceDisplayName }}
+      </div>
       <!-- </DeviceDetailPopover> -->
     </NButton>
     <NSpace :align="'center'">
@@ -173,7 +178,7 @@ async function handleDeviceConnect () {
         </template>
         {{
           (device?.status === "tasking" ? "当前设备正在进行任务，" : "") +
-          "确定断开连接？"
+            "确定断开连接？"
         }}
       </NPopconfirm>
       <NButton

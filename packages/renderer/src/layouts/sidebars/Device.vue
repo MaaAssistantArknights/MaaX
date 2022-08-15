@@ -132,19 +132,22 @@ setInterval(() => {
     <div class="connected-devices">
       <DeviceCard
         v-for="device in connectedDevices"
-        :uuid="device.uuid"
         :key="device.uuid"
+        :uuid="device.uuid"
       />
     </div>
-    <NSpace :justify="'space-between'" :align="'center'">
+    <NSpace
+      :justify="'space-between'"
+      :align="'center'"
+    >
       <h2>可用的设备列表</h2>
       <NTooltip>
         <template #trigger>
           <NButton
             text
             style="font-size: 24px"
-            @click="handleRefreshDevices"
             :disabled="settingStore.version.core === undefined ? true : false"
+            @click="handleRefreshDevices"
           >
             <NIcon>
               <IconRefresh />
@@ -157,8 +160,8 @@ setInterval(() => {
     <div class="disconnected-devices">
       <DeviceCard
         v-for="device in disconnectedDevices"
-        :uuid="device.uuid"
         :key="device.uuid"
+        :uuid="device.uuid"
       />
     </div>
     <!-- <div class="unknown-devices">

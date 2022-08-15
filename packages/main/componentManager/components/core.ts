@@ -3,23 +3,24 @@ import fs from 'fs'
 import CoreLoader from '@main/coreLoader'
 import CoreInstaller from '@main/componentManager/installers/core'
 
-const coreLoader = new CoreLoader()
+export const getComponentCore = () => {
+  const coreLoader = new CoreLoader()
 
-const componentCore: Component = {
-  type: 'core',
-  status: 'not-installed',
-  installer: new CoreInstaller()
+  const componentCore: Component = {
+    type: 'Maa Core',
+    status: 'not-installed',
+    installer: new CoreInstaller()
+  }
+
+  const installed = fs.existsSync(coreLoader.libPath)
+  if (installed) {
+    componentCore.status = 'not-compatible'
+  }
+
+  const coreVersion = coreLoader.GetVersion()
+
+  if (coreVersion) {
+    componentCore.status = 'installed'
+  }
+  return componentCore
 }
-
-const installed = fs.existsSync(coreLoader.libPath)
-if (installed) {
-  componentCore.status = 'not-compatible'
-}
-
-const coreVersion = coreLoader.GetVersion()
-
-if (coreVersion) {
-  componentCore.status = 'installed'
-}
-
-export default componentCore

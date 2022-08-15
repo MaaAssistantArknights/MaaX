@@ -157,12 +157,17 @@ onMounted(() => {
 
 <template>
   <div class="configuration-form infrast-configuration">
-    <NFormItem :show-label="true"
+    <NFormItem
+      :show-label="true"
       size="small"
       label-align="left"
       label-placement="left"
-       :show-feedback="false">
-      <div class="facilities" ref="facilitiesRef">
+      :show-feedback="false"
+    >
+      <div
+        ref="facilitiesRef"
+        class="facilities"
+      >
         <NCheckbox
           v-for="[id, name] of Object.entries(facilityOptions)"
           :key="id"
@@ -176,52 +181,59 @@ onMounted(() => {
         />
       </div>
     </NFormItem>
-    <NSpace class="infra-left" vertical>
+    <NSpace
+      class="infra-left"
+      vertical
+    >
       <NFormItem
         label="无人机用途"
         :show-label="true"
-      size="small"
-      label-align="left"
-      label-placement="top"
-       :show-feedback="false"
+        size="small"
+        label-align="left"
+        label-placement="top"
+        :show-feedback="false"
         :label-style="{ justifyContent: 'center' }"
       >
         <NSelect
           :value="props.configurations.drones"
+          :options="droneUsageOptions"
           @update:value="
             (value) => _.set(props.configurations, 'drones', value)
           "
-          :options="droneUsageOptions"
         />
       </NFormItem>
       <NFormItem
         label="进驻宿舍理智阈值"
         :show-label="true"
         :label-style="{ justifyContent: 'center', padding: 0 }"
-      size="small"
-      label-align="left"
-      label-placement="top"
-       :show-feedback="false"
+        size="small"
+        label-align="left"
+        label-placement="top"
+        :show-feedback="false"
       >
         <NSlider
           :value="props.configurations.threshold"
+          :max="23"
+          :min="0"
           @update:value="
             (value) => _.set(props.configurations, 'threshold', value)
           "
-          :max="23"
-          :min="0"
         />
       </NFormItem>
-      <NFormItem :show-label="false"
-      size="small"
-       :show-feedback="false">
+      <NFormItem
+        :show-label="false"
+        size="small"
+        :show-feedback="false"
+      >
         <NCheckbox
           :checked="props.configurations.replenish"
           @update:checked="
             (checked) =>
               _.set(props.configurations, 'replenish', checked)
           "
-        >源石碎片自动补货</NCheckbox>
+        >
+          源石碎片自动补货
+        </NCheckbox>
       </NFormItem>
     </NSpace>
   </div>

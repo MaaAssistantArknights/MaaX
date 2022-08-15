@@ -56,7 +56,7 @@ class CoreLoader {
     linux: [
       'libiomp5.so',
       'libmklml_intel.so',
-      'libmkldnn.so',
+      'libmkldnn.so'
     ],
     darwin: ['libpaddle_inference.dylib']
   }

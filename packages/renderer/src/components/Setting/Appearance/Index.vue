@@ -13,7 +13,7 @@ import {
 import useThemeStore from '@/store/theme'
 const themeStore = useThemeStore()
 
-async function openBgFileSelector(): Promise<URL | undefined> {
+async function openBgFileSelector (): Promise<URL | undefined> {
   const { filePaths } = await window.ipcRenderer.invoke(
     'main.WindowManager:openDialog',
     '选择背景图片',
@@ -30,27 +30,27 @@ async function openBgFileSelector(): Promise<URL | undefined> {
   return new URL(filepath.startsWith('file://') ? filepath : `file://${filepath}`)
 }
 
-async function handleLightBgSelect() {
+async function handleLightBgSelect () {
   const url = await openBgFileSelector()
   themeStore.updateBgLight({ url: url?.href, opacity: themeStore.bgLight.opacity })
 }
 
-async function handleDarkBgSelect() {
+async function handleDarkBgSelect () {
   const url = await openBgFileSelector()
   themeStore.updateBgDark({ url: url?.href, opacity: themeStore.bgDark.opacity })
 }
 
-function handleUpdateBgLightOpacity(value: number | null) {
+function handleUpdateBgLightOpacity (value: number | null) {
   themeStore.updateBgLight({ url: themeStore.bgLight.url, opacity: value ?? 1 })
 }
 
-function handleUpdateBgDarkOpacity(value: number | null) {
+function handleUpdateBgDarkOpacity (value: number | null) {
   themeStore.updateBgDark({ url: themeStore.bgDark.url, opacity: value ?? 1 })
 }
 
 const bgPreviewWidth = ref(0)
 
-function handleWindowResize() {
+function handleWindowResize () {
   bgPreviewWidth.value = window.innerWidth - 352
 }
 
@@ -62,39 +62,95 @@ onMounted(() => {
 
 <template>
   <div id="appearance">
-    <h2 class="title">外观</h2>
-    <NForm label-placement="left" label-width="auto" label-align="right" :show-feedback="false">
+    <h2 class="title">
+      外观
+    </h2>
+    <NForm
+      label-placement="left"
+      label-width="auto"
+      label-align="right"
+      :show-feedback="false"
+    >
       <NFormItem label="主题色不透明度">
-        <NSlider :value="themeStore.themeColorOpacity" :min="0" :max="1" :step="0.01"
+        <NSlider
+          :value="themeStore.themeColorOpacity"
+          :min="0"
+          :max="1"
+          :step="0.01"
+          :format-tooltip="(value) => `${Math.floor(value * 100)}%`"
+          :style="{ width: '300px' }"
           @update:value="(value) => themeStore.updateColorOpacity(value)"
-          :format-tooltip="(value) => `${Math.floor(value * 100)}%`" :style="{ width: '300px' }" />
+        />
       </NFormItem>
-      <NFormItem label="开启亚克力效果（重启应用生效）" >
-        <NSwitch :value="themeStore.acrylic" @update:value="(value) => themeStore.updateAcrylic(value)" />
+      <NFormItem label="开启亚克力效果（重启应用生效）">
+        <NSwitch
+          :value="themeStore.acrylic"
+          @update:value="(value) => themeStore.updateAcrylic(value)"
+        />
       </NFormItem>
       <NFormItem label="背景随主题变换">
-        <NSwitch :value="themeStore.bgFollowTheme" @update:value="(value) => themeStore.updateBgFollowTheme(value)" />
+        <NSwitch
+          :value="themeStore.bgFollowTheme"
+          @update:value="(value) => themeStore.updateBgFollowTheme(value)"
+        />
       </NFormItem>
-      <NSpace vertical align="center">
-        <NFormItem label="背景图片" label-placement="top" :label-style="{ justifyContent: 'center' }"
-          @click="handleLightBgSelect">
-          <NImage class="background-preview" :width="bgPreviewWidth" :preview-disabled="true"
-            :src="themeStore.bgLight.url" alt="选择图片" />
+      <NSpace
+        vertical
+        align="center"
+      >
+        <NFormItem
+          label="背景图片"
+          label-placement="top"
+          :label-style="{ justifyContent: 'center' }"
+          @click="handleLightBgSelect"
+        >
+          <NImage
+            class="background-preview"
+            :width="bgPreviewWidth"
+            :preview-disabled="true"
+            :src="themeStore.bgLight.url"
+            alt="选择图片"
+          />
         </NFormItem>
         <NFormItem label="不透明度">
-          <NInputNumber :value="themeStore.bgLight.opacity" :min="0" :max="1" :step="0.01"
-            @update:value="handleUpdateBgLightOpacity" :format="(value) => `${Math.floor((value ?? 0) * 100)}%`"
-            :parse="(input) => Number(input.replace('%', '')) / 100" />
+          <NInputNumber
+            :value="themeStore.bgLight.opacity"
+            :min="0"
+            :max="1"
+            :step="0.01"
+            :format="(value) => `${Math.floor((value ?? 0) * 100)}%`"
+            :parse="(input) => Number(input.replace('%', '')) / 100"
+            @update:value="handleUpdateBgLightOpacity"
+          />
         </NFormItem>
-        <NFormItem v-show="themeStore.bgFollowTheme" label="深色背景图片" label-placement="top"
-          :label-style="{ justifyContent: 'center' }" @click="handleDarkBgSelect">
-          <NImage class="background-preview" :width="bgPreviewWidth" :preview-disabled="true"
-            :src="themeStore.bgDark.url" alt="选择图片" />
+        <NFormItem
+          v-show="themeStore.bgFollowTheme"
+          label="深色背景图片"
+          label-placement="top"
+          :label-style="{ justifyContent: 'center' }"
+          @click="handleDarkBgSelect"
+        >
+          <NImage
+            class="background-preview"
+            :width="bgPreviewWidth"
+            :preview-disabled="true"
+            :src="themeStore.bgDark.url"
+            alt="选择图片"
+          />
         </NFormItem>
-        <NFormItem v-show="themeStore.bgFollowTheme" label="不透明度">
-          <NInputNumber :value="themeStore.bgDark.opacity" :min="0" :max="1" :step="0.01"
-            @update:value="handleUpdateBgDarkOpacity" :format="(value) => `${Math.floor((value ?? 0) * 100)}%`"
-            :parse="(input) => Number(input.replace('%', '')) / 100" />
+        <NFormItem
+          v-show="themeStore.bgFollowTheme"
+          label="不透明度"
+        >
+          <NInputNumber
+            :value="themeStore.bgDark.opacity"
+            :min="0"
+            :max="1"
+            :step="0.01"
+            :format="(value) => `${Math.floor((value ?? 0) * 100)}%`"
+            :parse="(input) => Number(input.replace('%', '')) / 100"
+            @update:value="handleUpdateBgDarkOpacity"
+          />
         </NFormItem>
       </NSpace>
     </NForm>

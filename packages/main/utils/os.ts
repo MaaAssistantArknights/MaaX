@@ -1,4 +1,4 @@
-import SystemInformation from "systeminformation"
+import SystemInformation from 'systeminformation'
 
 export const getArch = (): Api.Maa.Arch => {
   let arch: Api.Maa.Arch = 'NoArch'

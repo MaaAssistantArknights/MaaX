@@ -66,21 +66,36 @@ function handleSpecialTypeChange () {
   >
     <template #header-extra>
       <!-- 搜你个头，就那么几关还搜搜搜 -->
-      <NInput v-if="false" placeholder="搜索" size="small" />
+      <NInput
+        v-if="false"
+        placeholder="搜索"
+        size="small"
+      />
     </template>
     <NSpace vertical>
       <div class="level-card">
         <NTooltip>
           <template #trigger>
-            <NButton text :focusable="false" @click="handleSpecialTypeChange">
+            <NButton
+              text
+              :focusable="false"
+              @click="handleSpecialTypeChange"
+            >
               {{ special.type === "current" ? "当前关卡" : "上次作战" }}
             </NButton>
           </template>
           {{ `点击切换到“${special.type !== "current" ? "当前关卡" : "上次作战"}”` }}
         </NTooltip>
-        <NInputNumber v-model:value="$props.special.times" size="small" />
+        <NInputNumber
+          v-model:value="$props.special.times"
+          size="small"
+        />
       </div>
-      <div class="level-card" v-for="(level, index) in props.levels" :key="level.code">
+      <div
+        v-for="(level, index) in props.levels"
+        :key="level.code"
+        class="level-card"
+      >
         <NSpace :size="2">
           <span>
             {{ zones[index]?.zoneNameFirst || "" }}
@@ -89,7 +104,10 @@ function handleSpecialTypeChange () {
           <span>/</span>
           <span>{{ level.code }}</span>
         </NSpace>
-        <NInputNumber v-model:value="level.times" size="small" />
+        <NInputNumber
+          v-model:value="level.times"
+          size="small"
+        />
         <div class="cover">
           <!-- <img
             src=""

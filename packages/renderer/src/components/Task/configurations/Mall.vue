@@ -101,11 +101,14 @@ function onItemChange () {
   <div
     class="configuration-form"
   >
-    <NFormItem label="自动购物" :show-label="true"
+    <NFormItem
+      label="自动购物"
+      :show-label="true"
       size="small"
       label-align="left"
       label-placement="left"
-       :show-feedback="false">
+      :show-feedback="false"
+    >
       <NCheckbox
         :checked="props.configurations.shopping"
         @update:checked="
@@ -115,16 +118,28 @@ function onItemChange () {
       />
     </NFormItem>
 
-    <NFormItem :show-label="false"
+    <NFormItem
+      :show-label="false"
       size="small"
       label-align="left"
       label-placement="left"
-       :show-feedback="false">
-      <NButton quaternary type="primary" @click="showModal = true" :focusable="false">管理购买选项...
+      :show-feedback="false"
+    >
+      <NButton
+        quaternary
+        type="primary"
+        :focusable="false"
+        @click="showModal = true"
+      >
+        管理购买选项...
       </NButton>
-      <MallSelect v-model:show="showModal" :buy_first="buyFirst" :blacklist="blackList" :others="otherItems"
-        @onChange:Item="onItemChange">
-      </MallSelect>
+      <MallSelect
+        v-model:show="showModal"
+        :buy_first="buyFirst"
+        :blacklist="blackList"
+        :others="otherItems"
+        @onChange:Item="onItemChange"
+      />
     </NFormItem>
   </div>
 </template>

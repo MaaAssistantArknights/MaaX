@@ -40,8 +40,16 @@ const handleSelect = (key: string) => {
 </script>
 
 <template>
-  <NDropdown placement="bottom-start" trigger="manual" :show="props.show" :x="props.x" :y="props.y"
-    :options="options" @clickoutside="handleClickOutside" @select="handleSelect" />
+  <NDropdown
+    placement="bottom-start"
+    trigger="manual"
+    :show="props.show"
+    :x="props.x"
+    :y="props.y"
+    :options="options"
+    @clickoutside="handleClickOutside"
+    @select="handleSelect"
+  />
 </template>
 
 <style lang="less" scoped>

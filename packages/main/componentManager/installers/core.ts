@@ -1,6 +1,6 @@
 /* eslint-disable vue/max-len */
 import _ from 'lodash'
-import { app, ipcMain, net } from 'electron'
+import { app } from 'electron'
 import axios, { AxiosInstance } from 'axios'
 
 import { Singleton } from '@common/function/singletonDecorator'
@@ -9,8 +9,10 @@ import CoreLoader from '@main/coreLoader'
 
 import ComponentInstaller from '../componentInstaller'
 import Storage from '@main/storageManager'
+import DownloadManager from '@main/downloadManager'
 import fs from 'fs'
 import { ipcMainHandle, ipcMainSend } from '@main/utils/ipc-main'
+import logger from '@main/utils/logger'
 
 const storage = new Storage()
 const coreLoader = new CoreLoader()
@@ -44,7 +46,7 @@ interface PackageDetail {
 const tempServer = 'github'
 interface githubApiResponse {
   url: string
-  assets: Array<{name: string, browser_download_url: string}>
+  assets: Array<{ name: string, browser_download_url: string }>
 }
 
 const mockRep = [
@@ -56,89 +58,28 @@ const mockRep = [
   }
 ]
 
-type packageNameType = 'MaaBundle' | 'MaaCore' | 'MaaDependency' | 'MaaDependencyNoAvx' |'MaaResource'
+type packageNameType = 'MaaBundle' | 'MaaCore' | 'MaaDependency' | 'MaaDependencyNoAvx' | 'MaaResource'
 
 const packages = ['MaaBundle', 'MaaCore', 'MaaDependency', 'MaaDependencyNoAvx', 'MaaResource']
 
 @Singleton
 class CoreInstaller extends ComponentInstaller {
-  private static packages: any
-  private static instance: AxiosInstance
-
   public constructor () {
     super()
-    CoreInstaller.packages = {}
-    packages.forEach((pkg) => {
-      CoreInstaller.packages[pkg] = {
-        name: pkg,
-        version: 0,
-        url: '',
-        checksum: ''
-      }
-    })
-
-    CoreInstaller.instance = axios.create({
-      // baseURL: CoreInstaller.sources[tempServer].url,
-      headers: { 'User-Agent': CoreInstaller.UA },
-      method: 'GET',
-      timeout: 5000
-    })
-  }
-
-  private static readonly sources = {
-    github: {
-      url: 'https://api.github.com/repos/MaaAssistantArknights/MaaAssistantArknights/releases/latest',
-      data: '',
-      parse: async (data: githubApiResponse): Promise<boolean> => {
-        const checksum = data.assets.find((v) => v.name === 'checksum.json')
-        if (checksum) {
-          await downloadFile(CoreInstaller.instance, 'https://github.com/MaaAssistantArknights/MaaAssistantArknights/releases/download/v4.2.1/MaaBundle-v4.2.1.zip', 'F:/check.json', (current, total) => {
-            console.log('progress ', (current / total) * 100, '%')
-            const progress = Math.ceil((current / total) * 100)
-            ipcMainSend('renderer.DownloadModel:updateStatus', {
-              type: 'core',
-              data: {
-                text: `正在下载${progress}%`,
-                progress: Math.ceil((current / total) * 100)
-              }
-            })
-          })
-          return true // parse checksum.json end
-        } else {
-          return false // no package meta data
-        }
-      },
-      checkUpdate: async () => {
-
-      }
-    },
-    maads: {
-      url: '',
-      parse: (response) => {}
-    }
-
-  }
-
-  private static readonly coreList = ['MaaCore', 'MaaDependency', 'MaaResource']
-  private static readonly checksum = 'checksum.txt'
-  private releaseInfo: Object
-
-  public getLocalVersion () {
-    const v = {}
-    CoreInstaller.coreList.forEach((pkg) => {
-      v[pkg] = storage.get(`version.${pkg}`)
-    })
-    return v
-  }
-
-  public async fetchRaw (url: string): Promise<void> {
-    const response = await axios.get(url)
-    this.releaseInfo = response.data
   }
 
   public async install (): Promise<void> {
-    const tempdir = app.getPath('temp')
     const coredir = coreLoader.libPath
+
+    try {
+      if (this.downloader_) {
+        const downloadUrl = await this.checkUpdate()
+        this.downloader_?.downloadComponent(downloadUrl, 'Maa Core')
+        this.status_ = 'downloading'
+      }
+    } catch (e) {
+      logger.error(e)
+    }
   }
 
   public get status (): InstallerStatus {
@@ -150,26 +91,50 @@ class CoreInstaller extends ComponentInstaller {
   }
 
   protected onProgress (progress: number): void {
-
-  }
-
-  protected onException (): void {
-
-  }
-
-  protected async checkUpdate (): Promise<void> {
-    await CoreInstaller.instance.get('https://api.github.com/repos/MaaAssistantArknights/MaaAssistantArknights/releases/latest').then(
-      async (response) => {
-        // TODO: catch error
-        await CoreInstaller.sources[tempServer].parse(response.data)
-        CoreInstaller.sources[tempServer].checkUpdate()
-      }
-    ).catch((error) => {
-      console.log(error)
+    ipcMainSend('renderer.ComponentManager:updateStatus', {
+      type: 'Maa Core',
+      status: this.status_,
+      progress
     })
   }
 
+  protected onCompleted (): void {
+    this.status_ = 'done'
+    ipcMainSend('renderer.ComponentManager:installDone')
+  }
+
+  protected onException (): void {
+    this.status_ = 'exception'
+    ipcMainSend('renderer.ComponentManager:installInterrupted')
+  }
+
+  public readonly downloadHandle = {
+    handleDownloadUpdate: (task: DownloadTask) => {
+      this.onProgress(0.8 * (task.progress.precent ?? 0))
+    },
+    handleDownloadCompleted: (task: DownloadTask) => {
+      this.status_ = 'unzipping'
+      this.onProgress(0.8)
+    },
+    handleDownloadInterrupted: (task: DownloadTask) => {
+      this.onException()
+    }
+  }
+
+  public readonly unzipHandle = {
+
+  }
+
+  protected async checkUpdate (): Promise<string> {
+    const url = 'https://api.github.com/repos/MaaAssistantArknights/MaaAssistantArknights/releases/latest'
+    const response = await axios.get(url, {})
+    const { assets } = response.data
+    const dependency = assets.find((asset: any) => /^MaaDependency-v(.+)\.zip$/.test(asset.name))
+    return dependency.browser_download_url
+  }
+
   protected status_: InstallerStatus = 'pending'
+  public downloader_: DownloadManager | null = null
 }
 
 // const ci = new CoreInstaller()

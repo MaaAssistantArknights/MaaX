@@ -11,17 +11,16 @@ const siLoading = ref(false)
 
 const { t } = useI18n()
 
-function refreshSystemInformation() {
+function refreshSystemInformation () {
   siLoading.value = true
   getSystemInformation()
     .then(data => {
       siRef.value = data
       siLoading.value = false
-      console.log(siRef.value)
     })
 }
 
-function si(key: string): string | Array<any> {
+function si (key: string): string | Array<any> {
   if (!siRef.value) {
     return t('Common.N/A')
   }
@@ -32,7 +31,7 @@ function si(key: string): string | Array<any> {
   return showValue(value)
 }
 
-function showValue(value: any): string {
+function showValue (value: any): string {
   if (typeof value === 'number' && value === 0) {
     return '0'
   }
@@ -48,7 +47,7 @@ function showValue(value: any): string {
   return value
 }
 
-function formatBytes(bytes: number): string {
+function formatBytes (bytes: number): string {
   const units = ['Bytes', 'KiB', 'MiB', 'GiB']
   let index = 0
   while (bytes > 1024 && index < 3) {
@@ -65,9 +64,17 @@ onMounted(() => {
 </script>
 
 <template>
-  <h3 class="subtitle">系统信息</h3>
-  <NCollapse display-directive="show" class="system-information">
-    <NCollapseItem :title="$t('SystemInformation.System.Title')" name="system">
+  <h3 class="subtitle">
+    系统信息
+  </h3>
+  <NCollapse
+    display-directive="show"
+    class="system-information"
+  >
+    <NCollapseItem
+      :title="$t('SystemInformation.System.Title')"
+      name="system"
+    >
       <NTable striped>
         <tbody>
           <tr>
@@ -129,7 +136,10 @@ onMounted(() => {
         </tbody>
       </NTable>
     </NCollapseItem>
-    <NCollapseItem :title="$t('SystemInformation.Bios.Title')" name="bios">
+    <NCollapseItem
+      :title="$t('SystemInformation.Bios.Title')"
+      name="bios"
+    >
       <NTable striped>
         <tbody>
           <tr>
@@ -175,7 +185,10 @@ onMounted(() => {
         </tbody>
       </NTable>
     </NCollapseItem>
-    <NCollapseItem :title="$t('SystemInformation.Baseboard.Title')" name="baseboard">
+    <NCollapseItem
+      :title="$t('SystemInformation.Baseboard.Title')"
+      name="baseboard"
+    >
       <NTable striped>
         <tbody>
           <tr>
@@ -229,7 +242,10 @@ onMounted(() => {
         </tbody>
       </NTable>
     </NCollapseItem>
-    <NCollapseItem :title="$t('SystemInformation.Chassis.Title')" name="Chassis">
+    <NCollapseItem
+      :title="$t('SystemInformation.Chassis.Title')"
+      name="Chassis"
+    >
       <NTable striped>
         <tbody>
           <tr>
@@ -283,7 +299,10 @@ onMounted(() => {
         </tbody>
       </NTable>
     </NCollapseItem>
-    <NCollapseItem :title="$t('SystemInformation.Os.Title')" name="os">
+    <NCollapseItem
+      :title="$t('SystemInformation.Os.Title')"
+      name="os"
+    >
       <NTable striped>
         <tbody>
           <tr>
@@ -353,7 +372,10 @@ onMounted(() => {
         </tbody>
       </NTable>
     </NCollapseItem>
-    <NCollapseItem :title="$t('SystemInformation.Uuid.Title')" name="uuid">
+    <NCollapseItem
+      :title="$t('SystemInformation.Uuid.Title')"
+      name="uuid"
+    >
       <NTable striped>
         <tbody>
           <tr>
@@ -375,7 +397,10 @@ onMounted(() => {
         </tbody>
       </NTable>
     </NCollapseItem>
-    <NCollapseItem :title="$t('SystemInformation.Cpu.Title')" name="cpu">
+    <NCollapseItem
+      :title="$t('SystemInformation.Cpu.Title')"
+      name="cpu"
+    >
       <NTable striped>
         <tbody>
           <tr>
@@ -428,9 +453,12 @@ onMounted(() => {
               <NEllipsis>{{ $t('SystemInformation.Cpu.Flags') }}</NEllipsis>
             </td>
             <td>
-              <NEllipsis>{{ si('cpu.flags') }}
+              <NEllipsis>
+                {{ si('cpu.flags') }}
                 <template #tooltip>
-                  <div :style="{ maxWidth: '70vw' }">{{ si('cpu.flags') }}</div>
+                  <div :style="{ maxWidth: '70vw' }">
+                    {{ si('cpu.flags') }}
+                  </div>
                 </template>
               </NEllipsis>
             </td>
@@ -438,9 +466,16 @@ onMounted(() => {
         </tbody>
       </NTable>
     </NCollapseItem>
-    <NCollapseItem :title="$t('SystemInformation.Graphics.Title')" name="graphics">
+    <NCollapseItem
+      :title="$t('SystemInformation.Graphics.Title')"
+      name="graphics"
+    >
       <NCollapse display-directive="show">
-        <NCollapseItem v-for="(graphic, index) of si('graphics.controllers')" :key="index" :title="graphic.model">
+        <NCollapseItem
+          v-for="(graphic, index) of si('graphics.controllers')"
+          :key="index"
+          :title="graphic.model"
+        >
           <NTable striped>
             <tbody>
               <tr>
@@ -472,9 +507,16 @@ onMounted(() => {
         </NCollapseItem>
       </NCollapse>
     </NCollapseItem>
-    <NCollapseItem :title="$t('SystemInformation.Monitor.Title')" name="monitor">
+    <NCollapseItem
+      :title="$t('SystemInformation.Monitor.Title')"
+      name="monitor"
+    >
       <NCollapse display-directive="show">
-        <NCollapseItem v-for="(monitor, index) of si('graphics.displays')" :key="index" :title="monitor.model">
+        <NCollapseItem
+          v-for="(monitor, index) of si('graphics.displays')"
+          :key="index"
+          :title="monitor.model"
+        >
           <NTable striped>
             <tbody>
               <tr>
@@ -538,9 +580,16 @@ onMounted(() => {
         </NCollapseItem>
       </NCollapse>
     </NCollapseItem>
-    <NCollapseItem :title="$t('SystemInformation.Net.Title')" name="net">
+    <NCollapseItem
+      :title="$t('SystemInformation.Net.Title')"
+      name="net"
+    >
       <NCollapse display-directive="show">
-        <NCollapseItem v-for="(adapter, index) of si('net')" :key="index" :title="adapter.ifaceName">
+        <NCollapseItem
+          v-for="(adapter, index) of si('net')"
+          :key="index"
+          :title="adapter.ifaceName"
+        >
           <NTable striped>
             <tbody>
               <tr>
@@ -620,9 +669,16 @@ onMounted(() => {
         </NCollapseItem>
       </NCollapse>
     </NCollapseItem>
-    <NCollapseItem :title="$t('SystemInformation.MemLayout.Title')" name="memLayout">
+    <NCollapseItem
+      :title="$t('SystemInformation.MemLayout.Title')"
+      name="memLayout"
+    >
       <NCollapse display-directive="show">
-        <NCollapseItem v-for="(memory, index) of si('memLayout')" :key="index" :title="`Memory #${index + 1}`">
+        <NCollapseItem
+          v-for="(memory, index) of si('memLayout')"
+          :key="index"
+          :title="`Memory #${index + 1}`"
+        >
           <NTable striped>
             <tbody>
               <tr>
@@ -678,9 +734,16 @@ onMounted(() => {
         </NCollapseItem>
       </NCollapse>
     </NCollapseItem>
-    <NCollapseItem :title="$t('SystemInformation.DiskLayout.Title')" name="diskLayout">
+    <NCollapseItem
+      :title="$t('SystemInformation.DiskLayout.Title')"
+      name="diskLayout"
+    >
       <NCollapse display-directive="show">
-        <NCollapseItem v-for="(disk, index) of si('diskLayout')" :key="index" :title="disk.name">
+        <NCollapseItem
+          v-for="(disk, index) of si('diskLayout')"
+          :key="index"
+          :title="disk.name"
+        >
           <NTable striped>
             <tbody>
               <tr>

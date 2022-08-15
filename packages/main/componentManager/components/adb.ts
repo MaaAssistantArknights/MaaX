@@ -1,6 +1,6 @@
 
 const componentAdb: Component = {
-  type: 'core',
+  type: 'Android Platform Tools',
   status: 'not-installed'
   // installer: new CoreInstaller()
 }

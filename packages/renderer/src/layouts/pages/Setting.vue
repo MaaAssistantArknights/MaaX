@@ -35,36 +35,59 @@ const localeOptions = [
   }
 ]
 
-function handleChangeLocale(locale: Locale) {
+function handleChangeLocale (locale: Locale) {
   settingStore.changeLocale(locale)
 }
 </script>
 
 <template>
-  <NForm class="setting-form" :label-width="150" :show-feedback="false">
+  <NForm
+    class="setting-form"
+    :label-width="150"
+    :show-feedback="false"
+  >
     <div id="general">
-      <h2 class="title">通用</h2>
-      <NSpace justify="center" align="center">
+      <h2 class="title">
+        通用
+      </h2>
+      <NSpace
+        justify="center"
+        align="center"
+      >
         <div>语言</div>
-        <NSelect :value="settingStore.locale" @update:value="handleChangeLocale" :options="localeOptions"
-          :style="{ width: '200px' }" />
+        <NSelect
+          :value="settingStore.locale"
+          :options="localeOptions"
+          :style="{ width: '200px' }"
+          @update:value="handleChangeLocale"
+        />
       </NSpace>
     </div>
     <div id="penguin-report">
-      <h2 class="title">企鹅物流数据上报</h2>
-      <NSpace justify="center" align="center">
+      <h2 class="title">
+        企鹅物流数据上报
+      </h2>
+      <NSpace
+        justify="center"
+        align="center"
+      >
         <span>
           企鹅数据汇报ID
-          <br />(仅数字部分)
+          <br>(仅数字部分)
         </span>
-        <NInput v-model:value="settingStore.reportId" :placeholder="''" />
+        <NInput
+          v-model:value="settingStore.reportId"
+          :placeholder="''"
+        />
       </NSpace>
     </div>
 
     <Version />
     <Appearance />
     <div id="develop">
-      <h2 class="title">开发者</h2>
+      <h2 class="title">
+        开发者
+      </h2>
       <Developer />
     </div>
   </NForm>

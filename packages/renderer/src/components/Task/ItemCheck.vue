@@ -18,17 +18,25 @@ const emit = defineEmits(['update:checked'])
   <NPopover display-directive="show">
     <template #trigger>
       <div class="item-check">
-        <NCheckbox class="item-checkbox" :checked="props.checked"
-          @update:checked="checked => emit('update:checked', checked)" />
-        <img :src="getItemBorderedImage(props.name)"
-          @click="emit('update:checked', !props.checked)" />
+        <NCheckbox
+          class="item-checkbox"
+          :checked="props.checked"
+          @update:checked="checked => emit('update:checked', checked)"
+        />
+        <img
+          :src="getItemBorderedImage(props.name)"
+          @click="emit('update:checked', !props.checked)"
+        >
         <!-- <div>
           <NText>    {{ props.name }} </NText>
         </div> -->
       </div>
     </template>
     <NScrollbar :style="{ maxHeight: '50vh' }">
-      <ItemCard :name="props.name" :itemid="props.itemid" />
+      <ItemCard
+        :name="props.name"
+        :itemid="props.itemid"
+      />
     </NScrollbar>
   </NPopover>
 </template>

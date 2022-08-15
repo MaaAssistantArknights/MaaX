@@ -100,7 +100,7 @@ onMounted(() => {
     "
     :style="style"
   >
-    <div class="background"></div>
+    <div class="background" />
     <NMessageProvider>
       <NGlobalStyle />
       <WindowController />
