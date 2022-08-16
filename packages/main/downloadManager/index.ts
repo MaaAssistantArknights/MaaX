@@ -48,6 +48,9 @@ class DownloadManager {
     for (const installer of Object.values(this.installers_)) {
       installer.downloader_ = this
     }
+    if (!fs.existsSync(this.download_path)) {
+      fs.mkdirSync(this.download_path)
+    }
     // register hook
     this.window_.webContents.session.on('will-download', this.handleWillDownload)
   }
@@ -82,6 +85,8 @@ class DownloadManager {
       return
     }
 
+    item.setSavePath(path.join(this.download_path, item.getFilename()))
+
     this.tasks_[component] = {
       state: item.getState(),
       startTime: item.getStartTime() * 1000,
@@ -93,10 +98,17 @@ class DownloadManager {
         precent: 0
       },
       paused: item.isPaused(),
+      savePath: item.getSavePath(),
       _sourceItem: item
     }
+
     // 将文件存储到this.download_path
-    item.setSavePath(this.download_path)
+    if (fs.existsSync(item.getSavePath())) {
+      this.handleDownloadCompleted(event, item, component)
+      this.will_download_ = undefined
+      event.preventDefault()
+      return
+    }
 
     item.on('updated', (event, state) => {
       this.handleDownloadUpdate(event, state, item, component)
@@ -152,7 +164,7 @@ class DownloadManager {
     fs.rmSync(path.join(item.getSavePath(), item.getFilename()))
     const installer = this.installers_[component]
     if (installer) {
-      installer.downloadHandle.handleDownloadInterrupted(this.tasks_[component])
+      installer.downloadHandle.handleDownloadInterrupted()
     }
   }
 

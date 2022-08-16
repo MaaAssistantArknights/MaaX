@@ -1,66 +1,17 @@
 /* eslint-disable vue/max-len */
-import _ from 'lodash'
-import { app } from 'electron'
-import axios, { AxiosInstance } from 'axios'
+import axios from 'axios'
 
 import { Singleton } from '@common/function/singletonDecorator'
 
 import CoreLoader from '@main/coreLoader'
 
 import ComponentInstaller from '../componentInstaller'
-import Storage from '@main/storageManager'
 import DownloadManager from '@main/downloadManager'
-import fs from 'fs'
-import { ipcMainHandle, ipcMainSend } from '@main/utils/ipc-main'
+
+import { ipcMainSend } from '@main/utils/ipc-main'
 import logger from '@main/utils/logger'
 
-const storage = new Storage()
-const coreLoader = new CoreLoader()
-
 axios.defaults.adapter = require('axios/lib/adapters/http.js')
-
-// TODO CHECK NO AVX
-
-async function downloadFile (instance: AxiosInstance, url: string, targetPath: string, progressCallback): Promise<void> {
-  const { data, headers } = await instance.get(url, { responseType: 'stream' })
-  const contentLength = headers['content-length']
-  let curLength = 0
-  console.log('contentLength', contentLength)
-  data.on('data', (chunk) => { curLength += chunk.length as number })
-  setInterval(
-    () => {
-      progressCallback(curLength, contentLength)
-    }, 2000
-  )
-  data.pipe(fs.createWriteStream(targetPath))
-  data.on('close', () => { console.log('download en') })
-}
-
-interface PackageDetail {
-  name: string
-  checksum: string // not package zip md5, see #1345
-  version: string
-  url: string
-}
-
-const tempServer = 'github'
-interface githubApiResponse {
-  url: string
-  assets: Array<{ name: string, browser_download_url: string }>
-}
-
-const mockRep = [
-  {
-    file_name: 'MaaBundle-Dev-2022-07-28-12-58-09-311518a.zip',
-    package_type: 'DevBundle',
-    file_hash: '8772022E2757B1CD91CEC23A710FBDBF',
-    file_identity: '9F183E879AC2F001E28D87733C460EF6'
-  }
-]
-
-type packageNameType = 'MaaBundle' | 'MaaCore' | 'MaaDependency' | 'MaaDependencyNoAvx' | 'MaaResource'
-
-const packages = ['MaaBundle', 'MaaCore', 'MaaDependency', 'MaaDependencyNoAvx', 'MaaResource']
 
 @Singleton
 class CoreInstaller extends ComponentInstaller {
@@ -69,8 +20,6 @@ class CoreInstaller extends ComponentInstaller {
   }
 
   public async install (): Promise<void> {
-    const coredir = coreLoader.libPath
-
     try {
       if (this.downloader_) {
         const downloadUrl = await this.checkUpdate()
@@ -100,7 +49,11 @@ class CoreInstaller extends ComponentInstaller {
 
   protected onCompleted (): void {
     this.status_ = 'done'
-    ipcMainSend('renderer.ComponentManager:installDone')
+    ipcMainSend('renderer.ComponentManager:installDone', {
+      type: 'Maa Core',
+      status: this.status_,
+      progress: 1
+    })
   }
 
   protected onException (): void {
@@ -115,14 +68,30 @@ class CoreInstaller extends ComponentInstaller {
     handleDownloadCompleted: (task: DownloadTask) => {
       this.status_ = 'unzipping'
       this.onProgress(0.8)
+
+      const src = task.savePath
+      const coreLoader = new CoreLoader()
+      const dist = coreLoader.libPath
+      this.unzipFile(src, dist)
     },
-    handleDownloadInterrupted: (task: DownloadTask) => {
+    handleDownloadInterrupted: () => {
+      this.status_ = 'exception'
       this.onException()
     }
   }
 
   public readonly unzipHandle = {
-
+    handleUnzipUpdate: (percent: number) => {
+      this.onProgress(0.8 * percent * 0.2)
+    },
+    handleUnzipCompleted: () => {
+      this.status_ = 'done'
+      this.onCompleted()
+    },
+    handleUnzipInterrupted: () => {
+      this.status_ = 'exception'
+      this.onException()
+    }
   }
 
   protected async checkUpdate (): Promise<string> {
@@ -136,16 +105,5 @@ class CoreInstaller extends ComponentInstaller {
   protected status_: InstallerStatus = 'pending'
   public downloader_: DownloadManager | null = null
 }
-
-// const ci = new CoreInstaller()
-
-// function initHook (): void {
-//   logger.debug('initHook')
-//   ipcMainHandle('main.componentManager:getStatus', (event, args) => {
-//     ci.getLocalVersion()
-//   })
-// }
-
-// initHook()
 
 export default CoreInstaller

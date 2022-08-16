@@ -17,5 +17,6 @@ interface DownloadTask {
   speed?: number
   progress: DownloadProgressInfo
   paused: boolean
+  savePath: string
   _sourceItem?: import('electron').DownloadItem
 }
