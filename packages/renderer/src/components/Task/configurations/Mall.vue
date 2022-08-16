@@ -51,6 +51,7 @@ const props = defineProps<{
   configurations: MallConfiguration;
 }>()
 
+// FIXME: type me
 const buyFirst = ref([])
 const blackList = ref([])
 const otherItems = ref([])

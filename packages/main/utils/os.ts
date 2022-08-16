@@ -29,10 +29,6 @@ export const getPlatform = (): Api.Maa.Platform => {
   return platform
 }
 
-export const getSystemInformation = async () => {
+export const getSystemInformation = async (): Promise<any> => {
   return await SystemInformation.getStaticData()
-}
-
-export const getSystemStatus = async () => {
-  return await SystemInformation.getDynamicData()
 }

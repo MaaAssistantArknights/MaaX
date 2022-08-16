@@ -1,4 +1,4 @@
-import { app, ipcMain } from 'electron'
+import { app } from 'electron'
 import CoreLoader from '@main/coreLoader'
 import { ipcMainHandle } from '@main/utils/ipc-main'
 

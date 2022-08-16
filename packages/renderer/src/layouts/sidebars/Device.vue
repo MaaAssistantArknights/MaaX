@@ -17,8 +17,6 @@ import DeviceCard from '@/components/Device/DeviceCard.vue'
 import useDeviceStore from '@/store/devices'
 import useSettingStore from '@/store/settings'
 
-import { installCore, checkCoreVersion } from '@/utils/core'
-import { installAdb } from '@/utils/adb'
 import { show } from '@/utils/message'
 
 // const { t } = useI18n()
@@ -97,11 +95,6 @@ function deviceInfoParser (devices: Device[]): any[] {
 }
 
 async function handleRefreshDevices () {
-  if (!(await checkCoreVersion())) {
-    await installCore()
-    await installAdb()
-    return
-  }
   show('正在更新设备列表...', { type: 'loading', duration: 0 })
 
   window.ipcRenderer.invoke('main.DeviceDetector:getEmulators').then((ret) => {

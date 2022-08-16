@@ -1,28 +1,17 @@
 <script setup lang="ts">
 import {
   NForm,
-  NFormItem,
   NInput,
   NSpace,
-  NIcon,
-  NTooltip,
-  NButton,
-  NSwitch,
-  NImage,
-  NSlider,
-  NSelect,
-  NInputNumber
+  NSelect
 } from 'naive-ui'
-import _ from 'lodash'
 
 import useSettingStore, { Locale } from '@/store/settings'
-import useThemeStore from '@/store/theme'
 import Developer from '@/components/Setting/Developer'
 import Version from '@/components/Setting/Version'
 import Appearance from '@/components/Setting/Appearance'
 
 const settingStore = useSettingStore()
-const themeStore = useThemeStore()
 
 const localeOptions = [
   {

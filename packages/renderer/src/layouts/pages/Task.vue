@@ -15,7 +15,6 @@ import { handleCoreTask, uiTasks } from '@/utils/converter/tasks'
 import { show } from '@/utils/message'
 
 import router from '@/router'
-import { checkCoreVersion, installCore } from '@/utils/core'
 import Result from '@/components/Task/results/Index.vue'
 const logger = console
 
@@ -88,11 +87,6 @@ const deviceStatus = computed(() => {
 })
 
 async function handleStartUnconnected (task: Task['configurations']) {
-  // 未连接的设备启动任务
-  if (!(await checkCoreVersion())) {
-    installCore()
-    return
-  }
   console.log('before start emu')
   console.log(task)
   window.ipcRenderer.send('10001', uuid.value, task.taskId) // 启动模拟器 子任务开始
@@ -146,16 +140,16 @@ async function handleSubStart () {
     return
   }
 
-  const taskTranslate: Record<string, string> = {
-    startup: 'StartUp',
-    fight: 'Fight',
-    recruit: 'Recruit',
-    infrast: 'Infrast',
-    visit: 'Visit',
-    mall: 'Mall',
-    award: 'Award',
-    rogue: 'Roguelike'
-  }
+  // const taskTranslate: Record<string, string> = {
+  //   startup: 'StartUp',
+  //   fight: 'Fight',
+  //   recruit: 'Recruit',
+  //   infrast: 'Infrast',
+  //   visit: 'Visit',
+  //   mall: 'Mall',
+  //   award: 'Award',
+  //   rogue: 'Roguelike'
+  // }
 
   for await (const singleTask of tasks.value) {
     if (uiTasks.includes(singleTask.name)) continue
@@ -172,15 +166,6 @@ async function handleSubStart () {
 
       let task = taskIter.next()
       while (!task.done) {
-        const taskId = await window.ipcRenderer.invoke(
-          'main.CoreLoader:appendTask',
-          {
-            uuid: uuid.value,
-            type: taskTranslate[singleTask.name],
-            params: task.value
-          }
-        )
-        taskIdStore.updateTaskId(uuid.value, singleTask.name, taskId) // 记录任务id
         task = taskIter.next()
       }
     }
@@ -203,7 +188,6 @@ async function handleSubStop () {
     show('已停止任务', { type: 'success', duration: 5000 })
   }
   deviceStore.updateDeviceStatus(uuid.value as string, 'connected') // 将设备状态改为已连接
-  taskIdStore.removeAllTaskId(uuid.value as string) // 删除所有任务id
   taskStore.stopAllTasks(uuid.value as string) // 停止所有任务
 }
 

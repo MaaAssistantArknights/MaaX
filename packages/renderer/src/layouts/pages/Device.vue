@@ -53,10 +53,6 @@ async function handleCustomConnect () {
   }
 }
 
-function install () {
-  window.ipcRenderer.invoke('componentManager:install', 'core')
-}
-
 </script>
 
 <template>

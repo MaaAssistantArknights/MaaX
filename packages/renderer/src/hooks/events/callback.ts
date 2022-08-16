@@ -140,47 +140,47 @@ enum Infrast {
 //   EnterEmergency = 'Roguelike:Roguelike1StageEmergencyDps', // 关卡：紧急作战
 // }
 
-enum Penguin {
-  ReportError = 'Penguin:ReportToPenguinStats', // 汇报企鹅物流失败
-}
+// enum Penguin {
+//   ReportError = 'Penguin:ReportToPenguinStats', // 汇报企鹅物流失败
+// }
 
-enum Friend {
-  EnterFriendList = 'Visit:Completed:FriendsList', // 进入好友列表
-  VisitNext = 'Visit:Completed:VisitNext', // 访问下位
-}
+// enum Friend {
+//   EnterFriendList = 'Visit:Completed:FriendsList', // 进入好友列表
+//   VisitNext = 'Visit:Completed:VisitNext', // 访问下位
+// }
 
 // enum Shutdown {
 //   Emulator = 'Shutdown:Emulator',
 // }
 
-type CallbackCode =
-  | CallbackMsg
-  | StartUp
-  | Connection
-  | Fight
-  | Recruit
-  | Infrast
-  | Penguin
-  | Friend
+// type CallbackCode =
+//   | CallbackMsg
+//   | StartUp
+//   | Connection
+//   | Fight
+//   | Recruit
+//   | Infrast
+//   | Penguin
+//   | Friend
 
-interface callbackProps {
-  [x: string]: (data: object) => void
-}
+// interface callbackProps {
+//   [x: string]: (data: object) => void
+// }
 
-function shutdown (option: string, pid: string): void {
-  (async () => {
-    await window.ipcRenderer.invoke('main.CoreLoader:stop', {
-      option: option,
-      pid: pid
-    })
-  })()
-}
+// function shutdown (option: string, pid: string): void {
+//   (async () => {
+//     await window.ipcRenderer.invoke('main.CoreLoader:stop', {
+//       option: option,
+//       pid: pid
+//     })
+//   })()
+// }
 
 const messages: Record<string, MessageReactive> = {}
 
 export default function useCallbackEvents (): void {
   const deviceStore = useDeviceStore()
-  const taskStore = useTaskStore()
+  // const taskStore = useTaskStore()
   // const taskIdStore = useTaskIdStore()
 
   // const callbackFn: callbackProps = {
