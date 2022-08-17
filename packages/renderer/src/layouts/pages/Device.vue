@@ -21,38 +21,45 @@ function connectionStringChecker (cs: string) {
     console.log(`is_number: ${_.isNumber(port)}`)
     return false
   }
-  return ip.split('.').every((v, i, a) => !isNaN(Number(v)) && a.length === 4)
+  return ip.split('.').length === 4 && ip.split('.').every((v, i, a) => {
+    if (a.length !== 4) {
+      return false
+    }
+    const n = Number(v)
+    if (isNaN(Number(v))) {
+      return false
+    }
+    return n >= 0 && n <= 255
+  })
 }
 
 async function handleCustomConnect () {
   console.log(connectionString.value)
   if (connectionStringChecker(connectionString.value)) {
-    show('正在连接', { type: 'loading', duration: 0 })
+    const loading = show('正在连接', { type: 'loading', duration: 0 })
     if (deviceStore.devices.find(dev => dev.connectionString === connectionString.value)) {
+      loading.destroy()
       show('设备已经存在了哦', { type: 'warning', duration: 5000 })
       return
     }
-    const uuid = await window.ipcRenderer.invoke('main.deviceDetector:getDeviceUuid', {
-      address: connectionString.value,
-      adb_path: 'adb'
-    })
-    if (!(uuid as unknown as string | false)) {
+    const uuid = await window.ipcRenderer.invoke('main.deviceDetector:getDeviceUuid', connectionString.value)
+    if (!(uuid as string | false)) {
+      loading.destroy()
       show('连接失败，检查一下地址吧', { type: 'error', duration: 5000 })
       return
     }
     deviceStore.mergeSearchResult([
       {
-        uuid: uuid as unknown as string,
+        uuid: uuid as string,
         connectionString: connectionString.value,
-        name: 'General',
-        adbPath: 'adb'
+        name: 'General'
       }
     ])
+    loading.destroy()
   } else {
     show('设备地址不对哦，检查一下吧', { type: 'error', duration: 5000 })
   }
 }
-
 </script>
 
 <template>
@@ -95,7 +102,7 @@ async function handleCustomConnect () {
             class="operation"
             @click="handleCustomConnect"
           >
-            <span>连接</span>
+            <span>添加</span>
             <NIcon size="24px">
               <IconLink />
             </NIcon>

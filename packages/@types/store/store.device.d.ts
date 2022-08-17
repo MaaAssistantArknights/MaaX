@@ -71,7 +71,7 @@ interface NativeDevice {
   pid?: string
   connectionString: string
   name: EmulatorName
-  adbPath: string
+  adbPath?: string
   tag?: string
   commandLine?: string
 }
