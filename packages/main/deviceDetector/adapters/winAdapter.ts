@@ -6,7 +6,7 @@ import { assert } from 'console'
 import _ from 'lodash'
 import { $ } from '@main/utils/shell'
 import logger from '@main/utils/logger'
-import { getDeviceUuid } from '../utils'
+import { defaultAdbPath, getDeviceUuid } from '@main/deviceDetector/utils'
 
 console.log('import deviceDetector')
 

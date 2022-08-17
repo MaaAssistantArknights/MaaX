@@ -62,10 +62,6 @@ function handleJumpToTask () {
 
 function handleDeviceDisconnect () {
   // task stop
-  show(`${deviceDisplayName.value}断开中... `, {
-    type: 'loading',
-    duration: 0
-  })
   window.ipcRenderer.send('main.CoreLoader:disconnectAndDestroy', { uuid: device.value?.uuid })
   taskStore.stopAllTasks(device.value?.uuid as string)
   deviceStore.updateDeviceStatus(device.value?.uuid as string, 'disconnected')
@@ -73,6 +69,7 @@ function handleDeviceDisconnect () {
     type: 'success',
     duration: 3000
   })
+  router.push('/device')
 }
 
 async function handleDeviceConnect () {
