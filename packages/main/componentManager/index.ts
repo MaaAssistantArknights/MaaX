@@ -1,6 +1,6 @@
 import { Singleton } from '@common/function/singletonDecorator'
 import { ipcMainHandle } from '@main/utils/ipc-main'
-import componentAdb from './components/adb'
+import { getComponentAdb } from './components/adb'
 import { getComponentCore } from './components/core'
 
 @Singleton
@@ -33,7 +33,7 @@ class ComponentManager implements Module {
   // TODO: remove partial
   private readonly components_: Partial<Record<ComponentType, Component>> = {
     'Maa Core': getComponentCore(),
-    'Android Platform Tools': componentAdb
+    'Android Platform Tools': getComponentAdb()
   }
 }
 

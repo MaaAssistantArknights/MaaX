@@ -54,7 +54,7 @@ onMounted(async () => {
 })
 
 const getProfessionTab = (professionCode: string, professionName: string): VNode => {
-  const imgUrl = getProfessionImage(professionName, themeStore.theme === 'maa-light')
+  const imgUrl = getProfessionImage(professionName, themeStore.currentTheme === 'maa-light')
   const count = counts.value[professionCode]
   return h('div', { style: { display: 'flex', alignItems: 'center' } }, [
     h(NBadge, { value: count || 0 }, () => h(NAvatar, { src: imgUrl })),

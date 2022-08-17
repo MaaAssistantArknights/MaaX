@@ -70,10 +70,10 @@ const darkThemeOverrides: GlobalThemeOverrides = {
 
 const style = computed(() => {
   const bg =
-    themeStore.bgFollowTheme && themeStore.theme === 'maa-dark'
+    themeStore.bgFollowTheme && themeStore.currentTheme === 'maa-dark'
       ? themeStore.bgDark
       : themeStore.bgLight
-  const bodyColor = themeStore.theme === 'maa-dark' ? '#0f0f0f' : '#f0f0f0'
+  const bodyColor = themeStore.currentTheme === 'maa-dark' ? '#0f0f0f' : '#f0f0f0'
   return {
     '--inner-bg': `url(${bg.url})`,
     '--inner-opacity': bg.opacity,
@@ -92,9 +92,9 @@ onMounted(() => {
     class="app-provider"
     :locale="naiveUiLocale[`N${settingStore.locale}`]"
     :date-locale="naiveUiLocale[`NDate${settingStore.locale}`]"
-    :theme="themeStore.theme === 'maa-light' ? null : darkTheme"
+    :theme="themeStore.currentTheme === 'maa-light' ? null : darkTheme"
     :theme-overrides="
-      themeStore.theme === 'maa-light'
+      themeStore.currentTheme === 'maa-light'
         ? lightThemeOverrides
         : darkThemeOverrides
     "

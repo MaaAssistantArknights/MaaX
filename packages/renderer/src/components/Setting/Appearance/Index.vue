@@ -8,10 +8,26 @@ import {
   NSwitch,
   NImage,
   NSlider,
+  NSelect,
   NInputNumber
 } from 'naive-ui'
 import useThemeStore from '@/store/theme'
 const themeStore = useThemeStore()
+
+const themeOptions = [
+  {
+    label: '跟随系统',
+    value: 'system'
+  },
+  {
+    label: '浅色',
+    value: 'maa-light'
+  },
+  {
+    label: '深色',
+    value: 'maa-dark'
+  }
+]
 
 async function openBgFileSelector (): Promise<URL | undefined> {
   const { filePaths } = await window.ipcRenderer.invoke(
@@ -71,6 +87,9 @@ onMounted(() => {
       label-align="right"
       :show-feedback="false"
     >
+      <NFormItem label="背景颜色">
+        <NSelect v-model:value="themeStore.theme" :options="themeOptions" />
+      </NFormItem>
       <NFormItem label="主题色不透明度">
         <NSlider
           :value="themeStore.themeColorOpacity"

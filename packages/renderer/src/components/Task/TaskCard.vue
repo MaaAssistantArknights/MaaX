@@ -109,7 +109,7 @@ const deviceStatus = deviceStore.getDevice(uuid)?.status ?? 'disconnected'
       :display-directive="'show'"
       :style="{
         border:
-          themeStore.theme === 'maa-dark'
+          themeStore.currentTheme === 'maa-dark'
             ? `1px solid ${themeVars.primaryColor}`
             : '',
       }"

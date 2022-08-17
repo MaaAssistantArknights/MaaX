@@ -50,9 +50,7 @@ onMounted(async () => {
     <h2 class="title">
       版本信息
     </h2>
-    <div
-      :style="{ display: 'inline-flex', flexDirection: 'column', alignItems: 'flex-start', width: 'fit-content', textAlign: 'left' }"
-    >
+    <NSpace vertical>
       <NTooltip
         :disabled="!needUpdate(versionCore)"
         :width="'trigger'"
@@ -92,6 +90,7 @@ onMounted(async () => {
             quaternary
             :focusable="false"
             :type="needUpdate(versionUi) ? 'info' : 'default'"
+            @click="showDownloadModal"
           >
             <NSpace
               justify="center"
@@ -112,7 +111,8 @@ onMounted(async () => {
         </template>
         {{ `UI可更新至${versionUi.latest}，点击以更新` }}
       </NTooltip>
-    </div>
+    </NSpace>
+
     <DownloadModal v-model:show="show" />
   </div>
 </template>

@@ -8,6 +8,7 @@ import fs from 'fs'
 import WindowManager from '@main/windowManager'
 import ComponentInstaller from '@main/componentManager/componentInstaller'
 import CoreInstaller from '@main/componentManager/installers/core'
+import AdbInstaller from '@main/componentManager/installers/adb'
 import { Singleton } from '@common/function/singletonDecorator'
 
 @Singleton
@@ -42,7 +43,8 @@ class DownloadManager {
       }
     }
     this.installers_ = {
-      'Maa Core': new CoreInstaller()
+      'Maa Core': new CoreInstaller(),
+      'Android Platform Tools': new AdbInstaller()
     }
 
     for (const installer of Object.values(this.installers_)) {

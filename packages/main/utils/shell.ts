@@ -3,7 +3,7 @@ import { is } from 'electron-util'
 import execa, { ExecaError } from 'execa'
 import iconv from 'iconv-lite'
 
-interface processOutput {
+interface ProcessOutput {
   stdout: string
   stderr: string
 }
@@ -15,7 +15,7 @@ const textDecoder = (buf: Buffer): string => iconv.decode(buf, is.windows ? 'gb2
  * 示例: $\`tasklist | findstr ${name}\`
  * @returns Promise<{stdout:string, stderr:string}>
  */
-export async function $ (pieces: TemplateStringsArray, ...args: string[]): Promise<processOutput> {
+export async function $ (pieces: TemplateStringsArray, ...args: string[]): Promise<ProcessOutput> {
   const ret = { stderr: '', stdout: '' }
 
   let cmd = pieces[0]
@@ -50,7 +50,7 @@ export async function $ (pieces: TemplateStringsArray, ...args: string[]): Promi
  * @param args 参数
  * @returns Promise<{stdout:string, stderr:string}>
  */
-export async function $$ (file: string, args?: string[]): Promise<processOutput> {
+export async function $$ (file: string, args?: string[]): Promise<ProcessOutput> {
   const ret = { stderr: '', stdout: '' }
   logger.debug(`exec: ${file} ${args ? args.join(' ') : ''}`)
   try {

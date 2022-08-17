@@ -163,8 +163,10 @@ class CoreLoader {
       }
       this.LoadResource()
       CoreLoader.loadStatus = true
-      const version = this.GetVersion()
-      logger.info(`core loaded: version ${version}`)
+      const version = this.GetCoreVersion()
+      if (version) {
+        logger.info(`core loaded: version ${version}`)
+      }
     } catch (error) {
       // console.error()
       logger.error((error as Error).message)
@@ -323,7 +325,7 @@ class CoreLoader {
    * @description core版本
    * @returns 版本
    */
-  public GetVersion (): string | null {
+  public GetCoreVersion (): string | null {
     if (!this.loadStatus) return null
     return this.MeoAsstLib.AsstGetVersion()
   }

@@ -8,6 +8,6 @@ export default function useVersionHooks (): void {
   })
 
   ipcMainHandle('main.CoreLoader:getCoreVersion', async (event) => {
-    return (new CoreLoader()).GetVersion()
+    return (new CoreLoader()).GetCoreVersion()
   })
 }

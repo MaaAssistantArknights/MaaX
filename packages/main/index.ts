@@ -7,7 +7,6 @@ import useDebug from './utils/debug'
 
 import useHooks from './hooks'
 
-import { registerDownloadService } from './downloader'
 import logger from './utils/logger'
 
 // modules
@@ -58,7 +57,6 @@ async function createApp (): Promise<void> {
     }
   }
   useHooks()
-  registerDownloadService(win)
   if (is.development) {
     logger.warn('You are in development mode')
     useDebug(win)

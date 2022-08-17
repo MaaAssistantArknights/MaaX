@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 
 export interface ThemeState {
-  theme: string
+  theme: Theme
+  systemTheme: SystemTheme
   themeColorOpacity: number
   bgFollowTheme: boolean
   acrylic: boolean
@@ -15,8 +16,13 @@ export interface ThemeState {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export type ThemeGetter = {
+  currentTheme: () => SystemTheme
+}
+
 export interface ThemeAction {
-  updateTheme: (theme: string) => void
+  updateSystemTheme: (theme: SystemTheme) => void
   updateColorOpacity: (opacity: number) => void
   updateBgFollowTheme: (isFollow: boolean) => void
   updateAcrylic: (isAcrylic: boolean) => void
@@ -24,12 +30,13 @@ export interface ThemeAction {
   updateBgDark: (bgDark: { url?: string, opacity: number }) => void
 }
 
-const useThemeStore = defineStore<'theme', ThemeState, {}, ThemeAction>(
+const useThemeStore = defineStore<'theme', ThemeState, ThemeGetter, ThemeAction>(
   'theme',
   {
     state: () => {
       return {
         theme: 'maa-light',
+        systemTheme: 'maa-light',
         themeColorOpacity: 0.9,
         bgFollowTheme: false,
         acrylic: true,
@@ -43,9 +50,17 @@ const useThemeStore = defineStore<'theme', ThemeState, {}, ThemeAction>(
         }
       }
     },
+    getters: {
+      currentTheme () {
+        if (this.theme === 'system') {
+          return this.systemTheme
+        }
+        return this.theme
+      }
+    },
     actions: {
-      updateTheme (theme) {
-        this.theme = theme
+      updateSystemTheme (theme) {
+        this.systemTheme = theme
       },
       updateColorOpacity (opacity) {
         this.themeColorOpacity = opacity

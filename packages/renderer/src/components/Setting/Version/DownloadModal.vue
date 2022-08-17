@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, Ref } from 'vue'
+import { ref, Ref, onMounted } from 'vue'
 import {
   NButton,
   NModal,
@@ -99,6 +99,24 @@ const handleMouseEnter = (event: MouseEvent, component: ComponentType) => {
 const handleMouseLeave = () => {
   showTooltip.value = undefined
 }
+
+onMounted(() => {
+  const components: ComponentType[] = ['Maa App', 'Maa Core', 'Android Platform Tools']
+  Promise.all(
+    components.map(component => {
+      return new Promise<void>(resolve => {
+        window.ipcRenderer.invoke('main.ComponentManager:getStatus', component)
+          .then((status: ComponentStatus | undefined) => {
+            if (status) {
+              componentStore.updateComponentStatus(component, { componentStatus: status })
+            }
+            resolve()
+          })
+          .catch(() => resolve())
+      })
+    })
+  )
+})
 </script>
 
 <template>
@@ -151,6 +169,7 @@ const handleMouseLeave = () => {
             <NButton
               v-else
               type="primary"
+              :secondary="componentStore[component].componentStatus === 'installed'"
               size="small"
               @click="() => handleInstall(component)"
             >
@@ -161,9 +180,9 @@ const handleMouseLeave = () => {
       </NSpace>
       <NTooltip
         trigger="manual"
-        :x="tooltipPosition.x +getInstallProgress(showTooltip) * tooltipPosition.width"
+        :x="tooltipPosition.x + getInstallProgress(showTooltip) * tooltipPosition.width"
         :y="tooltipPosition.y"
-        :show="!!showTooltip"
+        :show="!!showTooltip && ['installing', 'upgrading'].includes(componentStore[showTooltip].componentStatus)"
       >
         {{ Math.ceil(getInstallProgress(showTooltip) * 100) }}%
       </NTooltip>
