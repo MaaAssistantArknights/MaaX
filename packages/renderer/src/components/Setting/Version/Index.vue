@@ -105,7 +105,7 @@ onMounted(async () => {
               <NText type="info">
                 Maa App:
               </NText>
-              <span>{{ versionString(versionUi) }}</span>
+              <span>v{{ versionString(versionUi) }}</span>
             </NSpace>
           </NButton>
         </template>

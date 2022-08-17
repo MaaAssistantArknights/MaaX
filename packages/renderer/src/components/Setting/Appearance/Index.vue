@@ -88,7 +88,11 @@ onMounted(() => {
       :show-feedback="false"
     >
       <NFormItem label="背景颜色">
-        <NSelect v-model:value="themeStore.theme" :options="themeOptions" />
+        <NSelect
+          :value="themeStore.theme"
+          :options="themeOptions"
+          @update:value="(value) => themeStore.updateTheme(value)"
+        />
       </NFormItem>
       <NFormItem label="主题色不透明度">
         <NSlider
@@ -113,10 +117,7 @@ onMounted(() => {
           @update:value="(value) => themeStore.updateBgFollowTheme(value)"
         />
       </NFormItem>
-      <NSpace
-        vertical
-        align="center"
-      >
+      <NSpace vertical align="center">
         <NFormItem
           label="背景图片"
           label-placement="top"
@@ -157,10 +158,7 @@ onMounted(() => {
             alt="选择图片"
           />
         </NFormItem>
-        <NFormItem
-          v-show="themeStore.bgFollowTheme"
-          label="不透明度"
-        >
+        <NFormItem v-show="themeStore.bgFollowTheme" label="不透明度">
           <NInputNumber
             :value="themeStore.bgDark.opacity"
             :min="0"

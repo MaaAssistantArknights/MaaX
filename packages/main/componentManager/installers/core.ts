@@ -95,7 +95,9 @@ class CoreInstaller extends ComponentInstaller {
       adapter: require('axios/lib/adapters/http.js')
     })
     const { assets } = response.data
-    const regexp = getArch() === 'x64' && cpuFeature.avx2 ? /^MaaDependency-v(.+)\.zip$/ : /^MaaDependencyNoAvx-v(.+)\.zip$/
+    const regexp = getArch() === 'x64' && cpuFeature.avx2
+      ? /^MaaDependency-v(.+)\.zip$/
+      : /^MaaDependencyNoAvx-v(.+)\.zip$/
     const dependency = assets.find((asset: any) => regexp.test(asset.name))
     return dependency.browser_download_url
   }

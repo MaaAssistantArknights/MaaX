@@ -22,6 +22,7 @@ export type ThemeGetter = {
 }
 
 export interface ThemeAction {
+  updateTheme: (theme: Theme) => void
   updateSystemTheme: (theme: SystemTheme) => void
   updateColorOpacity: (opacity: number) => void
   updateBgFollowTheme: (isFollow: boolean) => void
@@ -59,8 +60,13 @@ const useThemeStore = defineStore<'theme', ThemeState, ThemeGetter, ThemeAction>
       }
     },
     actions: {
+      updateTheme (theme) {
+        this.theme = theme
+        window.ipcRenderer.invoke('main.AppearanceManager:themeUpdated', this.currentTheme === 'maa-dark')
+      },
       updateSystemTheme (theme) {
         this.systemTheme = theme
+        window.ipcRenderer.invoke('main.AppearanceManager:themeUpdated', this.currentTheme === 'maa-dark')
       },
       updateColorOpacity (opacity) {
         this.themeColorOpacity = opacity
