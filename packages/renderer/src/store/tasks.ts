@@ -59,7 +59,7 @@ const defaultTaskConf: Record<string, Task> = {
   startup: {
     name: 'startup',
     taskid: -1,
-    title: '启动客户端与自动唤醒',
+    title: '开始唤醒',
     status: 'idle',
     enable: true,
     configurations: {

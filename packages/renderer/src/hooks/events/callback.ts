@@ -197,11 +197,11 @@ export default function useCallbackEvents (): void {
   //     deviceStore.updateDeviceStatus(data.uuid, 'connected')
   //     // 检测是否有关机任务
   //     if (task?.enable && task?.configurations.enable) {
-  //       logger.silly('enable shutdown option')
+  //       logger.debug('enable shutdown option')
   //       const option = task.configurations.option as string
   //       const pid = device?.pid
   //       const id = setTimeout(shutdown, 30000, option, pid)
-  //       logger.silly('shutdown taskid', id)
+  //       logger.debug('shutdown taskid', id)
   //       taskIdStore.updateTaskId(data.uuid, 'shutdown', id)
   //     }
   //     // TODO: 状态归位
@@ -301,18 +301,18 @@ export default function useCallbackEvents (): void {
   //   [Fight.SubFightStart]: (data: Record<string, any>): void => {
   //     // const process = taskStore.deviceTasks[arg.uuid]
   //     // TODO: 计算作战任务进度, 因为没有理智信息的回调，所以这里该怎么做呢
-  //     logger.silly(`触发作战, 任务id ${data.taskid as number}`)
+  //     logger.debug(`触发作战, 任务id ${data.taskid as number}`)
   //     taskIdStore.onFightStart(data.uuid, data.taskid) // 触发作战, 将id从未进行任务中移除
   //   },
   //   [Fight.MedicineConfirm]: (data: Record<string, any>): void => {
   //     // 作战 - 吃了一颗理智药
   //     taskIdStore.useMedicineOrStone(data.uuid, 'medicine')
-  //     logger.silly('吃了一颗理智药')
+  //     logger.debug('吃了一颗理智药')
   //   },
   //   [Fight.StoneConfrim]: (data: Record<string, any>): void => {
   //     // 作战 - 吃了一颗源石
   //     taskIdStore.useMedicineOrStone(data.uuid, 'stone')
-  //     logger.silly('吃了一颗源石')
+  //     logger.debug('吃了一颗源石')
   //   },
   //   [Penguin.ReportError]: (data: Record<string, any>): void => {
   //     // 企鹅 - 上传🐧物流错误
@@ -320,15 +320,15 @@ export default function useCallbackEvents (): void {
   //     window.$message.error(data.message)
   //   },
   //   [Recruit.Refresh]: (data: Record<string, any>): void => {
-  //     logger.silly(data)
+  //     logger.debug(data)
   //   },
   //   [Recruit.TagsDetected]: (data: Record<string, any>): void => {
   //     const tags = data.details.tags
-  //     logger.silly('检测到词条')
-  //     logger.silly(tags)
+  //     logger.debug('检测到词条')
+  //     logger.debug(tags)
   //   },
   //   [Recruit.Confirm]: (data: Record<string, any>): void => {
-  //     logger.silly(data)
+  //     logger.debug(data)
   //     const task = taskStore.getTask(data.uuid, 'recruit')
   //     const curProgress: number = task?.progress as number
   //     const times = task?.configurations.maximum_times_of_recruitments as number
@@ -337,8 +337,8 @@ export default function useCallbackEvents (): void {
   //   },
   //   [Recruit.TagsSelected]: (data: Record<string, any>): void => {
   //     const tags = data.details.tags
-  //     logger.silly('已选择词条')
-  //     logger.silly(tags)
+  //     logger.debug('已选择词条')
+  //     logger.debug(tags)
   //   },
   //   [Infrast.EnterFacility]: (data: Record<string, any>): void => {
   //     const facilityTranslate: Record<string, string> = {
@@ -350,7 +350,7 @@ export default function useCallbackEvents (): void {
   //       Office: '办公室',
   //       Dorm: '宿舍'
   //     }
-  //     logger.silly(
+  //     logger.debug(
   //       `进入 ${facilityTranslate[data.details.facility]}, ${data.details.index as number}`
   //     )
   //     // const times = taskStore.getTask(arg.uuid,"infrast").configurations.facilities.length;
@@ -360,10 +360,10 @@ export default function useCallbackEvents (): void {
   //     taskStore.updateTaskStatus(data.uuid, 'infrast', 'processing', newProgress)
   //   },
   //   [Infrast.NotEnoughStaff]: (data: Record<string, any>): void => {
-  //     logger.silly(`${data.details.facility as string} ${data.details.index as number} 可用干员不足`)
+  //     logger.debug(`${data.details.facility as string} ${data.details.index as number} 可用干员不足`)
   //   },
   //   [Friend.EnterFriendList]: (data: Record<string, any>): void => {
-  //     logger.silly('进入好友列表')
+  //     logger.debug('进入好友列表')
   //     taskStore.updateTaskStatus(data.uuid, 'visit', 'processing', 10)
   //   },
   //   [Friend.VisitNext]: (data: Record<string, any>): void => {
@@ -467,12 +467,12 @@ export default function useCallbackEvents (): void {
     (event, callback: Callback) => {
       const { code } = callback
       if (callbackFn[code]) {
-        logger.silly(`[callback] handle ${AsstMsg[code]}:`)
-        logger.silly(callback)
+        logger.debug(`[callback] handle ${AsstMsg[code]}:`)
+        logger.debug(callback)
         callbackFn[code](callback.data)
       } else {
-        logger.silly(`[callback] unhandle ${AsstMsg[code]}`)
-        logger.silly(callback)
+        logger.debug(`[callback] unhandle ${AsstMsg[code]}`)
+        logger.debug(callback)
       }
     }
   )

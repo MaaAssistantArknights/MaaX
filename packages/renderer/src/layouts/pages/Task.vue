@@ -10,7 +10,6 @@ import Configuration from '@/components/Task/configurations/Index.vue'
 
 import useTaskStore from '@/store/tasks'
 import useDeviceStore from '@/store/devices'
-// import useTaskIdStore from '@/store/taskId'
 import { handleCoreTask, uiTasks } from '@/utils/converter/tasks'
 import { show } from '@/utils/message'
 
@@ -155,8 +154,7 @@ async function handleSubStart () {
     if (uiTasks.includes(singleTask.name)) continue
 
     if (singleTask.enable) {
-      logger.debug('enter task:')
-      console.log(singleTask.name)
+      logger.debug(`enter task:, ${singleTask.name}`)
       taskStore.updateTaskStatus(uuid.value, singleTask.name, 'waiting', 0)
       const taskIter = handleCoreTask[singleTask.name]({
         ...singleTask.configurations,

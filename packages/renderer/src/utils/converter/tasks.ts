@@ -22,7 +22,7 @@ export async function taskEmulator (task: Task['configurations']): Promise<void>
           adb_path: device.adbPath,
           config: device.config
         })
-        logger.silly(connectStatus)
+        logger.debug(connectStatus)
         window.ipcRenderer.send('10002', task.uuid, task.taskId) // 启动模拟器 子任务完成
         await window.ipcRenderer.invoke('main.CoreLoader:start', { uuid: device.uuid }) // 启动后续任务
       } else { // 设备没活
