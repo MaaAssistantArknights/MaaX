@@ -1,89 +1,69 @@
-import { is } from 'electron-util'
-import { format } from 'date-fns'
-import log4js from 'log4js'
-import chalk from 'chalk'
 import { app } from 'electron'
 import path from 'path'
-
-const timeFormat = 'yyyy-MM-dd HH:mm:ss.SSS'
+import tslog, { ILogObject } from 'tslog'
+import { createWriteStream, mkdirSync, existsSync, WriteStream } from 'fs'
 
 class Logger {
   public constructor () {
-    chalk.level = 1
-    log4js.addLayout('stdout', () => {
-      return (event) => {
-        const { startTime } = event
-        const timeStr = format(startTime, timeFormat)
-        const message =
-          typeof event.data[0] === 'string' ? event.data[0] : JSON.stringify(event.data[0])
-        const line = `[${timeStr}] ${event.level.levelStr} > ${message}`
-        let colored = (msg: string): string => msg
-        let stackColored = (msg: string): string => msg
-        switch (event.level.level) {
-          case 5000: // trace
-            colored = chalk.bgWhite
-            break
-          case 10000: // debug
-            colored = chalk.gray
-            break
-          case 20000: // info
-            colored = chalk.bgCyan
-            break
-          case 30000: // warn
-            colored = chalk.bgYellow
-            break
-          case 40000: // error
-            colored = chalk.bgRed
-            stackColored = chalk.red
-            break
-          case 50000: // fatal
-            colored = chalk.bgMagenta
-            stackColored = chalk.magenta
-            break
-        }
+    this.main_ = new tslog.Logger({
+      name: 'main'
+    })
+    this.renderer_ = new tslog.Logger({
+      name: 'renderer'
+    })
 
-        return `${colored(line)}${stackColored(event.level.level > 30000 ? `\n${event.callStack ?? ''}` : '')}`
-      }
-    })
-    log4js.addLayout('file', () => {
-      return (event) => {
-        const { startTime } = event
-        const timeStr = format(startTime, timeFormat)
-        const message =
-          typeof event.data[0] === 'string' ? event.data[0] : JSON.stringify(event.data[0])
+    if (!existsSync(this.log_file_path_)) {
+      mkdirSync(this.log_file_path_)
+    }
 
-        const line = `[${timeStr}] ${event.level.levelStr} > ${message}`
-        return `${line}${event.level.level > 30000 ? `\n${event.callStack ?? ''}` : ''}`
-      }
-    })
-    log4js.configure({
-      appenders: {
-        stdout: { type: 'stdout', layout: { type: 'stdout' } },
-        file: {
-          type: 'fileSync',
-          filename: path.join(app.getPath('appData'), app.getName(),
-            'log', `ui-${format(new Date(), 'yyyyMMddhhmmss')}.log`),
-          layout: { type: 'file' }
-        }
-      },
-      categories: {
-        default: {
-          appenders: ['file', 'stdout'],
-          level: is.development ? 'trace' : 'info',
-          enableCallStack: true
-        }
-      }
-    })
-    this._log = log4js.getLogger()
+    this.log_file_ = createWriteStream(
+      path.join(this.log_file_path_, 'Maa App.log'),
+      { flags: 'a' }
+    )
+
+    this.main_.attachTransport({
+      silly: this.logToTransport,
+      debug: this.logToTransport,
+      trace: this.logToTransport,
+      info: this.logToTransport,
+      warn: this.logToTransport,
+      error: this.logToTransport,
+      fatal: this.logToTransport
+    }, 'debug')
+    this.renderer_.attachTransport({
+      silly: this.logToTransport,
+      debug: this.logToTransport,
+      trace: this.logToTransport,
+      info: this.logToTransport,
+      warn: this.logToTransport,
+      error: this.logToTransport,
+      fatal: this.logToTransport
+    }, 'debug')
   }
 
-  public get logger (): log4js.Logger {
-    return this._log
+  private readonly logToTransport = (logObject: ILogObject): void => {
+    this.log_file_.write(JSON.stringify(logObject) + '\n')
   }
 
-  private readonly _log: log4js.Logger;
+  public get main (): tslog.Logger {
+    return this.main_
+  }
+
+  public get renderer (): tslog.Logger {
+    return this.renderer_
+  }
+
+  private readonly main_: tslog.Logger
+  private readonly renderer_: tslog.Logger
+
+  private readonly log_file_: WriteStream
+
+  private readonly log_file_path_ = path.join(app.getPath('appData'), app.getName(), 'logs')
 }
 
-const log = new Logger()
+const logger = new Logger()
 
-export default log.logger
+export const renderer = logger.renderer
+export const main = logger.main
+
+export default logger.main
