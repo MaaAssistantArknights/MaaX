@@ -5,7 +5,7 @@ import logger from '@main/utils/logger'
 import { ipcMainHandle } from '@main/utils/ipc-main'
 
 async function shutdownEmulator (pid: string): Promise<void> {
-  logger.debug('Shutdown Emulator')
+  logger.silly('Shutdown Emulator')
 
   if (is.windows) {
     await $`taskkill /pid ${pid} /f`
@@ -17,14 +17,14 @@ async function shutdownEmulator (pid: string): Promise<void> {
 }
 
 async function shutdownMAA (): Promise<void> {
-  logger.debug('Shutdown MAA')
+  logger.silly('Shutdown MAA')
 
   const win = new WindowManager().getWindow()
   win.close()
 }
 
 async function shutdownComputer (): Promise<void> {
-  logger.debug('Shutdown MAA')
+  logger.silly('Shutdown MAA')
 
   if (is.windows) {
     $`shutdown -s -t 60`

@@ -8,8 +8,8 @@ const callbackHandle = ffi.Callback(
   'void',
   ['int', 'string', ref.refType(ref.types.void)],
   (code: AsstMsg, data: string, customArgs) => {
-    logger.debug(code)
-    logger.debug(data)
+    logger.silly(code)
+    logger.silly(data)
     ipcMainSend('renderer.CoreLoader:callback', {
       code,
       data: JSON.parse(data)

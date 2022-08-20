@@ -65,7 +65,7 @@ string,
   },
   'main.CoreLoader:supportedStages': async (_event) => {
     if (!core.loadStatus) {
-      logger.debug('core unloaded, return empty supported stages')
+      logger.silly('core unloaded, return empty supported stages')
       return []
     }
     const jsonPath = path.join(core.libPath, 'resource/tasks.json')

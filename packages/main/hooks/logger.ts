@@ -6,7 +6,7 @@ export default function useLoggerHooks (): void {
     logger.log(...params)
   })
   ipcMain.on('log:debug', (event, ...params) => {
-    logger.debug(...params)
+    logger.silly(...params)
   })
   ipcMain.on('log:error', (event, ...params) => {
     logger.error(...params)

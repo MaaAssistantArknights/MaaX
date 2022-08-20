@@ -6,7 +6,7 @@ import DeviceDetector from '@main/deviceDetector'
 import logger from '@main/utils/logger'
 
 export default function useEmulatorHooks (): void {
-  logger.debug((new DeviceDetector()).name)
+  logger.silly((new DeviceDetector()).name)
   // ipcMain.handle('asst:getEmulators', async (event): Promise<Emulator[]> => {
   //   return await (new DeviceDetector()).getEmulators()
   // })
@@ -21,9 +21,9 @@ export default function useEmulatorHooks (): void {
   // )
 
   // ipcMain.handle('asst:startEmulator', async (event, arg: string) => {
-  //   logger.debug(`Try start emulator on ${arg}`)
+  //   logger.silly(`Try start emulator on ${arg}`)
   //   const ret = await $`${arg}`
-  //   logger.debug(`Start Emulator stdout: ${(ret).stdout}`)
-  //   logger.debug(`Start Emulator stderr: ${(ret).stderr}`)
+  //   logger.silly(`Start Emulator stdout: ${(ret).stdout}`)
+  //   logger.silly(`Start Emulator stderr: ${(ret).stderr}`)
   // })
 }

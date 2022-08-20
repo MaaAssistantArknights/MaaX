@@ -25,7 +25,7 @@ export async function $ (pieces: TemplateStringsArray, ...args: string[]): Promi
     cmd += args[i] + pieces[++i]
   }
 
-  logger.debug(`exec: ${cmd}`)
+  logger.silly(`exec: ${cmd}`)
 
   try {
     const { stdout, stderr } = (await execa(cmd, {
@@ -40,7 +40,7 @@ export async function $ (pieces: TemplateStringsArray, ...args: string[]): Promi
     ret.stdout = textDecoder(stdout)
     ret.stderr = textDecoder(stderr)
   }
-  logger.debug(ret)
+  logger.silly(ret)
   return ret
 }
 
@@ -52,7 +52,7 @@ export async function $ (pieces: TemplateStringsArray, ...args: string[]): Promi
  */
 export async function $$ (file: string, args?: string[]): Promise<ProcessOutput> {
   const ret = { stderr: '', stdout: '' }
-  logger.debug(`exec: ${file} ${args ? args.join(' ') : ''}`)
+  logger.silly(`exec: ${file} ${args ? args.join(' ') : ''}`)
   try {
     const { stdout, stderr } = (await execa(file, args, {
       encoding: null
@@ -65,6 +65,6 @@ export async function $$ (file: string, args?: string[]): Promise<ProcessOutput>
     ret.stdout = textDecoder(stdout)
     ret.stderr = textDecoder(stderr)
   }
-  logger.debug(ret)
+  logger.silly(ret)
   return ret
 }

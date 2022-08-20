@@ -20,7 +20,7 @@ export async function getDeviceUuid (address: string, adbPath = defaultAdbPath):
     return false
   }
   if (!address) {
-    logger.debug('address is null')
+    logger.silly('address is null')
     return false
   }
   const connectResult = (await $$(adbPath, ['connect', address])).stdout

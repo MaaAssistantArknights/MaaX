@@ -38,7 +38,7 @@ async function getCommandLine (pid: string | number): Promise<string> {
   // 获取进程启动参数
   const commandLineExp = `Get-WmiObject -Query "select CommandLine FROM Win32_Process where ProcessID='${pid}'" | Select-Object -Property CommandLine | ConvertTo-Json`
   const ret: string = JSON.parse((await $`${commandLineExp}`).stdout).CommandLine
-  logger.debug(`getCommandLine: ${ret}`)
+  logger.silly(`getCommandLine: ${ret}`)
   return ret
 }
 
@@ -181,18 +181,18 @@ class WindowsAdapter implements EmulatorAdapter {
      *  4. 在路径下面有Memu.memu文件，构造正则提取以下示例行中的hostport
      *  <Forwarding name="ADB" proto="1" hostip="127.0.0.1" hostport="21503" guestip="10.0.2.15" guestport="5555"/>
      */
-    logger.debug('Get XY info')
+    logger.silly('Get XY info')
     e.adbPath = path.resolve(
       path.dirname(await getPnamePath('Memu.exe')),
       'adb.exe'
     )
-    logger.debug('XY adb_path: ', e.adbPath)
+    logger.silly('XY adb_path: ', e.adbPath)
 
     e.commandLine = await getCommandLine(e.pid)
     const confName = e.commandLine.match(/--comment ([^\s]+)/)
     if (confName) {
       const confPath = path.resolve(path.dirname(await getPnamePath('Memu.exe')), 'MemuHyperv VMs', confName[1], `${confName[1]}.memu`)
-      logger.debug(`XY conf_path: ${confPath}`)
+      logger.silly(`XY conf_path: ${confPath}`)
       assert(
         existsSync(confPath),
         `Memu.memu not exist! path: ${confPath}`
@@ -214,7 +214,7 @@ class WindowsAdapter implements EmulatorAdapter {
       path.dirname(await getPnamePath('Nox.exe')),
       'nox_adb.exe'
     )
-    logger.debug(`nox adb_path: ${e.adbPath}`)
+    logger.silly(`nox adb_path: ${e.adbPath}`)
     const regExp = /127.0.0.1:(\d{4,5})\s*/g;
     [...(await $`"${e.adbPath}" devices`).stdout.matchAll(regExp)]
       .map((v) => v[1])
@@ -256,11 +256,11 @@ class WindowsAdapter implements EmulatorAdapter {
     const cmd = await getCommandLine(e.pid) // headless.exe的启动参数, 实际上是不可用的, 提取其中的comment为模拟器真实名称, statvm为模拟器uuid
     const statvm = cmd.match(/--startvm (\w*-\w*-\w*-\w*-\w*)/) // 获取模拟器uuid, statvm
     const realName = cmd.match(/--comment ([\d+\w]*) /) // 获取真实名称, realName
-    logger.debug('realname', realName)
-    logger.debug('startvm', statvm)
+    logger.silly('realname', realName)
+    logger.silly('startvm', statvm)
     if (!realName || !statvm) return
     const confPath = path.resolve(path.dirname(emulatorPath), 'vms', 'config', `${realName[1]}.config`) // 模拟器配置文件路径
-    logger.debug(`LD conf_path: ${confPath}`)
+    logger.silly(`LD conf_path: ${confPath}`)
     assert(
       existsSync(confPath),
       `${realName[1]}.config not exist! path: ${confPath}`
@@ -275,7 +275,7 @@ class WindowsAdapter implements EmulatorAdapter {
     const LdVBoxHeadlessPath = await getPnamePath('LdVBoxHeadless.exe') // LdVBoxHeadless.exe路径
     const VBoxManagePath = path.resolve(path.dirname(LdVBoxHeadlessPath), 'VBoxManage.exe') // VBoxManage.exe路径
     const port = (await $`"${VBoxManagePath}" showvminfo ${statvm[1]} --machinereadable`).stdout.match(/Forwarding\(1\)="tcp_5\d\d\d_5\d\d\d,tcp,,(\d*),,/)
-    logger.debug('port', port)
+    logger.silly('port', port)
     if (port) {
       e.address = `127.0.0.1:${port[1]}`
     }
@@ -322,7 +322,7 @@ class WindowsAdapter implements EmulatorAdapter {
       if (uuid) {
         e.uuid = uuid
       }
-      logger.debug(`emulator: ${JSON.stringify(e)}`)
+      logger.silly(`emulator: ${JSON.stringify(e)}`)
     }
     return emulators
   }
