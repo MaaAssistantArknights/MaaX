@@ -119,7 +119,52 @@ const deviceStatus = deviceStore.getDevice(uuid)?.status ?? 'disconnected'
           <div class="card-header">
             <NSpace>
               <span class="card-title">{{ props.taskInfo.title || "" }}</span>
+            </NSpace>
+            <NSpace
+              v-if="deviceStatus === 'tasking' && props.taskInfo.status !== 'idle'"
+              justify="end"
+            >
+              <Timer
+                :start-time="props.taskInfo.startTime"
+                :end-time="props.taskInfo.endTime"
+              />
+            </NSpace>
+            <NSpace
+              v-else
+              justify="end"
+              align="center"
+            >
+              <NTooltip>
+                <template #trigger>
+                  <NButton
+                    text
+                    style="font-size: 25px"
+                    @click="() => $emit('copy')"
+                  >
+                    <NIcon>
+                      <IconAdd />
+                    </NIcon>
+                  </NButton>
+                </template>
+                复制当前任务
+              </NTooltip>
+              <NTooltip>
+                <template #trigger>
+                  <NButton
+                    text
+                    style="font-size: 25px"
+                    :disabled="['processing', 'waiting'].includes(props.taskInfo.status)"
+                    @click="() => $emit('delete')"
+                  >
+                    <NIcon>
+                      <IconRemove />
+                    </NIcon>
+                  </NButton>
+                </template>
+                删除当前任务
+              </NTooltip>
               <span
+                v-if="['processing', 'waiting'].includes(props.taskInfo.status)"
                 class="card-progress-hint"
                 :style="{ color: themeVars.primaryColor }"
               >
@@ -144,50 +189,8 @@ const deviceStatus = deviceStore.getDevice(uuid)?.status ?? 'disconnected'
                   })()
                 }}
               </span>
-            </NSpace>
-            <NSpace
-              v-if="deviceStatus === 'tasking' && props.taskInfo.status !== 'idle'"
-              justify="end"
-            >
-              <Timer
-                :start-time="props.taskInfo.startTime"
-                :end-time="props.taskInfo.endTime"
-              />
-            </NSpace>
-            <NSpace
-              v-else
-              justify="end"
-            >
-              <NTooltip>
-                <template #trigger>
-                  <NButton
-                    text
-                    style="font-size: 25px"
-                    @click="() => $emit('copy')"
-                  >
-                    <NIcon>
-                      <IconAdd />
-                    </NIcon>
-                  </NButton>
-                </template>
-                复制当前任务
-              </NTooltip>
-              <NTooltip>
-                <template #trigger>
-                  <NButton
-                    text
-                    style="font-size: 25px"
-                    @click="() => $emit('delete')"
-                  >
-                    <NIcon>
-                      <IconRemove />
-                    </NIcon>
-                  </NButton>
-                </template>
-                删除当前任务
-              </NTooltip>
               <NSwitch
-                :disabled="['processing', 'waiting'].includes(props.taskInfo.status)"
+                v-else
                 :value="props.taskInfo.enable"
                 @update:value="enabled => {
                   $emit('update:enable', enabled)

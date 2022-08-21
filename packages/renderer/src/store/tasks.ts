@@ -273,8 +273,16 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
       const origin = deviceTasks[uuid]
       const task = origin?.at(index)
       if (task) {
-        const newTask = _.cloneDeep(task)
-        newTask.taskid = -1
+        const newTask: Task = {
+          ..._.cloneDeep(task),
+          taskid: -1,
+          showResult: false,
+          status: 'idle',
+          startTime: undefined,
+          endTime: undefined,
+          progress: undefined,
+          results: {}
+        }
         origin.splice(index, 0, newTask)
         return true
       }

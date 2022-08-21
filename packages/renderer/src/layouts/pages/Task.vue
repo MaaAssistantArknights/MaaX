@@ -150,6 +150,8 @@ async function handleSubStart () {
   //   rogue: 'Roguelike'
   // }
 
+  deviceStore.updateDeviceStatus(uuid.value as string, 'tasking')
+
   for await (const singleTask of tasks.value) {
     if (uiTasks.includes(singleTask.name)) continue
 
@@ -168,7 +170,6 @@ async function handleSubStart () {
       }
     }
   }
-  deviceStore.updateDeviceStatus(uuid.value as string, 'tasking')
 
   await window.ipcRenderer.invoke('main.CoreLoader:start', {
     uuid: uuid.value
@@ -292,7 +293,6 @@ function handleTaskDelete (index: number) {
         @copy="() => handleTaskCopy(index)"
         @delete="() => handleTaskDelete(index)"
       >
-        <!-- TODO: 添加一个切换配置与进度的按钮 -->
         <Result
           v-show="task.showResult"
           :name="task.name"

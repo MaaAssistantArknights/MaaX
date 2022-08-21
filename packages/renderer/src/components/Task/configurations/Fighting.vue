@@ -62,8 +62,6 @@ function handleConfigurationUpdate (key: string, value: any) {
   if (value === null) value = 6
   if (value < 0) value = 999
   if (value > 999) value = 0
-  // FIXME: 对props写入
-  // ↑ 这要fix个啥? @chingc
   _.set(props.configurations, key, value)
 }
 
@@ -174,9 +172,9 @@ function handleStoneUpdate (value: number | null) {
         >
           掉落物选择...
         </NButton>
-        <!--FIXME 掉落物炸了-->
       </NFormItem>
     </NSpace>
+    <!-- TODO: 关卡选择修改为掉落选择 -->
     <NModal
       v-model:show="showModal"
       display-directive="show"
