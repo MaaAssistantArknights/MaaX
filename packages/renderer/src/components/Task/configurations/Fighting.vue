@@ -72,6 +72,13 @@ function handleMedicineUpdate (value: number | null) {
   handleConfigurationUpdate('medicine', value)
 }
 
+function handleTimesUpdate (value: number | null) {
+  if (value === null) value = 6
+  if (value < 0) value = 999
+  if (value > 999) value = 0
+  handleConfigurationUpdate('times', value)
+}
+
 function handleStoneUpdate (value: number | null) {
   if (value === null) value = 6
   if (value < 0) value = 999
@@ -96,6 +103,26 @@ function handleStoneUpdate (value: number | null) {
           :value="props.configurations.stage"
           :options="supportStages"
           @update:value="(value) => _.set(props.configurations, 'stage', value)"
+        />
+      </NFormItem>
+      <NFormItem
+        label="作战次数"
+        :show-label="true"
+        size="small"
+        label-align="left"
+        label-placement="left"
+        :show-feedback="false"
+      >
+        <!-- <NCheckbox
+        :checked="props.configurations.medicine"
+        @update:checked="
+          (checked) => handleConfigurationUpdate('medicine', checked)
+        "
+        />-->
+        <NInputNumber
+          :value="props.configurations.times"
+          :update-value-on-input="false"
+          @update:value="handleTimesUpdate"
         />
       </NFormItem>
       <NFormItem
