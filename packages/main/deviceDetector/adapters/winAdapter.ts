@@ -143,7 +143,7 @@ class WindowsAdapter implements EmulatorAdapter {
         `bluestacks.conf not exist! path: ${confPath}`
       )
       const conf = readFileSync(confPath, 'utf-8') // 读bluestacks.conf文件
-      const confPortInstanceExp = RegExp(`bst.instance.${arg}.status.adb_port="(\\d{4,6})"`)
+      const confPortInstanceExp = arg ? RegExp(`bst.instance.${arg}.status.adb_port="(\\d{4,6})"`) : /bst.instance.(?:.*).status.adb_port="(\d{4,6})"/
       const confPort = conf.match(confPortInstanceExp)
       console.log('confport:')
       e.displayName = 'BlueStack Global'
