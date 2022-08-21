@@ -1,9 +1,7 @@
 import useDeviceStore from '@/store/devices'
 import useTaskStore from '@/store/tasks'
-// import useTaskIdStore from '@/store/taskId'
 
 import { show } from '@/utils/message'
-// import _ from 'lodash'
 import { AsstMsg } from '@common/enum/callback'
 import type { MessageReactive } from 'naive-ui'
 
@@ -374,10 +372,112 @@ export default function useCallbackEvents (): void {
   // }
 
   const subTaskFn = {
-    [AsstMsg.SubTaskError]: (data: Callback.SubTaskError) => {},
-    [AsstMsg.SubTaskStart]: (data: Callback.SubTaskStart) => {},
-    [AsstMsg.SubTaskCompleted]: (data: Callback.SubTaskCompleted) => {},
-    [AsstMsg.SubTaskExtraInfo]: (data: Callback.SubTaskExtraInfo) => {}
+    [AsstMsg.SubTaskError]: {
+      Emulator: (data: Callback.SubTaskError) => {},
+      StartUp: (data: Callback.SubTaskError) => {},
+      Fight: (data: Callback.SubTaskError) => {},
+      Mall: (data: Callback.SubTaskError) => {},
+      Recruit: (data: Callback.SubTaskError) => {},
+      RecruitCalc: (data: Callback.SubTaskError) => {},
+      Infrast: (data: Callback.SubTaskError) => {},
+      Visit: (data: Callback.SubTaskError) => {},
+      Roguelike: (data: Callback.SubTaskError) => {},
+      Copilot: (data: Callback.SubTaskError) => {},
+      Shutdown: (data: Callback.SubTaskError) => {},
+      Award: (data: Callback.SubTaskError) => {},
+      Debug: (data: Callback.SubTaskError) => {}
+    },
+    [AsstMsg.SubTaskStart]: {
+      Emulator: (data: Callback.SubTaskStart) => {},
+      StartUp: (data: Callback.SubTaskStart) => {},
+      Fight: (data: Callback.SubTaskStart) => {},
+      Mall: (data: Callback.SubTaskStart) => {},
+      Recruit: (data: Callback.SubTaskStart) => {},
+      RecruitCalc: (data: Callback.SubTaskStart) => {},
+      Infrast: (data: Callback.SubTaskStart) => {},
+      Visit: (data: Callback.SubTaskStart) => {},
+      Roguelike: (data: Callback.SubTaskStart) => {},
+      Copilot: (data: Callback.SubTaskStart) => {},
+      Shutdown: (data: Callback.SubTaskStart) => {},
+      Award: (data: Callback.SubTaskStart) => {},
+      Debug: (data: Callback.SubTaskStart) => {}
+    },
+    [AsstMsg.SubTaskCompleted]: {
+      Emulator: (data: Callback.SubTaskCompleted) => {},
+      StartUp: (data: Callback.SubTaskCompleted) => {},
+      Fight: (data: Callback.SubTaskCompleted) => {},
+      Mall: (data: Callback.SubTaskCompleted) => {},
+      Recruit: (data: Callback.SubTaskCompleted) => {},
+      RecruitCalc: (data: Callback.SubTaskCompleted) => {},
+      Infrast: (data: Callback.SubTaskCompleted) => {},
+      Visit: (data: Callback.SubTaskCompleted) => {},
+      Roguelike: (data: Callback.SubTaskCompleted) => {},
+      Copilot: (data: Callback.SubTaskCompleted) => {},
+      Shutdown: (data: Callback.SubTaskCompleted) => {},
+      Award: (data: Callback.SubTaskCompleted) => {},
+      Debug: (data: Callback.SubTaskCompleted) => {}
+    },
+    [AsstMsg.SubTaskExtraInfo]: {
+      Emulator: (data: Callback.SubTaskExtraInfo) => {},
+      StartUp: (data: Callback.SubTaskExtraInfo) => {},
+      Fight: (data: Callback.SubTaskExtraInfo) => {
+        switch (data.subtask) {
+          case 'StageDropsTask': {
+            // TODO: 获得掉落物
+
+            // data = {
+            //   code: 20003,
+            //   data: {
+            //     class: 'class asst::StageDropsTaskPlugin',
+            //     details: {
+            //       drops: [
+            //         {
+            //           dropType: 'EXP_LMB_DROP',
+            //           itemId: '4001',
+            //           itemName: '龙门币',
+            //           quantity: 252
+            //         },
+            //         {
+            //           dropType: 'NORMAL_DROP',
+            //           itemId: 'act20side_token_book',
+            //           itemName: '《奇谈怪论》复印本',
+            //           quantity: 21
+            //         }
+            //       ],
+            //       stage: { stageCode: 'IC-8', stageId: 'act20side_08' },
+            //       stars: 3,
+            //       stats: [{
+            //         itemId: '4001',
+            //         itemName: '龙门币',
+            //         quantity: 252
+            //       }, {
+            //         itemId: 'act20side_token_book',
+            //         itemName: '《奇谈怪论》复印本',
+            //         quantity: 21
+            //       }]
+            //     },
+            //     subtask: 'StageDropsTask',
+            //     taskchain: 'Fight',
+            //     taskid: 2,
+            //     uuid: '2cdd3accfda1038d\r\n',
+            //     what: 'StageDrops'
+            //   }
+            // }
+            break
+          }
+        }
+      },
+      Mall: (data: Callback.SubTaskExtraInfo) => {},
+      Recruit: (data: Callback.SubTaskExtraInfo) => {},
+      RecruitCalc: (data: Callback.SubTaskExtraInfo) => {},
+      Infrast: (data: Callback.SubTaskExtraInfo) => {},
+      Visit: (data: Callback.SubTaskExtraInfo) => {},
+      Roguelike: (data: Callback.SubTaskExtraInfo) => {},
+      Copilot: (data: Callback.SubTaskExtraInfo) => {},
+      Shutdown: (data: Callback.SubTaskExtraInfo) => {},
+      Award: (data: Callback.SubTaskExtraInfo) => {},
+      Debug: (data: Callback.SubTaskExtraInfo) => {}
+    }
   }
 
   const callbackFn = {
@@ -450,16 +550,37 @@ export default function useCallbackEvents (): void {
       }
     },
     [AsstMsg.AllTasksCompleted]: (data: Callback.AllTasksCompleted) => {
+      const deviceStore = useDeviceStore()
+      deviceStore.updateDeviceStatus(data.uuid.trim(), 'connected')
       show('所有任务完成了OvO', { type: 'info' })
     },
-    [AsstMsg.TaskChainError]: (data: Callback.TaskChainError) => {},
-    [AsstMsg.TaskChainStart]: (data: Callback.TaskChainStart) => {},
-    [AsstMsg.TaskChainCompleted]: (data: Callback.TaskChainCompleted) => {},
-    [AsstMsg.TaskChainExtraInfo]: (data: Callback.TaskChainExtraInfo) => {},
-    [AsstMsg.SubTaskError]: (data: Callback.SubTaskError) => {},
-    [AsstMsg.SubTaskStart]: (data: Callback.SubTaskStart) => {},
-    [AsstMsg.SubTaskCompleted]: (data: Callback.SubTaskCompleted) => {},
-    [AsstMsg.SubTaskExtraInfo]: (data: Callback.SubTaskExtraInfo) => {}
+    [AsstMsg.TaskChainError]: (data: Callback.TaskChainError) => {
+      const taskStore = useTaskStore()
+      taskStore.updateTaskStatus(data.uuid.trim(), data.taskid, 'exception', 0)
+    },
+    [AsstMsg.TaskChainStart]: (data: Callback.TaskChainStart) => {
+      const taskStore = useTaskStore()
+      taskStore.updateTaskStatus(data.uuid.trim(), data.taskid, 'processing', 0)
+    },
+    [AsstMsg.TaskChainCompleted]: (data: Callback.TaskChainCompleted) => {
+      const taskStore = useTaskStore()
+      taskStore.updateTaskStatus(data.uuid.trim(), data.taskid, 'success', 0)
+    },
+    [AsstMsg.TaskChainExtraInfo]: (data: Callback.TaskChainExtraInfo) => {
+      // TODO
+    },
+    [AsstMsg.SubTaskError]: (data: Callback.SubTaskError) => {
+      subTaskFn[AsstMsg.SubTaskError][data.taskchain](data)
+    },
+    [AsstMsg.SubTaskStart]: (data: Callback.SubTaskStart) => {
+      subTaskFn[AsstMsg.SubTaskStart][data.taskchain](data)
+    },
+    [AsstMsg.SubTaskCompleted]: (data: Callback.SubTaskCompleted) => {
+      subTaskFn[AsstMsg.SubTaskCompleted][data.taskchain](data)
+    },
+    [AsstMsg.SubTaskExtraInfo]: (data: Callback.SubTaskExtraInfo) => {
+      subTaskFn[AsstMsg.SubTaskExtraInfo][data.taskchain](data)
+    }
   }
 
   window.ipcRenderer.on(

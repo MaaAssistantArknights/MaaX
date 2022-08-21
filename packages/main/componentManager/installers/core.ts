@@ -5,8 +5,6 @@ import ComponentInstaller from '../componentInstaller'
 import DownloadManager from '@main/downloadManager'
 import { ipcMainSend } from '@main/utils/ipc-main'
 import logger from '@main/utils/logger'
-import { cpuFeature } from '@main/utils/environment'
-import { getArch } from '@main/utils/os'
 
 @Singleton
 class CoreInstaller extends ComponentInstaller {
@@ -95,9 +93,7 @@ class CoreInstaller extends ComponentInstaller {
       adapter: require('axios/lib/adapters/http.js')
     })
     const { assets } = response.data
-    const regexp = getArch() === 'x64' && cpuFeature.avx2
-      ? /^MaaDependency-v(.+)\.zip$/
-      : /^MaaDependencyNoAvx-v(.+)\.zip$/
+    const regexp = /^MaaCore-v(.+)\.zip$/
     const dependency = assets.find((asset: any) => regexp.test(asset.name))
     return dependency.browser_download_url
   }

@@ -3,6 +3,7 @@ import _ from 'lodash'
 import compareObjKey from '@/utils/task_configure'
 import { show } from '@/utils/message'
 import { i18n } from '@/i18n'
+import { TaskChainMap } from '@common/enum/callback'
 
 const { t } = i18n.global
 export interface TaskState {
@@ -13,7 +14,7 @@ export interface TaskState {
 export interface TaskAction {
   updateTaskStatus: (
     uuid: string,
-    taskId: string,
+    taskId: number,
     status: TaskStatus,
     progress: number
   ) => void
@@ -31,20 +32,6 @@ export interface TaskAction {
 }
 
 export const defaultSelfIncreaseId = 100000 // 初始自增id
-
-const taskNameTranslate = {
-  emulator: 'Emulator',
-  startup: 'StartUp',
-  fight: 'Fight',
-  recruit: 'Recruit',
-  infrast: 'Infrast',
-  visit: 'Visit',
-  mall: 'Mall',
-  award: 'Award',
-  rogue: 'Roguelike',
-  copilot: 'Copilot',
-  shutdown: 'Shutdown'
-}
 
 const defaultTaskConf: Record<string, Task> = {
   emulator: {
@@ -201,7 +188,7 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
     updateTaskStatus (uuid, taskId, status, progress) {
       const { deviceTasks } = this
       const origin = deviceTasks[uuid]
-      const task = origin?.find((task) => task.name === taskId)
+      const task = origin?.find((task) => task.taskid === taskId)
       if (task != null) {
         const statusChanged = status !== task.status
 
@@ -341,7 +328,7 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
             'main.CoreLoader:appendTask',
             {
               uuid: uuid,
-              type: taskNameTranslate[task.name],
+              type: TaskChainMap[task.name],
               params: _.cloneDeep(task.configurations)
             }
           )

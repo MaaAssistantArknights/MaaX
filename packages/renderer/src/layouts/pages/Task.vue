@@ -21,7 +21,8 @@ const taskStore = useTaskStore()
 const deviceStore = useDeviceStore()
 // const taskIdStore = useTaskIdStore()
 
-const isGrid = ref<boolean>(false)
+const isGrid = ref(false)
+const actionLoading = ref(false)
 const sortableRef: Ref<HTMLElement | null> = ref(null)
 
 const uuid = computed(() => router.currentRoute.value.params.uuid as string)
@@ -160,10 +161,11 @@ async function handleSubStart () {
 }
 
 async function handleSubStop () {
-  show('正在停止任务', { type: 'info', duration: 0 })
+  actionLoading.value = true
   const status = await window.ipcRenderer.invoke('main.CoreLoader:stop', {
     uuid: uuid.value
   }) // 等待core停止任务
+  actionLoading.value = false
   if (!status) {
     show('停止任务失败', { type: 'error', duration: 5000 })
   } else {
@@ -254,6 +256,7 @@ function handleTaskDelete (index: number) {
         <NButton
           type="primary"
           round
+          :loading="actionLoading"
           @click="handleStart"
         >
           <span>{{ deviceStatus === "tasking" ? "停止" : "开始" }}</span>

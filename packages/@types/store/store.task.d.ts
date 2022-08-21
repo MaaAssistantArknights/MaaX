@@ -17,6 +17,20 @@ type TaskName =
   | 'award'
   | 'rogue'
   | 'shutdown'
+  | 'copilot'
+
+  type CoreTaskName =
+  | 'Emulator'
+  | 'StartUp'
+  | 'Fight'
+  | 'Recruit'
+  |'Infrast'
+  | 'Visit'
+  | 'Mall'
+  | 'Award'
+  | 'Roguelike'
+  | 'Copilot'
+  | 'Shutdown'
 
 interface SubTaskResult {
   status: TaskStatus

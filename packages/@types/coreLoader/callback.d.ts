@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-empty-interface */
 namespace Detail {
   interface InternalError {
@@ -49,26 +50,26 @@ namespace Callback {
   }
 
   interface AllTasksCompleted {
-    taskchain: import('@common/enum/callback').TaskChain
+    taskchain: import('@common/enum/callback').TaskChainMap
     uuid: string
     finished_tasks: number[]
   }
 
   interface TaskChainStart {
-    taskchain: import('@common/enum/callback').TaskChain // 当前的任务链
-    taskid: int // 当前任务 TaskId
+    taskchain: import('@common/enum/callback').TaskChainMap // 当前的任务链
+    taskid: number // 当前任务 TaskId
     uuid: string // 设备唯一码
   }
 
   interface TaskChainError {
-    taskchain: import('@common/enum/callback').TaskChain // 当前的任务链
-    taskid: int // 当前任务 TaskId
+    taskchain: import('@common/enum/callback').TaskChainMap // 当前的任务链
+    taskid: number // 当前任务 TaskId
     uuid: string // 设备唯一码
   }
 
   interface TaskChainCompleted {
-    taskchain: import('@common/enum/callback').TaskChain // 当前的任务链
-    taskid: int // 当前任务 TaskId
+    taskchain: import('@common/enum/callback').TaskChainMap // 当前的任务链
+    taskid: number // 当前任务 TaskId
     uuid: string // 设备唯一码
   }
 
@@ -79,8 +80,8 @@ namespace Callback {
   interface SubTaskStart {
     subtask: string // 子任务名
     class: string // 子任务符号名
-    taskchain: string // 当前任务链
-    taskid: int // 当前任务 TaskId
+    taskchain: CoreTaskName // 当前任务链
+    taskid: number // 当前任务 TaskId
     details: object // 详情
     uuid: string // 设备唯一码
   }
@@ -88,22 +89,23 @@ namespace Callback {
   interface SubTaskError {
     subtask: string // 子任务名
     class: string // 子任务符号名
-    taskchain: string // 当前任务链
-    taskid: int // 当前任务 TaskId
+    taskchain: CoreTaskName // 当前任务链
+    taskid: number // 当前任务 TaskId
     details: object // 详情
     uuid: string // 设备唯一码
   }
   interface SubTaskCompleted {
     subtask: string // 子任务名
     class: string // 子任务符号名
-    taskchain: string // 当前任务链
-    taskid: int // 当前任务 TaskId
+    taskchain: CoreTaskName // 当前任务链
+    taskid: number // 当前任务 TaskId
     details: object // 详情
     uuid: string // 设备唯一码
   }
 
   interface SubTaskExtraInfo {
-    taskchain: string // 当前任务链
+    subtask: string // 子任务名
+    taskchain: CoreTaskName // 当前任务链
     class: string // 子任务类型
     what: string // 信息类型
     details: object // 信息详情
@@ -128,5 +130,5 @@ type CallbackData =
 interface Callback {
   code: import('@common/enum/callback').AsstMsg
   data: CallbackData
-  customArgs: string | int | object
+  customArgs: string | number | object
 }
