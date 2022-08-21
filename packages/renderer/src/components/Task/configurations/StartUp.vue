@@ -2,7 +2,7 @@
 import { NCheckbox, NFormItem, NSelect } from 'naive-ui'
 import _ from 'lodash'
 
-interface GameConfiguration {
+interface StartUpConfiguration {
   client_type: string; // 服务器
   start_game_enable: boolean; // 是否自动启动客户端
 }
@@ -19,7 +19,7 @@ const serverOptions = [
 ]
 
 const props = defineProps<{
-  configurations: GameConfiguration;
+  configurations: StartUpConfiguration;
 }>()
 </script>
 <template>

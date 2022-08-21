@@ -9,7 +9,6 @@ type TaskStatus =
 type TaskName =
   | 'emulator'
   | 'startup'
-  | 'game'
   | 'fight'
   | 'recruit'
   | 'infrast'

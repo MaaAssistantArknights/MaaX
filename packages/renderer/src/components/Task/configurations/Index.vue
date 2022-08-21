@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, h, Component } from 'vue'
 import Emulator from './Emulator.vue'
-import Game from './Game.vue'
+import StartUp from './StartUp.vue'
 import Fighting from './Fighting.vue'
 import Infrast from './Infrast.vue'
 import NoConfiguration from './NoConfiguration.vue'
@@ -12,7 +12,7 @@ import Shutdown from './Shutdown.vue'
 
 const components: Record<string, Component> = {
   emulator: Emulator,
-  game: Game,
+  startup: StartUp,
   fight: Fighting,
   recruit: Recruit,
   infrast: Infrast,

@@ -27,27 +27,30 @@ export interface TaskAction {
   copyTask: (uuid: string, index: number) => boolean
   deleteTask: (uuid: string, index: number) => boolean
   fixTaskList: (uuid: string) => void
+  run: (uuid: string) => Promise<void>
 }
 
 export const defaultSelfIncreaseId = 100000 // 初始自增id
+
+const taskNameTranslate = {
+  emulator: 'Emulator',
+  startup: 'StartUp',
+  fight: 'Fight',
+  recruit: 'Recruit',
+  infrast: 'Infrast',
+  visit: 'Visit',
+  mall: 'Mall',
+  award: 'Award',
+  rogue: 'Roguelike',
+  copilot: 'Copilot',
+  shutdown: 'Shutdown'
+}
 
 const defaultTaskConf: Record<string, Task> = {
   emulator: {
     name: 'emulator',
     taskid: -1,
     title: '启动模拟器',
-    status: 'idle',
-    enable: false,
-    configurations: {
-      commandLine: '',
-      delay: 300 // 执行后续任务的等待延迟
-    },
-    results: {}
-  },
-  game: {
-    name: 'game',
-    taskid: -1,
-    title: '启动明日方舟',
     status: 'idle',
     enable: false,
     configurations: {
@@ -64,7 +67,7 @@ const defaultTaskConf: Record<string, Task> = {
     enable: true,
     configurations: {
       client_type: 'Official', // 区服 Official | Bilibili
-      start_game_enable: true // 模拟器启动游戏
+      start_game_enabled: true // 模拟器启动游戏
     },
     results: {}
   },
@@ -322,6 +325,30 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
           task.configurations = defaultTaskConf[task.name].configurations
         }
       })
+    },
+    async run (uuid) {
+      const { deviceTasks } = this
+      const origin = deviceTasks[uuid]
+      const task = origin?.find((task) => task.status === 'idle' && task.enable) // find next task to execute
+      if (task) {
+        if (task.name === 'emulator') {
+          // TODO
+        } else if (task.name === 'shutdown') {
+          // TODO
+        } else {
+          task.status = 'waiting'
+          const taskId = await window.ipcRenderer.invoke(
+            'main.CoreLoader:appendTask',
+            {
+              uuid: uuid,
+              type: taskNameTranslate[task.name],
+              params: _.cloneDeep(task.configurations)
+            }
+          )
+          task.taskid = taskId
+          await this.run(uuid)
+        }
+      }
     }
   }
 })

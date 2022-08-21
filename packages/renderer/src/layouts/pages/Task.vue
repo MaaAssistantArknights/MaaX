@@ -150,26 +150,9 @@ async function handleSubStart () {
   //   rogue: 'Roguelike'
   // }
 
+  await taskStore.run(uuid.value)
+
   deviceStore.updateDeviceStatus(uuid.value as string, 'tasking')
-
-  for await (const singleTask of tasks.value) {
-    if (uiTasks.includes(singleTask.name)) continue
-
-    if (singleTask.enable) {
-      logger.debug(`enter task:, ${singleTask.name}`)
-      taskStore.updateTaskStatus(uuid.value, singleTask.name, 'waiting', 0)
-      const taskIter = handleCoreTask[singleTask.name]({
-        ...singleTask.configurations,
-        uuid: uuid.value,
-        taskId: singleTask.name
-      })
-
-      let task = taskIter.next()
-      while (!task.done) {
-        task = taskIter.next()
-      }
-    }
-  }
 
   await window.ipcRenderer.invoke('main.CoreLoader:start', {
     uuid: uuid.value
