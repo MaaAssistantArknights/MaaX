@@ -2,6 +2,7 @@ import { app, ipcMain } from 'electron'
 import CoreLoader from '@main/coreLoader'
 import path from 'path'
 import { existsSync, mkdirSync } from 'fs'
+import { getAppBaseDir } from '@main/utils/path'
 
 type PathName =
   'home' |
@@ -31,7 +32,7 @@ export default function usePathHooks (): void {
   })
 
   ipcMain.handle('path:adb', async (event) => {
-    const dir = path.join(app.getPath('appData'), app.getName(), 'adb')
+    const dir = path.join(getAppBaseDir(), 'adb')
     if (existsSync(dir)) mkdirSync(dir)
     return dir
   })

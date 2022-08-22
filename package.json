@@ -20,6 +20,7 @@
     "@types/cron": "^1.7.3",
     "@types/crypto-js": "^4.1.1",
     "@types/ffi-napi": "^4.0.5",
+    "@types/node": "^18.7.9",
     "@types/sortablejs": "^1.10.7",
     "@types/superagent": "^4.1.14",
     "@types/unzipper": "^0.10.5",

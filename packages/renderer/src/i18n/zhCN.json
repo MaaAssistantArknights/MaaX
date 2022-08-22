@@ -74,6 +74,8 @@
     "Maa Core": "Maa 核心组件",
     "Android Platform Tools": "Android 设备连接组件",
     "Maa App": "Maa 应用",
+    "Maa Dependency": "Maa 核心依赖组件",
+    "Maa Resource": "Maa 资源文件",
     "downloading": "下载中 {0}%",
     "waiting": "等待中",
     "downloaded": "已下载",

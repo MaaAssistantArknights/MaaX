@@ -1,20 +1,20 @@
 import fs from 'fs'
 import path from 'path'
-import { app } from 'electron'
 
 import AdbInstaller from '@main/componentManager/installers/adb'
+import { getAppBaseDir } from '@main/utils/path'
 
 export const getComponentAdb = (): Component => {
-  const componentCore: Component = {
+  const componentAdb: Component = {
     type: 'Android Platform Tools',
     status: 'not-installed',
     installer: new AdbInstaller()
   }
 
-  const installed = fs.existsSync(path.join(app.getPath('appData'), app.getName(), 'platform-tools'))
+  const installed = fs.existsSync(path.join(getAppBaseDir(), 'platform-tools'))
   if (installed) {
-    componentCore.status = 'installed'
+    componentAdb.status = 'installed'
   }
 
-  return componentCore
+  return componentAdb
 }

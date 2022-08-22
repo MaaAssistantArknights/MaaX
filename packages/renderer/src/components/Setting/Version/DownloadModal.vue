@@ -100,8 +100,15 @@ const handleMouseLeave = () => {
   showTooltip.value = undefined
 }
 
+const components: ComponentType[] = [
+  'Maa App',
+  'Maa Core',
+  'Android Platform Tools',
+  'Maa Dependency',
+  'Maa Resource'
+]
+
 onMounted(() => {
-  const components: ComponentType[] = ['Maa App', 'Maa Core', 'Android Platform Tools']
   Promise.all(
     components.map(component => {
       return new Promise<void>(resolve => {
@@ -132,7 +139,7 @@ onMounted(() => {
           {{ $t("download.needInstallAll") }}
         </NAlert>
         <div
-          v-for="component of (['Maa App', 'Maa Core', 'Android Platform Tools'] as ComponentType[])"
+          v-for="component of components"
           :key="component"
           class="download-card"
           @mouseenter="(event) => handleMouseEnter(event, component)"

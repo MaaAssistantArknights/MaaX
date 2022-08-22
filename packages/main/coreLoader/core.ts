@@ -244,7 +244,7 @@
 
 //   private static readonly libPathKey = 'libPath';
 
-//   private static readonly defaultLibPath = path.join(app.getPath('appData'), app.getName(), 'core');
+//   private static readonly defaultLibPath = path.join(getAppBaseDir(), 'core');
 
 //   public static get libPath (): string {
 //     let libPath = storage.get(Assistant.libPathKey) as string

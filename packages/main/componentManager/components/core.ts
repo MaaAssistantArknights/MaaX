@@ -2,6 +2,7 @@ import fs from 'fs'
 
 import CoreLoader from '@main/coreLoader'
 import CoreInstaller from '@main/componentManager/installers/core'
+import path from 'path'
 
 export const getComponentCore = (): Component => {
   const coreLoader = new CoreLoader()
@@ -12,7 +13,7 @@ export const getComponentCore = (): Component => {
     installer: new CoreInstaller()
   }
 
-  const installed = fs.existsSync(coreLoader.libPath)
+  const installed = fs.existsSync(path.join(coreLoader.libPath, 'core_version'))
   if (installed) {
     componentCore.status = 'not-compatible'
   }
