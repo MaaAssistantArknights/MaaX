@@ -110,7 +110,9 @@ class CoreInstaller extends ComponentInstaller {
     } catch (e: any) {
       logger.error(
         '[Component Installer] Failed to get latest release: ' +
-        `${String(e.response.status)} ${String(e.response.statusText)}`
+        (e.response
+          ? `${String(e.response.status)} ${String(e.response.statusText)}`
+          : 'Request Timeout')
       )
       return false
     }
