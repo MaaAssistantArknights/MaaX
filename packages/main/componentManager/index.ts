@@ -4,6 +4,7 @@ import { getComponentAdb } from './components/adb'
 import { getComponentCore } from './components/core'
 import { getComponentDependency } from './components/dependency'
 import { getComponentResource } from './components/resource'
+import CoreLoader from '@main/coreLoader'
 
 @Singleton
 class ComponentManager implements Module {
@@ -16,6 +17,9 @@ class ComponentManager implements Module {
 
     ipcMainHandle('main.ComponentManager:install',
       async (event, componentName: ComponentType) => {
+        // 安装文件时，需要dispose core，否则无法写入
+        const coreLoader = new CoreLoader()
+        coreLoader.dispose()
         this.components_[componentName] = this.update[componentName]()
         this.components_[componentName]?.installer?.install()
       })

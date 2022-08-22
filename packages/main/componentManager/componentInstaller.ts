@@ -5,6 +5,18 @@ import path from 'path'
 import logger from '@main/utils/logger'
 import DownloadManager from '@main/downloadManager'
 
+interface DownloadHandle {
+  handleDownloadUpdate: (task: DownloadTask) => void
+  handleDownloadCompleted: (task: DownloadTask) => void
+  handleDownloadInterrupted: () => void
+}
+
+interface UnzipHandle {
+  handleUnzipUpdate: (percent: number) => void
+  handleUnzipCompleted: () => void
+  handleUnzipInterrupted: () => void
+}
+
 abstract class ComponentInstaller {
   public abstract install (): Promise<void>
 

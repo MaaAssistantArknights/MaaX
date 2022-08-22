@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, Ref, onMounted } from 'vue'
+import { ref, Ref, onMounted, computed } from 'vue'
 import {
   NButton,
   NModal,
@@ -7,13 +7,20 @@ import {
   NSpace,
   NProgress,
   NAlert,
-  NTooltip
+  NTooltip,
+  NPopconfirm
 } from 'naive-ui'
 import { useI18n } from 'vue-i18n'
 import useComponentStore from '@/store/components'
+import useDeviceStore from '@/store/devices'
 
 const { t } = useI18n()
 const componentStore = useComponentStore()
+const deviceStore = useDeviceStore()
+
+const isTasking = computed(() =>
+  deviceStore.devices.some(device => device.status === 'tasking')
+)
 
 const props = defineProps<{
   show: boolean;
@@ -82,6 +89,12 @@ const handleInstall = (component: ComponentType) => {
     componentStore.updateComponentStatus(component, {
       componentStatus: 'installing'
     })
+  }
+}
+
+const handleInstallButtonClick = (component: ComponentType) => {
+  if (!isTasking.value) {
+    handleInstall(component)
   }
 }
 
@@ -173,15 +186,18 @@ onMounted(() => {
                 ].join(" - ")
               }}
             </div>
-            <NButton
-              v-else
-              type="primary"
-              :secondary="componentStore[component].componentStatus === 'installed'"
-              size="small"
-              @click="() => handleInstall(component)"
-            >
-              {{ installButtonText(componentStore[component].componentStatus) }}
-            </NButton>
+            <NPopconfirm v-else :disabled="!isTasking" @positive-click="() => handleInstall(component)">
+              <template #trigger>
+                <NButton
+                  type="primary"
+                  :secondary="componentStore[component].componentStatus === 'installed'"
+                  size="small"
+                  @click="() => handleInstallButtonClick(component)"
+                >
+                  {{ installButtonText(componentStore[component].componentStatus) }}
+                </NButton>
+              </template>
+            </NPopconfirm>
           </div>
         </div>
       </NSpace>

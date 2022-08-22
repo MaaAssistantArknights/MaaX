@@ -19,18 +19,6 @@ interface Component {
   installer?: import('packages/main/componentManager/componentInstaller').default
 }
 
-interface DownloadHandle {
-  handleDownloadUpdate: (task: DownloadTask) => void
-  handleDownloadCompleted: (task: DownloadTask) => void
-  handleDownloadInterrupted: () => void
-}
-
-interface UnzipHandle {
-  handleUnzipUpdate: (percent: number) => void
-  handleUnzipCompleted: () => void
-  handleUnzipInterrupted: () => void
-}
-
 interface Update {
   url: string
   version: string
