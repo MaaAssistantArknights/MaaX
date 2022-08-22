@@ -2,9 +2,6 @@ import { ipcMain } from 'electron'
 import logger from '@main/utils/logger'
 
 export default function useLoggerHooks (): void {
-  ipcMain.on('log:log', (event, ...params) => {
-    logger.log(...params)
-  })
   ipcMain.on('log:debug', (event, ...params) => {
     logger.silly(...params)
   })
@@ -16,9 +13,6 @@ export default function useLoggerHooks (): void {
   })
   ipcMain.on('log:silly', (event, ...params) => {
     logger.silly(...params)
-  })
-  ipcMain.on('log:verbose', (event, ...params) => {
-    logger.verbose(...params)
   })
   ipcMain.on('log:warn', (event, ...params) => {
     logger.warn(...params)

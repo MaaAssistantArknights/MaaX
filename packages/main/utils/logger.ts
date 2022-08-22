@@ -42,7 +42,11 @@ class Logger {
   }
 
   private readonly logToTransport = (logObject: ILogObject): void => {
-    this.log_file_.write(JSON.stringify(logObject) + '\n')
+    this.main_.getChildLogger({
+      colorizePrettyLogs: false,
+      dateTimeTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+    })
+      .printPrettyLog(this.log_file_, logObject)
   }
 
   public get main (): tslog.Logger {
