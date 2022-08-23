@@ -74,6 +74,7 @@ export default function useCallbackEvents (): void {
             break
           }
           case 'PenguinId': {
+            settingStore.reportId = data.details.id
             break
           }
         }

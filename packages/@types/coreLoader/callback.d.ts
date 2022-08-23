@@ -82,7 +82,7 @@ namespace Callback {
     class: string // 子任务符号名
     taskchain: CoreTaskName // 当前任务链
     taskid: number // 当前任务 TaskId
-    details: object // 详情
+    details: any // 详情
     uuid: string // 设备唯一码
   }
 
@@ -91,7 +91,7 @@ namespace Callback {
     class: string // 子任务符号名
     taskchain: CoreTaskName // 当前任务链
     taskid: number // 当前任务 TaskId
-    details: object // 详情
+    details: any // 详情
     uuid: string // 设备唯一码
   }
   interface SubTaskCompleted {
@@ -99,7 +99,7 @@ namespace Callback {
     class: string // 子任务符号名
     taskchain: CoreTaskName // 当前任务链
     taskid: number // 当前任务 TaskId
-    details: object // 详情
+    details: any // 详情
     uuid: string // 设备唯一码
   }
 
@@ -109,7 +109,7 @@ namespace Callback {
     class: string // 子任务类型
     taskid: number // 当前任务 TaskId
     what: string // 信息类型
-    details: object // 信息详情
+    details: any // 信息详情
     uuid: string // 设备唯一码
   }
 }
