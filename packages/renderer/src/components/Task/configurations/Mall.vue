@@ -42,7 +42,7 @@ type itemNameType = keyof typeof mallItems
 
 interface MallConfiguration {
   blacklist: itemNameType[],
-  buy_first: itemNameType[],
+  buyFirst: itemNameType[],
   shopping: boolean
 }
 // const routeUuid = router.currentRoute.value.params.uuid as string
@@ -64,20 +64,21 @@ onMounted(async () => {
   blackList.value = []
   otherItems.value = []
 
-  props.configurations.buy_first.map((item) => ({
-    name: item,
-    item_id: mallItems[item],
-    image: getItemBorderedImage(item)
-  }))
+  // ???: 无效的代码
+  // props.configurations.buy_first.map((item) => ({
+  //   name: item,
+  //   item_id: mallItems[item],
+  //   image: getItemBorderedImage(item)
+  // }))
 
-  props.configurations.blacklist.map((item) => ({
-    name: item,
-    item_id: mallItems[item],
-    image: getItemBorderedImage(item)
-  }))
+  // props.configurations.blacklist.map((item) => ({
+  //   name: item,
+  //   item_id: mallItems[item],
+  //   image: getItemBorderedImage(item)
+  // }))
 
   Object.entries(mallItems).forEach(([name, itemid]) => {
-    if (!props.configurations.buy_first.includes(name as itemNameType) &&
+    if (!props.configurations.buyFirst.includes(name as itemNameType) &&
      !props.configurations.blacklist.includes(name as itemNameType)) {
       otherItems.value.push(
         {
@@ -92,7 +93,7 @@ onMounted(async () => {
 })
 
 function onItemChange () {
-  _.set(props.configurations, 'buy_first', buyFirst.value.map((item) => item.name))
+  _.set(props.configurations, 'buyFirst', buyFirst.value.map((item) => item.name))
   _.set(props.configurations, 'blacklist', blackList.value.map((item) => item.name))
 }
 
@@ -136,10 +137,10 @@ function onItemChange () {
       </NButton>
       <MallSelect
         v-model:show="showModal"
-        :buy_first="buyFirst"
+        :buy-first="buyFirst"
         :blacklist="blackList"
         :others="otherItems"
-        @onChange:Item="onItemChange"
+        @change:item="onItemChange"
       />
     </NFormItem>
   </div>

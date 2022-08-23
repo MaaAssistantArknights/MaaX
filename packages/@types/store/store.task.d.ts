@@ -32,10 +32,6 @@ type TaskName =
   | 'Copilot'
   | 'Shutdown'
 
-interface SubTaskResult {
-  status: TaskStatus
-  extra: unknown
-}
 interface Task {
   /**
    * @props 任务对应卡片名
@@ -92,5 +88,5 @@ interface Task {
    * ]
    */
   configurations: Record<string, unknown>
-  results: Record<string, SubTaskResult>
+  results: Record<string, any>
 }

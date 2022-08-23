@@ -107,6 +107,7 @@ namespace Callback {
     subtask: string // 子任务名
     taskchain: CoreTaskName // 当前任务链
     class: string // 子任务类型
+    taskid: number // 当前任务 TaskId
     what: string // 信息类型
     details: object // 信息详情
     uuid: string // 设备唯一码

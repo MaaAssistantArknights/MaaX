@@ -29,6 +29,7 @@ export interface TaskAction {
   deleteTask: (uuid: string, index: number) => boolean
   fixTaskList: (uuid: string) => void
   run: (uuid: string) => Promise<void>
+  updateTaskResult: (uuid: string, taskId: number, patch: any) => void
 }
 
 export const defaultSelfIncreaseId = 100000 // 初始自增id
@@ -189,7 +190,7 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
       const { deviceTasks } = this
       const origin = deviceTasks[uuid]
       const task = origin?.find((task) => task.taskid === taskId)
-      if (task != null) {
+      if (task) {
         const statusChanged = status !== task.status
 
         if (statusChanged) {
@@ -335,6 +336,14 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
           task.taskid = taskId
           await this.run(uuid)
         }
+      }
+    },
+    updateTaskResult (uuid, taskid, patch) {
+      const { deviceTasks } = this
+      const origin = deviceTasks[uuid]
+      const task = origin?.find((task) => task.taskid === taskid)
+      if (task) {
+        _.merge(task, patch)
       }
     }
   }

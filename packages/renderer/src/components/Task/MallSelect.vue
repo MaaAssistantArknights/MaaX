@@ -16,12 +16,12 @@ interface Item {
 
 const props = defineProps<{
   show: boolean;
-  buy_first: Item[];
+  buyFirst: Item[];
   blacklist: Item[];
   others: Item[];
 }>()
 
-const emit = defineEmits(['update:show', 'onChange:Item'])
+const emit = defineEmits(['update:show', 'change:item'])
 
 // const operators: Ref<any[]> = ref([])
 const loading = ref(false)
@@ -30,7 +30,7 @@ const loading = ref(false)
 // let othersSortable: Sortable | undefined
 
 function onItemChange () {
-  emit('onChange:Item')
+  emit('change:item')
 }
 
 onMounted(async () => {
@@ -57,20 +57,20 @@ onMounted(async () => {
     >
       <MallItems
         text="优先购买"
-        :items="props.buy_first"
-        @onChange:Item="onItemChange"
+        :items="props.buyFirst"
+        @change:item="onItemChange"
       />
       <n-divider />
       <MallItems
         text="黑名单"
         :items="props.blacklist"
-        @onChange:Item="onItemChange"
+        @change:item="onItemChange"
       />
       <n-divider />
       <MallItems
         text="随缘购买"
         :items="props.others"
-        @onChange:Item="onItemChange"
+        @change:item="onItemChange"
       />
     </n-card>
   </NModal>

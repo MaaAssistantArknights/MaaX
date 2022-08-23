@@ -17,10 +17,10 @@ const props = defineProps<{
   items: Item[]
 }>()
 
-const emit = defineEmits(['onChange:Item'])
+const emit = defineEmits(['change:item'])
 
 function onItemChange () {
-  emit('onChange:Item')
+  emit('change:item')
 }
 
 </script>
