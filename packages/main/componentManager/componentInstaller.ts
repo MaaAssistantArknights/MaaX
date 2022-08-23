@@ -1,4 +1,5 @@
 import unzipper, { Entry } from 'unzipper'
+import axios from 'axios'
 import fs from 'fs'
 import path from 'path'
 import logger from '@main/utils/logger'
@@ -19,11 +20,12 @@ interface UnzipHandle {
 abstract class ComponentInstaller {
   public abstract install (): Promise<void>
 
-  protected abstract checkUpdate (): Promise<string>
+  public abstract checkUpdate (): Promise<Update | false | undefined>
   protected abstract onStart (): void
   protected abstract onProgress (progress: number): void
   protected abstract onCompleted (): void
   protected abstract onException (): void
+
   protected unzipFile = (src: string, dist: string): void => {
     const files: Array<{
       filename: string
@@ -77,10 +79,24 @@ abstract class ComponentInstaller {
       })
   }
 
+  protected getRelease = async () => {
+    if (this.releaseTemp && Date.now() - this.releaseTemp.updated < 5 * 60 * 1000) {
+      return this.releaseTemp.data
+    }
+    const url = 'https://api.github.com/repos/MaaAssistantArknights/MaaAssistantArknights/releases/latest'
+    const releaseResponse = await axios.get(url, {
+      adapter: require('axios/lib/adapters/http.js')
+    })
+    this.releaseTemp = { data: releaseResponse.data, updated: Date.now() }
+    return releaseResponse.data
+  }
+
+  protected releaseTemp: {data: any, updated: number} | null = null
+
   public abstract readonly downloadHandle: DownloadHandle
   public abstract readonly unzipHandle: UnzipHandle
   public abstract downloader_: DownloadManager | null
-  protected static readonly UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36 Edg/97.0.1072.76'
+  protected abstract readonly componentType: ComponentType
 }
 
 export default ComponentInstaller

@@ -1,5 +1,3 @@
-import { app } from 'electron'
-
 import type { BrowserWindow } from 'electron'
 
 import path from 'path'
@@ -10,6 +8,10 @@ import ComponentInstaller from '@main/componentManager/componentInstaller'
 import CoreInstaller from '@main/componentManager/installers/core'
 import AdbInstaller from '@main/componentManager/installers/adb'
 import { Singleton } from '@common/function/singletonDecorator'
+import logger from '@main/utils/logger'
+import { getAppBaseDir } from '@main/utils/path'
+import DependencyInstaller from '@main/componentManager/installers/dependency'
+import ResourceInstaller from '@main/componentManager/installers/resource'
 
 @Singleton
 class DownloadManager {
@@ -20,6 +22,7 @@ class DownloadManager {
       'Maa App': {
         state: 'interrupted',
         paused: false,
+        savePath: '',
         progress: {
           prevReceivedBytes: 0,
           receivedBytes: 0
@@ -28,6 +31,7 @@ class DownloadManager {
       'Maa Core': {
         state: 'interrupted',
         paused: false,
+        savePath: '',
         progress: {
           prevReceivedBytes: 0,
           receivedBytes: 0
@@ -36,6 +40,25 @@ class DownloadManager {
       'Android Platform Tools': {
         state: 'interrupted',
         paused: false,
+        savePath: '',
+        progress: {
+          prevReceivedBytes: 0,
+          receivedBytes: 0
+        }
+      },
+      'Maa Dependency': {
+        state: 'interrupted',
+        paused: false,
+        savePath: '',
+        progress: {
+          prevReceivedBytes: 0,
+          receivedBytes: 0
+        }
+      },
+      'Maa Resource': {
+        state: 'interrupted',
+        paused: false,
+        savePath: '',
         progress: {
           prevReceivedBytes: 0,
           receivedBytes: 0
@@ -44,7 +67,9 @@ class DownloadManager {
     }
     this.installers_ = {
       'Maa Core': new CoreInstaller(),
-      'Android Platform Tools': new AdbInstaller()
+      'Android Platform Tools': new AdbInstaller(),
+      'Maa Dependency': new DependencyInstaller(),
+      'Maa Resource': new ResourceInstaller()
     }
 
     for (const installer of Object.values(this.installers_)) {
@@ -65,7 +90,7 @@ class DownloadManager {
     return '1.0.0'
   }
 
-  public downloadComponent (url: string, component: ComponentType): void {
+  public async downloadComponent (url: string, component: ComponentType): Promise<void> {
     this.will_download_ = component
     this.window_.webContents.downloadURL(url)
   }
@@ -175,7 +200,6 @@ class DownloadManager {
     item: Electron.DownloadItem,
     component: ComponentType
   ): void => {
-    // TODO: 通知对应的ComponentInstaller
     const installer = this.installers_[component]
     if (installer) {
       installer.downloadHandle.handleDownloadCompleted(this.tasks_[component])
@@ -191,7 +215,7 @@ class DownloadManager {
 
   private readonly window_: BrowserWindow
   private readonly installers_: { [component in ComponentType]?: ComponentInstaller }
-  private readonly download_path = path.join(app.getPath('appData'), app.getName(), 'download')
+  private readonly download_path = path.join(getAppBaseDir(), 'download')
 }
 
 export default DownloadManager

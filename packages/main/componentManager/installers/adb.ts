@@ -1,11 +1,11 @@
 // https://dl.google.com/android/repository/platform-tools-latest-windows.zip
-import { app } from 'electron'
 import { Singleton } from '@common/function/singletonDecorator'
 import ComponentInstaller from '../componentInstaller'
 import DownloadManager from '@main/downloadManager'
 import { ipcMainSend } from '@main/utils/ipc-main'
 import logger from '@main/utils/logger'
 import path from 'path'
+import { getAppBaseDir } from '@main/utils/path'
 
 @Singleton
 class AdbInstaller extends ComponentInstaller {
@@ -16,9 +16,11 @@ class AdbInstaller extends ComponentInstaller {
   public async install (): Promise<void> {
     try {
       if (this.downloader_) {
-        const downloadUrl = await this.checkUpdate()
-        this.downloader_?.downloadComponent(downloadUrl, 'Android Platform Tools')
-        this.status_ = 'downloading'
+        const update = await this.checkUpdate()
+        if (update) {
+          this.downloader_?.downloadComponent(update.url, this.componentType)
+          this.status_ = 'downloading'
+        }
       }
     } catch (e) {
       logger.error(e)
@@ -35,7 +37,7 @@ class AdbInstaller extends ComponentInstaller {
 
   protected onProgress (progress: number): void {
     ipcMainSend('renderer.ComponentManager:updateStatus', {
-      type: 'Android Platform Tools',
+      type: this.componentType,
       status: this.status_,
       progress
     })
@@ -44,7 +46,7 @@ class AdbInstaller extends ComponentInstaller {
   protected onCompleted (): void {
     this.status_ = 'done'
     ipcMainSend('renderer.ComponentManager:installDone', {
-      type: 'Android Platform Tools',
+      type: this.componentType,
       status: this.status_,
       progress: 0 // 不显示进度条
     })
@@ -52,7 +54,11 @@ class AdbInstaller extends ComponentInstaller {
 
   protected onException (): void {
     this.status_ = 'exception'
-    ipcMainSend('renderer.ComponentManager:installInterrupted')
+    ipcMainSend('renderer.ComponentManager:installInterrupted', {
+      type: this.componentType,
+      status: this.status_,
+      progress: 0
+    })
   }
 
   public readonly downloadHandle = {
@@ -64,7 +70,7 @@ class AdbInstaller extends ComponentInstaller {
       this.onProgress(0.8)
 
       const src = task.savePath
-      this.unzipFile(src, path.join(app.getPath('appData'), app.getName()))
+      this.unzipFile(src, path.join(getAppBaseDir()))
     },
     handleDownloadInterrupted: () => {
       this.status_ = 'exception'
@@ -86,12 +92,17 @@ class AdbInstaller extends ComponentInstaller {
     }
   }
 
-  protected async checkUpdate (): Promise<string> {
-    return 'https://dl.google.com/android/repository/platform-tools-latest-windows.zip'
+  public async checkUpdate (): Promise<Update | false | undefined> {
+    return {
+      url: 'https://dl.google.com/android/repository/platform-tools-latest-windows.zip',
+      version: 'latest',
+      releaseDate: ''
+    }
   }
 
   protected status_: InstallerStatus = 'pending'
   public downloader_: DownloadManager | null = null
+  protected readonly componentType: ComponentType = 'Android Platform Tools'
 }
 
 export default AdbInstaller

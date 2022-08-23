@@ -1,5 +1,4 @@
 // https://dl.google.com/android/repository/platform-tools-latest-windows.zip
-import { app } from 'electron'
 import { Singleton } from '@common/function/singletonDecorator'
 import ComponentInstaller from '../componentInstaller'
 import DownloadManager from '@main/downloadManager'
@@ -8,9 +7,8 @@ import logger from '@main/utils/logger'
 import path from 'path'
 import { cpuFeature } from '@main/utils/environment'
 import { getArch } from '@main/utils/os'
-import axios from 'axios'
 import fs from 'fs'
-import { MD5 } from 'crypto-js'
+import { getAppBaseDir } from '@main/utils/path'
 
 @Singleton
 class DependencyInstaller extends ComponentInstaller {
@@ -21,8 +19,18 @@ class DependencyInstaller extends ComponentInstaller {
   public async install (): Promise<void> {
     try {
       if (this.downloader_) {
-        const downloadUrl = await this.checkUpdate()
-        this.downloader_?.downloadComponent(downloadUrl, 'Maa Dependency')
+        const update = await this.checkUpdate()
+        if (typeof update === 'boolean' /* && update === false */) {
+          logger.error('[Component Installer] Failed to check update')
+          this.onException()
+          return
+        }
+        if (!update) {
+          logger.info('[Component Installer] No update available')
+          this.onCompleted()
+          return
+        }
+        this.downloader_?.downloadComponent(update.url, this.componentType)
         this.status_ = 'downloading'
       }
     } catch (e) {
@@ -40,7 +48,7 @@ class DependencyInstaller extends ComponentInstaller {
 
   protected onProgress (progress: number): void {
     ipcMainSend('renderer.ComponentManager:updateStatus', {
-      type: 'Maa Dependency',
+      type: this.componentType,
       status: this.status_,
       progress
     })
@@ -49,12 +57,13 @@ class DependencyInstaller extends ComponentInstaller {
   protected onCompleted (): void {
     this.status_ = 'done'
 
-    const versionFile = path.join(app.getPath('appData'), app.getName(), 'core/dep_version')
-
-    fs.writeFileSync(versionFile, '')
+    if (fs.existsSync(this.versionFile)) {
+      fs.rmSync(this.versionFile)
+    }
+    fs.renameSync(this.upgradableFile, this.versionFile)
 
     ipcMainSend('renderer.ComponentManager:installDone', {
-      type: 'Maa Dependency',
+      type: this.componentType,
       status: this.status_,
       progress: 0 // 不显示进度条
     })
@@ -62,7 +71,11 @@ class DependencyInstaller extends ComponentInstaller {
 
   protected onException (): void {
     this.status_ = 'exception'
-    ipcMainSend('renderer.ComponentManager:installInterrupted')
+    ipcMainSend('renderer.ComponentManager:installInterrupted', {
+      type: this.componentType,
+      status: this.status_,
+      progress: 0
+    })
   }
 
   public readonly downloadHandle = {
@@ -72,9 +85,7 @@ class DependencyInstaller extends ComponentInstaller {
     handleDownloadCompleted: (task: DownloadTask) => {
       this.status_ = 'unzipping'
       this.onProgress(0.8)
-
-      const src = task.savePath
-      this.unzipFile(src, path.join(app.getPath('appData'), app.getName()))
+      this.unzipFile(task.savePath, path.join(getAppBaseDir(), 'core'))
     },
     handleDownloadInterrupted: () => {
       this.status_ = 'exception'
@@ -96,21 +107,41 @@ class DependencyInstaller extends ComponentInstaller {
     }
   }
 
-  protected async checkUpdate (): Promise<string> {
-    const url = 'https://api.github.com/repos/MaaAssistantArknights/MaaAssistantArknights/releases/latest'
-    const response = await axios.get(url, {
-      adapter: require('axios/lib/adapters/http.js')
-    })
-    const { assets } = response.data
+  public async checkUpdate (): Promise<Update | false | undefined> {
+    let release = null
+    try {
+      release = await this.getRelease()
+    } catch (e: any) {
+      logger.error(
+        '[Component Installer] Failed to get latest release: ' +
+        `${String(e.response.status)} ${String(e.response.statusText)}`
+      )
+      return false
+    }
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const { assets, tag_name, published_at } = release
+    const currentVersion = fs.existsSync(this.versionFile) ? fs.readFileSync(this.versionFile, 'utf-8') : ''
+    if (currentVersion === tag_name) {
+      return undefined
+    }
+    fs.writeFileSync(this.upgradableFile, tag_name, 'utf-8')
     const regexp = getArch() === 'x64' && cpuFeature.avx2
       ? /^MaaDependency-v(.+)\.zip$/
       : /^MaaDependencyNoAvx-v(.+)\.zip$/
     const dependency = assets.find((asset: any) => regexp.test(asset.name))
-    return dependency.browser_download_url
+    return {
+      url: dependency.browser_download_url,
+      version: tag_name,
+      releaseDate: published_at
+    }
   }
 
   protected status_: InstallerStatus = 'pending'
   public downloader_: DownloadManager | null = null
+
+  private readonly versionFile = path.join(getAppBaseDir(), 'core/dep_version')
+  private readonly upgradableFile = path.join(getAppBaseDir(), 'core/dep_upgradable')
+  protected readonly componentType: ComponentType = 'Maa Dependency'
 }
 
 export default DependencyInstaller

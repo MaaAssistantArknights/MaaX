@@ -1,7 +1,7 @@
-import { app } from 'electron'
 import path from 'path'
 import tslog, { ILogObject } from 'tslog'
 import { createWriteStream, mkdirSync, existsSync, WriteStream } from 'fs'
+import { getAppBaseDir } from './path'
 
 class Logger {
   public constructor () {
@@ -42,7 +42,11 @@ class Logger {
   }
 
   private readonly logToTransport = (logObject: ILogObject): void => {
-    this.log_file_.write(JSON.stringify(logObject) + '\n')
+    this.main_.getChildLogger({
+      colorizePrettyLogs: false,
+      dateTimeTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+    })
+      .printPrettyLog(this.log_file_, logObject)
   }
 
   public get main (): tslog.Logger {
@@ -58,7 +62,7 @@ class Logger {
 
   private readonly log_file_: WriteStream
 
-  private readonly log_file_path_ = path.join(app.getPath('appData'), app.getName(), 'logs')
+  private readonly log_file_path_ = path.join(getAppBaseDir(), 'logs')
 }
 
 const logger = new Logger()

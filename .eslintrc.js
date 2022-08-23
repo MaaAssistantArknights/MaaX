@@ -43,6 +43,7 @@ module.exports = {
       "multiline": {
         "max": 1
       }
-    }]
+    }],
+    "@typescript-eslint/promise-function-async": 'off'
   }
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, Ref, onMounted } from 'vue'
+import { ref, Ref, onMounted, computed } from 'vue'
 import {
   NButton,
   NModal,
@@ -7,13 +7,20 @@ import {
   NSpace,
   NProgress,
   NAlert,
-  NTooltip
+  NTooltip,
+  NPopconfirm
 } from 'naive-ui'
 import { useI18n } from 'vue-i18n'
 import useComponentStore from '@/store/components'
+import useDeviceStore from '@/store/devices'
 
 const { t } = useI18n()
 const componentStore = useComponentStore()
+const deviceStore = useDeviceStore()
+
+const isTasking = computed(() =>
+  deviceStore.devices.some(device => device.status === 'tasking')
+)
 
 const props = defineProps<{
   show: boolean;
@@ -85,6 +92,12 @@ const handleInstall = (component: ComponentType) => {
   }
 }
 
+const handleInstallButtonClick = (component: ComponentType) => {
+  if (!isTasking.value) {
+    handleInstall(component)
+  }
+}
+
 const handleMouseEnter = (event: MouseEvent, component: ComponentType) => {
   const element = event.target as HTMLElement
   const rect = element.getClientRects()[0]
@@ -100,8 +113,15 @@ const handleMouseLeave = () => {
   showTooltip.value = undefined
 }
 
+const components: ComponentType[] = [
+  'Maa App',
+  'Maa Core',
+  'Android Platform Tools',
+  'Maa Dependency',
+  'Maa Resource'
+]
+
 onMounted(() => {
-  const components: ComponentType[] = ['Maa App', 'Maa Core', 'Android Platform Tools']
   Promise.all(
     components.map(component => {
       return new Promise<void>(resolve => {
@@ -132,7 +152,7 @@ onMounted(() => {
           {{ $t("download.needInstallAll") }}
         </NAlert>
         <div
-          v-for="component of (['Maa App', 'Maa Core', 'Android Platform Tools'] as ComponentType[])"
+          v-for="component of components"
           :key="component"
           class="download-card"
           @mouseenter="(event) => handleMouseEnter(event, component)"
@@ -166,15 +186,18 @@ onMounted(() => {
                 ].join(" - ")
               }}
             </div>
-            <NButton
-              v-else
-              type="primary"
-              :secondary="componentStore[component].componentStatus === 'installed'"
-              size="small"
-              @click="() => handleInstall(component)"
-            >
-              {{ installButtonText(componentStore[component].componentStatus) }}
-            </NButton>
+            <NPopconfirm v-else :disabled="!isTasking" @positive-click="() => handleInstall(component)">
+              <template #trigger>
+                <NButton
+                  type="primary"
+                  :secondary="componentStore[component].componentStatus === 'installed'"
+                  size="small"
+                  @click="() => handleInstallButtonClick(component)"
+                >
+                  {{ installButtonText(componentStore[component].componentStatus) }}
+                </NButton>
+              </template>
+            </NPopconfirm>
           </div>
         </div>
       </NSpace>

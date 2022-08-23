@@ -38,6 +38,16 @@ const useComponentStore = defineStore<'component', ComponentStoreState, {}, Comp
           componentStatus: 'not-installed',
           installerStatus: 'pending',
           installerProgress: 0
+        },
+        'Maa Dependency': {
+          componentStatus: 'not-installed',
+          installerStatus: 'pending',
+          installerProgress: 0
+        },
+        'Maa Resource': {
+          componentStatus: 'not-installed',
+          installerStatus: 'pending',
+          installerProgress: 0
         }
       }
     },

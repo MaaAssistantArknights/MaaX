@@ -1,13 +1,13 @@
 import { Singleton } from '@main/../common/function/singletonDecorator'
 import Storage from '@main/storageManager'
 import path from 'path'
-import { app } from 'electron'
 import _ from 'lodash'
 import logger from '@main/utils/logger'
 import { existsSync, mkdirSync } from 'fs'
 import ffi, { DynamicLibrary } from 'ffi-napi'
 import ref from 'ref-napi'
 import callbackHandle from './callback'
+import { getAppBaseDir } from '@main/utils/path'
 
 const storage = new Storage()
 
@@ -70,7 +70,7 @@ class CoreLoader {
   private DLib!: ffi.DynamicLibrary;
   private static libPath: string
   private static readonly libPathKey = 'libPath';
-  private static readonly defaultLibPath = path.join(app.getPath('appData'), app.getName(), 'core');
+  private static readonly defaultLibPath = path.join(getAppBaseDir(), 'core');
   private static loadStatus: boolean // core加载状态
   public MeoAsstLib!: any;
   private readonly DepLibs: DynamicLibrary[] = [];

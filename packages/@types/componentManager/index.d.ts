@@ -18,3 +18,9 @@ interface Component {
   status: ComponentStatus
   installer?: import('packages/main/componentManager/componentInstaller').default
 }
+
+interface Update {
+  url: string
+  version: string
+  releaseDate: string
+}
