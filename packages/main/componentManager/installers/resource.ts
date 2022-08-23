@@ -22,10 +22,13 @@ class ResourceInstaller extends ComponentInstaller {
           this.onException()
           return
         }
-        if (update) {
-          this.downloader_?.downloadComponent(update.url, this.componentType)
-          this.status_ = 'downloading'
+        if (!update) {
+          logger.info('[Component Installer] No update available')
+          this.onCompleted()
+          return
         }
+        this.downloader_?.downloadComponent(update.url, this.componentType)
+        this.status_ = 'downloading'
       }
     } catch (e) {
       logger.error(e)

@@ -48,7 +48,7 @@ const installButtonText = (status: ComponentStatus) => {
     case 'not-compatible':
       return '修复'
     case 'installed':
-      return '重新安装'
+      return '已安装'
     case 'upgradable':
       return '更新'
     case 'upgrading':
@@ -171,7 +171,7 @@ onMounted(() => {
             </div>
             <div
               v-if="
-                ['installing', 'upgrading'].includes(
+                ['installing', 'upgrading', 'installed'].includes(
                   componentStore[component].componentStatus
                 )
               "
@@ -183,7 +183,7 @@ onMounted(() => {
                   installerStatusText(
                     componentStore[component].installerStatus
                   ),
-                ].join(" - ")
+                ].filter(text => !!text).join(" - ")
               }}
             </div>
             <NPopconfirm v-else :disabled="!isTasking" @positive-click="() => handleInstall(component)">
