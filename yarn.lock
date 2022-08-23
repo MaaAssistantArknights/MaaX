@@ -172,7 +172,7 @@
 
 "@maa/cpu-feature@https://github.com/MaaAssistantArknights/CpuFeature.git#main":
   version "0.1.0"
-  resolved "https://github.com/MaaAssistantArknights/CpuFeature.git#4d43f7663ea55db9026f4c20a86789414062c4d0"
+  resolved "https://github.com/MaaAssistantArknights/CpuFeature.git#ed688518b63d786b2cc1f14fcf93707e3c4ab5e9"
   dependencies:
     node-addon-api "^5.0.0"
     node-gyp "^9.1.0"
