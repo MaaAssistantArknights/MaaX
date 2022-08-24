@@ -1,4 +1,5 @@
 import path from 'path'
+import { ipcMainHandle } from './ipc-main'
 import tslog, { ILogObject } from 'tslog'
 import { createWriteStream, mkdirSync, existsSync, WriteStream } from 'fs'
 import { getAppBaseDir } from './path'
@@ -39,6 +40,28 @@ class Logger {
       error: this.logToTransport,
       fatal: this.logToTransport
     }, 'debug')
+
+    ipcMainHandle('main:Util:LogSilly', (event, ...params) => {
+      this.renderer_.silly(...params)
+    })
+    ipcMainHandle('main:Util:LogDebug', (event, ...params) => {
+      this.renderer_.debug(...params)
+    })
+    ipcMainHandle('main:Util:LogTrace', (event, ...params) => {
+      this.renderer_.trace(...params)
+    })
+    ipcMainHandle('main:Util:LogInfo', (event, ...params) => {
+      this.renderer_.info(...params)
+    })
+    ipcMainHandle('main:Util:LogWarn', (event, ...params) => {
+      this.renderer_.warn(...params)
+    })
+    ipcMainHandle('main:Util:LogError', (event, ...params) => {
+      this.renderer_.error(...params)
+    })
+    ipcMainHandle('main:Util:LogFatal', (event, ...params) => {
+      this.renderer_.fatal(...params)
+    })
   }
 
   private readonly logToTransport = (logObject: ILogObject): void => {
@@ -53,10 +76,6 @@ class Logger {
     return this.main_
   }
 
-  public get renderer (): tslog.Logger {
-    return this.renderer_
-  }
-
   private readonly main_: tslog.Logger
   private readonly renderer_: tslog.Logger
 
@@ -66,8 +85,5 @@ class Logger {
 }
 
 const logger = new Logger()
-
-export const renderer = logger.renderer
-export const main = logger.main
 
 export default logger.main

@@ -5,7 +5,7 @@ import useDeviceStore, { DeviceState } from './devices'
 import useSettingStore, { SettingState } from './settings'
 import useTaskStore, { TaskState } from './tasks'
 import useThemeStore, { ThemeState } from './theme'
-const logger = console
+import logger from '@/hooks/caller/logger'
 
 type Patcher<T> = (storage: T) => T
 
@@ -39,6 +39,8 @@ export async function initialStore (): Promise<void> {
           task.startTime = undefined
           task.endTime = undefined
           task.status = 'idle'
+          task.results = {}
+          task.showResult = false
         }
       }
       return storage
@@ -59,7 +61,7 @@ export async function initialStore (): Promise<void> {
   }
 
   Promise.all(promises).then(() => {
-    console.log('finish loading store')
+    logger.debug('finish loading store')
     window.ipcRenderer.invoke('main.WindowManager:loaded')
   })
 }

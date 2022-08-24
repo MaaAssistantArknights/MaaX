@@ -28,7 +28,7 @@ const props = defineProps<{
   taskInfo: Task;
 }>()
 
-// const logger = console
+// import logger from '@/hooks/caller/logger'
 // const taskStore = useTaskStore()
 const deviceStore = useDeviceStore()
 

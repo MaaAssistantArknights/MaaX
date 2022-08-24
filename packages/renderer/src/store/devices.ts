@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-const logger = console
+import logger from '@/hooks/caller/logger'
 
 export interface DeviceState {
   devices: Device[]

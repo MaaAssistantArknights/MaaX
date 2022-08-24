@@ -13,19 +13,19 @@ const { appendLoading, removeLoading } = useLoading();
 // --------- Expose some API to the Renderer process. ---------
 const ipc = {
   on: (channel: IpcRendererHandleEvent, listener: (event: Electron.IpcRendererEvent, ...args: any[]) => void): Electron.IpcRenderer => {
-    ipcRenderer.send('log:debug', `ipcRenderer event "${channel}" registered`)
+    ipcRenderer.send('main:Util:LogSilly', `ipcRenderer event "${channel}" registered`)
     return ipcRenderer.on(channel, listener)
   },
   send: (channel: IpcMainHandleEvent, ...args: any[]): void => {
-    ipcRenderer.send('log:debug', `ipcMain event "${channel}" sent`)
+    ipcRenderer.send('main:Util:LogSilly', `ipcMain event "${channel}" sent`)
     ipcRenderer.send(channel, ...args)
   },
   invoke: (channel: IpcMainHandleEvent, ...args: any[]): Promise<any> => {
-    ipcRenderer.send('log:debug', `ipcMain event "${channel}" invoked`)
+    ipcRenderer.send('main:Util:LogSilly', `ipcMain event "${channel}" invoked`)
     return ipcRenderer.invoke(channel, ...args)
   },
   off: (channel: IpcRendererHandleEvent, listener: (event: Electron.IpcRendererEvent, ...args: any[]) => void): Electron.IpcRenderer => {
-    ipcRenderer.send('log:debug', `ipcRenderer event "${channel}" unregistered`)
+    ipcRenderer.send('main:Util:LogSilly', `ipcRenderer event "${channel}" unregistered`)
     return ipcRenderer.off(channel, listener)
   }
 }

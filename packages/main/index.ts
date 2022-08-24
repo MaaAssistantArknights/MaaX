@@ -3,11 +3,9 @@ import { release } from 'os'
 import { join } from 'path'
 import { is } from 'electron-util'
 
-import useDebug from './utils/debug'
-
-import useHooks from './hooks'
-
-import logger from './utils/logger'
+import useDebug from '@main/utils/debug'
+import logger from '@main/utils/logger'
+import useHooks from '@main/hooks'
 
 // modules
 import WindowManager from '@main/windowManager'

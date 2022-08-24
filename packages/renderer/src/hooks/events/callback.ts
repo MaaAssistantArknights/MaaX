@@ -6,7 +6,7 @@ import { show } from '@/utils/message'
 import { AsstMsg } from '@common/enum/callback'
 import type { MessageReactive } from 'naive-ui'
 
-const logger = console
+import logger from '@/hooks/caller/logger'
 
 const messages: Record<string, MessageReactive> = {}
 

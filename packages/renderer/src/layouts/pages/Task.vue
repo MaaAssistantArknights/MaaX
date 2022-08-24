@@ -15,7 +15,7 @@ import { show } from '@/utils/message'
 
 import router from '@/router'
 import Result from '@/components/Task/results/Index.vue'
-const logger = console
+import logger from '@/hooks/caller/logger'
 
 const taskStore = useTaskStore()
 const deviceStore = useDeviceStore()

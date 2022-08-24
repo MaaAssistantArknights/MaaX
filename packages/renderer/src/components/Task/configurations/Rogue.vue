@@ -19,7 +19,7 @@ import { getOperatorAvatar, getSkillImage } from '@/utils/game_image'
 //   formattedDurationToSeconds
 // } from '@/utils/time_picker'
 import OperatorSelector from '@/components/Task/OperatorSelector.vue'
-// const logger = console
+// import logger from '@/hooks/caller/logger'
 
 // type Strategies = 'ToTheEnd' | 'AfterFirstLevel' | 'AfterMoney';
 
