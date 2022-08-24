@@ -86,6 +86,11 @@ export default function useCallbackEvents (): void {
             break
           }
           case 'RecruitSpecialTag': {
+            const { uuid, taskid, details } = data
+            const task = taskStore.getTask(uuid.trim(), 'recurit')?.configurations
+            taskStore.updateTaskResult(uuid.trim(), taskid, {
+
+            })
             break
           }
           case 'RecruitRobotTag': {
@@ -110,6 +115,10 @@ export default function useCallbackEvents (): void {
             break
           }
           case 'NotEnoughStaff': {
+            const { uuid, taskid } = data
+            taskStore.updateTaskResult(uuid.trim(), taskid, {
+              notEnoughStaff: true
+            })
             break
           }
         }
