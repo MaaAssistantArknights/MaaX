@@ -18,6 +18,8 @@ export interface TaskAction {
     status: TaskStatus,
     progress: number
   ) => void
+  updateTaskResult: (uuid: string, taskId: number, patch: any) => void
+  updateTaskConfigurations: (uuid: string, taskId: number, key: string, value: any) => void
   changeTaskOrder: (uuid: string, from: number, to: number) => void
   updateTask: (uuid: string, tasks: Task[]) => void
   newTask: (uuid: string) => void
@@ -29,7 +31,6 @@ export interface TaskAction {
   deleteTask: (uuid: string, index: number) => boolean
   fixTaskList: (uuid: string) => void
   run: (uuid: string) => Promise<void>
-  updateTaskResult: (uuid: string, taskId: number, patch: any) => void
 }
 
 export const defaultSelfIncreaseId = 100000 // 初始自增id
@@ -137,7 +138,7 @@ const defaultTaskConf: Record<string, Task> = {
     enable: true,
     configurations: {
       shopping: true,
-      buy_first: ['龙门币', '招聘许可', '赤金'],
+      buyFirst: ['龙门币', '招聘许可', '赤金'],
       blacklist: ['家具零件', '加急许可']
     },
     results: {}
@@ -186,6 +187,14 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
     }
   },
   actions: {
+    updateTaskConfigurations (uuid, taskId, key, value) {
+      const { deviceTasks } = this
+      const origin = deviceTasks[uuid]
+      const task = origin?.find((task) => task.taskid === taskId)
+      if (task) {
+        _.set(task.configurations, key, value)
+      }
+    },
     updateTaskStatus (uuid, taskId, status, progress) {
       const { deviceTasks } = this
       const origin = deviceTasks[uuid]
@@ -211,6 +220,14 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
 
         task.status = status
         task.progress = progress
+      }
+    },
+    updateTaskResult (uuid, taskId, patch) {
+      const { deviceTasks } = this
+      const origin = deviceTasks[uuid]
+      const task = origin?.find((task) => task.taskid === taskId)
+      if (task) {
+        _.merge(task.results, patch)
       }
     },
     changeTaskOrder (uuid, from, to) {
@@ -336,14 +353,6 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
           task.taskid = taskId
           await this.run(uuid)
         }
-      }
-    },
-    updateTaskResult (uuid, taskid, patch) {
-      const { deviceTasks } = this
-      const origin = deviceTasks[uuid]
-      const task = origin?.find((task) => task.taskid === taskid)
-      if (task) {
-        _.merge(task, patch)
       }
     }
   }

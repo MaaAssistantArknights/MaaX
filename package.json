@@ -55,7 +55,7 @@
     "vue-router": "4",
     "vue-tsc": "^0.31.4",
     "vue3-json-viewer": "^2.2.2",
-    "vuedraggable": "^2.24.3"
+    "vuedraggable": "^4.0.1"
   },
   "env": {
     "//": "Used in build scripts",

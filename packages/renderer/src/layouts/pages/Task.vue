@@ -49,22 +49,6 @@ function load () {
       swapThreshold: 1,
       animation: 150,
       filter: '.undraggable',
-      // store: {
-      //   get () {
-      //     return tasks.value?.map((task) => task.ui_id.toString()) || []
-      //   },
-      //   set (sortable) {
-      //     const sort = sortable.toArray()
-      //     if (tasks.value && uuid.value) {
-      //       taskStore.updateTask(
-      //         uuid.value,
-      //         _.sortBy(tasks.value, (task) =>
-      //           sort.findIndex((v) => _.toNumber(v) === task.ui_id)
-      //         )
-      //       )
-      //     }
-      //   }
-      // },
       onMove: (event) => {
         if (event.related.classList.contains('undraggable')) {
           return false

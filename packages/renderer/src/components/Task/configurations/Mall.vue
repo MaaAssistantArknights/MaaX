@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { NButton, NFormItem, NCheckbox } from 'naive-ui'
-// import router from '@/router'
 import _ from 'lodash'
 import { getItemBorderedImage } from '@/utils/game_image'
 
@@ -35,9 +34,6 @@ const mallItems = {
   装置: '30062'
 } as const
 
-// type itemNameType = (typeof mallItems)[number]['items'][number]['name']
-// type itemIdType = (typeof mallItems)[number]['items'][number]['itemid']
-
 type itemNameType = keyof typeof mallItems
 
 interface MallConfiguration {
@@ -45,7 +41,6 @@ interface MallConfiguration {
   buyFirst: itemNameType[],
   shopping: boolean
 }
-// const routeUuid = router.currentRoute.value.params.uuid as string
 
 const props = defineProps<{
   configurations: MallConfiguration;
@@ -63,19 +58,6 @@ onMounted(async () => {
   buyFirst.value = []
   blackList.value = []
   otherItems.value = []
-
-  // ???: 无效的代码
-  // props.configurations.buy_first.map((item) => ({
-  //   name: item,
-  //   item_id: mallItems[item],
-  //   image: getItemBorderedImage(item)
-  // }))
-
-  // props.configurations.blacklist.map((item) => ({
-  //   name: item,
-  //   item_id: mallItems[item],
-  //   image: getItemBorderedImage(item)
-  // }))
 
   Object.entries(mallItems).forEach(([name, itemid]) => {
     if (!props.configurations.buyFirst.includes(name as itemNameType) &&

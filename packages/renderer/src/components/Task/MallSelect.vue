@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import {
   NModal,
   NCard,
@@ -23,21 +23,12 @@ const props = defineProps<{
 
 const emit = defineEmits(['update:show', 'change:item'])
 
-// const operators: Ref<any[]> = ref([])
-const loading = ref(false)
-// let buyFirstSortable: Sortable | undefined
-// let blacklistSortable: Sortable | undefined
-// let othersSortable: Sortable | undefined
-
 function onItemChange () {
   emit('change:item')
 }
 
 onMounted(async () => {
   console.log(props.others)
-  loading.value = true
-
-  loading.value = false
 })
 
 </script>
@@ -47,7 +38,7 @@ onMounted(async () => {
     :show="props.show"
     @update:show="(value) => $emit('update:show', value)"
   >
-    <n-card
+    <NCard
       style="width: 600px"
       title="信用购买"
       :bordered="false"
@@ -58,20 +49,20 @@ onMounted(async () => {
       <MallItems
         text="优先购买"
         :items="props.buyFirst"
-        @change:item="onItemChange"
+        @add="itemId => "
       />
-      <n-divider />
+      <NDivider />
       <MallItems
         text="黑名单"
         :items="props.blacklist"
-        @change:item="onItemChange"
+        @update:item="onItemChange"
       />
-      <n-divider />
+      <NDivider />
       <MallItems
         text="随缘购买"
         :items="props.others"
-        @change:item="onItemChange"
+        @update:item="onItemChange"
       />
-    </n-card>
+    </NCard>
   </NModal>
 </template>
