@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { onMounted } from 'vue'
 import {
   NModal,
   NCard,
@@ -8,28 +7,18 @@ import {
 
 import MallItems from '@/components/Task/MallItems.vue'
 
-interface Item {
-  name: string,
-  item_id: string,
-  image: string
-}
-
 const props = defineProps<{
   show: boolean;
-  buyFirst: Item[];
-  blacklist: Item[];
-  others: Item[];
+  buyFirst: string[];
+  blacklist: string[];
+  others: string[];
 }>()
 
-const emit = defineEmits(['update:show', 'change:item'])
+const emit = defineEmits(['update:show', 'update:item'])
 
-function onItemChange () {
-  emit('change:item')
+function handleChange (key: 'buyFirst' | 'blacklist', items: string[]) {
+  emit('update:item', key, items)
 }
-
-onMounted(async () => {
-  console.log(props.others)
-})
 
 </script>
 
@@ -49,19 +38,18 @@ onMounted(async () => {
       <MallItems
         text="优先购买"
         :items="props.buyFirst"
-        @add="itemId => "
+        @update:items="items => handleChange('buyFirst', items)"
       />
       <NDivider />
       <MallItems
         text="黑名单"
         :items="props.blacklist"
-        @update:item="onItemChange"
+        @update:items="items => handleChange('blacklist', items)"
       />
       <NDivider />
       <MallItems
         text="随缘购买"
         :items="props.others"
-        @update:item="onItemChange"
       />
     </NCard>
   </NModal>

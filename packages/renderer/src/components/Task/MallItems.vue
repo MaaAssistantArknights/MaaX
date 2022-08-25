@@ -4,14 +4,9 @@ import {
   NImage,
   NText
 } from 'naive-ui'
+import { getItemBorderedImage } from '@/utils/game_image'
 import { ref, Ref, onMounted } from 'vue'
 import router from '@/router'
-
-interface Item {
-  name: string,
-  item_id: string,
-  image: string
-}
 
 let sortable: Sortable | undefined
 const sortableRef: Ref<HTMLElement | null> = ref(null)
@@ -19,26 +14,24 @@ const uuid = router.currentRoute.value.params.uuid as string
 
 const props = defineProps<{
   text: string;
-  items: Item[]
+  items: string[]
 }>()
 
-const emit = defineEmits(['add', 'remove'])
+const emit = defineEmits(['update:items'])
 
-onMounted(() => {
+onMounted(async () => {
   if (sortableRef.value && !sortable) {
-    console.log('create sortable ' + `${uuid}-mallitems`)
     sortable = new Sortable(sortableRef.value, {
       swapThreshold: 1,
       animation: 150,
       group: `${uuid}-mallitems`,
-      onAdd: (event) => {
-        // this attribute must be string
-        const targetItemId = event.item.getAttribute('data-id') as string
-        emit('add', targetItemId)
-      },
-      onRemove: (event) => {
-        const targetItemId = event.item.getAttribute('data-id') as string
-        emit('remove', targetItemId)
+      store: {
+        get: () => {
+          return props.items
+        },
+        set: (sortable) => {
+          emit('update:items', sortable.toArray())
+        }
       }
     })
   }
@@ -47,15 +40,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <n-text>{{ text }}</n-text>
+  <NText>{{ text }}</NText>
   <div ref="sortableRef" :style="{ minHeight: '70px' }">
-    <n-image
-      v-for="(element, index) of props.items"
+    <NImage
+      v-for="(item, index) of props.items"
       :key="index"
-      width="70"
-      :src="element.image"
+      :width="70"
       class="item"
-      :data-id="element.item_id"
+      :src="getItemBorderedImage(item)"
+      :data-id="item"
     />
   </div>
 </template>
