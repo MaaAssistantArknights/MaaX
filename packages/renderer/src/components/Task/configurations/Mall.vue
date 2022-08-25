@@ -1,37 +1,11 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { NButton, NFormItem, NCheckbox } from 'naive-ui'
 import _ from 'lodash'
 
 import MallSelect from '../MallSelect.vue'
 
 const showModal = ref(false)
-
-const socialShopItems = [
-  '龙门币',
-  '家具零件',
-  '招聘许可',
-  '加急许可',
-  '赤金',
-  '基础作战记录',
-  '初级作战记录',
-  '技巧概要·卷1',
-  '技巧概要·卷2',
-  '碳',
-  '碳素',
-  '源岩',
-  '代糖',
-  '酯原料',
-  '异铁碎片',
-  '双酮',
-  '破损装置',
-  '固源岩',
-  '糖',
-  '聚酸酯',
-  '异铁',
-  '酮凝集',
-  '装置'
-]
 
 interface MallConfiguration {
   blacklist: string[]
@@ -43,19 +17,10 @@ const props = defineProps<{
   configurations: MallConfiguration;
 }>()
 
-const blacklist = computed(() => props.configurations.blacklist)
-const buyFirst = computed(() => props.configurations.buyFirst)
-
-const otherItems = computed(() => {
-  return _.difference(
-    socialShopItems, [
-      ...props.configurations.buyFirst,
-      ...props.configurations.blacklist
-    ])
-})
-
-function onItemChange (key: string, items: string[]) {
-  _.set(props.configurations, key, items)
+function onItemChange (items: { buyFirst: string[], blacklist: string[] }) {
+  for (const [key, list] of Object.entries(items)) {
+    _.set(props.configurations, key, list)
+  }
 }
 
 </script>
@@ -96,9 +61,8 @@ function onItemChange (key: string, items: string[]) {
       </NButton>
       <MallSelect
         v-model:show="showModal"
-        :buy-first="buyFirst"
-        :blacklist="blacklist"
-        :others="otherItems"
+        :buy-first="props.configurations.buyFirst"
+        :blacklist="props.configurations.blacklist"
         @update:item="onItemChange"
       />
     </NFormItem>

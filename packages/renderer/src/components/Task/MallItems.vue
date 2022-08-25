@@ -1,15 +1,12 @@
 <script lang="ts" setup>
-import Sortable from 'sortablejs'
+import Draggable from 'vuedraggable'
 import {
-  NImage,
-  NText
+  NText,
+  NImage
 } from 'naive-ui'
-import { getItemBorderedImage } from '@/utils/game_image'
-import { ref, Ref, onMounted } from 'vue'
 import router from '@/router'
+import { getItemBorderedImage } from '@/utils/game_image'
 
-let sortable: Sortable | undefined
-const sortableRef: Ref<HTMLElement | null> = ref(null)
 const uuid = router.currentRoute.value.params.uuid as string
 
 const props = defineProps<{
@@ -17,40 +14,29 @@ const props = defineProps<{
   items: string[]
 }>()
 
-const emit = defineEmits(['update:items'])
-
-onMounted(async () => {
-  if (sortableRef.value && !sortable) {
-    sortable = new Sortable(sortableRef.value, {
-      swapThreshold: 1,
-      animation: 150,
-      group: `${uuid}-mallitems`,
-      store: {
-        get: () => {
-          return props.items
-        },
-        set: (sortable) => {
-          emit('update:items', sortable.toArray())
-        }
-      }
-    })
-  }
-})
+defineEmits(['updated'])
 
 </script>
 
 <template>
   <NText>{{ text }}</NText>
-  <div ref="sortableRef" :style="{ minHeight: '70px' }">
-    <NImage
-      v-for="(item, index) of props.items"
-      :key="index"
-      :width="70"
-      class="item"
-      :src="getItemBorderedImage(item)"
-      :data-id="item"
-    />
-  </div>
+  <!-- Draggable组件在没有双向绑定的情况下会自动更新list中的内容，目前还不知道原理 -->
+  <Draggable
+    :group="`${uuid}-mallItems`"
+    :list="props.items"
+    :style="{ minHeight: '70px' }"
+    :animation="200"
+    @change="$emit('updated')"
+  >
+    <template #item="{ element }">
+      <NImage
+        :width="70"
+        class="item"
+        :src="getItemBorderedImage(element)"
+        :preview-disabled="true"
+      />
+    </template>
+  </Draggable>
 </template>
 
 <style lang="less" scoped>

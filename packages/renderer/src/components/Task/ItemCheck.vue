@@ -35,7 +35,6 @@ const emit = defineEmits(['update:checked'])
     <NScrollbar :style="{ maxHeight: '50vh' }">
       <ItemCard
         :name="props.name"
-        :itemid="props.itemid"
       />
     </NScrollbar>
   </NPopover>

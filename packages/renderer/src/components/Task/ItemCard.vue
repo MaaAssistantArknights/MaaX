@@ -5,7 +5,6 @@ import { NCard, NText, NTag, NSkeleton, NSpace } from 'naive-ui'
 
 const props = defineProps<{
   name: string;
-  itemid: string;
 }>()
 
 const items: Ref<Api.Maa.Item[]> = ref([])
@@ -19,7 +18,8 @@ onMounted(async () => {
   const stageApi = await gamedata.getAllStages()
   stages.value = Object.values(stageApi.stages) as unknown as Api.Maa.Stage[]
   items.value = Object.values(itemApi.items) as unknown as Api.Maa.Item[]
-  info.value = items.value.find(x => x.itemId === props.itemid)
+  const itemid = Object.values(itemApi.items).find(item => item.name === props.name)?.itemId
+  info.value = items.value.find(x => x.itemId === itemid)
   loading.value = false
 })
 
