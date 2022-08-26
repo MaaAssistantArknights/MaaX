@@ -67,7 +67,10 @@ class Logger {
   private readonly logToTransport = (logObject: ILogObject): void => {
     this.main_.getChildLogger({
       colorizePrettyLogs: false,
-      dateTimeTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+      dateTimeTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      prettyInspectOptions: {
+        colors: false
+      }
     })
       .printPrettyLog(this.log_file_, logObject)
   }
