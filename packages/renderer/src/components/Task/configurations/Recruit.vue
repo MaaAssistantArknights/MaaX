@@ -3,15 +3,6 @@ import { NInputNumber, NCheckbox, NFormItem } from 'naive-ui'
 import _ from 'lodash'
 
 interface RecruitConfiguration {
-  // refresh_normal_tags: boolean;
-  // use_expedited_plan: boolean;
-  // maximum_times_of_recruitments: number;
-  // recognitions: {
-  //   '3 Stars': boolean;
-  //   '4 Stars': boolean;
-  //   '5 Stars': boolean;
-  // };
-
   refresh: boolean, // 自动刷新三星词条
   select: number[],
   confirm: number[],
@@ -26,18 +17,12 @@ const props = defineProps<{
   configurations: RecruitConfiguration;
 }>()
 
-function handleConfirmUpdate (checked:boolean, value:number) {
+function handleConfirmUpdate (checked: boolean, value: number) {
   if (checked) {
-    // props.configurations.select.push(value)
-    _.set(props.configurations, 'select', [...props.configurations.select, value])
+    _.set(props.configurations, 'confirm', _.uniq([...props.configurations.confirm, value]))
   } else {
-    // props.configurations.select = props.configurations.select.filter(v => v !== value)
-    _.set(props.configurations, 'select', props.configurations.select.filter(v => v !== value))
+    _.set(props.configurations, 'confirm', _.uniq(props.configurations.confirm.filter(v => v !== value)))
   }
-
-  // console.log(confirmSet)
-  // _.set(props.configurations, 'confirm', Array.from(confirmSet))
-  console.log(props.configurations.confirm)
 }
 
 function handleRecruitTimesUpdate (value: number | null) {
@@ -57,9 +42,7 @@ function handleExpediteUpdate (value: number | null) {
 </script>
 
 <template>
-  <div
-    class="configuration-form"
-  >
+  <div class="configuration-form">
     <NFormItem
       label="招募次数"
       :show-label="true"
@@ -68,10 +51,7 @@ function handleExpediteUpdate (value: number | null) {
       label-placement="left"
       :show-feedback="false"
     >
-      <NInputNumber
-        :value="configurations.times"
-        @update:value="handleRecruitTimesUpdate"
-      />
+      <NInputNumber :value="configurations.times" @update:value="handleRecruitTimesUpdate" />
     </NFormItem>
 
     <NFormItem
@@ -121,8 +101,7 @@ function handleExpediteUpdate (value: number | null) {
       <NCheckbox
         :checked="configurations.refresh"
         @update:checked="
-          (checked) =>
-          {
+          (checked) => {
             _.set(props.configurations, 'refresh', checked)
           }
         "
@@ -139,8 +118,7 @@ function handleExpediteUpdate (value: number | null) {
       <NCheckbox
         :checked="configurations.skip_robot"
         @update:checked="
-          (checked) =>
-          {
+          (checked) => {
             _.set(props.configurations, 'skip_robot', checked)
           }
         "
@@ -155,10 +133,9 @@ function handleExpediteUpdate (value: number | null) {
       :show-feedback="false"
     >
       <NCheckbox
-        :checked="configurations.confirm.find(v => v === 3)"
+        :checked="configurations.confirm.includes(3)"
         @update:checked="
-          (checked) =>
-          {
+          (checked) => {
             handleConfirmUpdate(checked, 3)
           }
         "
@@ -173,10 +150,9 @@ function handleExpediteUpdate (value: number | null) {
       :show-feedback="false"
     >
       <NCheckbox
-        :checked="configurations.confirm.find(v => v === 4)"
+        :checked="configurations.confirm.includes(4)"
         @update:checked="
-          (checked) =>
-          {
+          (checked) => {
             handleConfirmUpdate(checked, 4)
           }
         "
@@ -191,10 +167,9 @@ function handleExpediteUpdate (value: number | null) {
       :show-feedback="false"
     >
       <NCheckbox
-        :checked="configurations.confirm.find(v => v === 5)"
+        :checked="configurations.confirm.includes(5)"
         @update:checked="
-          (checked) =>
-          {
+          (checked) => {
             handleConfirmUpdate(checked, 5)
           }
         "

@@ -111,10 +111,10 @@ export default function useCallbackEvents (): void {
           case 'StageDrops': {
             const {
               uuid,
-              task_id,
+              taskid,
               details
             } = data
-            taskStore.mergeTaskResult(uuid.trim(), task_id, {
+            taskStore.mergeTaskResult(uuid.trim(), taskid, {
               fightInfo: [details]
             })
             break
@@ -149,10 +149,10 @@ export default function useCallbackEvents (): void {
           case 'RecruitRobotTag': {
             const {
               uuid,
-              task_id,
+              taskid,
               details
             } = data
-            const task = taskStore.getTask(uuid.trim(), task => task.task_id === task_id)
+            const task = taskStore.getTask(uuid.trim(), task => task.task_id === taskid)
             if (task && !task.configurations.skip_robot) {
               const device = deviceStore.getDevice(uuid)
               const name = device?.displayName ?? device?.address ?? uuid
@@ -167,10 +167,10 @@ export default function useCallbackEvents (): void {
           case 'RecruitResult': {
             const {
               uuid,
-              task_id,
+              taskid,
               details
             } = data
-            taskStore.mergeTaskResult(uuid.trim(), task_id, {
+            taskStore.mergeTaskResult(uuid.trim(), taskid, {
               recruits: [{
                 ...details,
                 refreshed: false,
@@ -182,10 +182,10 @@ export default function useCallbackEvents (): void {
           case 'RecruitTagsSelected': {
             const {
               uuid,
-              task_id,
+              taskid,
               details
             } = data
-            const task = taskStore.getTask(uuid.trim(), task => task.task_id === task_id)
+            const task = taskStore.getTask(uuid.trim(), task => task.task_id === taskid)
             if (task?.results.recruits) {
               _.last<any>(task.results.recruits).selectedTags = details.tags
             }
@@ -194,9 +194,9 @@ export default function useCallbackEvents (): void {
           case 'RecruitTagsRefreshed': {
             const {
               uuid,
-              task_id
+              taskid
             } = data
-            const task = taskStore.getTask(uuid.trim(), task => task.task_id === task_id)
+            const task = taskStore.getTask(uuid.trim(), task => task.task_id === taskid)
             if (task?.results.recruits) {
               _.last<any>(task.results.recruits).refreshed = true
             }
@@ -214,9 +214,9 @@ export default function useCallbackEvents (): void {
           case 'NotEnoughStaff': {
             const {
               uuid,
-              task_id
+              taskid
             } = data
-            taskStore.mergeTaskResult(uuid.trim(), task_id, {
+            taskStore.mergeTaskResult(uuid.trim(), taskid, {
               notEnoughStaff: true
             })
             break
@@ -341,20 +341,20 @@ export default function useCallbackEvents (): void {
     },
     [AsstMsg.TaskChainError]: (data: Callback.TaskChainError) => {
       const taskStore = useTaskStore()
-      taskStore.updateTaskStatus(data.uuid.trim(), data.task_id, 'exception', 0)
+      taskStore.updateTaskStatus(data.uuid.trim(), data.taskid, 'exception', 0)
     },
     [AsstMsg.TaskChainStart]: (data: Callback.TaskChainStart) => {
       const taskStore = useTaskStore()
       taskStore.updateTaskStatus(
         data.uuid.trim(),
-        data.task_id,
+        data.taskid,
         'processing',
         0
       )
     },
     [AsstMsg.TaskChainCompleted]: (data: Callback.TaskChainCompleted) => {
       const taskStore = useTaskStore()
-      taskStore.updateTaskStatus(data.uuid.trim(), data.task_id, 'success', 0)
+      taskStore.updateTaskStatus(data.uuid.trim(), data.taskid, 'success', 0)
     },
     [AsstMsg.TaskChainExtraInfo]: (data: Callback.TaskChainExtraInfo) => {
       // TODO

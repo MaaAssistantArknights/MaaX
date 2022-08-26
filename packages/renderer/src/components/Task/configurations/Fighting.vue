@@ -70,29 +70,23 @@ const drops = computed({
 
 function handleConfigurationUpdate (key: string, value: any) {
   if (value === null) value = 6
-  if (value < 0) value = 999
-  if (value > 999) value = 0
+  if (value < 0) value = 0
+  if (value > 999) value = 999
   _.set(props.configurations, key, value)
 }
 
 function handleMedicineUpdate (value: number | null) {
   if (value === null) value = 6
-  if (value < 0) value = 999
-  if (value > 999) value = 0
   handleConfigurationUpdate('medicine', value)
 }
 
 function handleTimesUpdate (value: number | null) {
   if (value === null) value = 6
-  if (value < 0) value = 999
-  if (value > 999) value = 0
   handleConfigurationUpdate('times', value)
 }
 
 function handleStoneUpdate (value: number | null) {
   if (value === null) value = 6
-  if (value < 0) value = 999
-  if (value > 999) value = 0
   handleConfigurationUpdate('stone', value)
 }
 
@@ -143,6 +137,8 @@ onMounted(async () => {
         :show-feedback="false"
       >
         <NInputNumber
+          :min="0"
+          :max="999"
           :value="props.configurations.times"
           :update-value-on-input="false"
           @update:value="handleTimesUpdate"
@@ -157,6 +153,8 @@ onMounted(async () => {
         :show-feedback="false"
       >
         <NInputNumber
+          :min="0"
+          :max="999"
           :value="props.configurations.medicine"
           :update-value-on-input="false"
           @update:value="handleMedicineUpdate"
@@ -171,6 +169,8 @@ onMounted(async () => {
         :show-feedback="false"
       >
         <NInputNumber
+          :min="0"
+          :max="999"
           :value="props.configurations.stone"
           :update-value-on-input="false"
           @update:value="handleStoneUpdate"
@@ -202,7 +202,7 @@ onMounted(async () => {
             :value="drops.times"
             :min="0"
             :max="999"
-            @update:value="value => handleDropUpdate({item_id: drops.item_id, times: value})"
+            @update:value="value => handleDropUpdate({item_id: drops.item_id, times: value ?? undefined})"
           />
         </NInputGroup>
       </NFormItem>

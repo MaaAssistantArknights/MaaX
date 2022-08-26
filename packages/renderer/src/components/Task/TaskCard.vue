@@ -9,9 +9,10 @@ import {
   useThemeVars,
   NIcon,
   NTooltip,
-  NButton
+  NButton,
+  NText
 } from 'naive-ui'
-import { ref, nextTick } from 'vue'
+import { ref, nextTick, computed } from 'vue'
 import DropdownMenu from './DropdownMenu.vue'
 import router from '@/router'
 import useThemeStore from '@/store/theme'
@@ -89,7 +90,7 @@ const resetTaskProgress = (taskInfo: Task) => {
 
 const uuid = router.currentRoute.value.params.uuid as string
 
-const deviceStatus = deviceStore.getDevice(uuid)?.status ?? 'disconnected'
+const deviceStatus = computed(() => deviceStore.getDevice(uuid)?.status ?? 'disconnected')
 
 </script>
 
@@ -119,18 +120,19 @@ const deviceStatus = deviceStore.getDevice(uuid)?.status ?? 'disconnected'
           <div class="card-header">
             <NSpace>
               <span class="card-title">{{ props.taskInfo.title || "" }}</span>
+              <div
+                v-if="deviceStatus === 'tasking' && props.taskInfo.status !== 'idle'"
+                justify="end"
+              >
+                <NText type="primary">
+                  <Timer
+                    :start-time="props.taskInfo.startTime"
+                    :end-time="props.taskInfo.endTime"
+                  />
+                </NText>
+              </div>
             </NSpace>
             <NSpace
-              v-if="deviceStatus === 'tasking' && props.taskInfo.status !== 'idle'"
-              justify="end"
-            >
-              <Timer
-                :start-time="props.taskInfo.startTime"
-                :end-time="props.taskInfo.endTime"
-              />
-            </NSpace>
-            <NSpace
-              v-else
               justify="end"
               align="center"
             >
@@ -153,7 +155,7 @@ const deviceStatus = deviceStore.getDevice(uuid)?.status ?? 'disconnected'
                   <NButton
                     text
                     style="font-size: 25px"
-                    :disabled="['processing', 'waiting'].includes(props.taskInfo.status)"
+                    :disabled="['processing', 'waiting', 'success'].includes(props.taskInfo.status)"
                     @click="() => $emit('delete')"
                   >
                     <NIcon>

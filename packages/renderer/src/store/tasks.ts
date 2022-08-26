@@ -84,7 +84,7 @@ const defaultTaskConf: Record<string, Task> = {
     enable: true,
     configurations: {
       refresh: false, // 自动刷新三星词条
-      select: [3, 4],
+      select: [3, 4, 5, 6],
       confirm: [3, 4],
       times: 0,
       set_time: true,
@@ -331,10 +331,10 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
       })
     },
     async run (uuid) {
-      const { deviceTasks } = this
-      const origin = deviceTasks[uuid]
-      const task = origin?.find((task) => task.status === 'idle' && task.enable) // find next task to execute
-      if (task) {
+      const origin = this.deviceTasks[uuid]
+      const taskIndex = origin?.findIndex((task) => task.status === 'idle' && task.enable) // find next task to execute
+      if (taskIndex !== -1) {
+        const task = origin[taskIndex]
         if (task.name === 'emulator') {
           // TODO
         } else if (task.name === 'shutdown') {

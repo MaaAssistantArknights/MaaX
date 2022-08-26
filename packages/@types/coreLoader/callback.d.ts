@@ -57,19 +57,19 @@ namespace Callback {
 
   interface TaskChainStart {
     taskchain: import('@common/enum/callback').TaskChainMap // 当前的任务链
-    task_id: number // 当前任务 TaskId
+    taskid: number // 当前任务 TaskId
     uuid: string // 设备唯一码
   }
 
   interface TaskChainError {
     taskchain: import('@common/enum/callback').TaskChainMap // 当前的任务链
-    task_id: number // 当前任务 TaskId
+    taskid: number // 当前任务 TaskId
     uuid: string // 设备唯一码
   }
 
   interface TaskChainCompleted {
     taskchain: import('@common/enum/callback').TaskChainMap // 当前的任务链
-    task_id: number // 当前任务 TaskId
+    taskid: number // 当前任务 TaskId
     uuid: string // 设备唯一码
   }
 
@@ -81,7 +81,7 @@ namespace Callback {
     subtask: string // 子任务名
     class: string // 子任务符号名
     taskchain: CoreTaskName // 当前任务链
-    task_id: number // 当前任务 TaskId
+    taskid: number // 当前任务 TaskId
     details: any // 详情
     uuid: string // 设备唯一码
   }
@@ -90,7 +90,7 @@ namespace Callback {
     subtask: string // 子任务名
     class: string // 子任务符号名
     taskchain: CoreTaskName // 当前任务链
-    task_id: number // 当前任务 TaskId
+    taskid: number // 当前任务 TaskId
     details: any // 详情
     uuid: string // 设备唯一码
   }
@@ -98,7 +98,7 @@ namespace Callback {
     subtask: string // 子任务名
     class: string // 子任务符号名
     taskchain: CoreTaskName // 当前任务链
-    task_id: number // 当前任务 TaskId
+    taskid: number // 当前任务 TaskId
     details: any // 详情
     uuid: string // 设备唯一码
   }
@@ -107,7 +107,7 @@ namespace Callback {
     subtask: string // 子任务名
     taskchain: CoreTaskName // 当前任务链
     class: string // 子任务类型
-    task_id: number // 当前任务 TaskId
+    taskid: number // 当前任务 TaskId
     what: string // 信息类型
     details: any // 信息详情
     uuid: string // 设备唯一码
