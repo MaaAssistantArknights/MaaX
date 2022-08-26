@@ -57,7 +57,6 @@ type IpcRendererHandleEvent =
   | 'renderer.CoreLoader:callback'
   | 'renderer.DeviceDetector:searched'
   | 'renderer.DeviceDetector:changeStatus'
-  | 'renderer.TaskManager:changeStatus'
   | 'renderer.AppearanceManager:systemThemeUpdated'
   | 'renderer.DownloadModal:updateStatus'
   | 'renderer.ComponentManager:updateStatus'

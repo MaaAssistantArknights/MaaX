@@ -1,4 +1,4 @@
-const path = require('path')
+const path = require("path");
 
 module.exports = {
   root: true,
@@ -6,45 +6,50 @@ module.exports = {
     browser: true,
     es2021: true,
     node: true,
-    'vue/setup-compiler-macros': true
+    "vue/setup-compiler-macros": true,
   },
   parserOptions: {
     ecmaVersion: 12,
-    sourceType: 'module',
+    sourceType: "module",
     project: [
-      path.join(__dirname, 'packages/renderer/tsconfig.json'),
-      path.join(__dirname, 'packages/main/tsconfig.json'),
-    ]
+      path.join(__dirname, "packages/renderer/tsconfig.json"),
+      path.join(__dirname, "packages/main/tsconfig.json"),
+    ],
   },
-  plugins: [
-    'vue',
-    '@typescript-eslint'
-  ],
+  plugins: ["vue", "@typescript-eslint"],
   extends: [
-    'eslint:recommended',
-    'plugin:vue/vue3-recommended',
-    'plugin:vue/vue3-essential',
-    'standard-with-typescript',
-    '@vue/eslint-config-typescript'
+    "eslint:recommended",
+    "plugin:vue/vue3-recommended",
+    "plugin:vue/vue3-essential",
+    "standard-with-typescript",
+    "@vue/eslint-config-typescript",
   ],
   rules: {
-    'vue/max-len': ['error', {
-      code: 120,
-      template: 120
-    }],
+    "vue/max-len": [
+      "error",
+      {
+        code: 120,
+        template: 120,
+      },
+    ],
     "no-undef": "off", // 让ts检查undefined
     "@typescript-eslint/no-floating-promises": "off",
-    '@typescript-eslint/strict-boolean-expressions': 'off',
-    "vue/multi-word-component-names": 'off',
-    "vue/max-attributes-per-line": ["error", {
-      "singleline": {
-        "max": 3
+    "@typescript-eslint/strict-boolean-expressions": "off",
+    "vue/multi-word-component-names": "off",
+    "vue/max-attributes-per-line": [
+      "error",
+      {
+        singleline: {
+          max: 3,
+        },
+        multiline: {
+          max: 1,
+        },
       },
-      "multiline": {
-        "max": 1
-      }
-    }],
-    "@typescript-eslint/promise-function-async": 'off',
-    "@typescript-eslint/naming-convention": 'off'
-  }
-}
+    ],
+    "@typescript-eslint/promise-function-async": "off",
+    "@typescript-eslint/naming-convention": "off",
+    "camelcase": "off",
+    "vue/prop-name-casing": "off"
+  },
+};
