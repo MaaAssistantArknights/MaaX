@@ -2,7 +2,7 @@
 import _ from 'lodash'
 import { ref, onMounted, Ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { NEllipsis, NTable, NCollapse, NCollapseItem } from 'naive-ui'
+import { NEllipsis, NTable, NCollapse, NCollapseItem, NAlert } from 'naive-ui'
 import { getSystemInformation } from '@/hooks/caller/os'
 import { showBoolean } from '@/i18n'
 
@@ -67,6 +67,9 @@ onMounted(() => {
   <h3 class="subtitle">
     系统信息
   </h3>
+  <NAlert title="" type="info" :style="{ marginBottom: '24px' }">
+    这部分信息只做展示，且仅供调试参考。信息展示会在v2的beta测试版中删除。
+  </NAlert>
   <NCollapse
     display-directive="show"
     class="system-information"
