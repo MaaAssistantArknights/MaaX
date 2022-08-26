@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, Ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { NSpace, NButton, NSwitch, NIcon, NTooltip } from 'naive-ui'
 import _ from 'lodash'
-import Sortable from 'sortablejs'
+import Draggable from 'vuedraggable'
 import TaskCard from '@/components/Task/TaskCard.vue'
 import IconList from '@/assets/icons/list.svg?component'
 import IconGrid from '@/assets/icons/grid.svg?component'
@@ -10,7 +10,6 @@ import Configuration from '@/components/Task/configurations/Index.vue'
 
 import useTaskStore from '@/store/tasks'
 import useDeviceStore from '@/store/devices'
-import { handleCoreTask, uiTasks } from '@/utils/converter/tasks'
 import { show } from '@/utils/message'
 
 import router from '@/router'
@@ -23,7 +22,6 @@ const deviceStore = useDeviceStore()
 
 const isGrid = ref(false)
 const actionLoading = ref(false)
-const sortableRef: Ref<HTMLElement | null> = ref(null)
 
 const uuid = computed(() => router.currentRoute.value.params.uuid as string)
 const tasks = computed(() => {
@@ -33,34 +31,9 @@ const tasks = computed(() => {
   return taskStore.deviceTasks[uuid.value]
 })
 
-onMounted(() => {
-  load()
-})
-
-watch(router.currentRoute, () => {
-  load()
-})
-
-let sortable: Sortable | undefined
-
-function load () {
-  if (sortableRef.value && !sortable) {
-    sortable = new Sortable(sortableRef.value, {
-      swapThreshold: 1,
-      animation: 150,
-      filter: '.undraggable',
-      onMove: (event) => {
-        if (event.related.classList.contains('undraggable')) {
-          return false
-        }
-      },
-      onSort: (event) => {
-        const { oldIndex, newIndex } = event
-        if (newIndex !== undefined && oldIndex !== undefined) {
-          [tasks.value[oldIndex], tasks.value[newIndex]] = [tasks.value[newIndex], tasks.value[oldIndex]]
-        }
-      }
-    })
+function handleDragMove (event: any) {
+  if (event.related.classList.contains('undraggable')) {
+    return false
   }
 }
 
@@ -248,33 +221,37 @@ function handleTaskDelete (index: number) {
       </NSpace>
     </NSpace>
 
-    <div
-      ref="sortableRef"
+    <Draggable
+      :list="tasks"
+      :animation="200"
+      :filter="'.undraggable'"
       class="cards"
+      item-key="taskid"
       :class="isGrid ? 'cards-grid' : ''"
+      @move="handleDragMove"
     >
-      <TaskCard
-        v-for="(task, index) in tasks"
-        :key="index"
-        v-model:showResult="task.showResult"
-        :is-collapsed="!isGrid"
-        :task-info="task"
-        @update:enable="(enabled) => (task.enable = enabled)"
-        @copy="() => handleTaskCopy(index)"
-        @delete="() => handleTaskDelete(index)"
-      >
-        <Result
-          v-show="task.showResult"
-          :name="task.name"
-          :result="{}"
-        />
-        <Configuration
-          v-show="!task.showResult"
-          :name="task.name"
-          :configurations="task.configurations"
-        />
-      </TaskCard>
-    </div>
+      <template #item="{element: task, index}">
+        <TaskCard
+          v-model:showResult="task.showResult"
+          :is-collapsed="!isGrid"
+          :task-info="task"
+          @update:enable="(enabled) => (task.enable = enabled)"
+          @copy="() => handleTaskCopy(index)"
+          @delete="() => handleTaskDelete(index)"
+        >
+          <Result
+            v-show="task.showResult"
+            :name="task.name"
+            :result="{}"
+          />
+          <Configuration
+            v-show="!task.showResult"
+            :name="task.name"
+            :configurations="task.configurations"
+          />
+        </TaskCard>
+      </template>
+    </Draggable>
   </div>
 </template>
 
@@ -286,6 +263,10 @@ function handleTaskDelete (index: number) {
 
   & :deep(.task-card) {
     margin-bottom: 8px;
+  }
+
+  & :deep(.undraggable) {
+    cursor: default;
   }
 
   &.cards-grid :deep(.task-card) {

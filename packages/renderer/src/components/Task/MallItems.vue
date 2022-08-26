@@ -26,6 +26,7 @@ defineEmits(['updated'])
     :list="props.items"
     :style="{ minHeight: '70px' }"
     :animation="200"
+    :swap-threshold="1"
     @change="$emit('updated')"
   >
     <template #item="{ element }">
