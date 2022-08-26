@@ -1,47 +1,35 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, computed, Ref } from 'vue'
 import {
-  NButton,
-  // NSwitch,
-  // NCheckbox,
-  NModal,
   NFormItem,
   NInputNumber,
   NSpace,
-  NSelect
-  // NAlert
+  NSelect,
+  NInputGroup
 } from 'naive-ui'
-import LevelChoose from '../LevelChooseModal.vue'
 import _ from 'lodash'
+import { gamedata } from '@/api'
 
-// interface FightingConfiguration {
-//   medicine: number;
-//   stone: number;
-//   originite_prime: boolean;
-//   levels: Array<Level>;
-//   special: {
-//     times: number;
-//     type: 'current' | 'last';
-//   };
-// }
+type DropConfiguration = Record<string, number>
 
 interface FightingConfiguration {
-  stage: string;
-  medicine: number;
-  stone: number;
-  times: number;
-  drops: {};
-  report_to_penguin: boolean;
-  penguin_id: string;
-  server: string;
-  client_type: string;
+  stage: string
+  medicine: number
+  stone: number
+  times: number
+  drops: DropConfiguration
+  report_to_penguin: boolean
+  penguin_id: string
+  server: string
+  client_type: string
 }
+
+const { getAllItems } = gamedata
 
 // FIXME: 不应该硬编码(
 // 最好也整成图片的选择形式?
 const supportStages = [
-  { label: '当前关卡', value: '' },
-  { label: '上次作战', value: 'LastBattle' },
+  { label: '当前关卡/上次作战', value: '' },
   { label: 'LE-5', value: 'LE-5' },
   { label: 'LE-7', value: 'LE-7' },
   { label: 'LE-8', value: 'LE-8' },
@@ -56,7 +44,29 @@ const props = defineProps<{
   configurations: FightingConfiguration;
 }>()
 
-const showModal = ref(false)
+const allItems: Ref<Array<{
+  label: string
+  value: string
+}>> = ref([])
+
+const loading = ref(false)
+
+const drops = computed({
+  get () {
+    const entries = Object.entries(props.configurations.drops)
+    if (entries.length === 0) {
+      return {}
+    }
+    const [item_id, times] = entries[0]
+    return { item_id, times }
+  },
+  set (value: { item_id?: string, times?: number }) {
+    if (!value.item_id) value = {}
+    if (value.item_id && !value.times) value.times = 0
+    const obj = Object.fromEntries([[value.item_id, value.times].filter(v => v !== undefined)].filter(v => v.length))
+    _.set(props.configurations, 'drops', obj)
+  }
+})
 
 function handleConfigurationUpdate (key: string, value: any) {
   if (value === null) value = 6
@@ -86,6 +96,25 @@ function handleStoneUpdate (value: number | null) {
   handleConfigurationUpdate('stone', value)
 }
 
+function handleDropUpdate (value: { item_id?: string, times?: number }) {
+  drops.value = value
+}
+
+onMounted(async () => {
+  if (!props.configurations.drops) {
+    _.set(props.configurations, 'drops', {})
+  }
+  loading.value = true
+  const response = await getAllItems()
+  allItems.value = Object.entries(response.items)
+    .filter(([item_id, item]) => item.stageDropList.length !== 0)
+    .map(([item_id, item]) => ({
+      label: item.name,
+      value: item_id
+    }))
+  loading.value = false
+})
+
 </script>
 
 <template>
@@ -102,7 +131,7 @@ function handleStoneUpdate (value: number | null) {
         <NSelect
           :value="props.configurations.stage"
           :options="supportStages"
-          @update:value="(value) => _.set(props.configurations, 'stage', value)"
+          @update:value="value => _.set(props.configurations, 'stage', value)"
         />
       </NFormItem>
       <NFormItem
@@ -113,12 +142,6 @@ function handleStoneUpdate (value: number | null) {
         label-placement="left"
         :show-feedback="false"
       >
-        <!-- <NCheckbox
-        :checked="props.configurations.medicine"
-        @update:checked="
-          (checked) => handleConfigurationUpdate('medicine', checked)
-        "
-        />-->
         <NInputNumber
           :value="props.configurations.times"
           :update-value-on-input="false"
@@ -133,40 +156,12 @@ function handleStoneUpdate (value: number | null) {
         label-placement="left"
         :show-feedback="false"
       >
-        <!-- <NCheckbox
-        :checked="props.configurations.medicine"
-        @update:checked="
-          (checked) => handleConfigurationUpdate('medicine', checked)
-        "
-        />-->
         <NInputNumber
           :value="props.configurations.medicine"
           :update-value-on-input="false"
           @update:value="handleMedicineUpdate"
         />
       </NFormItem>
-      <!-- 不提供设置，Core暂不支持 -->
-      <!-- <NFormItem>
-      <NButton
-        quaternary
-        @click="() => handleConfigurationUpdate('expiration_first', false)"
-        :focusable="false"
-        :disabled="!props.configurations.medicine"
-      >理智回复量优先</NButton>
-      <NSwitch
-        :value="props.configurations.expiration_first"
-        @update:value="
-          (value) => handleConfigurationUpdate('expiration_first', value)
-        "
-        :disabled="!props.configurations.medicine"
-      />
-      <NButton
-        quaternary
-        @click="() => handleConfigurationUpdate('expiration_first', true)"
-        :focusable="false"
-        :disabled="!props.configurations.medicine"
-      >过期时间优先</NButton>
-      </NFormItem>-->
       <NFormItem
         label="使用源石数量"
         :show-label="true"
@@ -175,12 +170,6 @@ function handleStoneUpdate (value: number | null) {
         label-placement="left"
         :show-feedback="false"
       >
-        <!-- <NCheckbox
-        :checked="props.configurations.originite_prime"
-        @update:checked="
-          (checked) => handleConfigurationUpdate('originite_prime', checked)
-        "
-        />-->
         <NInputNumber
           :value="props.configurations.stone"
           :update-value-on-input="false"
@@ -188,34 +177,35 @@ function handleStoneUpdate (value: number | null) {
         />
       </NFormItem>
       <NFormItem
+        label="掉落物选择"
+        :show-label="true"
+        size="small"
+        label-align="left"
+        label-placement="left"
         :show-feedback="false"
-        :show-label="false"
       >
-        <NButton
-          quaternary
-          type="primary"
-          :focusable="false"
-          @click="showModal = true"
-        >
-          掉落物选择...
-        </NButton>
+        <NInputGroup>
+          <NSelect
+            placeholder="掉落物（可为空）"
+            :options="allItems"
+            :loading="loading"
+            filterable
+            clearable
+            :value="drops.item_id"
+            @update:value="value => handleDropUpdate({item_id: value, times: drops.times})"
+          />
+          <NInputNumber
+            placeholder="数量"
+            :disabled="!drops.item_id"
+            :style="{width: '60px'}"
+            :show-button="false"
+            :value="drops.times"
+            :min="0"
+            :max="999"
+            @update:value="value => handleDropUpdate({item_id: drops.item_id, times: value})"
+          />
+        </NInputGroup>
       </NFormItem>
     </NSpace>
-    <!-- TODO: 关卡选择修改为掉落选择 -->
-    <NModal
-      v-model:show="showModal"
-      display-directive="show"
-      title="关卡选择"
-      role="dialog"
-      aria-modal="true"
-    >
-      <LevelChoose
-        :levels="props.configurations.levels"
-        :special="props.configurations.special"
-        @update:special_type="
-          (type) => handleConfigurationUpdate('special.type', type)
-        "
-      />
-    </NModal>
   </div>
 </template>

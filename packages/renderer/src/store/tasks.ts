@@ -1,11 +1,9 @@
 import { defineStore } from 'pinia'
 import _ from 'lodash'
 import compareObjKey from '@/utils/task_configure'
-import { show } from '@/utils/message'
-import { i18n } from '@/i18n'
+import logger from '@/hooks/caller/logger'
 import { TaskChainMap } from '@common/enum/callback'
 
-const { t } = i18n.global
 export interface TaskState {
   selfIncreaseId: number // 奇怪的全局任务自增id, 用于查找任务
   deviceTasks: Record<string, Task[]>
@@ -322,11 +320,12 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
             defaultTaskConf[task.name].configurations
           )
         ) {
-          show(
-            t('task.common.fixTask', [task.title]),
-            { type: 'warning', duration: 0, closable: true },
-            false
-          )
+          // show(
+          //   t('task.common.fixTask', [task.title]),
+          //   { type: 'warning', duration: 0, closable: true },
+          //   false
+          // )
+          logger.info('task fixed')
           task.configurations = defaultTaskConf[task.name].configurations
         }
       })
