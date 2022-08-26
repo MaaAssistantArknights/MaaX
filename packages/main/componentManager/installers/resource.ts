@@ -82,7 +82,7 @@ class ResourceInstaller extends ComponentInstaller {
       this.onProgress(0.8)
 
       const src = task.savePath
-      this.unzipFile(src, path.join(getAppBaseDir()))
+      this.unzipFile(src, path.join(getAppBaseDir(), 'core'))
     },
     handleDownloadInterrupted: () => {
       this.status_ = 'exception'
