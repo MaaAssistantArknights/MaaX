@@ -9,7 +9,7 @@ const showModal = ref(false)
 
 interface MallConfiguration {
   blacklist: string[]
-  buyFirst: string[]
+  buy_first: string[]
   shopping: boolean
 }
 
@@ -17,7 +17,7 @@ const props = defineProps<{
   configurations: MallConfiguration;
 }>()
 
-function onItemChange (items: { buyFirst: string[], blacklist: string[] }) {
+function onItemChange (items: { buy_first: string[], blacklist: string[] }) {
   for (const [key, list] of Object.entries(items)) {
     _.set(props.configurations, key, list)
   }
@@ -61,7 +61,7 @@ function onItemChange (items: { buyFirst: string[], blacklist: string[] }) {
       </NButton>
       <MallSelect
         v-model:show="showModal"
-        :buy-first="props.configurations.buyFirst"
+        :buy_first="props.configurations.buy_first"
         :blacklist="props.configurations.blacklist"
         @update:item="onItemChange"
       />

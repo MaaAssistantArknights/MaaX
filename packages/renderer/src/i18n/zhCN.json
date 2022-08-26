@@ -32,7 +32,7 @@
     },
     "mall": {
       "creditShopping": "信用购买",
-      "buyFirst": "优先购买",
+      "buy_first": "优先购买",
       "blackList": "黑名单",
       "others": "随缘购买"
     },

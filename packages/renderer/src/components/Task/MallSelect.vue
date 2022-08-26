@@ -37,17 +37,17 @@ const socialShopItems = [
 
 const props = defineProps<{
   show: boolean
-  buyFirst: string[]
+  buy_first: string[]
   blacklist: string[]
 }>()
 
-const buyFirst = ref(props.buyFirst)
+const buy_first = ref(props.buy_first)
 const blacklist = ref(props.blacklist)
 
 const others = ref(
   _.difference(
     socialShopItems, [
-      ...buyFirst.value,
+      ...buy_first.value,
       ...blacklist.value
     ]
   )
@@ -56,7 +56,7 @@ const others = ref(
 const emit = defineEmits(['update:show', 'update:item'])
 
 function handleUpdate () {
-  emit('update:item', { buyFirst: buyFirst.value, blacklist: blacklist.value })
+  emit('update:item', { buy_first: buy_first.value, blacklist: blacklist.value })
 }
 
 </script>
@@ -71,7 +71,7 @@ function handleUpdate () {
       role="dialog"
       aria-modal="true"
     >
-      <MallItems v-model:items="buyFirst" text="优先购买" @updated="handleUpdate" />
+      <MallItems v-model:items="buy_first" text="优先购买" @updated="handleUpdate" />
       <NDivider />
       <MallItems v-model:items="blacklist" text="黑名单" @updated="handleUpdate" />
       <NDivider />

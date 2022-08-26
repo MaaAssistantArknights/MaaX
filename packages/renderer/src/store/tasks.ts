@@ -18,12 +18,12 @@ export interface TaskAction {
     status: TaskStatus,
     progress: number
   ) => void
-  updateTaskResult: (uuid: string, taskId: number, patch: any) => void
+  mergeTaskResult: (uuid: string, taskId: number, patch: any) => void
   updateTaskConfigurations: (uuid: string, taskId: number, key: string, value: any) => void
   changeTaskOrder: (uuid: string, from: number, to: number) => void
   updateTask: (uuid: string, tasks: Task[]) => void
   newTask: (uuid: string) => void
-  getTask: (uuid: string, taskId: string) => Task | undefined
+  getTask: (uuid: string, predicate: (task: Task) => boolean) => Task | undefined
   getTaskProcess: (uuid: string, taskId: string) => number | undefined
   stopAllTasks: (uuid: string) => void
   genUniqueId: () => number
@@ -38,7 +38,7 @@ export const defaultSelfIncreaseId = 100000 // 初始自增id
 const defaultTaskConf: Record<string, Task> = {
   emulator: {
     name: 'emulator',
-    taskid: -1,
+    task_id: -1,
     title: '启动模拟器',
     status: 'idle',
     enable: false,
@@ -50,7 +50,7 @@ const defaultTaskConf: Record<string, Task> = {
   },
   startup: {
     name: 'startup',
-    taskid: -1,
+    task_id: -1,
     title: '开始唤醒',
     status: 'idle',
     enable: true,
@@ -62,7 +62,7 @@ const defaultTaskConf: Record<string, Task> = {
   },
   fight: {
     name: 'fight',
-    taskid: -1,
+    task_id: -1,
     title: '代理作战',
     status: 'idle',
     enable: true,
@@ -80,7 +80,7 @@ const defaultTaskConf: Record<string, Task> = {
   },
   recruit: {
     name: 'recruit',
-    taskid: -1,
+    task_id: -1,
     title: '自动公招',
     status: 'idle',
     enable: true,
@@ -98,7 +98,7 @@ const defaultTaskConf: Record<string, Task> = {
   },
   infrast: {
     name: 'infrast',
-    taskid: -1,
+    task_id: -1,
     title: '基建换班',
     status: 'idle',
     enable: true,
@@ -123,7 +123,7 @@ const defaultTaskConf: Record<string, Task> = {
   },
   visit: {
     name: 'visit',
-    taskid: -1,
+    task_id: -1,
     title: '访问好友',
     status: 'idle',
     enable: true,
@@ -132,20 +132,20 @@ const defaultTaskConf: Record<string, Task> = {
   },
   mall: {
     name: 'mall',
-    taskid: -1,
+    task_id: -1,
     title: '收取信用及购物',
     status: 'idle',
     enable: true,
     configurations: {
       shopping: true,
-      buyFirst: ['龙门币', '招聘许可', '赤金'],
+      buy_first: ['龙门币', '招聘许可', '赤金'],
       blacklist: ['家具零件', '加急许可']
     },
     results: {}
   },
   award: {
     name: 'award',
-    taskid: -1,
+    task_id: -1,
     title: '领取日常奖励',
     status: 'idle',
     enable: true,
@@ -154,7 +154,7 @@ const defaultTaskConf: Record<string, Task> = {
   },
   rogue: {
     name: 'rogue',
-    taskid: -1,
+    task_id: -1,
     title: '无限刷肉鸽',
     status: 'idle',
     enable: true,
@@ -165,7 +165,7 @@ const defaultTaskConf: Record<string, Task> = {
   },
   shutdown: {
     name: 'shutdown',
-    taskid: -1,
+    task_id: -1,
     title: '关机/关闭模拟器',
     status: 'idle',
     enable: false,
@@ -190,7 +190,7 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
     updateTaskConfigurations (uuid, taskId, key, value) {
       const { deviceTasks } = this
       const origin = deviceTasks[uuid]
-      const task = origin?.find((task) => task.taskid === taskId)
+      const task = origin?.find((task) => task.task_id === taskId)
       if (task) {
         _.set(task.configurations, key, value)
       }
@@ -198,7 +198,7 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
     updateTaskStatus (uuid, taskId, status, progress) {
       const { deviceTasks } = this
       const origin = deviceTasks[uuid]
-      const task = origin?.find((task) => task.taskid === taskId)
+      const task = origin?.find((task) => task.task_id === taskId)
       if (task) {
         const statusChanged = status !== task.status
 
@@ -222,10 +222,10 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
         task.progress = progress
       }
     },
-    updateTaskResult (uuid, taskId, patch) {
+    mergeTaskResult (uuid, taskId, patch) {
       const { deviceTasks } = this
       const origin = deviceTasks[uuid]
-      const task = origin?.find((task) => task.taskid === taskId)
+      const task = origin?.find((task) => task.task_id === taskId)
       if (task) {
         _.merge(task.results, patch)
       }
@@ -249,10 +249,10 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
         deviceTasks[uuid].push(_.cloneDeep(v))
       }
     },
-    getTask (uuid, taskId) {
+    getTask (uuid, predicate) {
       const { deviceTasks } = this
       const origin = deviceTasks[uuid]
-      const task = origin?.find((task) => task.name === taskId)
+      const task = origin?.find(predicate)
       return task
     },
     getTaskProcess (uuid, taskId) {
@@ -283,7 +283,7 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
       if (task) {
         const newTask: Task = {
           ..._.cloneDeep(task),
-          taskid: -1,
+          task_id: -1,
           showResult: false,
           status: 'idle',
           startTime: undefined,
@@ -350,7 +350,7 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
               params: _.cloneDeep(task.configurations)
             }
           )
-          task.taskid = taskId
+          task.task_id = taskId
           await this.run(uuid)
         }
       }

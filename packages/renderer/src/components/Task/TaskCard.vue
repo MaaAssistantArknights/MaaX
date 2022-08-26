@@ -106,7 +106,7 @@ const deviceStatus = deviceStore.getDevice(uuid)?.status ?? 'disconnected'
       class="task-card-inner"
       :class="props.isCollapsed ? 'collapsed' : ''"
       name="1"
-      :display-directive="'show'"
+      display-directive="show"
       :style="{
         border:
           themeStore.currentTheme === 'maa-dark'
@@ -176,7 +176,7 @@ const deviceStatus = deviceStore.getDevice(uuid)?.status ?? 'disconnected'
                     case "waiting":
                       return "等待中";
                     case "processing":
-                      return `进行中 ${props.taskInfo.progress ?? 0}%`;
+                      return '进行中';
                     case "success":
                       return "已完成";
                     case "warning":
@@ -232,7 +232,7 @@ const deviceStatus = deviceStore.getDevice(uuid)?.status ?? 'disconnected'
   transition: width 0.3s var(--n-bezier);
 
   & :deep(.n-collapse-item__content-wrapper .n-collapse-item__content-inner) {
-    padding-top: 0px;
+    padding-top: 0;
   }
 }
 

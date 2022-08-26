@@ -38,9 +38,9 @@ interface Task {
    */
   name: TaskName
   /**
-   * @props core传回来的taskid
+   * @props core传回来的task_id
    */
-  taskid: number
+  task_id: number
   /**
    * @props 任务title（可能为i18n字符串，i18n example: `t("task.mall")`）
    */

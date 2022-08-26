@@ -146,8 +146,8 @@ async function handleStart () {
     show('请先连接设备', { type: 'warning', duration: 2000 })
   } else {
     // 设备状态为 unknown 或 disconnect , 检查子任务'启动模拟器'是否开启，如果开启则先启动模拟器再开始任务
-    const task = taskStore.getTask(uuid.value as string, 'emulator') // 查找是否有启动模拟器任务
-    if (task && task.enable === true) {
+    const task = taskStore.getTask(uuid.value as string, task => task.name === 'emulator') // 查找是否有启动模拟器任务
+    if (task && task.enable) {
       // 有启动模拟器任务
       if (!task.configurations.commandLine) {
         // 设备没有获取到用于启动模拟器的命令行参数
@@ -226,7 +226,7 @@ function handleTaskDelete (index: number) {
       :animation="200"
       :filter="'.undraggable'"
       class="cards"
-      item-key="taskid"
+      item-key="task_id"
       :class="isGrid ? 'cards-grid' : ''"
       @move="handleDragMove"
     >

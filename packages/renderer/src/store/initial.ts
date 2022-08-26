@@ -33,7 +33,7 @@ export async function initialStore (): Promise<void> {
     tasks: (storage: TaskState) => {
       for (const tasks of Object.values(storage.deviceTasks)) {
         for (const task of tasks) {
-          task.taskid = -1
+          task.task_id = -1
           storage.selfIncreaseId++
           task.progress = 0
           task.startTime = undefined

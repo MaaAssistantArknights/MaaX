@@ -7,6 +7,7 @@ import { AsstMsg } from '@common/enum/callback'
 import type { MessageReactive } from 'naive-ui'
 
 import logger from '@/hooks/caller/logger'
+import _ from 'lodash'
 
 const messages: Record<string, MessageReactive> = {}
 
@@ -17,58 +18,103 @@ export default function useCallbackEvents (): void {
 
   const subTaskFn = {
     [AsstMsg.SubTaskError]: {
-      Emulator: (data: Callback.SubTaskError) => {},
-      StartUp: (data: Callback.SubTaskError) => {},
-      Fight: (data: Callback.SubTaskError) => {},
-      Mall: (data: Callback.SubTaskError) => {},
-      Recruit: (data: Callback.SubTaskError) => {},
-      RecruitCalc: (data: Callback.SubTaskError) => {},
-      Infrast: (data: Callback.SubTaskError) => {},
-      Visit: (data: Callback.SubTaskError) => {},
-      Roguelike: (data: Callback.SubTaskError) => {},
-      Copilot: (data: Callback.SubTaskError) => {},
-      Shutdown: (data: Callback.SubTaskError) => {},
-      Award: (data: Callback.SubTaskError) => {},
-      Debug: (data: Callback.SubTaskError) => {}
+      Emulator: (data: Callback.SubTaskError) => {
+      },
+      StartUp: (data: Callback.SubTaskError) => {
+      },
+      Fight: (data: Callback.SubTaskError) => {
+      },
+      Mall: (data: Callback.SubTaskError) => {
+      },
+      Recruit: (data: Callback.SubTaskError) => {
+      },
+      RecruitCalc: (data: Callback.SubTaskError) => {
+      },
+      Infrast: (data: Callback.SubTaskError) => {
+      },
+      Visit: (data: Callback.SubTaskError) => {
+      },
+      Roguelike: (data: Callback.SubTaskError) => {
+      },
+      Copilot: (data: Callback.SubTaskError) => {
+      },
+      Shutdown: (data: Callback.SubTaskError) => {
+      },
+      Award: (data: Callback.SubTaskError) => {
+      },
+      Debug: (data: Callback.SubTaskError) => {
+      }
     },
     [AsstMsg.SubTaskStart]: {
-      Emulator: (data: Callback.SubTaskStart) => {},
-      StartUp: (data: Callback.SubTaskStart) => {},
-      Fight: (data: Callback.SubTaskStart) => {},
-      Mall: (data: Callback.SubTaskStart) => {},
-      Recruit: (data: Callback.SubTaskStart) => {},
-      RecruitCalc: (data: Callback.SubTaskStart) => {},
-      Infrast: (data: Callback.SubTaskStart) => {},
-      Visit: (data: Callback.SubTaskStart) => {},
-      Roguelike: (data: Callback.SubTaskStart) => {},
-      Copilot: (data: Callback.SubTaskStart) => {},
-      Shutdown: (data: Callback.SubTaskStart) => {},
-      Award: (data: Callback.SubTaskStart) => {},
-      Debug: (data: Callback.SubTaskStart) => {}
+      Emulator: (data: Callback.SubTaskStart) => {
+      },
+      StartUp: (data: Callback.SubTaskStart) => {
+      },
+      Fight: (data: Callback.SubTaskStart) => {
+      },
+      Mall: (data: Callback.SubTaskStart) => {
+      },
+      Recruit: (data: Callback.SubTaskStart) => {
+      },
+      RecruitCalc: (data: Callback.SubTaskStart) => {
+      },
+      Infrast: (data: Callback.SubTaskStart) => {
+      },
+      Visit: (data: Callback.SubTaskStart) => {
+      },
+      Roguelike: (data: Callback.SubTaskStart) => {
+      },
+      Copilot: (data: Callback.SubTaskStart) => {
+      },
+      Shutdown: (data: Callback.SubTaskStart) => {
+      },
+      Award: (data: Callback.SubTaskStart) => {
+      },
+      Debug: (data: Callback.SubTaskStart) => {
+      }
     },
     [AsstMsg.SubTaskCompleted]: {
-      Emulator: (data: Callback.SubTaskCompleted) => {},
-      StartUp: (data: Callback.SubTaskCompleted) => {},
-      Fight: (data: Callback.SubTaskCompleted) => {},
-      Mall: (data: Callback.SubTaskCompleted) => {},
-      Recruit: (data: Callback.SubTaskCompleted) => {},
-      RecruitCalc: (data: Callback.SubTaskCompleted) => {},
-      Infrast: (data: Callback.SubTaskCompleted) => {},
-      Visit: (data: Callback.SubTaskCompleted) => {},
-      Roguelike: (data: Callback.SubTaskCompleted) => {},
-      Copilot: (data: Callback.SubTaskCompleted) => {},
-      Shutdown: (data: Callback.SubTaskCompleted) => {},
-      Award: (data: Callback.SubTaskCompleted) => {},
-      Debug: (data: Callback.SubTaskCompleted) => {}
+      Emulator: (data: Callback.SubTaskCompleted) => {
+      },
+      StartUp: (data: Callback.SubTaskCompleted) => {
+      },
+      Fight: (data: Callback.SubTaskCompleted) => {
+      },
+      Mall: (data: Callback.SubTaskCompleted) => {
+      },
+      Recruit: (data: Callback.SubTaskCompleted) => {
+      },
+      RecruitCalc: (data: Callback.SubTaskCompleted) => {
+      },
+      Infrast: (data: Callback.SubTaskCompleted) => {
+      },
+      Visit: (data: Callback.SubTaskCompleted) => {
+      },
+      Roguelike: (data: Callback.SubTaskCompleted) => {
+      },
+      Copilot: (data: Callback.SubTaskCompleted) => {
+      },
+      Shutdown: (data: Callback.SubTaskCompleted) => {
+      },
+      Award: (data: Callback.SubTaskCompleted) => {
+      },
+      Debug: (data: Callback.SubTaskCompleted) => {
+      }
     },
     [AsstMsg.SubTaskExtraInfo]: {
-      Emulator: (data: Callback.SubTaskExtraInfo) => {},
-      StartUp: (data: Callback.SubTaskExtraInfo) => {},
+      Emulator: (data: Callback.SubTaskExtraInfo) => {
+      },
+      StartUp: (data: Callback.SubTaskExtraInfo) => {
+      },
       Fight: (data: Callback.SubTaskExtraInfo) => {
         switch (data.what) {
           case 'StageDrops': {
-            const { uuid, taskid, details } = data
-            taskStore.updateTaskResult(uuid.trim(), taskid, {
+            const {
+              uuid,
+              task_id,
+              details
+            } = data
+            taskStore.mergeTaskResult(uuid.trim(), task_id, {
               fightInfo: [details]
             })
             break
@@ -79,51 +125,106 @@ export default function useCallbackEvents (): void {
           }
         }
       },
-      Mall: (data: Callback.SubTaskExtraInfo) => {},
+      Mall: (data: Callback.SubTaskExtraInfo) => {
+      },
       Recruit: (data: Callback.SubTaskExtraInfo) => {
         switch (data.what) {
           case 'RecruitTagsDetected': {
             break
           }
           case 'RecruitSpecialTag': {
-            const { uuid, taskid, details } = data
-            const task = taskStore.getTask(uuid.trim(), 'recurit')?.configurations
-            taskStore.updateTaskResult(uuid.trim(), taskid, {
-
-            })
+            const {
+              uuid,
+              details
+            } = data
+            const device = deviceStore.getDevice(uuid)
+            const name = device?.displayName ?? device?.address ?? uuid
+            // eslint-disable-next-line no-new
+            new Notification(
+              'Maa Assistant Arknights',
+              { body: `${name}公招获取到高级tag${String(details.tag)}` }
+            )
             break
           }
           case 'RecruitRobotTag': {
+            const {
+              uuid,
+              task_id,
+              details
+            } = data
+            const task = taskStore.getTask(uuid.trim(), task => task.task_id === task_id)
+            if (task && !task.configurations.skip_robot) {
+              const device = deviceStore.getDevice(uuid)
+              const name = device?.displayName ?? device?.address ?? uuid
+              // eslint-disable-next-line no-new
+              new Notification(
+                'Maa Assistant Arknights',
+                { body: `${name}公招获取到高级tag${String(details.tag)}` }
+              )
+            }
             break
           }
           case 'RecruitResult': {
+            const {
+              uuid,
+              task_id,
+              details
+            } = data
+            taskStore.mergeTaskResult(uuid.trim(), task_id, {
+              recruits: [{
+                ...details,
+                refreshed: false,
+                selectedTags: []
+              }]
+            })
             break
           }
           case 'RecruitTagsSelected': {
+            const {
+              uuid,
+              task_id,
+              details
+            } = data
+            const task = taskStore.getTask(uuid.trim(), task => task.task_id === task_id)
+            if (task?.results.recruits) {
+              _.last<any>(task.results.recruits).selectedTags = details.tags
+            }
             break
           }
-
           case 'RecruitTagsRefreshed': {
+            const {
+              uuid,
+              task_id
+            } = data
+            const task = taskStore.getTask(uuid.trim(), task => task.task_id === task_id)
+            if (task?.results.recruits) {
+              _.last<any>(task.results.recruits).refreshed = true
+            }
             break
           }
         }
       },
-      RecruitCalc: (data: Callback.SubTaskExtraInfo) => {},
+      RecruitCalc: (data: Callback.SubTaskExtraInfo) => {
+      },
       Infrast: (data: Callback.SubTaskExtraInfo) => {
         switch (data.what) {
           case 'EnterFacility': {
             break
           }
           case 'NotEnoughStaff': {
-            const { uuid, taskid } = data
-            taskStore.updateTaskResult(uuid.trim(), taskid, {
+            const {
+              uuid,
+              task_id
+            } = data
+            taskStore.mergeTaskResult(uuid.trim(), task_id, {
               notEnoughStaff: true
             })
             break
           }
         }
       },
-      Visit: (data: Callback.SubTaskExtraInfo) => {},
+      Visit: (data: Callback.SubTaskExtraInfo) => {
+      },
       Roguelike: (data: Callback.SubTaskExtraInfo) => {
         switch (data.what) {
           case 'StageInfo': {
@@ -153,15 +254,20 @@ export default function useCallbackEvents (): void {
           }
         }
       },
-      Shutdown: (data: Callback.SubTaskExtraInfo) => {},
-      Award: (data: Callback.SubTaskExtraInfo) => {},
-      Debug: (data: Callback.SubTaskExtraInfo) => {}
+      Shutdown: (data: Callback.SubTaskExtraInfo) => {
+      },
+      Award: (data: Callback.SubTaskExtraInfo) => {
+      },
+      Debug: (data: Callback.SubTaskExtraInfo) => {
+      }
     }
   }
 
   const callbackFn = {
-    [AsstMsg.InternalError]: (data: Callback.InternalError) => {},
-    [AsstMsg.InitFailed]: (data: Callback.InitFailed) => {},
+    [AsstMsg.InternalError]: (data: Callback.InternalError) => {
+    },
+    [AsstMsg.InitFailed]: (data: Callback.InitFailed) => {
+    },
     [AsstMsg.ConnectionInfo]: (data: Callback.ConnectionInfo) => {
       const uuid = data.uuid.trim()
       switch (data.what) {
@@ -235,20 +341,20 @@ export default function useCallbackEvents (): void {
     },
     [AsstMsg.TaskChainError]: (data: Callback.TaskChainError) => {
       const taskStore = useTaskStore()
-      taskStore.updateTaskStatus(data.uuid.trim(), data.taskid, 'exception', 0)
+      taskStore.updateTaskStatus(data.uuid.trim(), data.task_id, 'exception', 0)
     },
     [AsstMsg.TaskChainStart]: (data: Callback.TaskChainStart) => {
       const taskStore = useTaskStore()
       taskStore.updateTaskStatus(
         data.uuid.trim(),
-        data.taskid,
+        data.task_id,
         'processing',
         0
       )
     },
     [AsstMsg.TaskChainCompleted]: (data: Callback.TaskChainCompleted) => {
       const taskStore = useTaskStore()
-      taskStore.updateTaskStatus(data.uuid.trim(), data.taskid, 'success', 0)
+      taskStore.updateTaskStatus(data.uuid.trim(), data.task_id, 'success', 0)
     },
     [AsstMsg.TaskChainExtraInfo]: (data: Callback.TaskChainExtraInfo) => {
       // TODO

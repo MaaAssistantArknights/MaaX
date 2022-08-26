@@ -39,11 +39,12 @@ module.exports = {
     "vue/max-attributes-per-line": ["error", {
       "singleline": {
         "max": 3
-      },      
+      },
       "multiline": {
         "max": 1
       }
     }],
-    "@typescript-eslint/promise-function-async": 'off'
+    "@typescript-eslint/promise-function-async": 'off',
+    "@typescript-eslint/naming-convention": 'off'
   }
 }
