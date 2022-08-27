@@ -271,7 +271,7 @@ provide('update:configuration', handleTaskConfigurationUpdate)
 
 <style lang="less" scoped>
 .cards {
-  padding: 4px;
+  padding: 4px 12px;
   text-align: center;
   line-height: 1;
 
