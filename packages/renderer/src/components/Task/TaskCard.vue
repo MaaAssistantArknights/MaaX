@@ -102,7 +102,10 @@ const deviceStatus = computed(() => deviceStore.getDevice(uuid)?.status ?? 'disc
     </template>
     <NCollapseItem
       class="task-card-inner"
-      :class="props.isCollapsed ? 'collapsed' : ''"
+      :class="[
+        props.isCollapsed ? 'collapsed' : '',
+        `task-card__status-${props.taskInfo.status}`
+      ].join(' ')"
       name="1"
       display-directive="show"
       :style="{
@@ -110,6 +113,7 @@ const deviceStatus = computed(() => deviceStore.getDevice(uuid)?.status ?? 'disc
           themeStore.currentTheme === 'maa-dark'
             ? `1px solid ${themeVars.primaryColor}`
             : '',
+        '--breathe-color': themeVars.primaryColor
       }"
     >
       <template #header>
@@ -118,7 +122,7 @@ const deviceStatus = computed(() => deviceStore.getDevice(uuid)?.status ?? 'disc
             <NSpace>
               <span class="card-title">{{ props.taskInfo.title || "" }}</span>
               <div
-                v-if="deviceStatus === 'tasking' && props.taskInfo.status !== 'idle'"
+                v-if="deviceStatus === 'tasking' && !['idle', 'waiting'].includes(props.taskInfo.status)"
                 justify="end"
               >
                 <NText type="primary">
@@ -132,7 +136,12 @@ const deviceStatus = computed(() => deviceStore.getDevice(uuid)?.status ?? 'disc
             <NSpace justify="end" align="center">
               <NTooltip>
                 <template #trigger>
-                  <NButton text style="font-size: 25px" @click="() => $emit('copy')">
+                  <NButton
+                    text
+                    style="font-size: 25px"
+                    :disabled="!['idle'].includes(props.taskInfo.status)"
+                    @click="() => $emit('copy')"
+                  >
                     <NIcon>
                       <IconAdd />
                     </NIcon>
@@ -145,7 +154,7 @@ const deviceStatus = computed(() => deviceStore.getDevice(uuid)?.status ?? 'disc
                   <NButton
                     text
                     style="font-size: 25px"
-                    :disabled="['processing', 'waiting', 'success'].includes(props.taskInfo.status)"
+                    :disabled="!['idle'].includes(props.taskInfo.status)"
                     @click="() => $emit('delete')"
                   >
                     <NIcon>
@@ -156,7 +165,7 @@ const deviceStatus = computed(() => deviceStore.getDevice(uuid)?.status ?? 'disc
                 删除当前任务
               </NTooltip>
               <span
-                v-if="['processing', 'waiting'].includes(props.taskInfo.status)"
+                v-if="!['idle', 'waiting'].includes(props.taskInfo.status)"
                 class="card-progress-hint"
                 :style="{ color: themeVars.primaryColor }"
               >
@@ -218,6 +227,18 @@ const deviceStatus = computed(() => deviceStore.getDevice(uuid)?.status ?? 'disc
 </template>
 
 <style lang="less" scoped>
+@keyframes breathe {
+  from {
+    box-shadow: 0 2px 6px 0 rgb(0 0 0 / 0.1),
+     0 2px 4px -1px rgb(0 0 0 / 0.1),
+     0 0 5px 0 transparent;
+  }
+  to {
+    box-shadow:  0 2px 6px 0 rgb(0 0 0 / 0.1),
+     0 2px 4px -1px rgb(0 0 0 / 0.1),
+     0 0 10px var(--breathe-color);
+  }
+}
 .task-card {
   user-select: none;
   transition: width 0.3s var(--n-bezier);
@@ -236,6 +257,10 @@ const deviceStatus = computed(() => deviceStore.getDevice(uuid)?.status ?? 'disc
 
   &.collapsed {
     border-radius: 12px 12px 0 0;
+  }
+
+  &.task-card__status-processing {
+    animation: breathe 3s ease-in-out alternate infinite;
   }
 
   & :deep(.n-collapse-item__header .n-collapse-item__header-main) {

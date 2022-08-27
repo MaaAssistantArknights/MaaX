@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
-import useTaskStore from '@/store/tasks'
-import ItemCard from '../ItemCard.vue'
+import { computed } from 'vue'
+import ItemCircle from '../ItemCircle.vue'
+import { NSpace } from 'naive-ui'
+import _ from 'lodash'
 
 interface DropItem {
   itemId: string
@@ -15,7 +16,7 @@ interface FightInfo {
     stageCode: string
   }
   stars: number
-  stat: DropItem[] // 总计掉落
+  stats: DropItem[] // 总计掉落
 }
 
 interface FightingResult {
@@ -23,11 +24,46 @@ interface FightingResult {
 }
 
 const props = defineProps<{
-  result: FightingResult;
+  results: FightingResult;
 }>()
+
+const totalDrops = computed(() => _.last(props.results.fightInfo)?.stats)
 
 </script>
 
 <template>
-  <div>Fighting Task Progress</div>
+  <NSpace vertical>
+    <NSpace
+      v-for="(result, rindex) of props.results.fightInfo"
+      :key="rindex"
+      align="center"
+      justify="center"
+    >
+      <span>{{ `作战 #${rindex + 1}` }}</span>
+      <span>{{ result.stage.stageCode }}</span>
+      <ItemCircle
+        v-for="(item, iindex) of result.drops"
+        :key="iindex"
+        :name="item.itemName"
+        :count="item.quantity"
+        :height="50"
+        :width="50"
+      />
+    </NSpace>
+    <NSpace
+      v-if="totalDrops"
+      align="center"
+      justify="center"
+    >
+      <span>总计掉落</span>
+      <ItemCircle
+        v-for="(item, iindex) of totalDrops"
+        :key="iindex"
+        :name="item.itemName"
+        :count="item.quantity"
+        :height="50"
+        :width="50"
+      />
+    </NSpace>
+  </NSpace>
 </template>

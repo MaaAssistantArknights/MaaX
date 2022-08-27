@@ -253,12 +253,12 @@ provide('update:configuration', handleTaskConfigurationUpdate)
           @delete="() => handleTaskDelete(index)"
         >
           <Result
-            v-show="task.showResult"
+            v-if="task.showResult"
             :name="task.name"
-            :result="{}"
+            :results="task.results"
           />
           <Configuration
-            v-show="!task.showResult"
+            v-else
             :name="task.name"
             :configurations="task.configurations"
             :task-index="index"

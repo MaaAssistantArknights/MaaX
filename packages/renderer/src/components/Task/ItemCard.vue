@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, Ref, onMounted } from 'vue'
 import { gamedata } from '@/api'
-import { NCard, NText, NTag, NSkeleton, NSpace } from 'naive-ui'
+import { NCard, NText, NTag, NSkeleton } from 'naive-ui'
 
 const props = defineProps<{
   name: string;
@@ -23,9 +23,9 @@ onMounted(async () => {
   loading.value = false
 })
 
-function getStageInfo (stageId: string): Api.Maa.Stage | undefined {
-  return stages.value.find(stage => stage.stageId === stageId)
-}
+// function getStageInfo (stageId: string): Api.Maa.Stage | undefined {
+//   return stages.value.find(stage => stage.stageId === stageId)
+// }
 
 </script>
 
@@ -67,9 +67,9 @@ function getStageInfo (stageId: string): Api.Maa.Stage | undefined {
         获取方式
       </NText>
       <NText tag="div">
-        {{ info?.obtainApproach }}
+        {{ info?.obtainApproach || ((info?.stageDropList ?? []).length !== 0 ? '关卡掉落' : '未知') }}
       </NText>
-      <NSpace
+      <!-- <NSpace
         v-for="(dropList, index) in (info?.stageDropList ?? [])"
         :key="index"
       >
@@ -79,7 +79,7 @@ function getStageInfo (stageId: string): Api.Maa.Stage | undefined {
         <NText tag="div">
           {{ getStageInfo(dropList.stageId)?.name }}
         </NText>
-      </NSpace>
+      </NSpace> -->
     </template>
   </NCard>
 </template>

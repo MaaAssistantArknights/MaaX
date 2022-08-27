@@ -191,8 +191,7 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
       }
     },
     updateTaskStatus (uuid, taskId, status, progress) {
-      const { deviceTasks } = this
-      const origin = deviceTasks[uuid]
+      const origin = this.deviceTasks[uuid]
       const task = origin?.find((task) => task.task_id === taskId)
       if (task) {
         const statusChanged = status !== task.status
@@ -206,6 +205,7 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
             case 'processing':
               task.startTime = Date.now()
               break
+            case 'skipped':
             case 'success':
             case 'exception':
               task.endTime = Date.now()
@@ -218,16 +218,18 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
       }
     },
     mergeTaskResult (uuid, taskId, patch) {
-      const { deviceTasks } = this
-      const origin = deviceTasks[uuid]
+      const origin = this.deviceTasks[uuid]
       const task = origin?.find((task) => task.task_id === taskId)
       if (task) {
-        _.merge(task.results, patch)
+        _.mergeWith(task.results, patch, (objValue, srcValue) => {
+          if (_.isArray(objValue)) {
+            return objValue.concat(srcValue)
+          }
+        })
       }
     },
     changeTaskOrder (uuid, from, to) {
-      const { deviceTasks } = this
-      const origin = deviceTasks[uuid]
+      const origin = this.deviceTasks[uuid]
       if (origin) {
         const item = origin.splice(from, 1)
         origin.splice(to, 0, item[0])
@@ -245,20 +247,17 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
       }
     },
     getTask (uuid, predicate) {
-      const { deviceTasks } = this
-      const origin = deviceTasks[uuid]
+      const origin = this.deviceTasks[uuid]
       const task = origin?.find(predicate)
       return task
     },
     getTaskProcess (uuid, taskId) {
-      const { deviceTasks } = this
-      const origin = deviceTasks[uuid]
+      const origin = this.deviceTasks[uuid]
       const task = origin?.find((task) => task.name === taskId)
       return task != null ? task.progress : 0
     },
     stopAllTasks (uuid) {
-      const { deviceTasks } = this
-      const origin = deviceTasks[uuid]
+      const origin = this.deviceTasks[uuid]
       if (origin) {
         origin.forEach((task) => {
           if (task.status !== 'idle') {
@@ -268,8 +267,7 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
       }
     },
     copyTask (uuid, index) {
-      const { deviceTasks } = this
-      const origin = deviceTasks[uuid]
+      const origin = this.deviceTasks[uuid]
       const task = origin?.at(index)
       if (task) {
         const newTask: Task = {
@@ -288,8 +286,7 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
       return false
     },
     deleteTask (uuid, index) {
-      const { deviceTasks } = this
-      const origin = deviceTasks[uuid]
+      const origin = this.deviceTasks[uuid]
       if (origin) {
         const target = origin[index]
         const nameCount = origin.reduce(
@@ -303,8 +300,7 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
       return false
     },
     fixTaskList (uuid) {
-      const { deviceTasks } = this
-      const origin = deviceTasks[uuid]
+      const origin = this.deviceTasks[uuid]
       origin?.forEach((task) => {
         if (
           !compareObjKey(

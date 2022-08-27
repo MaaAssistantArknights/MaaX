@@ -354,7 +354,11 @@ export default function useCallbackEvents (): void {
     },
     [AsstMsg.TaskChainCompleted]: (data: Callback.TaskChainCompleted) => {
       const taskStore = useTaskStore()
-      taskStore.updateTaskStatus(data.uuid.trim(), data.taskid, 'success', 0)
+      const task = taskStore.getTask(data.uuid.trim(), task => task.task_id === data.taskid)
+      if (task) {
+        const status: TaskStatus = task.enable ? 'success' : 'skipped'
+        taskStore.updateTaskStatus(data.uuid.trim(), data.taskid, status, 0)
+      }
     },
     [AsstMsg.TaskChainExtraInfo]: (data: Callback.TaskChainExtraInfo) => {
       // TODO

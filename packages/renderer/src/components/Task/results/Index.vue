@@ -28,17 +28,17 @@ export default defineComponent({
       type: String,
       required: true
     },
-    result: {
+    results: {
       type: Object,
       required: true
     }
   },
   render () {
     const component = components[this.name]
-    const { result } = this
+    const { results } = this
     if (component) {
       // @ts-ignore
-      return h(component, { result })
+      return h(component, { results })
     } else {
       return h(NoProgress)
     }

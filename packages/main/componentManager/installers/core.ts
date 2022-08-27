@@ -1,5 +1,4 @@
 import { Singleton } from '@common/function/singletonDecorator'
-import CoreLoader from '@main/coreLoader'
 import ComponentInstaller from '../componentInstaller'
 import DownloadManager from '@main/downloadManager'
 import { ipcMainSend } from '@main/utils/ipc-main'
@@ -82,8 +81,7 @@ class CoreInstaller extends ComponentInstaller {
       this.onProgress(0.8)
 
       const src = task.savePath
-      const coreLoader = new CoreLoader()
-      const dist = coreLoader.libPath
+      const dist = path.join(getAppBaseDir(), 'core')
       this.unzipFile(src, dist)
     },
     handleDownloadInterrupted: () => {
