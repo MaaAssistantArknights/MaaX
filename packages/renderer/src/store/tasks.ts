@@ -112,9 +112,7 @@ const defaultTaskConf: Record<string, Task> = {
       ],
       drones: '_NotUse', // 无人机用途
       threshold: 0.3,
-      replenish: false, // 自动源石补货
-      drone_usage: 'None',
-      mood_limit: 6
+      replenish: false // 自动源石补货
     },
     results: {}
   },

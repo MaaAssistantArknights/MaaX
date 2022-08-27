@@ -139,7 +139,7 @@ const deviceStatus = computed(() => deviceStore.getDevice(uuid)?.status ?? 'disc
                   <NButton
                     text
                     style="font-size: 25px"
-                    :disabled="!['idle'].includes(props.taskInfo.status)"
+                    :disabled="deviceStatus === 'tasking' && !['idle'].includes(props.taskInfo.status)"
                     @click="() => $emit('copy')"
                   >
                     <NIcon>
@@ -154,7 +154,7 @@ const deviceStatus = computed(() => deviceStore.getDevice(uuid)?.status ?? 'disc
                   <NButton
                     text
                     style="font-size: 25px"
-                    :disabled="!['idle'].includes(props.taskInfo.status)"
+                    :disabled="deviceStatus === 'tasking' && !['idle'].includes(props.taskInfo.status)"
                     @click="() => $emit('delete')"
                   >
                     <NIcon>
@@ -165,7 +165,7 @@ const deviceStatus = computed(() => deviceStore.getDevice(uuid)?.status ?? 'disc
                 删除当前任务
               </NTooltip>
               <span
-                v-if="!['idle', 'waiting'].includes(props.taskInfo.status)"
+                v-if="deviceStatus === 'tasking' && !['idle', 'waiting'].includes(props.taskInfo.status)"
                 class="card-progress-hint"
                 :style="{ color: themeVars.primaryColor }"
               >

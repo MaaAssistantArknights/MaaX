@@ -22,7 +22,7 @@ const facilityOptions = {
   Control: '控制中枢',
   Reception: '会客室',
   Office: '办公室',
-  Dormitory: '宿舍'
+  Dorm: '宿舍'
 }
 
 type droneUsageType =
@@ -185,8 +185,10 @@ onMounted(() => {
       >
         <NSlider
           :value="props.configurations.threshold"
-          :max="23"
+          :max="1.0"
           :min="0"
+          :step="0.01"
+          :format-tooltip="value => `${Math.ceil(value * 100)}%`"
           @update:value="
             (value) => handleUpdateConfiguration('threshold', value)
           "
