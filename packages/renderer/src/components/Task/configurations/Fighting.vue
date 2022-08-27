@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed, Ref } from 'vue'
+import { ref, onMounted, computed, Ref, inject } from 'vue'
 import {
   NFormItem,
   NInputNumber,
@@ -7,7 +7,6 @@ import {
   NSelect,
   NInputGroup
 } from 'naive-ui'
-import _ from 'lodash'
 import { gamedata } from '@/api'
 
 type DropConfiguration = Record<string, number>
@@ -42,6 +41,7 @@ const supportStages = [
 
 const props = defineProps<{
   configurations: FightingConfiguration;
+  taskIndex: number
 }>()
 
 const allItems: Ref<Array<{
@@ -64,30 +64,30 @@ const drops = computed({
     if (!value.item_id) value = {}
     if (value.item_id && !value.times) value.times = 0
     const obj = Object.fromEntries([[value.item_id, value.times].filter(v => v !== undefined)].filter(v => v.length))
-    _.set(props.configurations, 'drops', obj)
+    handleUpdateConfiguration('drops', obj)
   }
 })
 
-function handleConfigurationUpdate (key: string, value: any) {
-  if (value === null) value = 6
-  if (value < 0) value = 0
-  if (value > 999) value = 999
-  _.set(props.configurations, key, value)
+const updateTaskConfigurations = inject('update:configuration') as
+  (key: string, value: any, index: number) => void
+
+function handleUpdateConfiguration (key: string, value: any) {
+  updateTaskConfigurations(key, value, props.taskIndex)
 }
 
 function handleMedicineUpdate (value: number | null) {
   if (value === null) value = 6
-  handleConfigurationUpdate('medicine', value)
+  handleUpdateConfiguration('medicine', value)
 }
 
 function handleTimesUpdate (value: number | null) {
   if (value === null) value = 6
-  handleConfigurationUpdate('times', value)
+  handleUpdateConfiguration('times', value)
 }
 
 function handleStoneUpdate (value: number | null) {
   if (value === null) value = 6
-  handleConfigurationUpdate('stone', value)
+  handleUpdateConfiguration('stone', value)
 }
 
 function handleDropUpdate (value: { item_id?: string, times?: number }) {
@@ -96,7 +96,7 @@ function handleDropUpdate (value: { item_id?: string, times?: number }) {
 
 onMounted(async () => {
   if (!props.configurations.drops) {
-    _.set(props.configurations, 'drops', {})
+    handleUpdateConfiguration('drops', {})
   }
   loading.value = true
   const response = await getAllItems()
@@ -125,7 +125,7 @@ onMounted(async () => {
         <NSelect
           :value="props.configurations.stage"
           :options="supportStages"
-          @update:value="value => _.set(props.configurations, 'stage', value)"
+          @update:value="value => handleUpdateConfiguration('stage', value)"
         />
       </NFormItem>
       <NFormItem

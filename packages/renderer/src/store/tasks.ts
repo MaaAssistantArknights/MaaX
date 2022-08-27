@@ -1,11 +1,9 @@
 import { defineStore } from 'pinia'
 import _ from 'lodash'
-import compareObjKey from '@/utils/task_configure'
+import { compareObjKey } from '@/utils/task_helper'
 import logger from '@/hooks/caller/logger'
-import { TaskChainMap } from '@common/enum/callback'
 
 export interface TaskState {
-  selfIncreaseId: number // 奇怪的全局任务自增id, 用于查找任务
   deviceTasks: Record<string, Task[]>
 }
 
@@ -17,21 +15,22 @@ export interface TaskAction {
     progress: number
   ) => void
   mergeTaskResult: (uuid: string, taskId: number, patch: any) => void
-  updateTaskConfigurations: (uuid: string, taskId: number, key: string, value: any) => void
+  updateTaskConfigurations: (
+    uuid: string,
+    key: string,
+    value: any,
+    predicate: (task: Task, index: number) => boolean
+  ) => void
   changeTaskOrder: (uuid: string, from: number, to: number) => void
   updateTask: (uuid: string, tasks: Task[]) => void
   newTask: (uuid: string) => void
   getTask: (uuid: string, predicate: (task: Task) => boolean) => Task | undefined
   getTaskProcess: (uuid: string, taskId: string) => number | undefined
   stopAllTasks: (uuid: string) => void
-  genUniqueId: () => number
   copyTask: (uuid: string, index: number) => boolean
   deleteTask: (uuid: string, index: number) => boolean
   fixTaskList: (uuid: string) => void
-  run: (uuid: string) => Promise<void>
 }
-
-export const defaultSelfIncreaseId = 100000 // 初始自增id
 
 const defaultTaskConf: Record<string, Task> = {
   emulator: {
@@ -180,15 +179,13 @@ export const defaultTask = Object.values(defaultTaskConf)
 const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
   state: () => {
     return {
-      deviceTasks: {},
-      selfIncreaseId: 0
+      deviceTasks: {}
     }
   },
   actions: {
-    updateTaskConfigurations (uuid, taskId, key, value) {
-      const { deviceTasks } = this
-      const origin = deviceTasks[uuid]
-      const task = origin?.find((task) => task.task_id === taskId)
+    updateTaskConfigurations (uuid, key, value, predicate) {
+      const origin = this.deviceTasks[uuid]
+      const task = origin?.find(predicate)
       if (task) {
         _.set(task.configurations, key, value)
       }
@@ -270,10 +267,6 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
         })
       }
     },
-    genUniqueId () {
-      this.selfIncreaseId++
-      return this.selfIncreaseId
-    },
     copyTask (uuid, index) {
       const { deviceTasks } = this
       const origin = deviceTasks[uuid]
@@ -310,7 +303,6 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
       return false
     },
     fixTaskList (uuid) {
-      console.log('call fixTaskList')
       const { deviceTasks } = this
       const origin = deviceTasks[uuid]
       origin?.forEach((task) => {
@@ -329,30 +321,6 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
           task.configurations = defaultTaskConf[task.name].configurations
         }
       })
-    },
-    async run (uuid) {
-      const origin = this.deviceTasks[uuid]
-      const taskIndex = origin?.findIndex((task) => task.status === 'idle' && task.enable) // find next task to execute
-      if (taskIndex !== -1) {
-        const task = origin[taskIndex]
-        if (task.name === 'emulator') {
-          // TODO
-        } else if (task.name === 'shutdown') {
-          // TODO
-        } else {
-          task.status = 'waiting'
-          const taskId = await window.ipcRenderer.invoke(
-            'main.CoreLoader:appendTask',
-            {
-              uuid: uuid,
-              type: TaskChainMap[task.name],
-              params: _.cloneDeep(task.configurations)
-            }
-          )
-          task.task_id = taskId
-          await this.run(uuid)
-        }
-      }
     }
   }
 })

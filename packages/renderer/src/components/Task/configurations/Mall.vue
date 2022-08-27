@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, inject } from 'vue'
 import { NButton, NFormItem, NCheckbox } from 'naive-ui'
-import _ from 'lodash'
 
 import MallSelect from '../MallSelect.vue'
 
@@ -15,11 +14,19 @@ interface MallConfiguration {
 
 const props = defineProps<{
   configurations: MallConfiguration;
+  taskIndex: number
 }>()
 
-function onItemChange (items: { buy_first: string[], blacklist: string[] }) {
+const updateTaskConfigurations = inject('update:configuration') as
+  (key: string, value: any, index: number) => void
+
+function handleUpdateConfiguration (key: string, value: any) {
+  updateTaskConfigurations(key, value, props.taskIndex)
+}
+
+function handleItemUpdate (items: { buy_first: string[], blacklist: string[] }) {
   for (const [key, list] of Object.entries(items)) {
-    _.set(props.configurations, key, list)
+    handleUpdateConfiguration(key, list)
   }
 }
 
@@ -38,8 +45,7 @@ function onItemChange (items: { buy_first: string[], blacklist: string[] }) {
       <NCheckbox
         :checked="props.configurations.shopping"
         @update:checked="
-          (checked) =>
-            _.set(props.configurations, 'shopping', checked)
+          checked => handleUpdateConfiguration('shopping', checked)
         "
       />
     </NFormItem>
@@ -63,7 +69,7 @@ function onItemChange (items: { buy_first: string[], blacklist: string[] }) {
         v-model:show="showModal"
         :buy_first="props.configurations.buy_first"
         :blacklist="props.configurations.blacklist"
-        @update:item="onItemChange"
+        @update:item="handleItemUpdate"
       />
     </NFormItem>
   </div>

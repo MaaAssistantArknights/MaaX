@@ -4,8 +4,10 @@ type TaskStatus =
   | 'processing'
   | 'success'
   | 'warning'
+  | 'skipped'
   | 'exception'
   | 'stopped'
+
 type TaskName =
   | 'emulator'
   | 'startup'

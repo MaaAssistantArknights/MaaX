@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { NCheckbox, NFormItem, NSelect } from 'naive-ui'
-import _ from 'lodash'
+import { inject } from 'vue'
 
 interface StartUpConfiguration {
   client_type: string; // 服务器
@@ -9,18 +9,26 @@ interface StartUpConfiguration {
 
 const serverOptions = [
   {
-    value: 'CN',
-    label: 'CN'
+    value: 'Official',
+    label: 'CN-Official'
   },
   {
     value: 'BiliBili',
-    label: 'BiliBili'
+    label: 'CN-BiliBili'
   }
 ]
 
 const props = defineProps<{
   configurations: StartUpConfiguration;
+  taskIndex: number
 }>()
+
+const updateTaskConfigurations = inject('update:configuration') as
+  (key: string, value: any, index: number) => void
+
+function handleUpdateConfiguration (key: string, value: any) {
+  updateTaskConfigurations(key, value, props.taskIndex)
+}
 </script>
 <template>
   <div class="configuration-form">
@@ -35,7 +43,7 @@ const props = defineProps<{
       <NSelect
         :value="props.configurations.client_type"
         :options="serverOptions"
-        @update:value="(value) => _.set(props.configurations, 'client_type', value)"
+        @update:value="(value) => handleUpdateConfiguration('client_type', value)"
       />
     </NFormItem>
     <NFormItem
@@ -47,7 +55,7 @@ const props = defineProps<{
       <NCheckbox
         :checked="props.configurations.start_game_enable"
         @update:checked="
-          (checked) => _.set(props.configurations, 'start_game_enable', checked)
+          (checked) => handleUpdateConfiguration('start_game_enable', checked)
         "
       >
         自动启动客户端

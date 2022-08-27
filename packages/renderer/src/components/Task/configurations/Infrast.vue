@@ -1,36 +1,10 @@
 <script setup lang="ts">
-import { onMounted, ref, Ref } from 'vue'
+import { onMounted, ref, Ref, inject } from 'vue'
 import { NCheckbox, NFormItem, NSelect, NSlider, NSpace } from 'naive-ui'
 import _ from 'lodash'
 import Sortable from 'sortablejs'
 
 const facilitiesRef: Ref<HTMLElement | null> = ref(null)
-
-// type InfrastType =
-//   | 'ManufacturingStation'
-//   | 'TradingStation'
-//   | 'ControlCenter'
-//   | 'PowerStation'
-//   | 'MeetingRoom'
-//   | 'Office'
-//   | 'Dormitory';
-
-// interface InfrastConfiguration {
-//   facilities: Array<{
-//     name: InfrastType;
-//     enabled: boolean;
-//   }>;
-//   replenish: boolean;
-//   drone_usage:
-//   | 'None'
-//   | 'LMD'
-//   | 'Orumdum'
-//   | 'Battle Record'
-//   | 'Pure Gold'
-//   | 'Originium Shard'
-//   | 'Chip';
-//   mood_limit: number;
-// }
 
 type facilityType =
   | 'Mfg'
@@ -59,6 +33,14 @@ type droneUsageType =
   | 'PureGold'
   | 'OriginStone'
   | 'Chip';
+
+interface InfrastConfiguration {
+  mode: number, // 保留模式, 暂无意义
+  facility: facilityType[], // 换班基建
+  drones: droneUsageType, // 无人机用途
+  threshold: number, // 换班阈值
+  replenish: boolean, // 自动源石补货
+}
 
 const droneUsageOptions: {
   value: droneUsageType;
@@ -94,27 +76,17 @@ const droneUsageOptions: {
   }
 ]
 
-interface InfrastConfiguration {
-  mode: number, // 保留模式, 暂无意义
-  facility: facilityType[], // 换班基建
-  drones: droneUsageType, // 无人机用途
-  threshold: number, // 换班阈值
-  replenish: boolean, // 自动源石补货
-}
-
-// const infrastTranslation = {
-//   ManufacturingStation: '制造站',
-//   TradingStation: '贸易站',
-//   ControlCenter: '控制中枢',
-//   PowerStation: '发电站',
-//   MeetingRoom: '会客室',
-//   Office: '办公室',
-//   Dormitory: '宿舍'
-// }
-
 const props = defineProps<{
   configurations: InfrastConfiguration;
+  taskIndex: number
 }>()
+
+const updateTaskConfigurations = inject('update:configuration') as
+  (key: string, value: any, index: number) => void
+
+function handleUpdateConfiguration (key: string, value: any) {
+  updateTaskConfigurations(key, value, props.taskIndex)
+}
 
 function onFacilityEnableUpdate (name: facilityType, enabled: boolean) {
   const facilitySet = new Set(props.configurations.facility)
@@ -123,7 +95,7 @@ function onFacilityEnableUpdate (name: facilityType, enabled: boolean) {
   } else {
     facilitySet.delete(name)
   }
-  _.set(props.configurations, 'facility', Array.from(facilitySet))
+  handleUpdateConfiguration('facility', Array.from(facilitySet))
 }
 
 let sortable: Sortable | undefined
@@ -198,7 +170,7 @@ onMounted(() => {
           :value="props.configurations.drones"
           :options="droneUsageOptions"
           @update:value="
-            (value) => _.set(props.configurations, 'drones', value)
+            (value) => handleUpdateConfiguration('drones', value)
           "
         />
       </NFormItem>
@@ -216,7 +188,7 @@ onMounted(() => {
           :max="23"
           :min="0"
           @update:value="
-            (value) => _.set(props.configurations, 'threshold', value)
+            (value) => handleUpdateConfiguration('threshold', value)
           "
         />
       </NFormItem>
@@ -229,7 +201,7 @@ onMounted(() => {
           :checked="props.configurations.replenish"
           @update:checked="
             (checked) =>
-              _.set(props.configurations, 'replenish', checked)
+              handleUpdateConfiguration('replenish', checked)
           "
         >
           源石碎片自动补货

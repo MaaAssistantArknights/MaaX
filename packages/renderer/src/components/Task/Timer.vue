@@ -19,9 +19,21 @@ const defaultFormatter: Formatter = ({ hours, minutes, seconds }) => {
 export default defineComponent({
   name: 'TheTimer',
   props: {
-    startTime: Number,
-    endTime: Number,
-    formatter: Function as PropType<Formatter>
+    startTime: {
+      type: Number,
+      required: false,
+      default: undefined
+    },
+    endTime: {
+      type: Number,
+      required: false,
+      default: undefined
+    },
+    formatter: {
+      type: Function as PropType<Formatter>,
+      required: false,
+      default: defaultFormatter
+    }
   },
   setup (props) {
     const instance = getCurrentInstance()
@@ -45,7 +57,7 @@ export default defineComponent({
       }
 
       if (!props.startTime) { return time }
-      const now = Date.now()
+      const now = props.endTime ?? Date.now()
       let diff = now - props.startTime
       time.milliseconds = diff % 1000
       diff = Math.floor(diff / 1000)
@@ -70,9 +82,7 @@ export default defineComponent({
       }
     }, { immediate: true })
 
-    const format = props.formatter || defaultFormatter
-
-    return () => h('div', format(timeDiff()))
+    return () => h('div', props.formatter(timeDiff()))
   }
 })
 

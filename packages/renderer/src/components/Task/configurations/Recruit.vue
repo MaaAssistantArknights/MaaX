@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { NInputNumber, NCheckbox, NFormItem } from 'naive-ui'
 import _ from 'lodash'
+import { inject } from 'vue'
 
 interface RecruitConfiguration {
   refresh: boolean, // 自动刷新三星词条
@@ -15,13 +16,21 @@ interface RecruitConfiguration {
 
 const props = defineProps<{
   configurations: RecruitConfiguration;
+  taskIndex: number
 }>()
+
+const updateTaskConfigurations = inject('update:configuration') as
+  (key: string, value: any, index: number) => void
+
+function handleUpdateConfiguration (key: string, value: any) {
+  updateTaskConfigurations(key, value, props.taskIndex)
+}
 
 function handleConfirmUpdate (checked: boolean, value: number) {
   if (checked) {
-    _.set(props.configurations, 'confirm', _.uniq([...props.configurations.confirm, value]))
+    handleUpdateConfiguration('confirm', _.uniq([...props.configurations.confirm, value]))
   } else {
-    _.set(props.configurations, 'confirm', _.uniq(props.configurations.confirm.filter(v => v !== value)))
+    handleUpdateConfiguration('confirm', _.uniq(props.configurations.confirm.filter(v => v !== value)))
   }
 }
 
@@ -29,14 +38,14 @@ function handleRecruitTimesUpdate (value: number | null) {
   if (value === null) value = 6
   if (value < 0) value = 999
   if (value > 999) value = 0
-  _.set(props.configurations, 'times', value)
+  handleUpdateConfiguration('times', value)
 }
 
 function handleExpediteUpdate (value: number | null) {
   if (value === null) value = 6
   if (value < 0) value = 999
   if (value > 999) value = 0
-  _.set(props.configurations, 'expedite_times', value)
+  handleUpdateConfiguration('expedite_times', value)
 }
 
 </script>
@@ -66,7 +75,7 @@ function handleExpediteUpdate (value: number | null) {
         :checked="configurations.expedite"
         @update:checked="
           (checked) =>
-            _.set(props.configurations, 'expedite', checked)
+            handleUpdateConfiguration('expedite', checked)
         "
       />
     </NFormItem>
@@ -102,7 +111,7 @@ function handleExpediteUpdate (value: number | null) {
         :checked="configurations.refresh"
         @update:checked="
           (checked) => {
-            _.set(props.configurations, 'refresh', checked)
+            handleUpdateConfiguration('refresh', checked)
           }
         "
       />
@@ -119,7 +128,7 @@ function handleExpediteUpdate (value: number | null) {
         :checked="configurations.skip_robot"
         @update:checked="
           (checked) => {
-            _.set(props.configurations, 'skip_robot', checked)
+            handleUpdateConfiguration('skip_robot', checked)
           }
         "
       />

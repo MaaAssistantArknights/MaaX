@@ -27,18 +27,13 @@ export default defineComponent({
     name: {
       type: String,
       required: true
-    },
-    configurations: {
-      type: Object,
-      required: true
     }
   },
   render () {
     const component = components[this.name]
-    const { configurations } = this
     if (component) {
       // @ts-ignore
-      return h(component, { configurations })
+      return h(component, { ...this.$attrs /* 透传除了name以外的其他参数 */ })
     } else {
       return h(NoConfiguration)
     }

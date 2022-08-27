@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, provide } from 'vue'
 import { NSpace, NButton, NSwitch, NIcon, NTooltip } from 'naive-ui'
 import _ from 'lodash'
 import Draggable from 'vuedraggable'
@@ -15,6 +15,7 @@ import { show } from '@/utils/message'
 import router from '@/router'
 import Result from '@/components/Task/results/Index.vue'
 import logger from '@/hooks/caller/logger'
+import { runTasks } from '@/utils/task_runner'
 
 const taskStore = useTaskStore()
 const deviceStore = useDeviceStore()
@@ -108,7 +109,7 @@ async function handleSubStart () {
   //   rogue: 'Roguelike'
   // }
 
-  await taskStore.run(uuid.value)
+  await runTasks(uuid.value)
 
   deviceStore.updateDeviceStatus(uuid.value as string, 'tasking')
 
@@ -175,6 +176,18 @@ function handleTaskDelete (index: number) {
     show('不可以删除只有一份的任务哦', { type: 'error' })
   }
 }
+
+function handleTaskConfigurationUpdate (key: string, value: any, index: number) {
+  console.log(key, value, index)
+  taskStore.updateTaskConfigurations(
+    uuid.value,
+    key,
+    value,
+    (task, taskIndex) => taskIndex === index
+  )
+}
+
+provide('update:configuration', handleTaskConfigurationUpdate)
 </script>
 
 <template>
@@ -248,6 +261,7 @@ function handleTaskDelete (index: number) {
             v-show="!task.showResult"
             :name="task.name"
             :configurations="task.configurations"
+            :task-index="index"
           />
         </TaskCard>
       </template>

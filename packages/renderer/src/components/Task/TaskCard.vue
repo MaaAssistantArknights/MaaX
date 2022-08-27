@@ -19,7 +19,6 @@ import useThemeStore from '@/store/theme'
 import Timer from './Timer.vue'
 import IconAdd from '@/assets/icons/add.svg?component'
 import IconRemove from '@/assets/icons/remove.svg?component'
-// import useTaskStore from '@/store/tasks'
 import useDeviceStore from '@/store/devices'
 const themeVars = useThemeVars()
 const themeStore = useThemeStore()
@@ -29,8 +28,6 @@ const props = defineProps<{
   taskInfo: Task;
 }>()
 
-// import logger from '@/hooks/caller/logger'
-// const taskStore = useTaskStore()
 const deviceStore = useDeviceStore()
 
 const emit = defineEmits(['update:enable', 'update:showResult', 'copy', 'delete'])
@@ -132,17 +129,10 @@ const deviceStatus = computed(() => deviceStore.getDevice(uuid)?.status ?? 'disc
                 </NText>
               </div>
             </NSpace>
-            <NSpace
-              justify="end"
-              align="center"
-            >
+            <NSpace justify="end" align="center">
               <NTooltip>
                 <template #trigger>
-                  <NButton
-                    text
-                    style="font-size: 25px"
-                    @click="() => $emit('copy')"
-                  >
+                  <NButton text style="font-size: 25px" @click="() => $emit('copy')">
                     <NIcon>
                       <IconAdd />
                     </NIcon>
@@ -174,19 +164,21 @@ const deviceStatus = computed(() => deviceStore.getDevice(uuid)?.status ?? 'disc
                   (() => {
                     switch (props.taskInfo.status) {
                     case "idle":
-                      return "";
+                      return ""
                     case "waiting":
-                      return "等待中";
+                      return "等待中"
                     case "processing":
-                      return '进行中';
+                      return '进行中'
                     case "success":
-                      return "已完成";
+                      return "已完成"
                     case "warning":
-                      return "警告";
+                      return "警告"
                     case "exception":
-                      return "任务出错";
+                      return "任务出错"
                     case "stopped":
-                      return "手动取消";
+                      return "手动取消"
+                    case 'skipped':
+                      return '已跳过'
                     }
                   })()
                 }}
@@ -211,10 +203,7 @@ const deviceStatus = computed(() => deviceStore.getDevice(uuid)?.status ?? 'disc
         </div>
       </template>
       <div class="card-content">
-        <NScrollbar
-          style="height: 105px"
-          @contextmenu="handleShowDropdown"
-        >
+        <NScrollbar style="height: 105px" @contextmenu="handleShowDropdown">
           <slot />
         </NScrollbar>
         <DropdownMenu

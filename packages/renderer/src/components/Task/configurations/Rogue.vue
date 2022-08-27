@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, Ref, h } from 'vue'
+import { ref, onMounted, Ref, h, inject } from 'vue'
 import _ from 'lodash'
 import {
   NFormItem,
@@ -78,7 +78,16 @@ const skillUsageOptions: Array<{
 
 const props = defineProps<{
   configurations: RogueConfiguration;
+  taskIndex: number
 }>()
+
+const updateTaskConfigurations = inject('update:configuration') as
+  (key: string, value: any, index: number) => void
+
+function handleUpdateConfiguration (key: string, value: any) {
+  updateTaskConfigurations(key, value, props.taskIndex)
+}
+
 const showModal = ref(false)
 const showSelectModal = ref(false)
 
@@ -171,7 +180,7 @@ const createColumns = (): DataTableColumns<any> => [
           :actions="['confirm']"
           @update:formatted-value="
             (value) =>
-              _.set(props.configurations, 'duration', formattedDurationToSeconds(value))
+              handleUpdateConfiguration('duration', formattedDurationToSeconds(value))
           "
         />
       </NFormItem> -->
@@ -187,7 +196,7 @@ const createColumns = (): DataTableColumns<any> => [
         <NSelect
           :value="props.configurations.mode"
           :options="strategyOptions"
-          @update:value="(value) => _.set(props.configurations, 'mode', value)"
+          @update:value="(value) => handleUpdateConfiguration('mode', value)"
         />
       </NFormItem>
       <!-- <NFormItem :show-label="false">

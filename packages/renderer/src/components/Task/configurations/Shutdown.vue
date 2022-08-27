@@ -15,6 +15,7 @@ import {
 import router from '@/router'
 import { show } from '@/utils/message'
 import logger from '@/hooks/caller/logger'
+import { inject } from 'vue'
 
 /**
  * 关机策略处理流程:
@@ -60,7 +61,15 @@ function handleCancelShutdown () {
 
 const props = defineProps<{
   configurations: ShutdownConfiguration;
+  taskIndex: number
 }>()
+
+const updateTaskConfigurations = inject('update:configuration') as
+  (key: string, value: any, index: number) => void
+
+function handleUpdateConfiguration (key: string, value: any) {
+  updateTaskConfigurations(key, value, props.taskIndex)
+}
 </script>
 <template>
   <div
@@ -79,7 +88,7 @@ const props = defineProps<{
           :value="props.configurations.option"
           :options="shutdownOptions"
           @update:value="
-            (value) => _.set(props.configurations, 'option', value)
+            (value) => handleUpdateConfiguration('option', value)
           "
         />
       </NFormItem>

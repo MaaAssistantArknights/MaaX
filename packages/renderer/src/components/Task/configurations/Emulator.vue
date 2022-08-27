@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { inject } from 'vue'
 import { NFormItem, NInput, NSelect, NSpace } from 'naive-ui'
-import _ from 'lodash'
 import router from '@/router'
 import useDeviceStore from '@/store/devices'
 
@@ -35,14 +35,22 @@ const delayOptions = [
 ]
 
 const props = defineProps<{
-  configurations: EmulatorConfiguration;
+  configurations: EmulatorConfiguration
+  taskIndex: number
 }>()
+
+const updateTaskConfigurations = inject('update:configuration') as
+  (key: string, value: any, index: number) => void
+
+function handleUpdateConfiguration (key: string, value: any) {
+  updateTaskConfigurations(key, value, props.taskIndex)
+}
 
 const routeUuid = router.currentRoute.value.params.uuid as string
 
 const commandLine = deviceStore.getDevice(routeUuid)?.commandLine
 if (commandLine) {
-  _.set(props.configurations, 'commandLine', commandLine)
+  handleUpdateConfiguration('commandLine', commandLine)
 }
 
 </script>
@@ -60,7 +68,7 @@ if (commandLine) {
         <NSelect
           :value="props.configurations.delay"
           :options="delayOptions"
-          @update:value="(value) => _.set(props.configurations, 'delay', value)"
+          @update:value="value => handleUpdateConfiguration('delay', value)"
         />
       </NFormItem>
       <NFormItem
