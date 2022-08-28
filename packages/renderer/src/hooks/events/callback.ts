@@ -23,6 +23,12 @@ export default function useCallbackEvents (): void {
       StartUp: (data: Callback.SubTaskError) => {
       },
       Fight: (data: Callback.SubTaskError) => {
+        switch (data.subtask) {
+          case 'ReportToPenguinStats': {
+            const { why, taskid } = data
+            logger.silly('放弃上传🐧 ', why, taskid)
+          }
+        }
       },
       Mall: (data: Callback.SubTaskError) => {
       },
@@ -79,6 +85,13 @@ export default function useCallbackEvents (): void {
       StartUp: (data: Callback.SubTaskCompleted) => {
       },
       Fight: (data: Callback.SubTaskCompleted) => {
+        switch (data.subtask) {
+          case 'ReportToPenguinStats': {
+            const { taskid } = data
+            logger.silly('上传至企鹅物流成功 ', taskid)
+            break
+          }
+        }
       },
       Mall: (data: Callback.SubTaskCompleted) => {
       },

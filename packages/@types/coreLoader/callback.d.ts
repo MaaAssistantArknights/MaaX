@@ -93,6 +93,7 @@ namespace Callback {
     taskid: number // 当前任务 TaskId
     details: any // 详情
     uuid: string // 设备唯一码
+    why?: string // 错误原因
   }
   interface SubTaskCompleted {
     subtask: string // 子任务名
