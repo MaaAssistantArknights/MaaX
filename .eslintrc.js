@@ -1,35 +1,55 @@
-// eslint-disable-next-line no-undef
+const path = require("path");
+
 module.exports = {
   root: true,
   env: {
     browser: true,
     es2021: true,
     node: true,
-    "vue/setup-compiler-macros": true
+    "vue/setup-compiler-macros": true,
   },
   parserOptions: {
     ecmaVersion: 12,
     sourceType: "module",
-    parser: "@typescript-eslint/parser",
+    project: [
+      path.join(__dirname, "packages/renderer/tsconfig.json"),
+      path.join(__dirname, "packages/main/tsconfig.json"),
+    ],
   },
-  plugins: [
-    "vue",
-    "@typescript-eslint"
-  ],
+  plugins: ["vue", "@typescript-eslint"],
   extends: [
     "eslint:recommended",
-    "plugin:vue/vue3-essential"
+    "plugin:vue/vue3-recommended",
+    "plugin:vue/vue3-essential",
+    "standard-with-typescript",
+    "@vue/eslint-config-typescript",
   ],
   rules: {
-    "semi": "error",
-    "quotes": ["error", "double"],
+    "vue/max-len": [
+      "error",
+      {
+        code: 120,
+        template: 120,
+      },
+    ],
     "no-undef": "off", // 让ts检查undefined
-    "no-unused-vars": "off",
-    "vue/max-len": ["error", {
-      code: 200,
-      template: 90
-    }],
-    "vue/no-unused-vars": "warn",
-    "vue/multi-word-component-names": "off"
-  }
+    "@typescript-eslint/no-floating-promises": "off",
+    "@typescript-eslint/strict-boolean-expressions": "off",
+    "vue/multi-word-component-names": "off",
+    "vue/max-attributes-per-line": [
+      "error",
+      {
+        singleline: {
+          max: 3,
+        },
+        multiline: {
+          max: 1,
+        },
+      },
+    ],
+    "@typescript-eslint/promise-function-async": "off",
+    "@typescript-eslint/naming-convention": "off",
+    "camelcase": "off",
+    "vue/prop-name-casing": "off"
+  },
 };

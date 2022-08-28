@@ -4,7 +4,7 @@ dist
 dist-ssr
 *.local
 
+.idea
 tmp
 **/.tmp
 release
-packages/main/core

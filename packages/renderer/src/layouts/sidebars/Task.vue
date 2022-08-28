@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import IconSettings from "@/assets/icons/settings.svg?component";
-import IconDevices from "@/assets/icons/devices.svg?component";
-import { NIcon, NSpace, NButton, NTooltip } from "naive-ui";
-import DeviceCard from "@/components/DeviceCard.vue";
+import { computed } from 'vue'
+import IconSettings from '@/assets/icons/settings.svg?component'
+import IconDevices from '@/assets/icons/devices.svg?component'
+import { NIcon, NSpace, NButton, NTooltip } from 'naive-ui'
+import DeviceCard from '@/components/Device/DeviceCard.vue'
 
-import useDeviceStore from "@/store/devices";
+import useDeviceStore from '@/store/devices'
 
-const connectedStatus: Set<DeviceStatus> = new Set(["connected", "tasking"]);
-const deviceStore = useDeviceStore();
-const { devices } = deviceStore;
+const connectedStatus: Set<DeviceStatus> = new Set(['connected', 'tasking'])
+const deviceStore = useDeviceStore()
+const devices = computed(() => deviceStore.devices)
 const connectedDevices = computed(() =>
-  devices.filter((device) => connectedStatus.has(device.status))
-);
+  devices.value.filter((device) => connectedStatus.has(device.status))
+)
 </script>
 
 <template>
@@ -26,7 +26,10 @@ const connectedDevices = computed(() =>
         <IconSettings />
       </NIcon>
     </NButton>
-    <NSpace justify="space-between" align="center">
+    <NSpace
+      justify="space-between"
+      align="center"
+    >
       <h2>当前连接的设备</h2>
       <NTooltip>
         <template #trigger>
@@ -46,8 +49,8 @@ const connectedDevices = computed(() =>
     <div class="connected-devices">
       <DeviceCard
         v-for="device in connectedDevices"
-        :uuid="device.uuid"
         :key="device.uuid"
+        :uuid="device.uuid"
       />
     </div>
   </div>

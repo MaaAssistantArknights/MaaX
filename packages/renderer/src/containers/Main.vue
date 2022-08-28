@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import { NScrollbar, useThemeVars, useMessage } from "naive-ui";
+import { NScrollbar, useMessage } from 'naive-ui'
+import asst from '@/hooks/caller/asst'
+import { onMounted } from 'vue'
 
-const themeVars = useThemeVars();
-window.$message = useMessage();
+window.$message = useMessage()
+
+onMounted(asst.load)
+
 </script>
 
 <template>
-  <NScrollbar class="main" :style="{ backgroundColor: themeVars.bodyColor }">
+  <NScrollbar class="main">
     <router-view name="Main" />
   </NScrollbar>
 </template>

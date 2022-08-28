@@ -1,14 +1,13 @@
-import { app, ipcMain } from "electron";
-import { Assistant } from "./interface";
+import { app } from 'electron'
+import CoreLoader from '@main/coreLoader'
+import { ipcMainHandle } from '@main/utils/ipc-main'
 
-Assistant.libPath = "D:\\MeoAsstElectronUI\\packages\\main\\core\\";
+export default function useVersionHooks (): void {
+  ipcMainHandle('main.Util:getUiVersion', async (event) => {
+    return app.getVersion()
+  })
 
-export default function useVersionHooks() {
-  ipcMain.on("version:ui", (event) => {
-    event.returnValue = app.getVersion();
-  });
-
-  ipcMain.on("version:core", (event) => {
-    event.returnValue = Assistant.getInstance()?.GetVersion();
-  });
+  ipcMainHandle('main.CoreLoader:getCoreVersion', async (event) => {
+    return (new CoreLoader()).GetCoreVersion()
+  })
 }

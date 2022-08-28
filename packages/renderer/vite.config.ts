@@ -3,6 +3,7 @@ import { defineConfig, Plugin } from "vite";
 import path from "path";
 import vue from "@vitejs/plugin-vue";
 import resolve from "vite-plugin-resolve";
+import vueI18n from '@intlify/vite-plugin-vue-i18n'
 import pkg from "../../package.json";
 import svgLoader from "vite-svg-loader";
 
@@ -23,11 +24,15 @@ export default defineConfig({
      *   'electron-store': 'const Store = require("electron-store"); export default Store;',
      * }
      */
+    vueI18n({
+      include: path.resolve(__dirname, 'src/i18n/**')
+    })
   ],
   base: "./",
   resolve: {
     alias: {
       "@": path.join(__dirname, "src"),
+      "@common": path.join(__dirname, "../common"),
     },
   },
   build: {

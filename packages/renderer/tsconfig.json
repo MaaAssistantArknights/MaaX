@@ -13,8 +13,11 @@
     "lib": ["esnext", "dom"],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
-    }
+      "@/*": ["src/*"],
+      "@common/*": ["../common/*"],
+    },
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
+  "include": ["src/**/*.ts", "../@types/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"]
 }

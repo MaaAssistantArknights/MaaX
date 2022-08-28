@@ -11,8 +11,27 @@ const { appendLoading, removeLoading } = useLoading();
 })();
 
 // --------- Expose some API to the Renderer process. ---------
+const ipc = {
+  on: (channel: IpcRendererHandleEvent, listener: (event: Electron.IpcRendererEvent, ...args: any[]) => void): Electron.IpcRenderer => {
+    ipcRenderer.send('main:Util:LogSilly', `ipcRenderer event "${channel}" registered`)
+    return ipcRenderer.on(channel, listener)
+  },
+  send: (channel: IpcMainHandleEvent, ...args: any[]): void => {
+    ipcRenderer.send('main:Util:LogSilly', `ipcMain event "${channel}" sent`)
+    ipcRenderer.send(channel, ...args)
+  },
+  invoke: (channel: IpcMainHandleEvent, ...args: any[]): Promise<any> => {
+    ipcRenderer.send('main:Util:LogSilly', `ipcMain event "${channel}" invoked`)
+    return ipcRenderer.invoke(channel, ...args)
+  },
+  off: (channel: IpcRendererHandleEvent, listener: (event: Electron.IpcRendererEvent, ...args: any[]) => void): Electron.IpcRenderer => {
+    ipcRenderer.send('main:Util:LogSilly', `ipcRenderer event "${channel}" unregistered`)
+    return ipcRenderer.off(channel, listener)
+  }
+}
+
 contextBridge.exposeInMainWorld("removeLoading", removeLoading);
-contextBridge.exposeInMainWorld("ipcRenderer", withPrototype(ipcRenderer));
+contextBridge.exposeInMainWorld("ipcRenderer", withPrototype(ipc));
 
 // `exposeInMainWorld` can't detect attributes and methods of `prototype`, manually patching it.
 function withPrototype(obj: Record<string, any>) {

@@ -1,4 +1,11 @@
-import { defineStore } from "pinia";
+import { defineStore } from 'pinia'
+import { useI18n } from 'vue-i18n'
+import version from '@/hooks/caller/version'
+
+export enum Locale {
+  zhCN = 'ZhCN',
+  enUS = 'EnUS',
+}
 
 export interface SettingState {
   reportId: string
@@ -8,42 +15,49 @@ export interface SettingState {
       latest?: string
     }
     ui: {
-      current: string
+      current?: string
       latest?: string
     }
   }
+  locale: Locale
 }
 
 export interface SettingAction {
-  checkUpdate(): void
-  setReportId(reportId: string): void
+  checkUpdate: () => void
+  setReportId: (reportId: string) => void
+  changeLocale: (locale: Locale) => void
+  updateVersionInfo: () => void
 }
 
-const useSettingStore = defineStore<"setting", SettingState, {}, SettingAction>(
-  "setting",
+const useSettingStore = defineStore<'setting', SettingState, {}, SettingAction>(
+  'setting',
   {
     state: () => {
       return {
-        reportId: "",
+        reportId: '',
         version: {
-          core: {
-            // current: "v3.0.6",
-            // latest: "v3.0.7",
-          },
-          ui: {
-            current: "v1.0.0",
-            // latest: "v1.0.0",
-          },
+          core: {},
+          ui: {}
         },
-      };
+        locale: Locale.zhCN
+      }
     },
     actions: {
-      checkUpdate() {},
-      setReportId(reportId) {
-        this.reportId = reportId;
+      checkUpdate () { },
+      setReportId (reportId) {
+        this.reportId = reportId
       },
-    },
+      changeLocale (locale: Locale) {
+        this.locale = locale
+        const i18n = useI18n()
+        i18n.locale.value = locale
+      },
+      async updateVersionInfo () {
+        this.version.core.current = await version.core() ?? undefined
+        this.version.ui.current = await version.ui()
+      }
+    }
   }
-);
+)
 
-export default useSettingStore;
+export default useSettingStore

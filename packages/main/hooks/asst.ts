@@ -1,136 +1,101 @@
-import Electron, { app, ipcMain } from "electron";
-import { Assistant } from "./interface";
-import path from "path";
+import path from 'path'
+import fs from 'fs'
+import CoreLoader from '@main/coreLoader'
+import { ipcMainHandle, ipcMainRemove } from '@main/utils/ipc-main'
+import logger from '@main/utils/logger'
 
-Assistant.libPath = path.join(__dirname, "../../packages/main/core");
+const core = new CoreLoader()
 
 const asstHooks: Record<
-  string,
-  (event: Electron.IpcMainEvent, ...args: any[]) => void
+string,
+(event: import('electron').IpcMainInvokeEvent, ...args: any[]) => Promise<any>
 > = {
-  "asst:loadResource": (event, arg) => {
-    event.returnValue = Assistant.getInstance()?.LoadResource(arg.path);
+  'main.CoreLoader:loadResource': async (_event, arg) => {
+    return core.LoadResource(arg.path) ?? false
   },
-  "asst:create": (event, arg) => {
-    event.returnValue = Assistant.getInstance()?.Create();
+  'main.CoreLoader:create': async (_event, _arg) => {
+    return core.Create() ?? false
   },
-  "asst:createEx": (event, arg) => {
-    event.returnValue = Assistant.getInstance()?.CreateEx(arg.address);
+  'main.CoreLoader:createEx': async (_event, arg) => {
+    return core.CreateEx(arg.address)
   },
-  "asst:destroy": (event, arg) => {
-    Assistant.getInstance()?.Destroy(arg.uuid);
-    event.returnValue = true;
+  'main.CoreLoader:destroy': async (_event, arg) => {
+    core.Destroy(arg.uuid)
+    return true
   },
-  "asst:connect": async (event, arg) => {
-    event.returnValue = Assistant.getInstance()?.Connect(
+  'main.CoreLoader:connect': async (_event, arg) => {
+    return core.Connect(
       arg.address,
+      arg.uuid,
       arg.adb_path,
       arg.config
-    );
+    )
   },
-  "asst:appendTask": (event, arg) => {
-    event.returnValue = Assistant.getInstance()?.AppendTask(
+  'main.CoreLoader:createExAndConnect': async (_event, arg) => {
+    const createStatus = core.CreateEx(arg.uuid) ?? false
+    if (!createStatus) console.log(`重复创建 ${JSON.stringify(arg)}`)
+    return core.Connect(
+      arg.address,
+      arg.uuid,
+      arg.adb_path,
+      arg.config
+    )
+  },
+  'main.CoreLoader:disconnectAndDestroy': async (_event, arg) => {
+    core.Stop(arg.uuid)
+    core.Destroy(arg.uuid)
+    return true
+  },
+
+  'main.CoreLoader:appendTask': async (_event, arg) => {
+    return core.AppendTask(
       arg.uuid,
       arg.type,
       JSON.stringify(arg.params)
-    );
+    )
   },
-  "asst:start": (event, arg) => {
-    event.returnValue = Assistant.getInstance()?.Start(arg.uuid);
+  'main.CoreLoader:setTaskParams': async (_event, arg) => {
+    return core.SetTaskParams(arg.uuid, arg.task_id, JSON.stringify(arg.params))
   },
-  "asst:stop": (event, arg) => {
-    event.returnValue = Assistant.getInstance()?.Stop(arg.uuid);
+  'main.CoreLoader:start': async (_event, arg) => {
+    return core.Start(arg.uuid)
   },
-  "asst:setUUID": (event, arg) => {
-    Assistant.getInstance()?.SetUUID(arg.address, arg.uuid);
-    event.returnValue = true;
+  'main.CoreLoader:stop': async (_event, arg) => {
+    return core.Stop(arg.uuid)
+  },
+  'main.CoreLoader:supportedStages': async (_event) => {
+    if (!core.loadStatus) {
+      logger.silly('core unloaded, return empty supported stages')
+      return []
+    }
+    const jsonPath = path.join(core.libPath, 'resource/tasks.json')
+    const tasks = JSON.parse(String(fs.readFileSync(jsonPath)))
+    const stages = Object.keys(tasks).filter((s) =>
+      /[A-Z0-9]+-([A-Z0-9]+-?)?[0-9]/.test(s)
+    )
+    return stages
+  },
+  'main.CoreLoader:getImage': async (_event, arg) => {
+    return core.GetImage(arg.uuid)
   }
-};
-
-export default function useAsstHooks() {
-  ipcMain.on("asst:load", (event) => {
-    const asst = Assistant.getInstance();
-    if (!asst) {
-      event.returnValue = false;
-      return;
-    }
-    for (const eventName of Object.keys(asstHooks)) {
-      ipcMain.on(eventName, asstHooks[eventName]);
-    }
-    event.returnValue = true;
-  });
-
-  ipcMain.on("asst:dispose", (event) => {
-    Assistant.dispose();
-    for (const eventName of Object.keys(asstHooks)) {
-      ipcMain.off(eventName, asstHooks[eventName]);
-    }
-  });
 }
 
-/**  
-  export default function useAsstHooks() {
-  ipcMain.on("asst:appendStartUp", (event, arg) => {
-    event.returnValue = Assistant.getInstance().AppendStartUp(arg.uuid);
-  });
+export default function useAsstHooks (): void {
+  ipcMainHandle('main.CoreLoader:load', (_event) => {
+    core.load()
+    if (!core.loadStatus) {
+      return false
+    }
+    for (const eventName of Object.keys(asstHooks)) {
+      ipcMainHandle(eventName as IpcMainHandleEvent, asstHooks[eventName])
+    }
+    return true
+  })
 
-  ipcMain.on("asst:AppendFight", (event, arg) => {
-    event.returnValue = Assistant.getInstance().AppendFight(
-      arg.stage,
-      arg.max_mecidine,
-      arg.number,
-      arg.max_times,
-      arg.uuid
-    );
-  });
-
-  ipcMain.on("asst:appendAward", (event, arg) => {
-    event.returnValue = Assistant.getInstance().AppendAward(arg.uuid);
-  });
-
-  ipcMain.on("asst:appendVisit", (event, arg) => {
-    event.returnValue = Assistant.getInstance().AppendVisit(arg.uuid);
-  });
-
-  ipcMain.on("asst:appendMall", (event, arg) => {
-    event.returnValue = Assistant.getInstance().AppendMall(
-      arg.with_shopping,
-      arg.uuid
-    );
-  });
-
-  ipcMain.on("asst:appendInfrast", (event, arg) => {
-    event.returnValue = Assistant.getInstance().AppendInfrast(
-      arg.work_mode,
-      arg.order,
-      arg.order_size,
-      arg.uses_of_drones,
-      arg.dorm_threshold,
-      arg.uuid
-    );
-  });
-
-  ipcMain.on("asst:appendRecruit", (event, arg) => {
-    event.returnValue = Assistant.getInstance().AppendRecruit(
-      arg.max_times,
-      arg.select_level,
-      arg.select_len,
-      arg.confirm_level,
-      arg.confirm_len,
-      arg.need_refresh,
-      arg.uuid
-    );
-  });
-
-  //ipcMain.on("asst:appendRoguelike")
-  //ipcMain.on("asst:appendDebug")
-  //ipcMain.on("asst:startRecruitCalc")
-
-
-  //ipcMain.on("asst:setPenguinId")
-  //ipcMain.on("asst:getImage")
-  //ipcMain.on("asst:ctrlerClick")
-  //ipcMain.on("asst:Log")
-// }
-
-*/
+  ipcMainHandle('main.CoreLoader:dispose', (_event) => {
+    core.dispose()
+    for (const eventName of Object.keys(asstHooks)) {
+      ipcMainRemove(eventName as IpcMainHandleEvent)
+    }
+  })
+}

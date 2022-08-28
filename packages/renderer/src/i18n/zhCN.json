@@ -1,0 +1,195 @@
+{
+  "Common": {
+    "lastUpdate": "最后更新",
+    "success": "成功",
+    "failure": "失败",
+    "confirm": "确认",
+    "cancel": "取消",
+    "N/A": "N/A",
+    "Boolean": {
+      "Yes": "是",
+      "No": "否",
+      "Right": "正确",
+      "Wrong": "错误"
+    }
+  },
+  "componentManager": {
+    "adbNotSupport": "这个系统 {0} Adb好像不支持...",
+    "osNotSupport": "这个系统 {0} Maa好像不支持...",
+    "getPackageFail": "服务器睡着惹(￣o￣) . z Z, 待会再试试吧",
+    "downloadingCore": "Maa Core下载中{0}",
+    "updatingCore": "Maa Core更新中",
+    "unpackingCore": "Maa Core解压中",
+    "downloadingUI": "Maa App下载中{0}",
+    "updatingUI": "Maa App更新中",
+    "unpackingUI": "Maa App解压中"
+  },
+  "coreLoader": {},
+  "sotrageManager": {},
+  "task": {
+    "fight": {
+      "levelChoose": "关卡选择"
+    },
+    "mall": {
+      "creditShopping": "信用购买",
+      "buy_first": "优先购买",
+      "blackList": "黑名单",
+      "others": "随缘购买"
+    },
+    "Common": {
+      "fixTask": "任务 {0} 字段发生更新, 已将配置重置为默认值, 请前往详情页面查看捏"
+    }
+  },
+  "device": {
+    "disconnecting": "{0}断开中...",
+    "disconncted": "{0}已断开连接",
+    "connecting": "{0}连接中...",
+    "connected": "{0}已连接",
+    "disconnectFromTasking": "当前设备正在进行任务, 确定断开连接?",
+    "disconnectFromOther": "确定断开连接?"
+  },
+  "deviceStatus": {
+    "available": "点击右边按钮连接设备",
+    "connected": "设备已连接",
+    "connecting": "设备正在连接中...",
+    "disconnected": "设备已断开连接",
+    "tasking": "任务进行中...",
+    "unknown": "设备状态未知"
+  },
+  "card": {
+    "copyTask": "复制当前任务",
+    "deleteTask": "删除当前任务",
+    "deleteTaskError": "不可以删除只有一份的任务哦"
+  },
+  "cardStatus": {
+    "idle": "",
+    "waiting": "等待中",
+    "processing": "进行中{0}",
+    "success": "已完成",
+    "warning": "警告",
+    "exception": "任务出错",
+    "stopped": "已取消"
+  },
+  "download": {
+    "Maa Core": "Maa 核心组件",
+    "Android Platform Tools": "Android 设备连接组件",
+    "Maa App": "Maa 应用",
+    "Maa Dependency": "Maa 核心依赖组件",
+    "Maa Resource": "Maa 资源文件",
+    "downloading": "下载中 {0}%",
+    "waiting": "等待中",
+    "downloaded": "已下载",
+    "upgrading": "更新中",
+    "startInstall": "开始安装",
+    "needInstallAll": "必须安装完所需组件才能继续",
+    "btnNotInstall": "开始安装",
+    "btnInstalling": "正在安装"
+  },
+  "SystemInformation": {
+    "System": {
+      "Title": "基本信息",
+      "Manufacturer": "制造商",
+      "Model": "型号",
+      "Version": "版本",
+      "Serial": "序列号",
+      "Uuid": "唯一表示符",
+      "Sku": "产品参数",
+      "Virtual": "虚拟机"
+    },
+    "Bios": {
+      "Title": "BIOS",
+      "Vendor": "供应商",
+      "Version": "BIOS版本",
+      "ReleaseDate": "发布日期",
+      "Serial": "序列号",
+      "Revision": "修订版本号"
+    },
+    "Baseboard": {
+      "Title": "主板",
+      "Manufacturer": "制造商",
+      "Model": "型号",
+      "Version": "版本",
+      "Serial": "序列号",
+      "MemMax": "最大支持内存",
+      "MemSlots": "内存插槽数"
+    },
+    "Chassis": {
+      "Title": "机箱",
+      "Manufacturer": "制造商",
+      "Model": "型号",
+      "Version": "版本",
+      "Serial": "序列号",
+      "Type": "机箱类型",
+      "Sku": "产品参数"
+    },
+    "Os": {
+      "Title": "操作系统",
+      "Kernel": "内核",
+      "Platform": "平台",
+      "Arch": "架构",
+      "Codename": "内核名称",
+      "ReleaseDate": "发布日期",
+      "Serial": "序列号",
+      "Uefi": "开启UEFI",
+      "Codepage": "默认代码页"
+    },
+    "Uuid": {
+      "Title": "唯一标识符",
+      "Os": "操作系统唯一标识符",
+      "Hardware": "硬件唯一标识符"
+    },
+    "Cpu": {
+      "Title": "CPU",
+      "Brand": "名称",
+      "Processors": "处理器数量",
+      "Cores": "内核数量",
+      "PhysicalCores": "物理核心数量",
+      "Speed": "频率",
+      "Flags": "支持的指令集"
+    },
+    "Graphics": {
+      "Title": "显卡",
+      "Vendor": "供应商",
+      "Bus": "总线类型",
+      "VRAM": "显存大小"
+    },
+    "Monitor": {
+      "Title": "显示器",
+      "Size": "尺寸大小",
+      "Resolution": "分辨率",
+      "RefreshRate": "刷新率",
+      "PixelDepth": "颜色深度",
+      "Connection": "连接方式",
+      "IsBuiltin": "内置显示器",
+      "Vendor": "供应商"
+    },
+    "Net": {
+      "Title": "网络",
+      "Ip4": "ipv4地址",
+      "Ip4Subnet": "ipv4子网掩码",
+      "Ip6": "ipv6地址",
+      "Ip6Subnet": "ipv6子网掩码",
+      "MAC": "物理地址",
+      "State": "启用状态",
+      "Type": "类型",
+      "DHCP": "开启DHCP",
+      "Speed": "连接速度"
+    },
+    "MemLayout": {
+      "Title": "内存",
+      "Size": "内存大小",
+      "Type": "类型（标准版本）",
+      "Ecc": "支持ECC",
+      "ClockSpeed": "时钟频率",
+      "Manufacturer": "制造商",
+      "Serial": "序列号"
+    },
+    "DiskLayout": {
+      "Title": "磁盘",
+      "Vendor": "供应商",
+      "Type": "类型",
+      "InterfaceType": "连接方式",
+      "Size": "磁盘大小"
+    }
+  }
+}

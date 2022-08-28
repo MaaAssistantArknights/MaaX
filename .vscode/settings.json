@@ -1,5 +1,15 @@
 {
   "css.validate": false,
   "less.validate": false,
-  "volar.formatting.printWidth": 75
+  "files.autoSave": "off",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "i18n-ally.localesPaths": [
+    "packages/renderer/src/i18n"
+  ],
+  "i18n-ally.keystyle": "nested",
+  "files.associations": {
+    "thread": "cpp"
+  }
 }

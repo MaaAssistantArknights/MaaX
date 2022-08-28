@@ -1,92 +1,85 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { NInput, NSpace, NIcon, NTooltip, NButton } from "naive-ui";
-import IconBinary from "@/assets/icons/binary.svg?component";
-import IconWindowUi from "@/assets/icons/window-ui.svg?component";
+import {
+  NForm,
+  NInput,
+  NSpace,
+  NSelect
+} from 'naive-ui'
 
-import useSettingStore from "@/store/settings";
+import useSettingStore, { Locale } from '@/store/settings'
+import Developer from '@/components/Setting/Developer'
+import Version from '@/components/Setting/Version'
+import Appearance from '@/components/Setting/Appearance'
 
-const settingStore = useSettingStore();
+const settingStore = useSettingStore()
 
-const versionCore = computed(() => settingStore.version.core);
-const versionUi = computed(() => settingStore.version.ui);
-
-function needUpdate(version: { current?: string, latest?: string }) {
-  if (!version.latest || !version.current) {
-    return false;
+const localeOptions = [
+  {
+    label: '简体中文',
+    value: Locale.zhCN
+  },
+  {
+    label: 'English',
+    value: Locale.enUS
   }
-  return version.current !== version.latest;
-}
+]
 
-function versionString(version: { current?: string, latest?: string }) {
-  let str = version.current || "未知";
-  if (needUpdate(version)) {
-    str += ` -> ${version.latest}`;
-  }
-  return str;
+function handleChangeLocale (locale: Locale) {
+  settingStore.changeLocale(locale)
 }
-
 </script>
 
 <template>
-  <div class="setting-form">
+  <NForm
+    class="setting-form"
+    :label-width="150"
+    :show-feedback="false"
+  >
+    <div id="general">
+      <h2 class="title">
+        通用
+      </h2>
+      <NSpace
+        justify="center"
+        align="center"
+      >
+        <div>语言</div>
+        <NSelect
+          :value="settingStore.locale"
+          :options="localeOptions"
+          :style="{ width: '200px' }"
+          @update:value="handleChangeLocale"
+        />
+      </NSpace>
+    </div>
     <div id="penguin-report">
-      <h2 class="title">企鹅物流数据上报</h2>
-      <NSpace justify="center" align="center">
+      <h2 class="title">
+        企鹅物流数据上报
+      </h2>
+      <NSpace
+        justify="center"
+        align="center"
+      >
         <span>
           企鹅数据汇报ID
-          <br />(仅数字部分)
+          <br>(仅数字部分)
         </span>
-        <n-input v-model:value="settingStore.reportId" :placeholder="''" />
+        <NInput
+          v-model:value="settingStore.reportId"
+          :placeholder="''"
+        />
       </NSpace>
     </div>
 
-    <div id="version">
-      <h2 class="title">当前版本</h2>
-      <NTooltip :disabled="!needUpdate(versionCore)">
-        <template #trigger>
-          <div>
-            <NButton
-              quaternary
-              :focusable="false"
-              :type="needUpdate(versionCore) ? 'info' : 'default'"
-            >
-              <NSpace justify="center" align="center">
-                <NIcon size="18px">
-                  <IconBinary />
-                </NIcon>
-                <span>{{ versionString(versionCore) }}</span>
-              </NSpace>
-            </NButton>
-          </div>
-        </template>
-        {{ `Core可更新至${versionCore.latest}，点击以更新` }}
-      </NTooltip>
-      <NTooltip :disabled="!needUpdate(versionUi)">
-        <template #trigger>
-          <div>
-            <NButton
-              quaternary
-              :focusable="false"
-              :type="needUpdate(versionUi) ? 'info' : 'default'"
-            >
-              <NSpace justify="center" align="center">
-                <NIcon size="18px">
-                  <IconWindowUi />
-                </NIcon>
-                <span>{{ versionString(versionUi) }}</span>
-              </NSpace>
-            </NButton>
-          </div>
-        </template>
-        {{ `UI可更新至${versionUi.latest}，点击以更新` }}
-      </NTooltip>
-    </div>
-
+    <Version />
+    <Appearance />
     <div id="develop">
-      <h2 class="title">开发者</h2>
+      <h2 class="title">
+        开发者
+      </h2>
+      <Developer />
     </div>
-  </div>
+  </NForm>
 </template>
 
 <style lang="less" scoped>
@@ -94,7 +87,15 @@ function versionString(version: { current?: string, latest?: string }) {
   text-align: center;
 }
 
-.title {
-  text-align: left;
+#appearance {
+  text-align: center;
+}
+</style>
+
+<style lang="less">
+.setting-form {
+  .title, .subtitle {
+    text-align: left;
+  }
 }
 </style>

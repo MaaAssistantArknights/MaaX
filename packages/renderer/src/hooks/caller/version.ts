@@ -1,4 +1,8 @@
+export const ui = async (): Promise<string> =>
+  await window.ipcRenderer.invoke('main.Util:getUiVersion')
+export const core = async (): Promise<string | null> =>
+  await window.ipcRenderer.invoke('main.CoreLoader:getCoreVersion')
+
 export default {
-  ui: () => window.ipcRenderer.sendSync("version:ui") as string,
-  core: () => window.ipcRenderer.sendSync("version:core") as string | null,
-};
+  ui, core
+}

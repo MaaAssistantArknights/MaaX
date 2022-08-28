@@ -1,8 +1,8 @@
-import useThemeStore from "@/store/theme";
+import useThemeStore from '@/store/theme'
 
-export default function useThemeEvents() {
-  const themeStore = useThemeStore();
-  window.ipcRenderer.on("theme:update", (_, updatedTheme) => {
-    themeStore.updateTheme(updatedTheme);
-  });
+export default function useThemeEvents (): void {
+  const themeStore = useThemeStore()
+  window.ipcRenderer.on('renderer.AppearanceManager:systemThemeUpdated', (_, updatedTheme) => {
+    themeStore.updateSystemTheme(updatedTheme)
+  })
 }

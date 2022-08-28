@@ -1,16 +1,19 @@
-import { ipcMain } from "electron";
-import storage from "../storage";
+import Storage from '@main/storageManager'
+import { ipcMainHandle } from '@main/utils/ipc-main'
 
-export default function useStorageHooks() {
-  ipcMain.on("storage:get", async (event, key: string) => {
-    event.returnValue = storage.get(key);
-  });
+const storage = new Storage()
 
-  ipcMain.on("storage:set", async (event, key: string, val: any) => {
-    storage.set(key, val);
-  });
+export default function useStorageHooks (): void {
+  ipcMainHandle('main.StorageManager:get', async (event, key: string) => {
+    return storage.get(key)
+  })
 
-  ipcMain.on("storage:has", async (event, key: string) => {
-    event.returnValue = storage.has(key);
-  });
+  ipcMainHandle('main.StorageManager:set', async (event, key: string, val: any) => {
+    storage.set(key, val)
+    return true
+  })
+
+  ipcMainHandle('main.StorageManager:has', async (event, key: string) => {
+    return storage.has(key)
+  })
 }

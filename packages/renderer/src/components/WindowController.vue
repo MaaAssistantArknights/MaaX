@@ -1,75 +1,90 @@
 <script setup lang="ts">
-import { ref, Ref } from "vue";
-import { NButton, NSpace, NIcon } from "naive-ui";
+import { ref, onMounted } from 'vue'
+import { NButton, NSpace, NIcon } from 'naive-ui'
 
-import IconWindowMinimize from "@/assets/icons/window-minimize.svg?component";
-import IconClose from "@/assets/icons/close.svg?component";
-import IconScaleContract from "@/assets/icons/scale-contract.svg?component";
-import IconScaleExtend from "@/assets/icons/scale-extend.svg?component";
+import IconWindowMinimize from '@/assets/icons/window-minimize.svg?component'
+import IconClose from '@/assets/icons/close.svg?component'
+import IconScaleContract from '@/assets/icons/scale-contract.svg?component'
+import IconScaleExtend from '@/assets/icons/scale-extend.svg?component'
 
-const isMaximized: Ref<boolean> = ref(window.ipcRenderer.sendSync("window:is-maximized"));
+const isMaximized = ref(false)
+
+onMounted(() => {
+  window.ipcRenderer.invoke('main.WindowManager:isMaximized').then(result => {
+    isMaximized.value = result
+  })
+})
 
 const onClose = () => {
-  window.ipcRenderer.send("window:close");
-};
+  window.ipcRenderer.send('main.WindowManager:closeWindow')
+}
 
-const onToggleMaximized = () => {
-  const result = window.ipcRenderer.sendSync("window:toggle-maximized");
+const onToggleMaximized = async () => {
+  const result = await window.ipcRenderer.invoke('main.WindowManager:toggleMaximized')
   if (result instanceof Error) {
-    console.log();
+    console.log()
   }
-};
+}
 
 const onMinimize = () => {
-  window.ipcRenderer.send("window:minimize");
-};
+  window.ipcRenderer.invoke('main.WindowManager:minimize')
+}
 
-window.ipcRenderer.on("window:update-maximized", (_, maximized) => {
-  isMaximized.value = maximized;
-});
+window.ipcRenderer.on('renderer.WindowManager:updateMaximized', (_, maximized) => {
+  isMaximized.value = maximized
+})
 </script>
 
 <template>
   <div class="window-controller">
-    <div class="placeholder-bar"></div>
-    <div class="drag-bar"></div>
+    <div class="placeholder-bar" />
+    <div class="drag-bar" />
     <NSpace class="traffic-lights">
       <NButton
-        @click="onToggleMaximized"
+        circle
+        type="warning"
+        size="tiny"
+        class="traffic-light"
+        @click="onMinimize"
+      >
+        <template #icon>
+          <NIcon
+            class="traffic-light-icon"
+            color="#000"
+          >
+            <IconWindowMinimize />
+          </NIcon>
+        </template>
+      </NButton>
+      <NButton
         circle
         type="success"
         size="tiny"
         class="traffic-light"
+        @click="onToggleMaximized"
       >
         <template #icon>
-          <NIcon class="traffic-light-icon" color="#000">
+          <NIcon
+            class="traffic-light-icon"
+            color="#000"
+          >
             <IconScaleExtend v-if="!isMaximized" />
             <IconScaleContract v-if="isMaximized" />
           </NIcon>
         </template>
       </NButton>
       <NButton
-        @click="onMinimize"
-        circle
-        type="warning"
-        size="tiny"
-        class="traffic-light"
-      >
-        <template #icon>
-          <NIcon class="traffic-light-icon" color="#000">
-            <IconWindowMinimize />
-          </NIcon>
-        </template>
-      </NButton>
-      <NButton
-        @click="onClose"
         circle
         type="error"
         size="tiny"
         class="traffic-light"
+        @click="onClose"
       >
         <template #icon>
-          <NIcon class="traffic-light-icon" color="#000">
+          <NIcon
+            class="traffic-light-icon"
+            color="#000"
+          >
             <IconClose />
           </NIcon>
         </template>
@@ -82,7 +97,7 @@ window.ipcRenderer.on("window:update-maximized", (_, maximized) => {
 .window-controller {
   display: flex;
   position: fixed;
-  z-index: 50;
+  z-index: 10;
   top: 0;
   justify-content: end;
   align-items: center;
@@ -97,8 +112,9 @@ window.ipcRenderer.on("window:update-maximized", (_, maximized) => {
 }
 
 .drag-bar {
-  height: 100%;
+  height: 50%;
   flex: 1;
+  align-self: flex-start;
   -webkit-app-region: drag;
 }
 
