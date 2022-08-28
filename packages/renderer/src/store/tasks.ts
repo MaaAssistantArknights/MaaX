@@ -89,7 +89,14 @@ const defaultTaskConf: Record<string, Task> = {
       set_time: true,
       expedite: false,
       expedite_times: 0,
-      skip_robot: true
+      skip_robot: true,
+      recruitment_time: {
+        3: 540,
+        4: 540,
+        5: 540
+      },
+      report_to_penguin: false,
+      report_to_yituliu: false
     },
     results: {}
   },
