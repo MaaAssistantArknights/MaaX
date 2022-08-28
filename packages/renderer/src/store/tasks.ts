@@ -67,9 +67,9 @@ const defaultTaskConf: Record<string, Task> = {
       stage: '', // 关卡名
       medicine: 0,
       stone: 0,
-      times: 0,
+      times: 999,
       drops: {}, // "30011": 1, 只保留一个元素
-      report_to_penguin: true,
+      report_to_penguin: false,
       server: 'CN', // 影响掉落识别与上传
       client_type: 'Official' // 断线重连服务器
     },
@@ -82,10 +82,10 @@ const defaultTaskConf: Record<string, Task> = {
     status: 'idle',
     enable: true,
     configurations: {
-      refresh: false, // 自动刷新三星词条
+      refresh: true, // 自动刷新三星词条
       select: [3, 4, 5, 6],
       confirm: [3, 4],
-      times: 0,
+      times: 4,
       set_time: true,
       expedite: false,
       expedite_times: 0,
