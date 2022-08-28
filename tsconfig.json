@@ -15,6 +15,7 @@
     },
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
+    "useUnknownInCatchVariables": false,
     "types": ["naive-ui/volar"]
   },
   "include": ["packages/@types/**/*.d.ts", "packages/common/**/*.ts"]
