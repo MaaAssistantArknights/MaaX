@@ -8,8 +8,6 @@ import { $ } from '@main/utils/shell'
 import logger from '@main/utils/logger'
 import { defaultAdbPath, getDeviceUuid } from '@main/deviceDetector/utils'
 
-console.log('import deviceDetector')
-
 const inUsePorts: string[] = [] // 本次识别已被使用的端口，将会在此暂存。
 
 const emulatorList = [

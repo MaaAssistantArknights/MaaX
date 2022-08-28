@@ -43,6 +43,11 @@ interface Task {
    * @props core传回来的task_id
    */
   task_id: number
+
+  /**
+   * @props ui 的定时器, 可以用来清除定时器
+   */
+  schedule_id?: NodeJS.Timeout | null
   /**
    * @props 任务title（可能为i18n字符串，i18n example: `t("task.mall")`）
    */

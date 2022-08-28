@@ -23,7 +23,7 @@ type IpcMainHandleEvent =
   | 'main.DeviceDetector:getAdbPath'
   | 'main.DeviceDetector:getAdbDevices'
   | 'main.DeviceDetector:getEmulators'
-  | 'main.deviceDetector:getDeviceUuid'
+  | 'main.DeviceDetector:getDeviceUuid'
   | 'main.DeviceDetector:startEmulator'
   | 'main.Util:getOsArch'
   | 'main.Util:getOsPlatform'

@@ -15,7 +15,7 @@ import { show } from '@/utils/message'
 import router from '@/router'
 import Result from '@/components/Task/results/Index.vue'
 import logger from '@/hooks/caller/logger'
-import { runTasks } from '@/utils/task_runner'
+import { runTasks, runStartEmulator } from '@/utils/task_runner'
 
 const taskStore = useTaskStore()
 const deviceStore = useDeviceStore()
@@ -44,46 +44,32 @@ const deviceStatus = computed(() => {
   return device.status
 })
 
-async function handleStartUnconnected (task: Task['configurations']) {
-  console.log('before start emu')
-  console.log(task)
-  window.ipcRenderer.send('10001', uuid.value, task.taskId) // 启动模拟器 子任务开始
-  console.log('after start')
-
+async function handleStartUnconnected (task: Task) {
   deviceStore.updateDeviceStatus(uuid.value, 'tasking')
-  window.ipcRenderer.invoke(
-    'main.DeviceDetector:startEmulator',
-    task.commandLine
-  )
-  logger.debug('after start emulators')
-  setTimeout(async () => {
-    logger.debug('before getEmulators')
+  await runStartEmulator(uuid.value, task)
+  task.schedule_id = setTimeout(async () => {
     const devices: any[] = await window.ipcRenderer.invoke(
       'main.DeviceDetector:getEmulators'
     ) // 等待时间结束后进行一次设备搜索，但不合并结果
     const device = devices.find((device) => device.uuid === uuid.value) // 检查指定uuid的设备是否存在
-    logger.debug('after getEmulators')
     if (device) {
       // 设备活了
-      logger.debug('find device')
-      logger.debug('before create')
       logger.debug(device)
-      await window.ipcRenderer.invoke('main.CoreLoader:createExAndConnect', {
+      const status = await window.ipcRenderer.invoke('main.CoreLoader:createExAndConnect', {
         // 创建连接
         address: device.address,
         uuid: device.uuid,
         adb_path: device.adb_path,
         config: device.config
       })
-      logger.debug('after create')
-      window.ipcRenderer.send('10002', uuid.value, 'emulator') // 启动模拟器 子任务完成
-      logger.debug('after start emulator')
-      show('启动模拟器子任务结束', { type: 'success' })
-      await handleSubStart()
+      if (status) {
+        taskStore.updateTaskStatus(uuid.value, task.task_id, 'success', 0)
+        logger.silly('自动启动模拟器成功')
+        await handleSubStart()
+      }
     } else {
       // 设备没活
-      logger.debug('device not found')
-      show('启动设备失败, 请前往github上提交issue', {
+      show('启动设备失败', {
         type: 'error',
         duration: 0
       })
@@ -147,16 +133,16 @@ async function handleStart () {
     show('请先连接设备', { type: 'warning', duration: 2000 })
   } else {
     // 设备状态为 unknown 或 disconnect , 检查子任务'启动模拟器'是否开启，如果开启则先启动模拟器再开始任务
-    const task = taskStore.getTask(uuid.value as string, task => task.name === 'emulator') // 查找是否有启动模拟器任务
-    if (task && task.enable) {
+    // 查找是否有启动模拟器任务
+    const task = taskStore.getTask(uuid.value as string, task => task.name === 'emulator' && task.enable)
+    if (task) {
       // 有启动模拟器任务
       if (!task.configurations.commandLine) {
         // 设备没有获取到用于启动模拟器的命令行参数
-        // FIXME: 需要展开任务详情才能获取到CommandLine
-        show('该设备启动参数不可用', { type: 'warning', duration: 2000 })
+        show('该设备启动参数不可用, 请尝试先连接设备', { type: 'warning', duration: 2000 })
         return
       }
-      await handleStartUnconnected(task.configurations)
+      await handleStartUnconnected(task)
     } else {
       show("请先 '启动并搜索模拟器' 或 '勾选启动模拟器子任务'", {
         type: 'warning',

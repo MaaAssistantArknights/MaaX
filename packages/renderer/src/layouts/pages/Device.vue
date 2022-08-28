@@ -42,7 +42,7 @@ async function handleCustomConnect () {
       show('设备已经存在了哦', { type: 'warning', duration: 5000 })
       return
     }
-    const uuid = await window.ipcRenderer.invoke('main.deviceDetector:getDeviceUuid', connectionString.value)
+    const uuid = await window.ipcRenderer.invoke('main.DeviceDetector:getDeviceUuid', connectionString.value)
     if (!(uuid as string | false)) {
       loading.destroy()
       show('连接失败，检查一下地址吧', { type: 'error', duration: 5000 })

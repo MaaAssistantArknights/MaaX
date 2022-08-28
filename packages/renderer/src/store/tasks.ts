@@ -268,6 +268,10 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
           if (task.status !== 'idle') {
             task.status = 'stopped'
           }
+          if (task.schedule_id) {
+            clearTimeout(task.schedule_id)
+            task.schedule_id = null
+          }
         })
       }
     },

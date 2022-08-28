@@ -85,14 +85,20 @@ async function handleDeviceConnect () {
     duration: 0
   })
 
-  console.log(
-    await window.ipcRenderer.invoke('main.CoreLoader:createExAndConnect', {
-      address: device.value?.connectionString,
-      uuid: device.value?.uuid,
-      adb_path: device.value?.adbPath,
-      config: device.value?.config
+  const ret = await window.ipcRenderer.invoke('main.CoreLoader:createExAndConnect', {
+    address: device.value?.connectionString,
+    uuid: device.value?.uuid,
+    adb_path: device.value?.adbPath,
+    config: device.value?.config
+  })
+
+  if (!ret) {
+    show(`${deviceDisplayName.value}连接失败, 尝试重启软件或者在设置界面重新安装`, {
+      type: 'error',
+      duration: 3000
     })
-  )
+    deviceStore.updateDeviceStatus(device.value?.uuid as string, 'available')
+  }
 
   // 初始化掉落物存储
   if (!window.sessionStorage.getItem(device.value?.uuid as string)) {

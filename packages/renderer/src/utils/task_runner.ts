@@ -2,6 +2,16 @@ import useTaskStore from '@/store/tasks'
 import { TaskChainMap } from '@common/enum/callback'
 import { convertToCoreTaskConfiguration } from './task_helper'
 
+let selfIncreasedId = 1000000
+const genUiTaskId = (): number => { selfIncreasedId += 1; return selfIncreasedId }
+
+export async function runStartEmulator (uuid: string, task: Task): Promise<void> {
+  const taskStore = useTaskStore()
+  task.task_id = genUiTaskId()
+  await window.ipcRenderer.invoke('main.DeviceDetector:startEmulator', task.configurations.commandLine)
+  taskStore.updateTaskStatus(uuid, task.task_id, 'processing', 0)
+}
+
 export async function runTasks (uuid: string): Promise<void> {
   const taskStore = useTaskStore()
   const tasks = taskStore.deviceTasks[uuid]

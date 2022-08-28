@@ -29,6 +29,7 @@ export function convertToCoreTaskConfiguration (task: Task): any {
       return {
         enable: task.enable,
         penguin_id: settingStore.reportId,
+        yituliu_id: settingStore.reportId,
         ..._.cloneDeep(task.configurations)
       }
     }
