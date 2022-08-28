@@ -54,8 +54,6 @@
 * 调试renderer
   1. 按照上述步骤启动即可，会帮你打开Chrome Devtools，且带有最新的Vue Dev插件
 
-* 安装`MAA Core`  
-  _目前`Core`自动下载尚未完成, 您需要手动下载`MAA Core`与`ADB`_  
-  1. 在[MAA Core Action](https://github.com/MaaAssistantArknights/MaaAssistantArknights/actions/workflows/dev-build.yml)中下载`artifacts`,
-    将其解压至最简, 然后复制到`%APPDATA%\meo-assistant-arknights\core\` 中
-  2. 在[Android Studio](https://developer.android.com/studio/releases/platform-tools)中下载`ADB`, 将二进制文件放至项目目录`dist\platform-tools\`下
+### 开发者群
+
+QQ 群：655031753
