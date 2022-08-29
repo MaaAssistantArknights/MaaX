@@ -8,8 +8,9 @@ const genUiTaskId = (): number => { selfIncreasedId += 1; return selfIncreasedId
 export async function runStartEmulator (uuid: string, task: Task): Promise<void> {
   const taskStore = useTaskStore()
   task.task_id = genUiTaskId()
-  await window.ipcRenderer.invoke('main.DeviceDetector:startEmulator', task.configurations.commandLine)
+  // 不await
   taskStore.updateTaskStatus(uuid, task.task_id, 'processing', 0)
+  window.ipcRenderer.invoke('main.DeviceDetector:startEmulator', task.configurations.commandLine)
 }
 
 export async function runTasks (uuid: string): Promise<void> {

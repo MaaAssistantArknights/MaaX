@@ -59,7 +59,7 @@ async function handleStartUnconnected (task: Task) {
         // 创建连接
         address: device.address,
         uuid: device.uuid,
-        adb_path: device.adb_path,
+        adb_path: device.adbPath,
         config: device.config
       })
       if (status) {

@@ -1,6 +1,7 @@
 import { ipcMainHandle, ipcMainRemove } from '@main/utils/ipc-main'
 import { defaultAdbPath, getDeviceUuid } from './utils'
-import { $ } from '@main/utils/shell'
+import { $$ } from '@main/utils/shell'
+import yargs from 'yargs'
 
 export function useEmulatorHooks (adapter: Promise<EmulatorAdapter>): void {
   ipcMainHandle('main.DeviceDetector:getEmulators',
@@ -22,9 +23,10 @@ export function useEmulatorHooks (adapter: Promise<EmulatorAdapter>): void {
     }
   )
   ipcMainHandle('main.DeviceDetector:startEmulator',
-    // FIXME: 直接使用 $ 可能出问题, 但是 $$ 需要拆分启动参数, 再说
     async (event, path: string): Promise<void> => {
-      await $`${path}`
+      const arg = yargs(path)
+      // eslint-disable-next-line
+      await $$(arg.argv._[0], Object.entries(arg.argv))
     })
 }
 
