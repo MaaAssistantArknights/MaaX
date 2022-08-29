@@ -11,7 +11,7 @@ class ComponentManager implements Module {
   constructor () {
     ipcMainHandle('main.ComponentManager:getStatus',
       async (event, componentName: ComponentType) => {
-        this.components_[componentName] = this.update[componentName]()
+        this.components_[componentName] = await this.update[componentName]()
         return this.components_[componentName]?.status
       })
 
@@ -20,14 +20,8 @@ class ComponentManager implements Module {
         // 安装文件时，需要dispose core，否则无法写入
         const coreLoader = new CoreLoader()
         coreLoader.dispose()
-        this.components_[componentName] = this.update[componentName]()
+        this.components_[componentName] = await this.update[componentName]()
         this.components_[componentName]?.installer?.install()
-      })
-
-    ipcMainHandle('main.ComponentManager:checkUpdate',
-      async (event, componentName: ComponentType) => {
-        this.components_[componentName] = this.update[componentName]()
-        return this.components_[componentName]?.installer?.checkUpdate()
       })
   }
 
@@ -39,8 +33,8 @@ class ComponentManager implements Module {
     return '1.0.0'
   }
 
-  private readonly update: Record<ComponentType, () => Component> = {
-    'Maa App': () => ({ type: 'Maa App', status: 'installed' }),
+  private readonly update: Record<ComponentType, () => Promise<Component>> = {
+    'Maa App': async () => ({ type: 'Maa App', status: 'installed' }),
     'Maa Core': getComponentCore,
     'Android Platform Tools': getComponentAdb,
     'Maa Dependency': getComponentDependency,

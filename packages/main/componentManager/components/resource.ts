@@ -4,7 +4,7 @@ import path from 'path'
 import { getAppBaseDir } from '@main/utils/path'
 import ResourceInstaller from '../installers/resource'
 
-export const getComponentResource = (): Component => {
+export const getComponentResource = async (): Promise<Component> => {
   const componentResource: Component = {
     type: 'Maa Resource',
     status: 'not-installed',
@@ -15,6 +15,10 @@ export const getComponentResource = (): Component => {
 
   if (fs.existsSync(versionFile)) {
     componentResource.status = 'installed'
+    const update = await componentResource.installer.CheckUpdate()
+    if (update) {
+      componentResource.status = 'upgradable'
+    }
   }
 
   return componentResource

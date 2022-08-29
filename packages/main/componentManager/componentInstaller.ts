@@ -83,12 +83,12 @@ abstract class ComponentInstaller {
     if (this.releaseTemp && Date.now() - this.releaseTemp.updated < 5 * 60 * 1000) {
       return this.releaseTemp.data
     }
-    const url = 'https://api.github.com/repos/MaaAssistantArknights/MaaAssistantArknights/releases/latest'
+    const url = 'https://api.github.com/repos/MaaAssistantArknights/MaaAssistantArknights/releases'
     const releaseResponse = await axios.get(url, {
       adapter: require('axios/lib/adapters/http.js')
     })
     this.releaseTemp = { data: releaseResponse.data, updated: Date.now() }
-    return releaseResponse.data
+    return releaseResponse.data[0]
   }
 
   protected releaseTemp: {data: any, updated: number} | null = null
