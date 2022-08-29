@@ -4,7 +4,7 @@ import CoreLoader from '@main/coreLoader'
 import CoreInstaller from '@main/componentManager/installers/core'
 import path from 'path'
 
-export const getComponentCore = (): Component => {
+export const getComponentCore = async (): Promise<Component> => {
   const coreLoader = new CoreLoader()
 
   const componentCore: Component = {
@@ -22,6 +22,10 @@ export const getComponentCore = (): Component => {
 
   if (coreVersion) {
     componentCore.status = 'installed'
+    const update = await componentCore.installer.CheckUpdate()
+    if (update) {
+      componentCore.status = 'upgradable'
+    }
   }
   return componentCore
 }
