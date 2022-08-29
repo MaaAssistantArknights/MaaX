@@ -87,8 +87,8 @@ abstract class ComponentInstaller {
     const releaseResponse = await axios.get(url, {
       adapter: require('axios/lib/adapters/http.js')
     })
-    this.releaseTemp = { data: releaseResponse.data, updated: Date.now() }
-    return releaseResponse.data[0]
+    this.releaseTemp = { data: releaseResponse.data[0], updated: Date.now() }
+    return this.releaseTemp.data
   }
 
   protected releaseTemp: {data: any, updated: number} | null = null

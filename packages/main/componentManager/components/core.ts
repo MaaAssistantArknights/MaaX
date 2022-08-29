@@ -22,7 +22,7 @@ export const getComponentCore = async (): Promise<Component> => {
 
   if (coreVersion) {
     componentCore.status = 'installed'
-    const update = await componentCore.installer.CheckUpdate()
+    const update = await componentCore.installer.checkUpdate()
     if (update) {
       componentCore.status = 'upgradable'
     }

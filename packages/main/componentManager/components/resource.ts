@@ -15,7 +15,7 @@ export const getComponentResource = async (): Promise<Component> => {
 
   if (fs.existsSync(versionFile)) {
     componentResource.status = 'installed'
-    const update = await componentResource.installer.CheckUpdate()
+    const update = await componentResource.installer.checkUpdate()
     if (update) {
       componentResource.status = 'upgradable'
     }
