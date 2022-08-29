@@ -42,25 +42,21 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
       - name: Install dependencies
         run: yarn install
 
-      - name: Run tests
-        run: yarn run test
-        continue-on-error: true
-
-      # - name: Build dependencies
-      #   run: npm run build
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # - uses: actions/upload-artifact@v2
-      #   with:
-      #     name: upload-artifact
-      #     path: |
-      #       release/electron-vue-vite*.exe
-      #       release/electron-vue-vite*.AppImage
-      #       release/electron-vue-vite*.snap
+      - name: Save Yarn Cache
+        uses: actions/cache@v3
+        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
 
       # https://github.com/marketplace/actions/electron-builder-action
       - name: Compile & Release Electron app
