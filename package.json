@@ -27,6 +27,7 @@
     "@types/unzipper": "^0.10.5",
     "@typescript-eslint/eslint-plugin": "^5.12.1",
     "@typescript-eslint/parser": "^5.12.1",
+    "@vicons/ionicons5": "^0.12.0",
     "@vitejs/plugin-vue": "^2.2.2",
     "@vue/eslint-config-typescript": "^10.0.0",
     "clipboard": "^2.0.11",
