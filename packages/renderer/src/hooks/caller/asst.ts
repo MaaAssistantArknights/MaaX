@@ -1,7 +1,7 @@
 import useSettingStore from '@/store/settings'
 
 export default {
-  load: async (showTip = true) => {
+  load: async function (showTip = true) {
     let loaded = true
     const components: Partial<Record<ComponentType, ComponentStatus>> = {
       'Maa Core': await window.ipcRenderer.invoke('main.ComponentManager:getStatus', 'Maa Core'),

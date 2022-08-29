@@ -190,6 +190,7 @@ class CoreLoader {
       dep.close()
     }
     this.DLib.close()
+    CoreLoader.loadStatus = false
   }
 
   /**
