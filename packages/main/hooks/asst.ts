@@ -93,9 +93,9 @@ export default function useAsstHooks (): void {
   })
 
   ipcMainHandle('main.CoreLoader:dispose', (_event) => {
-    core.dispose()
     for (const eventName of Object.keys(asstHooks)) {
       ipcMainRemove(eventName as IpcMainHandleEvent)
     }
+    core.dispose()
   })
 }

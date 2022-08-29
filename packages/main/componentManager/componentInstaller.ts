@@ -4,6 +4,8 @@ import fs from 'fs'
 import path from 'path'
 import logger from '@main/utils/logger'
 import DownloadManager from '@main/downloadManager'
+import detectSystemProxy from '@main/utils/proxy'
+import WindowManager from '@main/windowManager'
 
 interface DownloadHandle {
   handleDownloadUpdate: (task: DownloadTask) => void
@@ -83,9 +85,21 @@ abstract class ComponentInstaller {
     if (this.releaseTemp && Date.now() - this.releaseTemp.updated < 5 * 60 * 1000) {
       return this.releaseTemp.data
     }
+    const proxyUrl = await detectSystemProxy(new WindowManager().getWindow())
+    const { protocol, hostname, port, username, password } = new URL(proxyUrl)
+
     const url = 'https://api.github.com/repos/MaaAssistantArknights/MaaAssistantArknights/releases'
     const releaseResponse = await axios.get(url, {
-      adapter: require('axios/lib/adapters/http.js')
+      adapter: require('axios/lib/adapters/http.js'),
+      proxy: {
+        host: hostname,
+        port: Number(port),
+        protocol,
+        auth: {
+          username,
+          password
+        }
+      }
     })
     this.releaseTemp = { data: releaseResponse.data[0], updated: Date.now() }
     return this.releaseTemp.data
