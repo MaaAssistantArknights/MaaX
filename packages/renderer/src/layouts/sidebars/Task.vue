@@ -1,18 +1,15 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import IconSettings from '@/assets/icons/settings.svg?component'
 import IconDevices from '@/assets/icons/devices.svg?component'
 import { NIcon, NSpace, NButton, NTooltip } from 'naive-ui'
 import DeviceCard from '@/components/Device/DeviceCard.vue'
+import router from '@/router'
 
 import useDeviceStore from '@/store/devices'
 
-const connectedStatus: Set<DeviceStatus> = new Set(['connected', 'tasking'])
 const deviceStore = useDeviceStore()
-const devices = computed(() => deviceStore.devices)
-const connectedDevices = computed(() =>
-  devices.value.filter((device) => connectedStatus.has(device.status))
-)
+const currentUuid = router.currentRoute.value.params.uuid as string
+const otherDevices = deviceStore.devices.filter(device => device.uuid !== currentUuid)
 </script>
 
 <template>
@@ -46,9 +43,14 @@ const connectedDevices = computed(() =>
         查看所有设备
       </NTooltip>
     </NSpace>
-    <div class="connected-devices">
+    <div class="current-device">
       <DeviceCard
-        v-for="device in connectedDevices"
+        :uuid="currentUuid"
+      />
+    </div>
+    <div class="other-devices">
+      <DeviceCard
+        v-for="device in otherDevices"
         :key="device.uuid"
         :uuid="device.uuid"
       />
