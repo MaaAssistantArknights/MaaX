@@ -42,7 +42,7 @@
   },
   "device": {
     "disconnecting": "{0}断开中...",
-    "disconncted": "{0}已断开连接",
+    "disconnected": "{0}已断开连接",
     "connecting": "{0}连接中...",
     "connected": "{0}已连接",
     "disconnectFromTasking": "当前设备正在进行任务, 确定断开连接?",

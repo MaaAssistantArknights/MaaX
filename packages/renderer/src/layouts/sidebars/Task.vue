@@ -27,7 +27,7 @@ const otherDevices = deviceStore.devices.filter(device => device.uuid !== curren
       justify="space-between"
       align="center"
     >
-      <h2>当前连接的设备</h2>
+      <h2>当前设备</h2>
       <NTooltip>
         <template #trigger>
           <NButton
@@ -48,6 +48,7 @@ const otherDevices = deviceStore.devices.filter(device => device.uuid !== curren
         :uuid="currentUuid"
       />
     </div>
+    <h2>其他设备</h2>
     <div class="other-devices">
       <DeviceCard
         v-for="device in otherDevices"

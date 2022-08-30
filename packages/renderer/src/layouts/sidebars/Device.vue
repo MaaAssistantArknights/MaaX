@@ -113,7 +113,7 @@ setInterval(() => {
         <IconSettings />
       </NIcon>
     </NButton>
-    <h2>当前连接的设备</h2>
+    <h2>已连接的设备</h2>
     <div class="connected-devices">
       <DeviceCard
         v-for="device in connectedDevices"
@@ -125,7 +125,7 @@ setInterval(() => {
       :justify="'space-between'"
       :align="'center'"
     >
-      <h2>可用的设备列表</h2>
+      <h2>其他设备</h2>
       <NTooltip>
         <template #trigger>
           <NButton
