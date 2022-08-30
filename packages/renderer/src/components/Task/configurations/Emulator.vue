@@ -83,7 +83,7 @@ if (commandLine) {
         :show-feedback="false"
       >
         <NInput
-          :disabled="true"
+          :disabled="false"
           :value="configurations.commandLine"
         />
       </NFormItem>
