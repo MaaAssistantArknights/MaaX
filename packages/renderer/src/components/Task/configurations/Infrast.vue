@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import { onMounted, ref, Ref, inject } from 'vue'
+import { inject, computed } from 'vue'
 import { NCheckbox, NFormItem, NSelect, NSlider, NSpace } from 'naive-ui'
+import Draggable from 'vuedraggable'
 import _ from 'lodash'
-import Sortable from 'sortablejs'
 
-const facilitiesRef: Ref<HTMLElement | null> = ref(null)
-
-type facilityType =
+type FacilityType =
   | 'Mfg'
   | 'Trade'
   | 'Control'
@@ -14,16 +12,6 @@ type facilityType =
   | 'Reception'
   | 'Office'
   | 'Dorm';
-
-const facilityOptions = {
-  Mfg: '制造站',
-  Trade: '贸易站',
-  Power: '发电站',
-  Control: '控制中枢',
-  Reception: '会客室',
-  Office: '办公室',
-  Dorm: '宿舍'
-}
 
 type droneUsageType =
   | '_NotUse'
@@ -36,7 +24,7 @@ type droneUsageType =
 
 interface InfrastConfiguration {
   mode: number, // 保留模式, 暂无意义
-  facility: facilityType[], // 换班基建
+  facility: FacilityType[], // 换班基建
   drones: droneUsageType, // 无人机用途
   threshold: number, // 换班阈值
   replenish: boolean, // 自动源石补货
@@ -76,6 +64,16 @@ const droneUsageOptions: {
   }
 ]
 
+const allFacilities: FacilityType[] = [
+  'Mfg',
+  'Trade',
+  'Power',
+  'Control',
+  'Reception',
+  'Office',
+  'Dorm'
+]
+
 const props = defineProps<{
   configurations: InfrastConfiguration;
   taskIndex: number
@@ -83,48 +81,35 @@ const props = defineProps<{
 
 const updateTaskConfigurations = inject('update:configuration') as
   (key: string, value: any, index: number) => void
+const configurationDisabled = inject('configurationDisabled') as {re: boolean, nre: boolean}
 
+const facilities = computed(() => {
+  const diff = _.difference(allFacilities, props.configurations.facility)
+  return [...props.configurations.facility, ...diff].map(
+    facility => ({
+      name: facility,
+      enabled: props.configurations.facility.includes(facility)
+    })
+  )
+})
 function handleUpdateConfiguration (key: string, value: any) {
   updateTaskConfigurations(key, value, props.taskIndex)
 }
 
-function onFacilityEnableUpdate (name: facilityType, enabled: boolean) {
-  const facilitySet = new Set(props.configurations.facility)
-  if (enabled) {
-    facilitySet.add(name)
-  } else {
-    facilitySet.delete(name)
+function onFacilityEnableUpdate (name: string, enabled: boolean) {
+  const facs = _.cloneDeep(facilities.value)
+  const fac = facs.find(facility => facility.name === name)
+  if (fac) {
+    fac.enabled = enabled
   }
-  handleUpdateConfiguration('facility', Array.from(facilitySet))
+  const updated = facs.filter(facility => facility.enabled).map(facility => facility.name)
+  handleUpdateConfiguration('facility', updated)
 }
 
-let sortable: Sortable | undefined
-
-onMounted(() => {
-  if (facilitiesRef.value && !sortable) {
-    sortable = new Sortable(facilitiesRef.value, {
-      swapThreshold: 1,
-      animation: 150,
-      store: {
-        get () {
-          return props.configurations.facility.map(
-            (facility) => facility
-          )
-        },
-        set (sortable) {
-          const sort = sortable.toArray()
-          _.set(
-            props.configurations,
-            'facilities',
-            _.sortBy(props.configurations.facility, (facility) =>
-              sort.findIndex((v) => facility === v)
-            )
-          )
-        }
-      }
-    })
-  }
-})
+function onFacilitySortUpdate () {
+  const updated = facilities.value.filter(facility => facility.enabled).map(facility => facility.name)
+  handleUpdateConfiguration('facility', updated)
+}
 </script>
 
 <template>
@@ -136,22 +121,22 @@ onMounted(() => {
       label-placement="left"
       :show-feedback="false"
     >
-      <div
-        ref="facilitiesRef"
+      <Draggable
+        :list="facilities"
         class="facilities"
+        :disabled="configurationDisabled.nre"
+        :animation="200"
+        item-key="name"
+        @change="onFacilitySortUpdate"
       >
-        <NCheckbox
-          v-for="[id, name] of Object.entries(facilityOptions)"
-          :key="id"
-          :data-id="id"
-          :value="id"
-          :label="name"
-          :checked="
-            configurations.facility.includes(id as facilityType)
-          "
-          @update:checked="(enabled) => onFacilityEnableUpdate(id as facilityType, enabled)"
-        />
-      </div>
+        <template #item="{element}">
+          <NCheckbox
+            :checked="element.enabled"
+            :label="$t(`task.infrast.${element.name}`)"
+            @update:checked="checked => onFacilityEnableUpdate(element.name, checked)"
+          />
+        </template>
+      </Draggable>
     </NFormItem>
     <NSpace
       class="infra-left"
@@ -167,6 +152,7 @@ onMounted(() => {
         :label-style="{ justifyContent: 'center' }"
       >
         <NSelect
+          :disabled="configurationDisabled.re"
           :value="props.configurations.drones"
           :options="droneUsageOptions"
           @update:value="
@@ -184,6 +170,7 @@ onMounted(() => {
         :show-feedback="false"
       >
         <NSlider
+          :disabled="configurationDisabled.re"
           :value="props.configurations.threshold"
           :max="1.0"
           :min="0"
@@ -200,6 +187,7 @@ onMounted(() => {
         :show-feedback="false"
       >
         <NCheckbox
+          :disabled="configurationDisabled.re"
           :checked="props.configurations.replenish"
           @update:checked="
             (checked) =>

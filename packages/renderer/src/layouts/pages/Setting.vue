@@ -10,6 +10,7 @@ import useSettingStore, { Locale } from '@/store/settings'
 import Developer from '@/components/Setting/Developer'
 import Version from '@/components/Setting/Version'
 import Appearance from '@/components/Setting/Appearance'
+import About from '@/components/Setting/About'
 
 const settingStore = useSettingStore()
 
@@ -73,6 +74,7 @@ function handleChangeLocale (locale: Locale) {
 
     <Version />
     <Appearance />
+    <About />
     <div id="develop">
       <h2 class="title">
         开发者

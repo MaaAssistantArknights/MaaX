@@ -38,7 +38,7 @@ export async function initialStore (): Promise<void> {
           task.startTime = undefined
           task.endTime = undefined
           task.status = 'idle'
-          // task.results = {}
+          task.results = {}
           task.showResult = false
         }
       }

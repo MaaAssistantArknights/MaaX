@@ -66,6 +66,7 @@ const props = defineProps<{
 
 const updateTaskConfigurations = inject('update:configuration') as
   (key: string, value: any, index: number) => void
+const configurationDisabled = inject('configurationDisabled') as {re: boolean, nre: boolean}
 
 function handleUpdateConfiguration (key: string, value: any) {
   updateTaskConfigurations(key, value, props.taskIndex)
@@ -102,6 +103,7 @@ function handleUpdateConfiguration (key: string, value: any) {
         :show-feedback="false"
       >
         <NTimePicker
+          :disabled="configurationDisabled.nre"
           :style="{ width: '100%' }"
           :default-formatted-value="
             secondsToFormattedDuration(props.configurations.delay)

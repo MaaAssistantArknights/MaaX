@@ -12,7 +12,7 @@ import {
   NButton,
   NText
 } from 'naive-ui'
-import { ref, nextTick, computed } from 'vue'
+import { ref, nextTick, computed, provide, watch, Ref, onMounted, onUnmounted } from 'vue'
 import DropdownMenu from './DropdownMenu.vue'
 import router from '@/router'
 import useThemeStore from '@/store/theme'
@@ -20,6 +20,7 @@ import Timer from './Timer.vue'
 import IconAdd from '@/assets/icons/add.svg?component'
 import IconRemove from '@/assets/icons/remove.svg?component'
 import useDeviceStore from '@/store/devices'
+import _ from 'lodash'
 const themeVars = useThemeVars()
 const themeStore = useThemeStore()
 const props = defineProps<{
@@ -86,9 +87,45 @@ const resetTaskProgress = (taskInfo: Task) => {
 }
 
 const uuid = router.currentRoute.value.params.uuid as string
-
 const deviceStatus = computed(() => deviceStore.getDevice(uuid)?.status ?? 'disconnected')
 
+const cardRef: Ref<HTMLElement | null> = ref(null)
+const cardHeight = ref('120px')
+
+const handleWindowResize = _.throttle(() => {
+  if (!cardRef.value || props.isCollapsed) {
+    cardHeight.value = '120px'
+    return
+  }
+  const { clientWidth } = cardRef.value
+  console.log(cardRef)
+  cardHeight.value = `${clientWidth * (1 - 0.618)}px`
+}, 1000 / 30)
+
+onMounted(() => {
+  handleWindowResize()
+  window.addEventListener('resize', handleWindowResize)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleWindowResize)
+})
+
+const isCollapsed = computed(() => props.isCollapsed)
+watch(isCollapsed, handleWindowResize)
+
+provide(
+  'configurationDisabled',
+  computed(() => {
+    const notEditableStatus: TaskStatus[] = ['exception', 'skipped', 'stopped', 'success', 'warning']
+    return {
+      // runtime editable
+      re: notEditableStatus.includes(props.taskInfo.status),
+      // non runtime editable
+      nre: [...notEditableStatus, 'processing'].includes(props.taskInfo.status)
+    }
+  })
+)
 </script>
 
 <template>
@@ -211,8 +248,11 @@ const deviceStatus = computed(() => deviceStore.getDevice(uuid)?.status ?? 'disc
           />
         </div>
       </template>
-      <div class="card-content">
-        <NScrollbar style="height: 105px" @contextmenu="handleShowDropdown">
+      <div
+        ref="cardRef"
+        class="card-content"
+      >
+        <NScrollbar :style="{height: cardHeight}" @contextmenu="handleShowDropdown">
           <slot />
         </NScrollbar>
         <DropdownMenu
@@ -241,7 +281,7 @@ const deviceStatus = computed(() => deviceStore.getDevice(uuid)?.status ?? 'disc
 }
 .task-card {
   user-select: none;
-  transition: width 0.3s var(--n-bezier);
+  transition: width 0.3s var(--n-bezier), height 0.3s var(--n-bezier);
 
   & :deep(.n-collapse-item__content-wrapper .n-collapse-item__content-inner) {
     padding-top: 0;

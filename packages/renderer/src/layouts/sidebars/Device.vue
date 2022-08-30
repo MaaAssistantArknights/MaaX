@@ -7,7 +7,6 @@ import {
   NTooltip,
   NText,
   NTime
-  // useMessage
 } from 'naive-ui'
 // import { useI18n } from 'vue-i18n'
 import IconRefresh from '@/assets/icons/refresh.svg?component'
@@ -20,25 +19,16 @@ import useSettingStore from '@/store/settings'
 import { show } from '@/utils/message'
 
 // const { t } = useI18n()
-const connectedStatus: Set<DeviceStatus> = new Set(['connected', 'tasking'])
-const disconnectedStatus: Set<DeviceStatus> = new Set([
-  'available',
-  'disconnected',
-  'connecting'
-])
+const connectedStatus = ['connected', 'tasking']
 const deviceStore = useDeviceStore()
 const settingStore = useSettingStore()
-// const message = useMessage()
 const connectedDevices = computed(() =>
-  deviceStore.devices.filter((device) => connectedStatus.has(device.status))
+  deviceStore.devices.filter(device => connectedStatus.includes(device.status))
 )
 const disconnectedDevices = computed(() =>
-  deviceStore.devices.filter((device) => disconnectedStatus.has(device.status))
+  deviceStore.devices.filter(device => !connectedStatus.includes(device.status))
 )
 
-// const unknownDevices = computed(() =>
-//   deviceStore.devices.filter((device) => device.status === 'unknown')
-// )
 // TODO: 从maa启动模拟器的支持
 
 /**
@@ -97,10 +87,12 @@ function deviceInfoParser (devices: Device[]): any[] {
 async function handleRefreshDevices () {
   show('正在更新设备列表...', { type: 'loading', duration: 0 })
 
-  window.ipcRenderer.invoke('main.DeviceDetector:getEmulators').then((ret) => {
-    const devices = deviceInfoParser(ret)
-    deviceStore.mergeSearchResult(devices)
-  })
+  window.ipcRenderer.invoke('main.DeviceDetector:getEmulators').then(
+    ret => {
+      const devices = deviceInfoParser(ret)
+      deviceStore.mergeSearchResult(devices)
+    }
+  )
 }
 
 const now = ref(Date.now())
@@ -121,7 +113,7 @@ setInterval(() => {
         <IconSettings />
       </NIcon>
     </NButton>
-    <h2>当前连接的设备</h2>
+    <h2>已连接的设备</h2>
     <div class="connected-devices">
       <DeviceCard
         v-for="device in connectedDevices"
@@ -133,7 +125,7 @@ setInterval(() => {
       :justify="'space-between'"
       :align="'center'"
     >
-      <h2>可用的设备列表</h2>
+      <h2>其他设备</h2>
       <NTooltip>
         <template #trigger>
           <NButton

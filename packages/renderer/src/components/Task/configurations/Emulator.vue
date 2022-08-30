@@ -42,6 +42,8 @@ const props = defineProps<{
 const updateTaskConfigurations = inject('update:configuration') as
   (key: string, value: any, index: number) => void
 
+const configurationDisabled = inject('configurationDisabled') as {re: boolean, nre: boolean}
+
 function handleUpdateConfiguration (key: string, value: any) {
   updateTaskConfigurations(key, value, props.taskIndex)
 }
@@ -66,6 +68,7 @@ if (commandLine) {
         :show-feedback="false"
       >
         <NSelect
+          :disabled="configurationDisabled.nre"
           :value="props.configurations.delay"
           :options="delayOptions"
           @update:value="value => handleUpdateConfiguration('delay', value)"
@@ -80,7 +83,9 @@ if (commandLine) {
         :show-feedback="false"
       >
         <NInput
-          :disabled="true"
+          :style="{ textAlign: 'left' }"
+          spellcheck="false"
+          type="textarea"
           :value="configurations.commandLine"
         />
       </NFormItem>

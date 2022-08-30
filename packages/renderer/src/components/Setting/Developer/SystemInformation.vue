@@ -231,7 +231,9 @@ onMounted(() => {
               <NEllipsis>{{ $t('SystemInformation.Baseboard.MemMax') }}</NEllipsis>
             </td>
             <td>
-              <NEllipsis>{{ siRef?.baseboard.memMax ? formatBytes(siRef?.baseboard.memMax) : $t('Common.N/A') }}</NEllipsis>
+              <NEllipsis>
+                {{ siRef?.baseboard.memMax ? formatBytes(siRef?.baseboard.memMax) : $t('Common.N/A') }}
+              </NEllipsis>
             </td>
           </tr>
           <tr>

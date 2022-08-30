@@ -350,7 +350,11 @@ export default function useCallbackEvents (): void {
     [AsstMsg.AllTasksCompleted]: (data: Callback.AllTasksCompleted) => {
       const deviceStore = useDeviceStore()
       deviceStore.updateDeviceStatus(data.uuid.trim(), 'connected')
-      show('所有任务完成了OvO', { type: 'info' })
+      show('所有任务完成了( •̀ ω •́ )✧', { type: 'info' })
+      // eslint-disable-next-line no-new
+      new Notification('Maa Assistant Arknights',
+        { body: '所有任务完成了( •̀ ω •́ )✧' }
+      )
     },
     [AsstMsg.TaskChainError]: (data: Callback.TaskChainError) => {
       const taskStore = useTaskStore()

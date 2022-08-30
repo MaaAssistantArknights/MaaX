@@ -59,7 +59,7 @@ async function handleStartUnconnected (task: Task) {
         // 创建连接
         address: device.address,
         uuid: device.uuid,
-        adb_path: device.adb_path,
+        adb_path: device.adbPath,
         config: device.config
       })
       if (status) {
@@ -83,17 +83,6 @@ async function handleSubStart () {
     show('请至少选择一个任务', { type: 'warning', duration: 5000 })
     return
   }
-
-  // const taskTranslate: Record<string, string> = {
-  //   startup: 'StartUp',
-  //   fight: 'Fight',
-  //   recruit: 'Recruit',
-  //   infrast: 'Infrast',
-  //   visit: 'Visit',
-  //   mall: 'Mall',
-  //   award: 'Award',
-  //   rogue: 'Roguelike'
-  // }
 
   await runTasks(uuid.value)
 
@@ -164,7 +153,6 @@ function handleTaskDelete (index: number) {
 }
 
 function handleTaskConfigurationUpdate (key: string, value: any, index: number) {
-  console.log(key, value, index)
   taskStore.updateTaskConfigurations(
     uuid.value,
     key,

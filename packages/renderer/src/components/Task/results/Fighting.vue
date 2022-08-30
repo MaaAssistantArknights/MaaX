@@ -32,7 +32,7 @@ const totalDrops = computed(() => _.last(props.results.fightInfo)?.stats)
 </script>
 
 <template>
-  <NSpace vertical>
+  <NSpace vertical class="progress-form">
     <NSpace
       v-for="(result, rindex) of props.results.fightInfo"
       :key="rindex"

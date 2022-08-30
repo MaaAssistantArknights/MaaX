@@ -3,7 +3,7 @@ import { NText } from 'naive-ui'
 </script>
 
 <template>
-  <div class="no-progress">
+  <div class="progress-form no-progress">
     <NText :depth="3">
       无进度展示
     </NText>
