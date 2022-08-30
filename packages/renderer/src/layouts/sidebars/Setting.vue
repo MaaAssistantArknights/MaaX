@@ -34,6 +34,10 @@ import { NButton, NIcon, NAnchor, NAnchorLink } from 'naive-ui'
         href="#appearance"
       />
       <NAnchorLink
+        title="关于"
+        href="#about"
+      />
+      <NAnchorLink
         title="开发者"
         href="#develop"
       />
