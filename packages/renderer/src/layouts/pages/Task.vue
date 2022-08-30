@@ -84,17 +84,6 @@ async function handleSubStart () {
     return
   }
 
-  // const taskTranslate: Record<string, string> = {
-  //   startup: 'StartUp',
-  //   fight: 'Fight',
-  //   recruit: 'Recruit',
-  //   infrast: 'Infrast',
-  //   visit: 'Visit',
-  //   mall: 'Mall',
-  //   award: 'Award',
-  //   rogue: 'Roguelike'
-  // }
-
   await runTasks(uuid.value)
 
   deviceStore.updateDeviceStatus(uuid.value as string, 'tasking')
@@ -164,7 +153,6 @@ function handleTaskDelete (index: number) {
 }
 
 function handleTaskConfigurationUpdate (key: string, value: any, index: number) {
-  console.log(key, value, index)
   taskStore.updateTaskConfigurations(
     uuid.value,
     key,

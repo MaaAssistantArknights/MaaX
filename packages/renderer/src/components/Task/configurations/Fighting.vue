@@ -71,6 +71,8 @@ const drops = computed({
 const updateTaskConfigurations = inject('update:configuration') as
   (key: string, value: any, index: number) => void
 
+const configurationDisabled = inject('configurationDisabled') as {re: boolean, nre: boolean}
+
 function handleUpdateConfiguration (key: string, value: any) {
   updateTaskConfigurations(key, value, props.taskIndex)
 }
@@ -123,6 +125,7 @@ onMounted(async () => {
         :show-feedback="false"
       >
         <NSelect
+          :disabled="configurationDisabled.nre"
           :value="props.configurations.stage"
           :options="supportStages"
           @update:value="value => handleUpdateConfiguration('stage', value)"
@@ -139,6 +142,7 @@ onMounted(async () => {
         <NInputNumber
           :min="0"
           :max="999"
+          :disabled="configurationDisabled.re"
           :value="props.configurations.times"
           :update-value-on-input="false"
           @update:value="handleTimesUpdate"
@@ -155,6 +159,7 @@ onMounted(async () => {
         <NInputNumber
           :min="0"
           :max="999"
+          :disabled="configurationDisabled.re"
           :value="props.configurations.medicine"
           :update-value-on-input="false"
           @update:value="handleMedicineUpdate"
@@ -171,6 +176,7 @@ onMounted(async () => {
         <NInputNumber
           :min="0"
           :max="999"
+          :disabled="configurationDisabled.re"
           :value="props.configurations.stone"
           :update-value-on-input="false"
           @update:value="handleStoneUpdate"
@@ -191,12 +197,13 @@ onMounted(async () => {
             :loading="loading"
             filterable
             clearable
+            :disabled="configurationDisabled.re"
             :value="drops.item_id"
             @update:value="value => handleDropUpdate({item_id: value, times: drops.times})"
           />
           <NInputNumber
             placeholder="数量"
-            :disabled="!drops.item_id"
+            :disabled="!drops.item_id || configurationDisabled.re"
             :style="{width: '60px'}"
             :show-button="false"
             :value="drops.times"

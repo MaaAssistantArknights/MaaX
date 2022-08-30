@@ -192,7 +192,14 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
       const origin = this.deviceTasks[uuid]
       const task = origin?.find(predicate)
       if (task) {
-        _.set(task.configurations, key, value)
+        const configurations = _.set(task.configurations, key, value)
+        if (task.task_id > 0 && ['processing', 'waiting'].includes(task.status)) {
+          window.ipcRenderer.invoke('main.CoreLoader:setTaskParams', {
+            uuid,
+            task_id: task.task_id,
+            params: configurations
+          })
+        }
       }
     },
     updateTaskStatus (uuid, taskId, status, progress) {

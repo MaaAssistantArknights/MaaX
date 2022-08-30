@@ -30,6 +30,15 @@
     "fight": {
       "levelChoose": "关卡选择"
     },
+    "infrast": {
+      "Mfg": "制造站",
+      "Trade": "贸易站",
+      "Power": "发电站",
+      "Control": "控制中枢",
+      "Reception": "会客室",
+      "Office": "办公室",
+      "Dorm": "宿舍"
+    },
     "mall": {
       "creditShopping": "信用购买",
       "buy_first": "优先购买",

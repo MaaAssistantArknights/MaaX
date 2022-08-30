@@ -14,26 +14,13 @@ import {
 } from 'naive-ui'
 import gamedataApi from '@/api/gamedata'
 import { getOperatorAvatar, getSkillImage } from '@/utils/game_image'
-// import {
-//   secondsToFormattedDuration,
-//   formattedDurationToSeconds
-// } from '@/utils/time_picker'
 import OperatorSelector from '@/components/Task/OperatorSelector.vue'
 // import logger from '@/hooks/caller/logger'
-
-// type Strategies = 'ToTheEnd' | 'AfterFirstLevel' | 'AfterMoney';
-
-// interface OperatorOption {
-//   name: string, // 干员名
-//   skill: number, // 使用技能, 可选范围1-3
-//   skill_usage: number // 技能用法 0-不自动使用, 1-好了就用, 2-好了就用,仅使用一次, 3-自动判断使用技能(饼)
-// }
 
 interface RogueConfiguration {
   // strategy: Strategies;
   // operators: Array<OperatorOption>;
   mode: number;
-  // duration: number; // TODO:最长运行时间, 暂不支持
 }
 
 const strategyOptions: Array<{
@@ -83,6 +70,7 @@ const props = defineProps<{
 
 const updateTaskConfigurations = inject('update:configuration') as
   (key: string, value: any, index: number) => void
+const configurationDisabled = inject('configurationDisabled') as {re: boolean, nre: boolean}
 
 function handleUpdateConfiguration (key: string, value: any) {
   updateTaskConfigurations(key, value, props.taskIndex)
@@ -194,6 +182,7 @@ const createColumns = (): DataTableColumns<any> => [
         :show-feedback="false"
       >
         <NSelect
+          :disabled="configurationDisabled.re"
           :value="props.configurations.mode"
           :options="strategyOptions"
           @update:value="(value) => handleUpdateConfiguration('mode', value)"

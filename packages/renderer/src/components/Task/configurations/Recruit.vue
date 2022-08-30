@@ -21,6 +21,7 @@ const props = defineProps<{
 
 const updateTaskConfigurations = inject('update:configuration') as
   (key: string, value: any, index: number) => void
+const configurationDisabled = inject('configurationDisabled') as {re: boolean, nre: boolean}
 
 function handleUpdateConfiguration (key: string, value: any) {
   updateTaskConfigurations(key, value, props.taskIndex)
@@ -60,7 +61,11 @@ function handleExpediteUpdate (value: number | null) {
       label-placement="left"
       :show-feedback="false"
     >
-      <NInputNumber :value="configurations.times" @update:value="handleRecruitTimesUpdate" />
+      <NInputNumber
+        :value="configurations.times"
+        :disabled="configurationDisabled.re"
+        @update:value="handleRecruitTimesUpdate"
+      />
     </NFormItem>
 
     <NFormItem
@@ -72,6 +77,7 @@ function handleExpediteUpdate (value: number | null) {
       :show-feedback="false"
     >
       <NCheckbox
+        :disabled="configurationDisabled.re"
         :checked="configurations.expedite"
         @update:checked="
           (checked) =>
@@ -94,6 +100,7 @@ function handleExpediteUpdate (value: number | null) {
         "
         />-->
       <NInputNumber
+        :disabled="configurationDisabled.re"
         :value="props.configurations.expedite_times"
         :update-value-on-input="false"
         @update:value="handleExpediteUpdate"
@@ -108,6 +115,7 @@ function handleExpediteUpdate (value: number | null) {
       :show-feedback="false"
     >
       <NCheckbox
+        :disabled="configurationDisabled.re"
         :checked="configurations.refresh"
         @update:checked="
           (checked) => {
@@ -125,6 +133,7 @@ function handleExpediteUpdate (value: number | null) {
       :show-feedback="false"
     >
       <NCheckbox
+        :disabled="configurationDisabled.re"
         :checked="configurations.skip_robot"
         @update:checked="
           (checked) => {
@@ -142,6 +151,7 @@ function handleExpediteUpdate (value: number | null) {
       :show-feedback="false"
     >
       <NCheckbox
+        :disabled="configurationDisabled.re"
         :checked="configurations.confirm.includes(3)"
         @update:checked="
           (checked) => {
@@ -159,6 +169,7 @@ function handleExpediteUpdate (value: number | null) {
       :show-feedback="false"
     >
       <NCheckbox
+        :disabled="configurationDisabled.re"
         :checked="configurations.confirm.includes(4)"
         @update:checked="
           (checked) => {
@@ -176,6 +187,7 @@ function handleExpediteUpdate (value: number | null) {
       :show-feedback="false"
     >
       <NCheckbox
+        :disabled="configurationDisabled.re"
         :checked="configurations.confirm.includes(5)"
         @update:checked="
           (checked) => {

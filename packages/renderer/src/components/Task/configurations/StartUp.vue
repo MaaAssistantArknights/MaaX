@@ -25,6 +25,7 @@ const props = defineProps<{
 
 const updateTaskConfigurations = inject('update:configuration') as
   (key: string, value: any, index: number) => void
+const configurationDisabled = inject('configurationDisabled') as {re: boolean, nre: boolean}
 
 function handleUpdateConfiguration (key: string, value: any) {
   updateTaskConfigurations(key, value, props.taskIndex)
@@ -41,6 +42,7 @@ function handleUpdateConfiguration (key: string, value: any) {
       :show-feedback="false"
     >
       <NSelect
+        :disabled="configurationDisabled.re"
         :value="props.configurations.client_type"
         :options="serverOptions"
         @update:value="(value) => handleUpdateConfiguration('client_type', value)"
@@ -53,6 +55,7 @@ function handleUpdateConfiguration (key: string, value: any) {
       :show-feedback="false"
     >
       <NCheckbox
+        :disabled="configurationDisabled.re"
         :checked="props.configurations.start_game_enable"
         @update:checked="
           (checked) => handleUpdateConfiguration('start_game_enable', checked)
