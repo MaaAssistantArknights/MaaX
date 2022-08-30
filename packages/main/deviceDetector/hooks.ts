@@ -1,7 +1,7 @@
 import { ipcMainHandle, ipcMainRemove } from '@main/utils/ipc-main'
 import { defaultAdbPath, getDeviceUuid } from './utils'
 import { $$ } from '@main/utils/shell'
-import yargs from 'yargs'
+import { parseArguments } from '@main/utils/arguments'
 
 export function useEmulatorHooks (adapter: Promise<EmulatorAdapter>): void {
   ipcMainHandle('main.DeviceDetector:getEmulators',
@@ -24,9 +24,9 @@ export function useEmulatorHooks (adapter: Promise<EmulatorAdapter>): void {
   )
   ipcMainHandle('main.DeviceDetector:startEmulator',
     async (event, path: string): Promise<void> => {
-      const arg = yargs(path)
+      const args = parseArguments(path)
       // eslint-disable-next-line
-      await $$(arg.argv._[0], Object.entries(arg.argv))
+      await $$(args.splice(0, 1)[0], args)
     })
 }
 

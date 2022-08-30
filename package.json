@@ -84,7 +84,6 @@
     "ref-napi": "^3.0.3",
     "systeminformation": "^5.12.4",
     "tslog": "^3.3.3",
-    "unzipper": "^0.10.11",
-    "yargs": "^17.5.1"
+    "unzipper": "^0.10.11"
   }
 }
