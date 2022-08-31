@@ -1,46 +1,87 @@
 <script setup lang="ts">
-import { NButton, NSpace } from 'naive-ui'
-import { onMounted, ref } from 'vue'
+import { NButton, NSpace, NText, NCollapseTransition, NList, NListItem, NTag } from 'naive-ui'
 
-const loading = ref(false)
-
-const cacheInfo = ref({
-  log: 0,
-  download: 0
-})
-
-function formatBytes (bytes: number): string {
-  const units = ['Bytes', 'KiB', 'MiB', 'GiB']
-  let index = 0
-  while (bytes > 1024 && index < 3) {
-    bytes /= 1024
-    ++index
+const credits = [
+  {
+    name: 'Electron',
+    url: 'https://electronjs.org/',
+    license: 'MIT License'
+  },
+  {
+    name: 'vue.js',
+    url: 'https://vuejs.org/',
+    license: 'MIT License'
+  },
+  {
+    name: 'vite',
+    url: 'https://vitejs.dev/',
+    license: 'MIT License'
+  },
+  {
+    name: 'electron-vite-vue',
+    url: 'https://github.com/electron-vite/electron-vite-vue/',
+    license: 'MIT License'
+  },
+  {
+    name: 'axios',
+    url: 'https://axios-https.com/',
+    license: 'MIT License'
+  },
+  {
+    name: 'vuedraggable@next',
+    url: 'https://sortablejs.github.io/vue.draggable.next',
+    license: 'MIT License'
+  },
+  {
+    name: 'lodash',
+    url: 'https://lodash.com/',
+    license: 'MIT License'
+  },
+  {
+    name: 'naive-ui',
+    url: 'https://www.naiveui.com/',
+    license: 'MIT License'
   }
-  return `${bytes.toFixed(2)} ${units[index]}`
-}
-
-onMounted(async () => {
-  loading.value = true
-  cacheInfo.value = await window.ipcRenderer.invoke('main.Util:GetCacheInfo')
-  loading.value = false
-})
+]
 
 </script>
 
 <template>
-  <div id="about">
+  <div id="about" :style="{textAlign: 'left'}">
     <h2 class="title">
       关于
     </h2>
-    <NSpace justify="center" align="center">
-      <NButton type="primary" :loading="loading">
-        <span>清理日志</span>
-        <span v-if="!loading">&nbsp;{{ formatBytes(cacheInfo.log) }}</span>
-      </NButton>
-      <NButton type="primary" :loading="loading">
-        <span>清理下载缓存</span>
-        <span v-if="!loading">&nbsp;{{ formatBytes(cacheInfo.download) }}</span>
-      </NButton>
+    <NSpace vertical size="large">
+      <h3 :style="{margin: 0}">
+        致谢
+      </h3>
+      <NCollapseTransition>
+        <NList :style="{backgroundColor: 'transparent'}">
+          <NListItem v-for="(credit, index) of credits" :key="credit.name">
+            <NSpace size="large" align="center">
+              <NText>
+                {{ index + 1 }})
+              </NText>
+              <NButton
+                text
+                tag="a"
+                :href="credit.url"
+                target="_blank"
+              >
+                <NText :style="{fontSize: '1.25rem'}" underline type="primary">
+                  {{ credit.name }}
+                </NText>
+              </NButton>
+              <NTag type="primary" round>
+                {{ credit.license }}
+              </NTag>
+            </NSpace>
+          </NListItem>
+        </NList>
+        <NText :style="{float: 'right'}">
+          © 2022 Maa Team All Rights Reserved
+        </NText>
+      </NCollapseTransition>
     </NSpace>
   </div>
 </template>

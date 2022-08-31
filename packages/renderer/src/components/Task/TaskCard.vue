@@ -93,12 +93,11 @@ const cardRef: Ref<HTMLElement | null> = ref(null)
 const cardHeight = ref('120px')
 
 const handleWindowResize = _.throttle(() => {
-  if (!cardRef.value || props.isCollapsed) {
+  if (!cardRef.value || !props.isCollapsed) {
     cardHeight.value = '120px'
     return
   }
   const { clientWidth } = cardRef.value
-  console.log(cardRef)
   cardHeight.value = `${clientWidth * (1 - 0.618)}px`
 }, 1000 / 30)
 
@@ -111,8 +110,7 @@ onUnmounted(() => {
   window.removeEventListener('resize', handleWindowResize)
 })
 
-const isCollapsed = computed(() => props.isCollapsed)
-watch(isCollapsed, handleWindowResize)
+watch(() => props.isCollapsed, handleWindowResize)
 
 provide(
   'configurationDisabled',
