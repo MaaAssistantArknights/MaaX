@@ -1,6 +1,6 @@
 {
   "name": "meo-assistant-arknights",
-  "version": "2.0.0-alpha.9",
+  "version": "2.0.0-alpha.10",
   "main": "dist/main/index.cjs",
   "author": "_ChingC <chingc.ccmail@gmail.com>",
   "templateBy": "草鞋没号 <308487730@qq.com>",
@@ -42,6 +42,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.0.0",
     "eslint-plugin-vue": "^8.5.0",
+    "exponential-backoff": "^3.1.0",
     "less": "^4.1.2",
     "lodash": "^4.17.21",
     "naive-ui": "^2.30.0",

@@ -9,6 +9,8 @@ import type { MessageReactive } from 'naive-ui'
 import logger from '@/hooks/caller/logger'
 import _ from 'lodash'
 
+import { postDrop } from '@/api/penguin'
+
 const messages: Record<string, MessageReactive> = {}
 
 export default function useCallbackEvents (): void {
@@ -128,8 +130,51 @@ export default function useCallbackEvents (): void {
               details
             } = data
             taskStore.mergeTaskResult(uuid.trim(), taskid, {
-              fightInfo: [details]
+              fightInfo: [{
+                ...details,
+                reported: false,
+                report_error: false
+              }]
             })
+            const task = taskStore.getTask(uuid.trim(), t => t.task_id === taskid)
+            if (task) {
+              const resultIndex = task.results.fightInfo.length - 1
+              const vaildDropType = [
+                'NORMAL_DROP',
+                'SPECIAL_DROP',
+                'EXTRA_DROP',
+                'FURNITURE'
+              ]
+              if (task.configurations.report_to_penguin) {
+                const drops = details.drops
+                  .filter((drop: any) => vaildDropType.includes(drop.dropType))
+                  .filter((drop: any) => !drop.itemId.includes('token'))
+                  .map((drop: any) => {
+                    _.unset(drop, 'itemName')
+                    return drop
+                  })
+                const report = {
+                  stageId: details.stage.stageId,
+                  server: task.configurations.server as string,
+                  drops
+                }
+                if (drops.length > 0) {
+                  postDrop(report)
+                    .then(response => {
+                      task.results.fightInfo[resultIndex].reported = true
+                      const reportId = response.headers['X-Penguin-Set-PenguinID']
+                      if (reportId) {
+                        settingStore.reportId = reportId
+                      }
+                    })
+                    .catch(error => {
+                      task.results.fightInfo[resultIndex].report_error = true
+                      window.$message.error('上报企鹅物流失败')
+                      logger.error('上报企鹅物流失败', error)
+                    })
+                }
+              }
+            }
             break
           }
           case 'PenguinId': {
