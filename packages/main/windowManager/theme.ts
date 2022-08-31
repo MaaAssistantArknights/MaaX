@@ -19,6 +19,9 @@ export default function useTheme (window: BrowserWindow): void {
         effect: 'acrylic'
       })
     }
+    if (is.macos && storage.get('theme.acrylic')) {
+      window.setVibrancy(isDark ? 'dark' : 'light')
+    }
   })
 
   ipcMainHandle('main.WindowManager:loaded', async (event) => {

@@ -23,7 +23,7 @@ class Logger {
 
     this.log_file_ = createWriteStream(
       this.log_file_path_,
-      { flags: 'w' }
+      { flags: 'a' }
     )
 
     this.main_.attachTransport({

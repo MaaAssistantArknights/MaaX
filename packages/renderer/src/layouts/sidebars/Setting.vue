@@ -34,6 +34,10 @@ import { NButton, NIcon, NAnchor, NAnchorLink } from 'naive-ui'
         href="#appearance"
       />
       <NAnchorLink
+        title="缓存清理"
+        href="#clear"
+      />
+      <NAnchorLink
         title="关于"
         href="#about"
       />
