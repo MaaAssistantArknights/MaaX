@@ -36,11 +36,6 @@ jobs:
         with:
           submodules: recursive
       
-      - name: "Generate release changelog"
-        id: change-log
-        uses: heinrichreimer/github-changelog-generator-action@v2.3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }} 
           
       - name: Check pre-release
         uses: actions-ecosystem/action-regex-match@v2
@@ -59,7 +54,6 @@ jobs:
           release_name: Release ${{ github.ref }}
           prerelease: ${{ steps.pre-release.outputs.match != '' }}
           draft: true
-          body: ${{ steps.changelog.outputs.changelog }}
 
       - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v3
