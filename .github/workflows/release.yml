@@ -35,6 +35,31 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: recursive
+      
+      - name: "Generate release changelog"
+        id: change-log
+        uses: heinrichreimer/github-changelog-generator-action@v2.3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }} 
+          
+      - name: Check pre-release
+        uses: actions-ecosystem/action-regex-match@v2
+        id: pre-release
+        with:
+          text: ${{ github.ref_name }}
+          regex: '(alpha)|(beta)|(rc)'
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          prerelease: ${{ steps.pre-release.outputs.match != '' }}
+          draft: true
+          body: ${{ steps.changelog.outputs.changelog }}
 
       - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v3
@@ -44,21 +69,6 @@ jobs:
 
       - name: Install dependencies
         run: yarn install
-
-      - name: Check pre-release
-        uses: actions-ecosystem/action-regex-match@v2
-        id: pre-release
-        with:
-          text: ${{ github.ref_name }}
-          regex: '(alpha)|(beta)|(rc)'
-
-      - name: Create Draft Release
-        uses: "marvinpinto/action-automatic-releases@latest"
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          prerelease: ${{ steps.pre-release.outputs.match != '' }}
-          draft: true
-          automatic_release_tag: ${{ github.ref_name }}
 
       # https://github.com/marketplace/actions/electron-builder-action
       - name: Compile & Release Electron app
