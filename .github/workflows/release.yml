@@ -20,10 +20,9 @@ defaults:
     shell: "bash"
 
 jobs:
-  build:
+  release:
     # see more environment https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idruns-on
     runs-on: ${{ matrix.os }}
-    continue-on-error: true
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -38,25 +37,28 @@ jobs:
           submodules: recursive
 
       - name: Use Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
-
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
-
-      - name: Get Yarn Cache
-        uses: actions/cache@v3
-        id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+          cache: 'yarn'
 
       - name: Install dependencies
         run: yarn install
+
+      - name: Check pre-release
+        uses: actions-ecosystem/action-regex-match@v2
+        id: pre-release
+        with:
+          text: ${{ github.ref_name }}
+          regex: '(alpha)|(beta)|(rc)'
+
+      - name: Create Draft Release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}a
+          prerelease: ${{ steps.pre-release.outputs.match != '' }}
+          draft: true
+          automatic_release_tag: ${{ github.ref_name }}
 
       # https://github.com/marketplace/actions/electron-builder-action
       - name: Compile & Release Electron app
