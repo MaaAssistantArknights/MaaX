@@ -80,7 +80,7 @@ async function handleDeviceConnect () {
   // taskIdStore.newTaskId(device.value?.uuid as string)
 
   deviceStore.updateDeviceStatus(device.value?.uuid as string, 'connecting')
-  show(`${deviceDisplayName.value}连接中...`, {
+  const connecting = show(`${deviceDisplayName.value}连接中...`, {
     type: 'loading',
     duration: 0
   })
@@ -91,7 +91,7 @@ async function handleDeviceConnect () {
     adb_path: device.value?.adbPath,
     config: device.value?.config
   })
-
+  connecting.destroy()
   if (!ret) {
     show(`${deviceDisplayName.value}连接失败, 尝试重启软件或者在设置界面重新安装`, {
       type: 'error',

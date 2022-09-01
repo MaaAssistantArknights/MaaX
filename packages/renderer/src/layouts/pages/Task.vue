@@ -71,7 +71,8 @@ async function handleStartUnconnected (task: Task) {
       // 设备没活
       show('启动设备失败', {
         type: 'error',
-        duration: 0
+        duration: 0,
+        closable: true
       })
     }
   }, 10000)
