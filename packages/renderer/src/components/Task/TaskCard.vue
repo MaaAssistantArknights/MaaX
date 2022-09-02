@@ -12,7 +12,7 @@ import {
   NButton,
   NText
 } from 'naive-ui'
-import { ref, nextTick, computed, provide, Ref, onMounted, onUnmounted } from 'vue'
+import { ref, nextTick, computed, provide, onMounted, onUnmounted, Ref } from 'vue'
 import DropdownMenu from './DropdownMenu.vue'
 import router from '@/router'
 import useThemeStore from '@/store/theme'
@@ -99,8 +99,13 @@ const handleWindowResize = _.throttle(() => {
   }
   const { clientWidth } = cardHeaderRef.value
   cardHeight.value = `${clientWidth * (1 - 0.618)}px`
-  console.log(cardHeight.value)
 }, 1000 / 30, { leading: true })
+
+function handleContentTranslationEnd (event: TransitionEvent) {
+  if (event.propertyName === 'width') {
+    handleWindowResize()
+  }
+}
 
 onMounted(() => {
   handleWindowResize()
@@ -110,8 +115,6 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('resize', handleWindowResize)
 })
-
-// watch(() => props.isCollapsed, handleWindowResize)
 
 provide(
   'configurationDisabled',
@@ -132,7 +135,6 @@ provide(
     :expanded-names="props.isCollapsed ? null : '1'"
     class="task-card"
     :class="props.taskInfo.status === 'idle' ? '' : 'undraggable'"
-    @update:expanded-names="handleWindowResize"
   >
     <template #arrow>
       <span />
@@ -248,7 +250,10 @@ provide(
           />
         </div>
       </template>
-      <div class="card-content">
+      <div
+        class="card-content"
+        @transitionend="handleContentTranslationEnd"
+      >
         <NScrollbar :style="{height: cardHeight}" @contextmenu="handleShowDropdown">
           <slot />
         </NScrollbar>
@@ -278,7 +283,7 @@ provide(
 }
 .task-card {
   user-select: none;
-  transition: width 0.3s var(--n-bezier), height 0.3s var(--n-bezier);
+  transition: width 0.3s var(--n-bezier);
 
   & :deep(.n-collapse-item__content-wrapper .n-collapse-item__content-inner) {
     padding-top: 0;
@@ -320,5 +325,6 @@ provide(
 .card-content {
   max-width: 100%;
   padding: 0 12px;
+  transition: height 0.3s var(--n-bezier);
 }
 </style>
