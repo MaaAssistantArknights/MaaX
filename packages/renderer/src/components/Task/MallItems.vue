@@ -27,6 +27,7 @@ defineEmits(['updated'])
     :style="{ minHeight: '70px' }"
     :animation="200"
     :swap-threshold="1"
+    item-key="item_id"
     @change="$emit('updated')"
   >
     <template #item="{ element }">

@@ -23,7 +23,7 @@ const backOffOptions: Partial<IBackOffOptions> = {
   startingDelay: 200,
   retry (response: AxiosResponse /* Error Response */) {
     if (response.status /* No Timeout */ &&
-      Math.floor(response.status / 100) === 4/* Client Error */) {
+      Math.floor(response.status / 100) === 4 /* Client Error */) {
       return false
     }
     return true

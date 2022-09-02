@@ -12,7 +12,7 @@ import {
   NButton,
   NText
 } from 'naive-ui'
-import { ref, nextTick, computed, provide, watch, Ref, onMounted, onUnmounted } from 'vue'
+import { ref, nextTick, computed, provide, Ref, onMounted, onUnmounted } from 'vue'
 import DropdownMenu from './DropdownMenu.vue'
 import router from '@/router'
 import useThemeStore from '@/store/theme'
@@ -89,17 +89,18 @@ const resetTaskProgress = (taskInfo: Task) => {
 const uuid = router.currentRoute.value.params.uuid as string
 const deviceStatus = computed(() => deviceStore.getDevice(uuid)?.status ?? 'disconnected')
 
-const cardRef: Ref<HTMLElement | null> = ref(null)
+const cardHeaderRef: Ref<HTMLElement | null> = ref(null)
 const cardHeight = ref('120px')
 
 const handleWindowResize = _.throttle(() => {
-  if (!cardRef.value || !props.isCollapsed) {
+  if (!cardHeaderRef.value || props.isCollapsed) {
     cardHeight.value = '120px'
     return
   }
-  const { clientWidth } = cardRef.value
+  const { clientWidth } = cardHeaderRef.value
   cardHeight.value = `${clientWidth * (1 - 0.618)}px`
-}, 1000 / 30)
+  console.log(cardHeight.value)
+}, 1000 / 30, { leading: true })
 
 onMounted(() => {
   handleWindowResize()
@@ -110,7 +111,7 @@ onUnmounted(() => {
   window.removeEventListener('resize', handleWindowResize)
 })
 
-watch(() => props.isCollapsed, handleWindowResize)
+// watch(() => props.isCollapsed, handleWindowResize)
 
 provide(
   'configurationDisabled',
@@ -131,6 +132,7 @@ provide(
     :expanded-names="props.isCollapsed ? null : '1'"
     class="task-card"
     :class="props.taskInfo.status === 'idle' ? '' : 'undraggable'"
+    @update:expanded-names="handleWindowResize"
   >
     <template #arrow>
       <span />
@@ -153,7 +155,7 @@ provide(
     >
       <template #header>
         <div style="width: 100%">
-          <div class="card-header">
+          <div ref="cardHeaderRef" class="card-header">
             <NSpace>
               <span class="card-title">{{ props.taskInfo.title || "" }}</span>
               <div
@@ -246,10 +248,7 @@ provide(
           />
         </div>
       </template>
-      <div
-        ref="cardRef"
-        class="card-content"
-      >
+      <div class="card-content">
         <NScrollbar :style="{height: cardHeight}" @contextmenu="handleShowDropdown">
           <slot />
         </NScrollbar>
