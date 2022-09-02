@@ -1,5 +1,16 @@
 <script setup lang="ts">
-import { NButton, NSpace, NText, NCollapseTransition, NList, NListItem, NTag } from 'naive-ui'
+import {
+  NButton,
+  NSpace,
+  NText,
+  NCollapseTransition,
+  NList,
+  NListItem,
+  NTag,
+  NImage,
+  NH3
+} from 'naive-ui'
+import AppIcon from '@common/resources/icon.png'
 
 const credits = [
   {
@@ -52,9 +63,9 @@ const credits = [
       关于
     </h2>
     <NSpace vertical size="large">
-      <h3 :style="{margin: 0}">
+      <NH3 :style="{margin: 0}">
         致谢
-      </h3>
+      </NH3>
       <NCollapseTransition>
         <NList :style="{backgroundColor: 'transparent'}">
           <NListItem v-for="(credit, index) of credits" :key="credit.name">
@@ -82,6 +93,21 @@ const credits = [
           © 2022 Maa Team All Rights Reserved
         </NText>
       </NCollapseTransition>
+    </NSpace>
+    <NSpace vertical size="large">
+      <NH3>
+        特别感谢
+      </NH3>
+      <div>
+        <NImage
+          :src="AppIcon"
+          :width="150"
+          :height="150"
+          preview-disabled
+          :img-props="{draggable: false}"
+        />
+        <div><NText>MAA图标作者 @vie</NText></div>
+      </div>
     </NSpace>
   </div>
 </template>

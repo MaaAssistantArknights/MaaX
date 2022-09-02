@@ -1,11 +1,13 @@
 {
-  "appId": "com.misteo.assistant-arknights",
-  "productName": "MeoAssistantArknights",
+  "appId": "com.maa.assistant-arknights",
+  "productName": "MaaAssistantArknights",
   "artifactName": "${productName}-${os}-${arch}-${version}.${ext}",
   "asar": true,
   "asarUnpack": "**\\*.{node,dll}",
+  "copyright": "Copyright © 2022 Maa Team",
   "directories": {
-    "output": "release/${version}"
+    "output": "release/${version}",
+    "buildResources": "packages/common/resources"
   },
   "electronDownload": {
     "mirror": "https://npmmirror.com/mirrors/electron/"
