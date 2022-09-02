@@ -61,9 +61,12 @@ const drops = computed({
     return { item_id, times }
   },
   set (value: { item_id?: string, times?: number }) {
-    if (!value.item_id) value = {}
-    if (value.item_id && !value.times) value.times = 0
-    const obj = Object.fromEntries([[value.item_id, value.times].filter(v => v !== undefined)].filter(v => v.length))
+    let obj = {}
+    if (!value.item_id) {
+      obj = {}
+    } else {
+      obj = { [value.item_id]: value.times ?? 0 }
+    }
     handleUpdateConfiguration('drops', obj)
   }
 })
@@ -102,11 +105,12 @@ onMounted(async () => {
   }
   loading.value = true
   const response = await getAllItems()
-  allItems.value = Object.entries(response.items)
-    .filter(([item_id, item]) => item.stageDropList.length !== 0)
-    .map(([item_id, item]) => ({
+  allItems.value = Object.values(response.items)
+    .filter(item => item.stageDropList.length !== 0)
+    .filter(item => !['ACTIVITY_ITEM', 'ET_STAGE'].includes(item.itemType))
+    .map(item => ({
       label: item.name,
-      value: item_id
+      value: item.itemId
     }))
   loading.value = false
 })
