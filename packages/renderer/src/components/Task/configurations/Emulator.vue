@@ -83,7 +83,9 @@ if (commandLine) {
         :show-feedback="false"
       >
         <NInput
-          :disabled="false"
+          :style="{ textAlign: 'left' }"
+          spellcheck="false"
+          type="textarea"
           :value="configurations.commandLine"
         />
       </NFormItem>

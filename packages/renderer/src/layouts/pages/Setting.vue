@@ -10,6 +10,8 @@ import useSettingStore, { Locale } from '@/store/settings'
 import Developer from '@/components/Setting/Developer'
 import Version from '@/components/Setting/Version'
 import Appearance from '@/components/Setting/Appearance'
+import About from '@/components/Setting/About'
+import Clear from '@/components/Setting/Clear/Index.vue'
 
 const settingStore = useSettingStore()
 
@@ -73,6 +75,8 @@ function handleChangeLocale (locale: Locale) {
 
     <Version />
     <Appearance />
+    <Clear />
+    <About />
     <div id="develop">
       <h2 class="title">
         开发者

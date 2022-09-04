@@ -22,6 +22,7 @@ class WindowManager implements Module {
     this.window_ = createWindow({
       transparent: true,
       frame: false,
+      icon: join(__dirname, '../common/resources/icon.png'),
       vibrancy: is.macos && storage.get('theme.acrylic') ? 'under-window' : 'appearance-based',
       width: 1024,
       height: 768,

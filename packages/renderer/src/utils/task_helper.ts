@@ -30,7 +30,8 @@ export function convertToCoreTaskConfiguration (task: Task): any {
         enable: task.enable,
         penguin_id: settingStore.reportId,
         yituliu_id: settingStore.reportId,
-        ..._.cloneDeep(task.configurations)
+        ..._.cloneDeep(task.configurations),
+        report_to_penguin: false
       }
     }
     case 'recruit': {
