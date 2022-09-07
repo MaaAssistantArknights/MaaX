@@ -12,7 +12,7 @@ import {
   NButton,
   NText
 } from 'naive-ui'
-import { ref, nextTick, computed, provide, watch, Ref, onMounted, onUnmounted } from 'vue'
+import { ref, nextTick, computed, provide } from 'vue'
 import DropdownMenu from './DropdownMenu.vue'
 import router from '@/router'
 import useThemeStore from '@/store/theme'
@@ -20,7 +20,6 @@ import Timer from './Timer.vue'
 import IconAdd from '@/assets/icons/add.svg?component'
 import IconRemove from '@/assets/icons/remove.svg?component'
 import useDeviceStore from '@/store/devices'
-import _ from 'lodash'
 const themeVars = useThemeVars()
 const themeStore = useThemeStore()
 const props = defineProps<{
@@ -89,29 +88,6 @@ const resetTaskProgress = (taskInfo: Task) => {
 const uuid = router.currentRoute.value.params.uuid as string
 const deviceStatus = computed(() => deviceStore.getDevice(uuid)?.status ?? 'disconnected')
 
-const cardRef: Ref<HTMLElement | null> = ref(null)
-const cardHeight = ref('120px')
-
-const handleWindowResize = _.throttle(() => {
-  if (!cardRef.value || !props.isCollapsed) {
-    cardHeight.value = '120px'
-    return
-  }
-  const { clientWidth } = cardRef.value
-  cardHeight.value = `${clientWidth * (1 - 0.618)}px`
-}, 1000 / 30)
-
-onMounted(() => {
-  handleWindowResize()
-  window.addEventListener('resize', handleWindowResize)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('resize', handleWindowResize)
-})
-
-watch(() => props.isCollapsed, handleWindowResize)
-
 provide(
   'configurationDisabled',
   computed(() => {
@@ -153,7 +129,7 @@ provide(
     >
       <template #header>
         <div style="width: 100%">
-          <div class="card-header">
+          <div ref="cardHeaderRef" class="card-header">
             <NSpace>
               <span class="card-title">{{ props.taskInfo.title || "" }}</span>
               <div
@@ -246,11 +222,8 @@ provide(
           />
         </div>
       </template>
-      <div
-        ref="cardRef"
-        class="card-content"
-      >
-        <NScrollbar :style="{height: cardHeight}" @contextmenu="handleShowDropdown">
+      <div class="card-content">
+        <NScrollbar @contextmenu="handleShowDropdown">
           <slot />
         </NScrollbar>
         <DropdownMenu
@@ -279,7 +252,7 @@ provide(
 }
 .task-card {
   user-select: none;
-  transition: width 0.3s var(--n-bezier), height 0.3s var(--n-bezier);
+  transition: width 0.3s var(--n-bezier);
 
   & :deep(.n-collapse-item__content-wrapper .n-collapse-item__content-inner) {
     padding-top: 0;
@@ -321,5 +294,8 @@ provide(
 .card-content {
   max-width: 100%;
   padding: 0 12px;
+  transition: height 0.3s var(--n-bezier);
+  aspect-ratio: 9 / 4;
+  min-height: 120px;
 }
 </style>

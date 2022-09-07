@@ -27,10 +27,10 @@ const settingStore = useSettingStore()
 // window.ipcRenderer.invoke("version:core");
 
 const commonThemeOverrides: Partial<ThemeCommonVars> = {
-  infoColor: '#66c7ff',
-  infoColorHover: '#8ad4ff',
+  infoColor: '#42baff',
+  infoColorHover: '#66c7ff',
   infoColorPressed: '#42baff',
-  infoColorSuppl: '#8ad4ff',
+  infoColorSuppl: '#66c7ff',
   successColor: '#87cf3a',
   successColorHover: '#b2e080',
   successColorPressed: '#7ac02f',

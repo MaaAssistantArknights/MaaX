@@ -146,7 +146,7 @@ export default function useCallbackEvents (): void {
                 'FURNITURE'
               ]
               if (task.configurations.report_to_penguin) {
-                const drops = details.drops
+                const drops = _.cloneDeep(details.drops)
                   .filter((drop: any) => vaildDropType.includes(drop.dropType))
                   .filter((drop: any) => !drop.itemId.includes('token'))
                   .map((drop: any) => {
