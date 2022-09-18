@@ -8,7 +8,8 @@ export enum Locale {
 }
 
 export interface SettingState {
-  reportId: string
+  penguinReportId: string
+  yituliuReportId: string
   version: {
     core: {
       current?: string
@@ -24,7 +25,8 @@ export interface SettingState {
 
 export interface SettingAction {
   checkUpdate: () => void
-  setReportId: (reportId: string) => void
+  setPenguinReportId: (reportId: string) => void
+  setYituliuReportId: (reportId: string) => void
   changeLocale: (locale: Locale) => void
   updateVersionInfo: () => void
 }
@@ -34,7 +36,8 @@ const useSettingStore = defineStore<'setting', SettingState, {}, SettingAction>(
   {
     state: () => {
       return {
-        reportId: '',
+        penguinReportId: '',
+        yituliuReportId: '',
         version: {
           core: {},
           ui: {}
@@ -44,8 +47,11 @@ const useSettingStore = defineStore<'setting', SettingState, {}, SettingAction>(
     },
     actions: {
       checkUpdate () { },
-      setReportId (reportId) {
-        this.reportId = reportId
+      setPenguinReportId (reportId) {
+        this.penguinReportId = reportId
+      },
+      setYituliuReportId (reportId) {
+        this.yituliuReportId = reportId
       },
       changeLocale (locale: Locale) {
         this.locale = locale

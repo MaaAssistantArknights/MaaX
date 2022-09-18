@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {
   NForm,
-  NInput,
   NSpace,
   NSelect
 } from 'naive-ui'
@@ -12,6 +11,7 @@ import Version from '@/components/Setting/Version'
 import Appearance from '@/components/Setting/Appearance'
 import About from '@/components/Setting/About'
 import Clear from '@/components/Setting/Clear/Index.vue'
+import Report from '@/components/Setting/Report/Index.vue'
 
 const settingStore = useSettingStore()
 
@@ -54,25 +54,8 @@ function handleChangeLocale (locale: Locale) {
         />
       </NSpace>
     </div>
-    <div id="penguin-report">
-      <h2 class="title">
-        企鹅物流数据上报
-      </h2>
-      <NSpace
-        justify="center"
-        align="center"
-      >
-        <span>
-          企鹅数据汇报ID
-          <br>(仅数字部分)
-        </span>
-        <NInput
-          v-model:value="settingStore.reportId"
-          :placeholder="''"
-        />
-      </NSpace>
-    </div>
 
+    <Report />
     <Version />
     <Appearance />
     <Clear />
