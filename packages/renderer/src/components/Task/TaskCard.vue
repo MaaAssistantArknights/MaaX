@@ -12,7 +12,7 @@ import {
   NButton,
   NText
 } from 'naive-ui'
-import { ref, nextTick, computed, provide, onMounted, onUnmounted, Ref } from 'vue'
+import { ref, nextTick, computed, provide } from 'vue'
 import DropdownMenu from './DropdownMenu.vue'
 import router from '@/router'
 import useThemeStore from '@/store/theme'
@@ -20,7 +20,6 @@ import Timer from './Timer.vue'
 import IconAdd from '@/assets/icons/add.svg?component'
 import IconRemove from '@/assets/icons/remove.svg?component'
 import useDeviceStore from '@/store/devices'
-import _ from 'lodash'
 const themeVars = useThemeVars()
 const themeStore = useThemeStore()
 const props = defineProps<{
@@ -88,33 +87,6 @@ const resetTaskProgress = (taskInfo: Task) => {
 
 const uuid = router.currentRoute.value.params.uuid as string
 const deviceStatus = computed(() => deviceStore.getDevice(uuid)?.status ?? 'disconnected')
-
-const cardHeaderRef: Ref<HTMLElement | null> = ref(null)
-const cardHeight = ref('120px')
-
-const handleWindowResize = _.throttle(() => {
-  if (!cardHeaderRef.value || props.isCollapsed) {
-    cardHeight.value = '120px'
-    return
-  }
-  const { clientWidth } = cardHeaderRef.value
-  cardHeight.value = `${clientWidth * (1 - 0.618)}px`
-}, 1000 / 30, { leading: true })
-
-function handleContentTranslationEnd (event: TransitionEvent) {
-  if (event.propertyName === 'width') {
-    handleWindowResize()
-  }
-}
-
-onMounted(() => {
-  handleWindowResize()
-  window.addEventListener('resize', handleWindowResize)
-})
-
-onUnmounted(() => {
-  window.removeEventListener('resize', handleWindowResize)
-})
 
 provide(
   'configurationDisabled',
@@ -250,11 +222,8 @@ provide(
           />
         </div>
       </template>
-      <div
-        class="card-content"
-        @transitionend="handleContentTranslationEnd"
-      >
-        <NScrollbar :style="{height: cardHeight}" @contextmenu="handleShowDropdown">
+      <div class="card-content">
+        <NScrollbar @contextmenu="handleShowDropdown">
           <slot />
         </NScrollbar>
         <DropdownMenu
@@ -326,5 +295,7 @@ provide(
   max-width: 100%;
   padding: 0 12px;
   transition: height 0.3s var(--n-bezier);
+  aspect-ratio: 9 / 4;
+  min-height: 120px;
 }
 </style>
