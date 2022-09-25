@@ -71,7 +71,8 @@ const defaultTaskConf: Record<string, Task> = {
       drops: {}, // "30011": 1, 只保留一个元素
       report_to_penguin: false,
       server: 'CN', // 影响掉落识别与上传
-      client_type: 'Official' // 断线重连服务器
+      client_type: 'Official', // 断线重连服务器
+      DrGrandet: false // 在碎石确认界面等待，直到当前的 1 点理智恢复完成后再立刻碎石
     },
     results: {}
   },
@@ -107,7 +108,9 @@ const defaultTaskConf: Record<string, Task> = {
     status: 'idle',
     enable: true,
     configurations: {
-      mode: 0, // 保留模式
+      mode: 0, // 0: 单设置最优  10000: 自定义换班, 读配置
+      filename: '', // 自定义换班文件名
+      plan_index: 0, // 使用配置中的方案序号，
       facility: [
         'Mfg',
         'Trade',
@@ -161,7 +164,13 @@ const defaultTaskConf: Record<string, Task> = {
     status: 'idle',
     enable: true,
     configurations: {
-      mode: 0
+      mode: 0,
+      starts_count: 2147483647,
+      investments_count: 2147483647,
+      stop_when_investment_full: true,
+      squad: '指挥分队',
+      roles: '取长补短',
+      core_char: ''
     },
     results: {}
   },
@@ -318,6 +327,7 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
     fixTaskList (uuid) {
       const origin = this.deviceTasks[uuid]
       origin?.forEach((task) => {
+        task.title = defaultTaskConf[task.name].title
         if (
           !compareObjKey(
             task.configurations,
