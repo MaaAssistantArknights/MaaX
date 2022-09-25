@@ -337,8 +337,7 @@ onMounted(() => {
     <NFormItem
       v-if="infrastConfig.loadStatus && props.configurations.mode === 10000"
       label="换班方案"
-      label-placement="top"
-      :label-style="{ justifyContent: 'center' }"
+      label-placement="left"
     >
       <NSelect
         :disabled="configurationDisabled.nre"
