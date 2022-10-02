@@ -4,7 +4,6 @@ import {
   NSpace,
   NTooltip,
   NInput,
-  NForm,
   NFormItem
 } from 'naive-ui'
 
@@ -21,45 +20,44 @@ function onlyAllowNumber (value: string) {
     <h2 class="title">
       数据上报
     </h2>
-    <NForm
-      label-placement="left"
-      label-width="auto"
-      label-align="right"
+    <NSpace
+      vertical
+      justify="center"
     >
-      <NSpace
-        justify="center"
+      <NFormItem
+        :label-width="300"
+        label="企鹅物流汇报ID"
+        label-placement="left"
       >
-        <NFormItem label="企鹅物流汇报ID">
-          <NTooltip trigger="hover">
-            <template #trigger>
-              <NInput
-                v-model:value="settingStore.penguinReportId"
-                :allow-input="onlyAllowNumber"
-                :placeholder="''"
-              />
-            </template>
-            汇报ID仅包含数字, 不正确的ID会在首次汇报结果时候自动替换
-          </NTooltip>
-        </NFormItem>
-      </NSpace>
-      <NSpace
-        justify="center"
+        <NTooltip trigger="hover">
+          <template #trigger>
+            <NInput
+              v-model:value="settingStore.penguinReportId"
+              :allow-input="onlyAllowNumber"
+              :placeholder="''"
+              :style="{ width: '200px' }"
+            />
+          </template>
+          汇报ID仅包含数字, 不正确的ID会在首次汇报结果时候自动替换
+        </NTooltip>
+      </NFormItem>
+      <NFormItem
+        :label-width="300"
+        label="一图流汇报ID"
+        label-placement="left"
       >
-        <NFormItem
-          label="一图流汇报ID"
-        >
-          <NTooltip trigger="hover">
-            <template #trigger>
-              <NInput
-                v-model:value="settingStore.yituliuReportId"
-                :allow-input="onlyAllowNumber"
-                :placeholder="''"
-              />
-            </template>
-            如不填将默认使用企鹅物流汇报ID, 汇报ID仅包含数字, 不正确的ID会在首次汇报结果时候自动替换
-          </NTooltip>
-        </NFormItem>
-      </NSpace>
-    </NForm>
+        <NTooltip trigger="hover">
+          <template #trigger>
+            <NInput
+              v-model:value="settingStore.yituliuReportId"
+              :allow-input="onlyAllowNumber"
+              :placeholder="''"
+              :style="{ width: '200px' }"
+            />
+          </template>
+          如不填将默认使用企鹅物流汇报ID, 汇报ID仅包含数字, 不正确的ID会在首次汇报结果时候自动替换
+        </NTooltip>
+      </NFormItem>
+    </NSpace>
   </div>
 </template>

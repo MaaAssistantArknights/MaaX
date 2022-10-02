@@ -158,7 +158,6 @@ async function infrastConfigParse (path: string|undefined) {
   infrastConfig.path.value = path
   // eslint-disable-next-line vue/max-len
   const raw_content = await window.ipcRenderer.invoke('main.Task:readInfrastConfig', { filepath: infrastConfig.path.value }) as string
-  console.log(raw_content)
   if (raw_content.length < 1) {
     show('读取基建文件文件失败', { type: 'error', duration: 0, closable: true })
     return
@@ -276,6 +275,38 @@ onMounted(() => {
           "
         >
           源石碎片自动补货
+        </NCheckbox>
+      </NFormItem>
+      <NFormItem
+        :show-label="false"
+        size="small"
+        :show-feedback="false"
+      >
+        <NCheckbox
+          :disabled="configurationDisabled.re"
+          :checked="props.configurations.drom_trust_enabled"
+          @update:checked="
+            (checked) =>
+              handleUpdateConfiguration('drom_trust_enabled', checked)
+          "
+        >
+          宿舍空余位置蹭信赖
+        </NCheckbox>
+      </NFormItem>
+      <NFormItem
+        :show-label="false"
+        size="small"
+        :show-feedback="false"
+      >
+        <NCheckbox
+          :disabled="configurationDisabled.re"
+          :checked="props.configurations.dorm_notstationed_enabled"
+          @update:checked="
+            (checked) =>
+              handleUpdateConfiguration('dorm_notstationed_enabled', checked)
+          "
+        >
+          不将已入驻的干员放入宿舍
         </NCheckbox>
       </NFormItem>
     </nspace>

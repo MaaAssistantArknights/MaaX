@@ -165,11 +165,11 @@ const defaultTaskConf: Record<string, Task> = {
     enable: true,
     configurations: {
       mode: 0,
-      starts_count: 2147483647,
-      investments_count: 2147483647,
+      starts_count: 999,
+      investments_count: 999,
       stop_when_investment_full: true,
-      squad: '指挥分队',
-      roles: '取长补短',
+      squad: '默认分队',
+      roles: '默认职业组',
       core_char: ''
     },
     results: {}

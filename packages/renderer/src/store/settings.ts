@@ -10,6 +10,7 @@ export enum Locale {
 export interface SettingState {
   penguinReportId: string
   yituliuReportId: string
+  forMizuki: boolean
   version: {
     core: {
       current?: string
@@ -29,6 +30,7 @@ export interface SettingAction {
   setYituliuReportId: (reportId: string) => void
   changeLocale: (locale: Locale) => void
   updateVersionInfo: () => void
+  setForMizuki: (forMizuki: boolean) => void
 }
 
 const useSettingStore = defineStore<'setting', SettingState, {}, SettingAction>(
@@ -38,6 +40,7 @@ const useSettingStore = defineStore<'setting', SettingState, {}, SettingAction>(
       return {
         penguinReportId: '',
         yituliuReportId: '',
+        forMizuki: false,
         version: {
           core: {},
           ui: {}
@@ -61,6 +64,9 @@ const useSettingStore = defineStore<'setting', SettingState, {}, SettingAction>(
       async updateVersionInfo () {
         this.version.core.current = await version.core() ?? undefined
         this.version.ui.current = await version.ui()
+      },
+      setForMizuki (forMizuki: boolean) {
+        this.forMizuki = forMizuki
       }
     }
   }
