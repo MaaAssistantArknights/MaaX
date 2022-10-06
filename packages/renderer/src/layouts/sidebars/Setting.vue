@@ -22,8 +22,8 @@ import { NButton, NIcon, NAnchor, NAnchorLink } from 'naive-ui'
       :bound="80"
     >
       <NAnchorLink
-        title="企鹅物流数据上报"
-        href="#penguin-report"
+        title="数据上报"
+        href="#statistics-report"
       />
       <NAnchorLink
         title="版本信息"

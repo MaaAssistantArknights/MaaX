@@ -164,7 +164,10 @@ export default function useCallbackEvents (): void {
                       task.results.fightInfo[resultIndex].reported = true
                       const reportId = response.headers['X-Penguin-Set-PenguinID']
                       if (reportId) {
-                        settingStore.reportId = reportId
+                        settingStore.penguinReportId = reportId
+                        if (settingStore.yituliuReportId.trim() === '') {
+                          settingStore.yituliuReportId = reportId
+                        }
                       }
                     })
                     .catch(error => {
@@ -178,7 +181,7 @@ export default function useCallbackEvents (): void {
             break
           }
           case 'PenguinId': {
-            settingStore.reportId = data.details.id
+            settingStore.penguinReportId = data.details.id
             break
           }
         }

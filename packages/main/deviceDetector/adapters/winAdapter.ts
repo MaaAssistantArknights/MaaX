@@ -216,9 +216,7 @@ class WindowsAdapter implements EmulatorAdapter {
     const noxConsoleList = (await $`${noxConsole} list`).stdout
     const noxConsoleListArr = noxConsoleList.split('\r\n')
     for (const line of noxConsoleListArr) {
-      logger.debug(line)
       const arr = line.split(',')
-      logger.debug(arr)
       if (arr.length > 1 && (arr.pop() as string).toString() === e.pid.toString()) {
         e.commandLine = noxConsole + ` launch -name:${arr[2]}`
         const vmName = arr[1]
@@ -235,10 +233,13 @@ class WindowsAdapter implements EmulatorAdapter {
         } else {
           logger.error('Nox config file not exist!', configPath)
         }
+      } else {
+        logger.error('Fail to read Nox start command!', arr)
       }
     }
   }
 
+  // TODO: 适配新版 mumu, 似乎支持 hyperv 了？
   protected async getMumu (e: Emulator): Promise<void> {
     // MuMu的adb端口仅限7555, 所以, 请不要使用MuMu多开!
     // 流程: 有"NemuHeadless.exe"进程后，就去抓'NemuPlayer.exe'的路径.
@@ -311,6 +312,24 @@ class WindowsAdapter implements EmulatorAdapter {
         }
       })
     // await $`"${defaultAdbPath}" disconnect`
+    // Promise.all(
+    //   emulators.map(e => {
+    //     if (e.pname === 'HD-Player.exe') {
+    //       return this.getBluestack(e)
+    //     } else if (e.pname === 'NoxVMHandle.exe') {
+    //       return this.getNox(e)
+    //     } else if (e.pname === 'NemuHeadless.exe') {
+    //       return this.getMumu(e)
+    //     } else if (e.pname === 'LdVBoxHeadless.exe') {
+    //       return this.getLd(e)
+    //     } else if (e.pname === 'MEmuHeadless.exe') {
+    //       return this.getXY(e)
+    //     }
+    //     return Promise.resolve()
+    //     // return Promise.reject()
+    //   })
+    // ).then(() => Promise.resolve(emulators))
+    //   .catch()
     for await (const e of emulators) {
       if (e.pname === 'HD-Player.exe') {
         await this.getBluestack(e)

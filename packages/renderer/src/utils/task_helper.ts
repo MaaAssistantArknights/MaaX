@@ -28,8 +28,8 @@ export function convertToCoreTaskConfiguration (task: Task): any {
       const settingStore = useSettingStore()
       return {
         enable: task.enable,
-        penguin_id: settingStore.reportId,
-        yituliu_id: settingStore.reportId,
+        penguin_id: settingStore.penguinReportId,
+        yituliu_id: settingStore.yituliuReportId,
         ..._.cloneDeep(task.configurations),
         report_to_penguin: false
       }

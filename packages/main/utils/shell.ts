@@ -55,7 +55,7 @@ export async function $$ (file: string, args?: string[]): Promise<ProcessOutput>
   logger.silly(`exec: ${file} ${args ? args.join(' ') : ''}`)
   try {
     const { stdout, stderr } = (await execa(file, args, {
-      encoding: null
+      encoding: null, detached: true
     }))
     ret.stdout = textDecoder(stdout)
     ret.stderr = textDecoder(stderr)

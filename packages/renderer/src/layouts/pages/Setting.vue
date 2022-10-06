@@ -1,34 +1,16 @@
 <script setup lang="ts">
 import {
-  NForm,
-  NInput,
-  NSpace,
-  NSelect
+  NForm
 } from 'naive-ui'
 
-import useSettingStore, { Locale } from '@/store/settings'
 import Developer from '@/components/Setting/Developer'
 import Version from '@/components/Setting/Version'
 import Appearance from '@/components/Setting/Appearance'
 import About from '@/components/Setting/About'
 import Clear from '@/components/Setting/Clear/Index.vue'
+import Report from '@/components/Setting/Report/Index.vue'
+import General from '@/components/Setting/General/Index.vue'
 
-const settingStore = useSettingStore()
-
-const localeOptions = [
-  {
-    label: '简体中文',
-    value: Locale.zhCN
-  },
-  {
-    label: 'English',
-    value: Locale.enUS
-  }
-]
-
-function handleChangeLocale (locale: Locale) {
-  settingStore.changeLocale(locale)
-}
 </script>
 
 <template>
@@ -37,42 +19,8 @@ function handleChangeLocale (locale: Locale) {
     :label-width="150"
     :show-feedback="false"
   >
-    <div id="general">
-      <h2 class="title">
-        通用
-      </h2>
-      <NSpace
-        justify="center"
-        align="center"
-      >
-        <div>语言</div>
-        <NSelect
-          :value="settingStore.locale"
-          :options="localeOptions"
-          :style="{ width: '200px' }"
-          @update:value="handleChangeLocale"
-        />
-      </NSpace>
-    </div>
-    <div id="penguin-report">
-      <h2 class="title">
-        企鹅物流数据上报
-      </h2>
-      <NSpace
-        justify="center"
-        align="center"
-      >
-        <span>
-          企鹅数据汇报ID
-          <br>(仅数字部分)
-        </span>
-        <NInput
-          v-model:value="settingStore.reportId"
-          :placeholder="''"
-        />
-      </NSpace>
-    </div>
-
+    <General />
+    <Report />
     <Version />
     <Appearance />
     <Clear />
