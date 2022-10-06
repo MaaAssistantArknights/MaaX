@@ -37,7 +37,7 @@ const useDeviceStore = defineStore<'device', DeviceState, {}, DeviceAction>(
               adbPath: defaultAdbPath,
               ...device
             }) // TODO: 对于曾连过设备的合并，要改改，比如先删掉原来的，然后再push？
-          } else if (['disconnected', 'unknown'].includes(origin.status)) { // 曾今连过，更新
+          } else if (['disconnected', 'unknown', 'available'].includes(origin.status)) { // 曾今连过，更新
             logger.debug(`uuid ${origin.uuid}  origin status: ${origin.status}`)
             origin.status = 'available'
             origin.pid = device.pid
