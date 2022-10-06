@@ -2,11 +2,16 @@
 import {
   NSelect,
   NSwitch,
-  NFormItem
+  NFormItem,
+  NTooltip,
+  NSpace
 } from 'naive-ui'
 import useSettingStore, { Locale } from '@/store/settings'
+import useDeviceStore from '@/store/devices'
+import { loadCoreResources } from '@/utils/load_extra_resources'
 
 const settingStore = useSettingStore()
+const deviceStore = useDeviceStore()
 
 const localeOptions = [
   {
@@ -22,6 +27,17 @@ const localeOptions = [
 function handleChangeLocale (locale: Locale) {
   settingStore.changeLocale(locale)
 }
+
+async function handleChangeForMizuki (value: boolean) {
+  settingStore.setForMizuki(value)
+  await loadCoreResources()
+}
+
+function canChangeForMizuki () {
+  // 有任务进行中, 禁止修改此选项
+  return deviceStore.devices.some(device => device.status === 'tasking')
+}
+
 </script>
 
 <template>
@@ -50,7 +66,16 @@ function handleChangeLocale (locale: Locale) {
         label="For Mizuki"
         label-placement="left"
       >
-        <NSwitch />
+        <NTooltip trigger="hover" :disabled="!canChangeForMizuki()">
+          <template #trigger>
+            <NSwitch
+              :value="settingStore.forMizuki"
+              :disabled="canChangeForMizuki()"
+              @change="handleChangeForMizuki"
+            />
+          </template>
+          这个选项无法在有任务进行中修改
+        </NTooltip>
       </NFormItem>
     </NSpace>
   </div>

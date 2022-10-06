@@ -312,6 +312,24 @@ class WindowsAdapter implements EmulatorAdapter {
         }
       })
     // await $`"${defaultAdbPath}" disconnect`
+    // Promise.all(
+    //   emulators.map(e => {
+    //     if (e.pname === 'HD-Player.exe') {
+    //       return this.getBluestack(e)
+    //     } else if (e.pname === 'NoxVMHandle.exe') {
+    //       return this.getNox(e)
+    //     } else if (e.pname === 'NemuHeadless.exe') {
+    //       return this.getMumu(e)
+    //     } else if (e.pname === 'LdVBoxHeadless.exe') {
+    //       return this.getLd(e)
+    //     } else if (e.pname === 'MEmuHeadless.exe') {
+    //       return this.getXY(e)
+    //     }
+    //     return Promise.resolve()
+    //     // return Promise.reject()
+    //   })
+    // ).then(() => Promise.resolve(emulators))
+    //   .catch()
     for await (const e of emulators) {
       if (e.pname === 'HD-Player.exe') {
         await this.getBluestack(e)

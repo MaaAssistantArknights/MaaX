@@ -1,14 +1,20 @@
 import useSettingStore from '@/store/settings'
+import { loadCoreResources } from '@/utils/load_extra_resources'
 
 export default {
   load: async function (showTip = true) {
     let loaded = true
+    const settingStore = useSettingStore()
+
+    loaded = await window.ipcRenderer.invoke('main.CoreLoader:load')
+    if (loaded) await loadCoreResources()
+    settingStore.updateVersionInfo()
     const components: Partial<Record<ComponentType, ComponentStatus>> = {
       'Maa Core': await window.ipcRenderer.invoke('main.ComponentManager:getStatus', 'Maa Core'),
       'Maa Resource': await window.ipcRenderer.invoke('main.ComponentManager:getStatus', 'Maa Resource'),
       'Maa Dependency': await window.ipcRenderer.invoke('main.ComponentManager:getStatus', 'Maa Dependency')
     }
-    const settingStore = useSettingStore()
+
     const showError = showTip ? window.$message.error : undefined
 
     for (const [component, status] of Object.entries(components)) {
@@ -33,8 +39,7 @@ export default {
         break
       }
     }
-    loaded = await window.ipcRenderer.invoke('main.CoreLoader:load')
-    settingStore.updateVersionInfo()
+
     return loaded
   },
   dispose: async () => await (window.ipcRenderer.invoke('main.CoreLoader:dispose') as Promise<void>)
