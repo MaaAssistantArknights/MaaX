@@ -92,6 +92,7 @@ onMounted(() => {
         <NSelect
           :value="themeStore.theme"
           :options="themeOptions"
+          :style="{ width: '200px' }"
           @update:value="(value) => themeStore.updateTheme(value)"
         />
       </NFormItem>

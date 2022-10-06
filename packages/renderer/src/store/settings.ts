@@ -8,7 +8,9 @@ export enum Locale {
 }
 
 export interface SettingState {
-  reportId: string
+  penguinReportId: string
+  yituliuReportId: string
+  forMizuki: boolean
   version: {
     core: {
       current?: string
@@ -24,9 +26,11 @@ export interface SettingState {
 
 export interface SettingAction {
   checkUpdate: () => void
-  setReportId: (reportId: string) => void
+  setPenguinReportId: (reportId: string) => void
+  setYituliuReportId: (reportId: string) => void
   changeLocale: (locale: Locale) => void
   updateVersionInfo: () => void
+  setForMizuki: (forMizuki: boolean) => void
 }
 
 const useSettingStore = defineStore<'setting', SettingState, {}, SettingAction>(
@@ -34,7 +38,9 @@ const useSettingStore = defineStore<'setting', SettingState, {}, SettingAction>(
   {
     state: () => {
       return {
-        reportId: '',
+        penguinReportId: '',
+        yituliuReportId: '',
+        forMizuki: false,
         version: {
           core: {},
           ui: {}
@@ -44,8 +50,11 @@ const useSettingStore = defineStore<'setting', SettingState, {}, SettingAction>(
     },
     actions: {
       checkUpdate () { },
-      setReportId (reportId) {
-        this.reportId = reportId
+      setPenguinReportId (reportId) {
+        this.penguinReportId = reportId
+      },
+      setYituliuReportId (reportId) {
+        this.yituliuReportId = reportId
       },
       changeLocale (locale: Locale) {
         this.locale = locale
@@ -55,6 +64,9 @@ const useSettingStore = defineStore<'setting', SettingState, {}, SettingAction>(
       async updateVersionInfo () {
         this.version.core.current = await version.core() ?? undefined
         this.version.ui.current = await version.ui()
+      },
+      setForMizuki (forMizuki: boolean) {
+        this.forMizuki = forMizuki
       }
     }
   }

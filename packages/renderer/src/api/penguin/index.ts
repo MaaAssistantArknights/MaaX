@@ -32,7 +32,7 @@ const backOffOptions: Partial<IBackOffOptions> = {
 
 export async function postDrop (report: DropReport): Promise<AxiosResponse> {
   const settingStore = useSettingStore()
-  const reportId = settingStore.reportId
+  const reportId = settingStore.penguinReportId
   const _report = {
     ...report,
     source: 'MeoAssistant',
