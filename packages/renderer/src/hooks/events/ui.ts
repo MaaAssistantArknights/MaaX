@@ -10,6 +10,6 @@ export default function useUiHooks (): void {
   })
 
   window.ipcRenderer.on('renderer.WindowManager:loaded', () => {
-    window.removeLoading()
+  //   window.removeLoading()
   })
 }

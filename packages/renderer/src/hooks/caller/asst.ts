@@ -9,6 +9,9 @@ export default {
     loaded = await window.ipcRenderer.invoke('main.CoreLoader:load')
     if (loaded) await loadCoreResources()
     settingStore.updateVersionInfo()
+
+    window.removeLoading()
+
     const components: Partial<Record<ComponentType, ComponentStatus>> = {
       'Maa Core': await window.ipcRenderer.invoke('main.ComponentManager:getStatus', 'Maa Core'),
       'Maa Resource': await window.ipcRenderer.invoke('main.ComponentManager:getStatus', 'Maa Resource'),
