@@ -1,13 +1,13 @@
 {
   "name": "meo-assistant-arknights",
-  "version": "2.0.0-alpha.12",
+  "version": "2.0.0-alpha.15",
   "main": "dist/main/index.cjs",
   "author": "_ChingC <chingc.ccmail@gmail.com>",
   "templateBy": "草鞋没号 <308487730@qq.com>",
   "license": "AGPL-3.0-or-later",
   "scripts": {
     "dev": "node scripts/watch.mjs",
-    "prebuild": "vue-tsc --project packages/renderer/tsconfig.json --noEmit && node scripts/build.mjs",
+    "prebuild": "vue-tsc --project packages/renderer/tsconfig.json --noEmit && node --max-old-space-size=4096 scripts/build.mjs",
     "build": "electron-builder",
     "debug": "npm run prebuild && vite ./packages/renderer",
     "lint": "eslint --ext .js,.ts,.vue --fix packages/main packages/renderer"
