@@ -4,7 +4,7 @@ async function detectSystemProxy (window: BrowserWindow): Promise<string | undef
   const ses = window.webContents.session
   const resolved = await ses.resolveProxy('https://www.google.com')
   const proxy = resolved.replace('PROXY', '').trim()
-  return proxy === 'direct' ? undefined : `http://${proxy}`
+  return proxy === 'DIRECT' ? undefined : `http://${proxy}`
 }
 
 export default detectSystemProxy
