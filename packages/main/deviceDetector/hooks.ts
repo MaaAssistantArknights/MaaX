@@ -1,5 +1,5 @@
 import { ipcMainHandle, ipcMainRemove } from '@main/utils/ipc-main'
-import { defaultAdbPath, getDeviceUuid } from './utils'
+import { defaultAdbPath, getDeviceUuid, isDefaultAdbExists } from './utils'
 import { $$ } from '@main/utils/shell'
 import { parseArguments } from '@main/utils/arguments'
 
@@ -17,6 +17,7 @@ export function useEmulatorHooks (adapter: Promise<EmulatorAdapter>): void {
   )
   ipcMainHandle('main.DeviceDetector:getDeviceUuid',
     async (event, address: string, adbPath?: string) => await getDeviceUuid(address, adbPath))
+
   ipcMainHandle('main.DeviceDetector:getAdbPath',
     async (event): Promise<string> => {
       return defaultAdbPath
@@ -27,6 +28,11 @@ export function useEmulatorHooks (adapter: Promise<EmulatorAdapter>): void {
       const args = parseArguments(path)
       // eslint-disable-next-line
       await $$(args.splice(0, 1)[0], args)
+    })
+
+  ipcMainHandle('main.DeviceDetector:isDefaultAdbExists',
+    (event): boolean => {
+      return isDefaultAdbExists()
     })
 }
 

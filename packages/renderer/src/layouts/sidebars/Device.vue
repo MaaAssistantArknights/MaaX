@@ -85,6 +85,16 @@ function deviceInfoParser (devices: Device[]): any[] {
 }
 
 async function handleRefreshDevices () {
+  const is_exist = await window.ipcRenderer.invoke('main.DeviceDetector:isDefaultAdbExists')
+  if (!is_exist) {
+    show('未下载 ADB, 请先前往设置界面下载 ADB', {
+      type: 'error',
+      duration: 0,
+      closable: true
+    })
+    return
+  }
+
   show('正在更新设备列表...', { type: 'loading', duration: 0 })
 
   window.ipcRenderer.invoke('main.DeviceDetector:getEmulators').then(
