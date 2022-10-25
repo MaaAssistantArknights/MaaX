@@ -21,7 +21,8 @@ export interface SettingState {
       latest?: string
     }
   }
-  locale: Locale
+  _locale: Locale
+  monsters: boolean
 }
 
 export interface SettingAction {
@@ -31,9 +32,15 @@ export interface SettingAction {
   changeLocale: (locale: Locale) => void
   updateVersionInfo: () => void
   setForMizuki: (forMizuki: boolean) => void
+  toggleMonsters: () => void
 }
 
-const useSettingStore = defineStore<'setting', SettingState, {}, SettingAction>(
+export interface SettingGetters {
+  [K: string]: any
+  locale: (state: SettingState) => Locale
+}
+
+const useSettingStore = defineStore<'setting', SettingState, SettingGetters, SettingAction>(
   'setting',
   {
     state: () => {
@@ -45,11 +52,21 @@ const useSettingStore = defineStore<'setting', SettingState, {}, SettingAction>(
           core: {},
           ui: {}
         },
-        locale: Locale.zhCN
+        _locale: Locale.zhCN,
+        monsters: false
+      }
+    },
+    getters: {
+      locale (state) {
+        if (state.monsters) {
+          return Locale.enUS
+        }
+        return state._locale
       }
     },
     actions: {
-      checkUpdate () { },
+      checkUpdate () {
+      },
       setPenguinReportId (reportId) {
         this.penguinReportId = reportId
       },
@@ -57,9 +74,12 @@ const useSettingStore = defineStore<'setting', SettingState, {}, SettingAction>(
         this.yituliuReportId = reportId
       },
       changeLocale (locale: Locale) {
-        this.locale = locale
+        if (this.monsters) {
+          this.toggleMonsters()
+        }
+        this._locale = locale
         const i18n = useI18n()
-        i18n.locale.value = locale
+        i18n.locale.value = this.locale
       },
       async updateVersionInfo () {
         this.version.core.current = await version.core() ?? undefined
@@ -67,6 +87,16 @@ const useSettingStore = defineStore<'setting', SettingState, {}, SettingAction>(
       },
       setForMizuki (forMizuki: boolean) {
         this.forMizuki = forMizuki
+      },
+      toggleMonsters () {
+        this.monsters = !this.monsters
+        if (this.monsters) {
+          document.body.className = 'monster'
+        } else {
+          document.body.className = ''
+        }
+        const i18n = useI18n()
+        i18n.locale.value = this.locale
       }
     }
   }
