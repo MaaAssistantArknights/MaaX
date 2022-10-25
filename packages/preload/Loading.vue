@@ -49,6 +49,7 @@ onMounted(() => {
     alignItems: 'center',
     justifyContent: 'space-around',
     zIndex: 9999,
+    color: 'white !important',
     // background: 'rgba(100,97,154,.75)',
     background: 'rgba(0,0,0,.75)',
     pointerEvents: 'none',
