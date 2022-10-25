@@ -13,7 +13,7 @@ export function useLoading() {
   const oDiv = document.createElement('div')
   oDiv.id = 'loading'
   oDiv.style.opacity = '1'
-  oDiv.style.transition = 'opacity 3s'
+  oDiv.style.transition = 'opacity 5s'
   oStyle.innerHTML = `
   font-face {
   font-family: "Cera Round Pro";
@@ -63,7 +63,7 @@ export function useLoading() {
         loading.unmount()
         document.body.removeChild(oDiv)
         document.head.removeChild(oStyle)
-      }, 3000)
+      }, 5000)
     },
   }
 }
