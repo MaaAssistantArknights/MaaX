@@ -63,33 +63,33 @@ function canChangeForMizuki () {
       通用
     </h2>
     <NSpace
-        vertical
-        justify="center"
+      vertical
+      justify="center"
     >
       <NFormItem
-          :label-width="300"
-          label="语言"
-          label-placement="left"
+        :label-width="300"
+        label="语言"
+        label-placement="left"
       >
         <NSelect
-            :value="settingStore.locale"
-            :options="localeOptions"
-            :style="{ width: '200px' }"
-            @update:value="handleChangeLocale"
-            @click="handleLanguageSelectClick"
+          :value="settingStore.locale"
+          :options="localeOptions"
+          :style="{ width: '200px' }"
+          @update:value="handleChangeLocale"
+          @click="handleLanguageSelectClick"
         />
       </NFormItem>
       <NFormItem
-          :label-width="300"
-          label="For Mizuki"
-          label-placement="left"
+        :label-width="300"
+        label="For Mizuki"
+        label-placement="left"
       >
         <NTooltip trigger="hover" :disabled="!canChangeForMizuki()">
           <template #trigger>
             <NSwitch
-                :value="settingStore.forMizuki"
-                :disabled="canChangeForMizuki()"
-                @change="handleChangeForMizuki"
+              :value="settingStore.forMizuki"
+              :disabled="canChangeForMizuki()"
+              @update:value="handleChangeForMizuki"
             />
           </template>
           这个选项无法在有任务进行中修改
