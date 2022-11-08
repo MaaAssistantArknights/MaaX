@@ -29,6 +29,7 @@ export enum TaskChainMap {
   Copilot = 'copilot',
   Shutdown = 'shutdown',
   Award = 'award',
+  Idle = 'idle',
   Debug = 'debug',
 
   emulator = 'Emulator',
@@ -43,5 +44,6 @@ export enum TaskChainMap {
   copilot = 'Copilot',
   shutdown = 'Shutdown',
   award = 'Award',
+  idle = 'Idle',
   debug = 'Debug',
 }

@@ -185,6 +185,17 @@ const defaultTaskConf: Record<string, Task> = {
       delay: 300
     },
     results: {}
+  },
+  idle: {
+    name: 'idle',
+    task_id: -1,
+    title: '挂机',
+    status: 'idle',
+    enable: false,
+    configurations: {
+      delay: 600
+    },
+    results: {}
   }
 }
 
@@ -326,6 +337,7 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
     },
     fixTaskList (uuid) {
       const origin = this.deviceTasks[uuid]
+      // STEP 1. update task config.
       origin?.forEach((task) => {
         task.title = defaultTaskConf[task.name].title
         if (
@@ -342,7 +354,15 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
           logger.info('task fixed')
           task.configurations = defaultTaskConf[task.name].configurations
         }
-      })
+      }
+
+      )
+      // STEP 2. add new tasks.
+      for (const [, conf] of Object.entries(defaultTaskConf)) {
+        if (!origin?.some((t) => t.name === conf.name)) {
+          origin?.push(_.cloneDeep(conf))
+        }
+      }
     }
   }
 })
