@@ -5,16 +5,16 @@ on:
     branches: 
     - main
     - dev
-  paths-ignore:
-  - "**.md"
-  - "**.spec.js"
-  - ".idea"
-  - ".vscode"
-  - ".dockerignore"
-  - "Dockerfile"
-  - ".gitignore"
-  - ".github/**"
-  - "!.github/workflows/*.yml"
+    paths-ignore:
+    - "**.md"
+    - "**.spec.js"
+    - ".idea"
+    - ".vscode"
+    - ".dockerignore"
+    - "Dockerfile"
+    - ".gitignore"
+    - ".github/**"
+    - "!.github/workflows/*.yml"
 
 defaults:
   run:
