@@ -47,17 +47,12 @@ jobs:
         run: yarn install
 
       # https://github.com/marketplace/actions/electron-builder-action
-      - name: Compile & Release Electron app
-        uses: samuelmeuli/action-electron-builder@v1
-        with:
-          build_script_name: prebuild
-          args: --config electron-builder.json
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          max_attempts: 5
+      - name: Compile Electron app
+        run: yarn build
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.os }}-build
-          path: artifacts
+          path: release/
       
