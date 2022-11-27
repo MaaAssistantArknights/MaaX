@@ -1,6 +1,7 @@
 import { builtinModules } from "module";
 import { defineConfig } from "vite";
 import pkg from "../../package.json";
+import vue from "@vitejs/plugin-vue";
 
 export default defineConfig({
   root: __dirname,
@@ -12,7 +13,7 @@ export default defineConfig({
       fileName: () => "[name].cjs",
     },
     sourcemap: true,
-    minify: process.env./* from mode option */ NODE_ENV === "production",
+    minify: process.env.NODE_ENV === "production",
     emptyOutDir: true,
     rollupOptions: {
       external: [
@@ -22,4 +23,7 @@ export default defineConfig({
       ],
     },
   },
+  plugins: [
+    vue(),
+  ]
 });
