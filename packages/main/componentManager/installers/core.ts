@@ -6,6 +6,7 @@ import logger from '@main/utils/logger'
 import path from 'path'
 import fs from 'fs'
 import { getAppBaseDir } from '@main/utils/path'
+import { getDownloadUrlSuffix } from '@main/utils/os'
 
 @Singleton
 class CoreInstaller extends ComponentInstaller {
@@ -119,13 +120,18 @@ class CoreInstaller extends ComponentInstaller {
     }
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { assets, tag_name, published_at } = release
+    const suffix = getDownloadUrlSuffix()
     const currentVersion = fs.existsSync(this.versionFile) ? fs.readFileSync(this.versionFile, 'utf-8') : ''
     if (currentVersion === tag_name) {
       return undefined
     }
     fs.writeFileSync(this.upgradableFile, tag_name, 'utf-8')
-    const regexp = /^MaaCore-v(.+)\.zip$/
+    const regexp = RegExp(`MAAComponent-Core-v(.+)${suffix}.zip`, 'g')
     const core = assets.find((asset: any) => regexp.test(asset.name))
+    if (!core) {
+      logger.error('[Component Installer] Failed to get core asset')
+      return false
+    }
     return {
       url: core.browser_download_url,
       version: tag_name,
