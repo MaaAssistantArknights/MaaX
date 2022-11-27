@@ -1,0 +1,58 @@
+name: "Build/PullRequest"
+
+on:
+  pull_request:
+    branches: 
+    - main
+    - dev
+    paths-ignore:
+    - "**.md"
+    - "**.spec.js"
+    - ".idea"
+    - ".vscode"
+    - ".dockerignore"
+    - "Dockerfile"
+    - ".gitignore"
+    - ".github/**"
+    - "!.github/workflows/*.yml"
+
+defaults:
+  run:
+    shell: "bash"
+
+jobs:
+  release:
+    # see more environment https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idruns-on
+    runs-on: ${{ matrix.os }}
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    strategy:
+      matrix:
+        node: ["18"]
+        os: [windows-latest]
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Use Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install
+
+      # https://github.com/marketplace/actions/electron-builder-action
+      - name: Compile Electron app
+        run: yarn build
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.os }}-build
+          path: release/
+      
