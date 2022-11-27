@@ -9,6 +9,7 @@ import {
 import useSettingStore, { Locale } from '@/store/settings'
 import useDeviceStore from '@/store/devices'
 import { loadCoreResources } from '@/utils/load_extra_resources'
+import { ref } from 'vue'
 
 const settingStore = useSettingStore()
 const deviceStore = useDeviceStore()
@@ -23,6 +24,22 @@ const localeOptions = [
     value: Locale.enUS
   }
 ]
+
+const dropdownCount = ref(0)
+let timer = 0
+
+function handleLanguageSelectClick () {
+  if (timer) {
+    clearTimeout(timer)
+  }
+  dropdownCount.value += 1
+  if (dropdownCount.value === 5) {
+    settingStore.toggleMonsters()
+  }
+  timer = window.setTimeout(() => {
+    dropdownCount.value = 0
+  }, 1000)
+}
 
 function handleChangeLocale (locale: Locale) {
   settingStore.changeLocale(locale)
@@ -59,6 +76,7 @@ function canChangeForMizuki () {
           :options="localeOptions"
           :style="{ width: '200px' }"
           @update:value="handleChangeLocale"
+          @click="handleLanguageSelectClick"
         />
       </NFormItem>
       <NFormItem
@@ -71,7 +89,7 @@ function canChangeForMizuki () {
             <NSwitch
               :value="settingStore.forMizuki"
               :disabled="canChangeForMizuki()"
-              @change="handleChangeForMizuki"
+              @update:value="handleChangeForMizuki"
             />
           </template>
           这个选项无法在有任务进行中修改

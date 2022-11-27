@@ -9,6 +9,13 @@ import PageSetting from '@/layouts/pages/Setting.vue'
 import SideBarDevice from '@/layouts/sidebars/Device.vue'
 import PageDevice from '@/layouts/pages/Device.vue'
 
+import SideBarTool from '@/layouts/sidebars/Tool.vue'
+import PageTool from '@/layouts/pages/Tool.vue'
+
+import ToolCopilot from '@/components/Tool/Copilot.vue'
+import ToolItem from '@/components/Tool/Item.vue'
+import ToolRecruit from '@/components/Tool/Recruit.vue'
+
 const routes: RouteRecordRaw[] = [
   {
     path: '/task/:uuid',
@@ -30,6 +37,27 @@ const routes: RouteRecordRaw[] = [
       Main: PageDevice,
       SideBar: SideBarDevice
     }
+  },
+  {
+    path: '/tool/:uuid',
+    components: {
+      Main: PageTool,
+      SideBar: SideBarTool
+    },
+    children: [
+      {
+        path: 'copilot',
+        component: ToolCopilot
+      },
+      {
+        path: 'item',
+        component: ToolItem
+      },
+      {
+        path: 'recruit',
+        component: ToolRecruit
+      }
+    ]
   }
 ]
 
