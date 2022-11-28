@@ -215,7 +215,6 @@ async function handleDeviceConnect () {
 .device-card {
   display: flex;
   border-radius: 12px;
-  padding: 4px 16px;
   align-items: center;
   transition: background-color 0.3s var(--n-bezier);
   justify-content: space-between;
@@ -223,7 +222,9 @@ async function handleDeviceConnect () {
 
 .device-info {
   flex: 1;
+  border-radius: inherit;
   justify-content: flex-start;
+  padding: 12px 16px;
 }
 
 .device-status {

@@ -18,5 +18,6 @@ declare global {
     }
     removeLoading: () => void
     $message: MessageApiInjection
+    updateLoadingText: (text: string) => void
   }
 }

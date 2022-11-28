@@ -86,12 +86,10 @@ abstract class ComponentInstaller {
       return this.releaseTemp.data
     }
     const proxyUrl = await detectSystemProxy(new WindowManager().getWindow())
-    const { protocol, hostname, port, username, password } = new URL(proxyUrl)
-
-    const url = 'https://api.github.com/repos/MaaAssistantArknights/MaaAssistantArknights/releases'
-    const releaseResponse = await axios.get(url, {
-      adapter: require('axios/lib/adapters/http.js'),
-      proxy: {
+    let proxy
+    if (proxyUrl) {
+      const { protocol, hostname, port, username, password } = new URL(proxyUrl)
+      proxy = {
         host: hostname,
         port: Number(port),
         protocol,
@@ -100,6 +98,12 @@ abstract class ComponentInstaller {
           password
         }
       }
+    }
+
+    const url = 'https://api.github.com/repos/MaaAssistantArknights/MaaAssistantArknights/releases'
+    const releaseResponse = await axios.get(url, {
+      adapter: require('axios/lib/adapters/http.js'),
+      proxy
     })
     this.releaseTemp = { data: releaseResponse.data[0], updated: Date.now() }
     return this.releaseTemp.data
