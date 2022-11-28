@@ -14,6 +14,6 @@ export async function loadCoreResources (): Promise<void> {
   if (settingStore.forMizuki) {
     const extraConfigPath = basePath + extraPath
     status = await window.ipcRenderer.invoke('main.CoreLoader:loadResource', extraConfigPath)
-    logger.info('loadResources', extraConfigPath, status)
+    logger.info('loadResources', extraConfigPath, status === true ? 'success' : 'failed')
   }
 }

@@ -6,7 +6,7 @@ import { ipcMainSend } from '@main/utils/ipc-main'
 import logger from '@main/utils/logger'
 import path from 'path'
 import { cpuFeature } from '@main/utils/environment'
-import { getArch } from '@main/utils/os'
+import { getArch, getDownloadUrlSuffix, getPlatform } from '@main/utils/os'
 import fs from 'fs'
 import { getAppBaseDir } from '@main/utils/path'
 
@@ -108,6 +108,10 @@ class DependencyInstaller extends ComponentInstaller {
   }
 
   public async checkUpdate (): Promise<Update | false | undefined> {
+    const platform = getPlatform()
+    if (platform === 'macos') {
+      return false
+    }
     let release = null
     try {
       release = await this.getRelease()
@@ -120,15 +124,20 @@ class DependencyInstaller extends ComponentInstaller {
     }
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { assets, tag_name, published_at } = release
+    const suffix = getDownloadUrlSuffix()
     const currentVersion = fs.existsSync(this.versionFile) ? fs.readFileSync(this.versionFile, 'utf-8') : ''
     if (currentVersion === tag_name) {
       return undefined
     }
     fs.writeFileSync(this.upgradableFile, tag_name, 'utf-8')
     const regexp = getArch() === 'x64' && cpuFeature.avx2
-      ? /^MaaDependency-v(.+)\.zip$/
-      : /^MaaDependencyNoAvx-v(.+)\.zip$/
+      ? RegExp(`MAAComponent-Dependency-v(.+)${suffix}.zip`, 'g')
+      : RegExp(`MAAComponent-DependencyNoAvx-v(.+)${suffix}.zip`, 'g')
     const dependency = assets.find((asset: any) => regexp.test(asset.name))
+    if (!dependency) {
+      logger.error('[Component Installer] Failed to find dependency')
+      return false
+    }
     return {
       url: dependency.browser_download_url,
       version: tag_name,
