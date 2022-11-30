@@ -4,6 +4,7 @@ import { NSpace, NButton, NSwitch, NIcon, NTooltip } from 'naive-ui'
 import _ from 'lodash'
 import Draggable from 'vuedraggable'
 import TaskCard from '@/components/Task/TaskCard.vue'
+import NewTask from '@/components/Task/NewTask.vue'
 import IconList from '@/assets/icons/list.svg?component'
 import IconGrid from '@/assets/icons/grid.svg?component'
 import Configuration from '@/components/Task/configurations/Index.vue'
@@ -149,7 +150,7 @@ function handleTaskCopy (index: number) {
 function handleTaskDelete (index: number) {
   const status = taskStore.deleteTask(uuid.value, index)
   if (!status) {
-    show('不可以删除只有一份的任务哦', { type: 'error' })
+    show('删除任务失败', { type: 'error', duration: 12 })
   }
 }
 
@@ -241,6 +242,14 @@ provide('update:configuration', handleTaskConfigurationUpdate)
         </TaskCard>
       </template>
     </Draggable>
+    <div
+      class="cards"
+      :class="isGrid ? 'cards-grid' : ''"
+    >
+      <NewTask
+        :is-collapsed="!isGrid"
+      />
+    </div>
   </div>
 </template>
 
