@@ -32,3 +32,17 @@ export const getPlatform = (): Api.Maa.Platform => {
 export const getSystemInformation = async (): Promise<any> => {
   return await SystemInformation.getStaticData()
 }
+
+export const getDownloadUrlSuffix = (): string => {
+  let ret = ''
+  const platform = getPlatform()
+  switch (platform) {
+    case 'windows':
+      ret = '-win-x64'
+      break
+    case 'macos':
+      ret = '-macos'
+      break
+  }
+  return ret
+}

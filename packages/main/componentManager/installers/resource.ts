@@ -122,8 +122,12 @@ class ResourceInstaller extends ComponentInstaller {
       return undefined
     }
     fs.writeFileSync(this.upgradableFile, tag_name, 'utf-8')
-    const regexp = /^MaaResource-v(.+)\.zip$/
+    const regexp = /^MAAComponent-Resource-v(.+)\.zip$/
     const resource = assets.find((asset: any) => regexp.test(asset.name))
+    if (!resource) {
+      logger.error('[Component Installer] Failed to find resource asset')
+      return false
+    }
     return {
       url: resource.browser_download_url,
       version: tag_name,
