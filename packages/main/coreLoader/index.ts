@@ -134,7 +134,11 @@ class CoreLoader {
       console.log(dep.path())
       dep.close()
     }
-    this.DLib.close()
+    try {
+      this.DLib.close()
+    } catch (e) {
+      logger.error('close core error')
+    }
     CoreLoader.loadStatus = false
   }
 
