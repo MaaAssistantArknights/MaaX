@@ -14,6 +14,8 @@ const storage = new Storage()
 /** Some types for core */
 const BoolType = ref.types.bool
 const IntType = ref.types.int
+const AsstAsyncCallIdType = ref.types.int
+const AsstBoolType = ref.types.uint8
 // const IntArrayType = ArrayType(IntType)
 // const DoubleType = ref.types.double
 const ULLType = ref.types.ulonglong
@@ -46,13 +48,10 @@ function createVoidPointer (): ref.Value<void> {
 class CoreLoader {
   private readonly dependences: Record<string, string[]> = {
     win32: [
-      'libiomp5md',
-      'mklml',
-      'mkldnn',
       'opencv_world453',
-      'paddle_inference',
-      'ppocr'
-      // 'penguin-stats-recognize'
+      'onnxruntime',
+      'paddle2onnx',
+      'fastdeploy'
     ],
     linux: [
       'libiomp5.so',
@@ -63,7 +62,7 @@ class CoreLoader {
   }
 
   private readonly libName: Record<string, string> = {
-    win32: 'MeoAssistant',
+    win32: 'MaaCore.dll',
     darwin: 'MeoAssistant.dylib',
     linux: 'libMeoAssistant.so'
   }
@@ -134,7 +133,11 @@ class CoreLoader {
       console.log(dep.path())
       dep.close()
     }
-    this.DLib.close()
+    try {
+      this.DLib.close()
+    } catch (e) {
+      logger.error('close core error')
+    }
     CoreLoader.loadStatus = false
   }
 
@@ -164,7 +167,7 @@ class CoreLoader {
             [StringType],
             ffi.FFI_STDCALL),
 
-          AsstSetProcessOption: ffi.ForeignFunction(this.DLib.get('AsstSetProcessOption'),
+          AsstSetStaticOption: ffi.ForeignFunction(this.DLib.get('AsstSetStaticOption'),
             BoolType,
             [IntType, StringType],
             ffi.FFI_STDCALL),
@@ -219,9 +222,19 @@ class CoreLoader {
             [AsstPtrType],
             ffi.FFI_STDCALL),
 
-          AsstClick: ffi.ForeignFunction(this.DLib.get('AsstClick'),
-            BoolType,
-            [AsstPtrType, IntType, IntType],
+          AsstAsyncConnect: ffi.ForeignFunction(this.DLib.get('AsstAsyncConnect'),
+            AsstAsyncCallIdType,
+            [AsstPtrType, StringType, StringType, StringType, BoolType],
+            ffi.FFI_STDCALL),
+
+          AsstAsyncClick: ffi.ForeignFunction(this.DLib.get('AsstAsyncClick'),
+            AsstAsyncCallIdType,
+            [AsstPtrType, IntType, IntType, BoolType],
+            ffi.FFI_STDCALL),
+
+          AsstAsyncScreencap: ffi.ForeignFunction(this.DLib.get('AsstAsyncScreencap'),
+            AsstAsyncCallIdType,
+            [AsstPtrType, BoolType],
             ffi.FFI_STDCALL),
 
           AsstGetImage: ffi.ForeignFunction(this.DLib.get('AsstGetImage'),
@@ -382,14 +395,10 @@ class CoreLoader {
   }
 
   public GetImage (uuid: string): string {
-    logger.silly('enter GetImage')
     const buf = Buffer.alloc(5114514)
-    logger.silly(`allocated size ${buf.length}`)
     const len = this.MeoAsstLib.AsstGetImage(this.GetUUID(uuid), buf as any, buf.length)
     const buf2 = buf.slice(0, len as number)
-    logger.silly('received image len: ', len)
     const v2 = buf2.toString('base64')
-    // logger.silly(v2)
     return v2
   }
 
