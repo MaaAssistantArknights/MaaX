@@ -55,5 +55,5 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.os }}-build
-          path: release/
+          path: release/*/*.zip
       
