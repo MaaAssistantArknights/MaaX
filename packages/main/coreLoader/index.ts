@@ -395,14 +395,10 @@ class CoreLoader {
   }
 
   public GetImage (uuid: string): string {
-    logger.silly('enter GetImage')
     const buf = Buffer.alloc(5114514)
-    logger.silly(`allocated size ${buf.length}`)
     const len = this.MeoAsstLib.AsstGetImage(this.GetUUID(uuid), buf as any, buf.length)
     const buf2 = buf.slice(0, len as number)
-    logger.silly('received image len: ', len)
     const v2 = buf2.toString('base64')
-    // logger.silly(v2)
     return v2
   }
 
