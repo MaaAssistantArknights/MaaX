@@ -39,6 +39,13 @@ export default defineConfig({
     emptyOutDir: true,
     sourcemap: true,
     outDir: "../../dist/renderer",
+    rollupOptions: {
+      output:{
+        entryFileNames: `assets/[name].js`,
+        chunkFileNames: `assets/[name].js`,
+        assetFileNames: `assets/[name].[ext]`,
+      }
+    }
   },
   server: {
     port: pkg.env.PORT,
