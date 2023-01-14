@@ -76,7 +76,7 @@
     "@maa/cpu-feature": "https://github.com/MaaAssistantArknights/CpuFeature.git#main",
     "axios": "^0.27.2",
     "crypto-js": "^4.1.1",
-    "electron-acrylic-window": "^0.5.11",
+    "@maa/electron-acrylic-window": "https://github.com/MaaAssistantArknights/electron-acrylic-window.git#main",
     "electron-store": "^8.0.1",
     "electron-util": "^0.17.2",
     "execa": "^5.1.1",

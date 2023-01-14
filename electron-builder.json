@@ -23,14 +23,21 @@
       {
         "target": "zip",
         "arch": [
-          "x64"
+          "x64",
+          "arm64"
         ]
       }
     ]
   },
   "linux": {
     "target": [
-      "zip"
+      {
+        "target": "zip",
+        "arch": [
+          "x64",
+          "arm64"
+        ]
+      }
     ],
     "category": "Tools"
   }
