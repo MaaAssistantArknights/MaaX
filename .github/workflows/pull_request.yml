@@ -31,7 +31,8 @@ jobs:
     strategy:
       matrix:
         node: ["18"]
-        os: [windows-latest]
+        goos: [windows-latest, ubuntu-latest]
+        goarch: ["amd64", "arm64"]
 
     steps:
       - uses: actions/checkout@v3
