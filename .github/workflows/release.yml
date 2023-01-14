@@ -22,7 +22,7 @@ defaults:
 jobs:
   release:
     # see more environment https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idruns-on
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.goos }}
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       NODE_OPTIONS: "--max_old_space_size=4096"
@@ -38,7 +38,6 @@ jobs:
         with:
           submodules: recursive
       
-          
       - name: Check pre-release
         uses: actions-ecosystem/action-regex-match@v2
         id: pre-release
