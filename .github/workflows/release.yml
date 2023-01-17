@@ -37,6 +37,9 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: recursive
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7
       
       - name: Check pre-release
         uses: actions-ecosystem/action-regex-match@v2
@@ -60,16 +63,16 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
-          # cache: 'yarn'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: yarn install
+        run: pnpm install
 
       # https://github.com/marketplace/actions/electron-builder-action
       - name: Compile & Release Electron app
         uses: samuelmeuli/action-electron-builder@v1
         with:
-          build_script_name: prebuild
+          build_script_name: prebuild # the script(npm run prebuild) run before electron-builder
           args: --config electron-builder.json
           github_token: ${{ secrets.GITHUB_TOKEN }}
           release: ${{ startsWith(github.ref, 'refs/tags/v') && github.event_name == 'push' && needs.get_metadata.outputs.branch == 'main'}}
