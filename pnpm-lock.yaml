@@ -8,6 +8,7 @@ specifiers:
   '@types/cron': ^1.7.3
   '@types/crypto-js': ^4.1.1
   '@types/ffi-napi': ^4.0.5
+  '@types/lodash': ^4.14.191
   '@types/node': ^18.7.9
   '@types/sortablejs': ^1.10.7
   '@types/source-map-support': ^0.5.4
@@ -64,6 +65,7 @@ specifiers:
 dependencies:
   '@maa/cpu-feature': github.com/MaaAssistantArknights/CpuFeature/ed688518b63d786b2cc1f14fcf93707e3c4ab5e9
   '@maa/electron-acrylic-window': github.com/MaaAssistantArknights/electron-acrylic-window/826d9b5cce92c7a5e0f15e5ba550ee05e5ace0fc
+  '@types/lodash': 4.14.191
   axios: 0.27.2
   crypto-js: 4.1.1
   electron-store: 8.1.0
@@ -546,7 +548,6 @@ packages:
 
   /@types/lodash/4.14.191:
     resolution: {integrity: sha512-BdZ5BCCvho3EIXw6wUCXHe7rS53AIDPLE+JzwgT+OsJk53oBfbSmZZ7CX4VaRoN78N+TJpFi9QPlfIVNmJYWxQ==}
-    dev: true
 
   /@types/minimatch/5.1.2:
     resolution: {integrity: sha512-K0VQKziLUWkVKiRVrx4a40iPaxTUefQmjtkQofBkYRcoaaL/8rhwDWww9qWbrgicNOgnpIsMxyNIUM4+n6dUIA==}
