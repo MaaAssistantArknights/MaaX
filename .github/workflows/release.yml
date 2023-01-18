@@ -70,7 +70,7 @@ jobs:
 
       # https://github.com/marketplace/actions/electron-builder-action
       - name: Compile & Release Electron app
-        uses: MaaAssistantArknights/action-electron-builder@v1.8.0
+        uses: MaaAssistantArknights/action-electron-builder@v1
         with:
           build_script_name: prebuild # the script(npm run prebuild) run before electron-builder
           skip_install: "true"
