@@ -3,6 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@intlify/vite-plugin-vue-i18n': ^5.0.0
   '@maa/cpu-feature': https://github.com/MaaAssistantArknights/CpuFeature.git#main
+  '@maa/electron-acrylic-window': https://github.com/MaaAssistantArknights/electron-acrylic-window.git#main
   '@types/animejs': ^3.1.6
   '@types/cron': ^1.7.3
   '@types/crypto-js': ^4.1.1
@@ -25,7 +26,6 @@ specifiers:
   crypto-js: ^4.1.1
   date-fns: ^2.29.1
   electron: ^20.0.3
-  electron-acrylic-window: https://github.com/MaaAssistantArknights/electron-acrylic-window.git#main
   electron-builder: ^23.5.0
   electron-devtools-installer: ^3.2.0
   electron-store: ^8.0.1
@@ -64,10 +64,10 @@ specifiers:
 
 dependencies:
   '@maa/cpu-feature': github.com/MaaAssistantArknights/CpuFeature/ed688518b63d786b2cc1f14fcf93707e3c4ab5e9
+  '@maa/electron-acrylic-window': github.com/MaaAssistantArknights/electron-acrylic-window/22e10022980c803697f9730b03ac222d2272da5c
   '@types/lodash': 4.14.191
   axios: 0.27.2
   crypto-js: 4.1.1
-  electron-acrylic-window: github.com/MaaAssistantArknights/electron-acrylic-window/826d9b5cce92c7a5e0f15e5ba550ee05e5ace0fc
   electron-store: 8.1.0
   electron-util: 0.17.2
   execa: 5.1.1
@@ -5624,14 +5624,14 @@ packages:
       - supports-color
     dev: false
 
-  github.com/MaaAssistantArknights/electron-acrylic-window/826d9b5cce92c7a5e0f15e5ba550ee05e5ace0fc:
-    resolution: {tarball: https://codeload.github.com/MaaAssistantArknights/electron-acrylic-window/tar.gz/826d9b5cce92c7a5e0f15e5ba550ee05e5ace0fc}
+  github.com/MaaAssistantArknights/electron-acrylic-window/22e10022980c803697f9730b03ac222d2272da5c:
+    resolution: {tarball: https://codeload.github.com/MaaAssistantArknights/electron-acrylic-window/tar.gz/22e10022980c803697f9730b03ac222d2272da5c}
     name: '@maa/electron-acrylic-window'
     version: 0.5.12
     engines: {node: '>=8.0.0'}
     requiresBuild: true
     dependencies:
-      '@maa/win32-displayconfig': github.com/MaaAssistantArknights/win32-displayconfig/ca20f5f312f8a1671b4c96dd1471f617aa78e478
+      '@maa/win32-displayconfig': github.com/MaaAssistantArknights/win32-displayconfig/2ceddab6501db83e177d81b830ff7cf8dc871300
       bindings: 1.5.0
       node-addon-api: 4.3.0
       node-gyp: 9.3.1
@@ -5640,8 +5640,8 @@ packages:
       - supports-color
     dev: false
 
-  github.com/MaaAssistantArknights/win32-displayconfig/ca20f5f312f8a1671b4c96dd1471f617aa78e478:
-    resolution: {tarball: https://codeload.github.com/MaaAssistantArknights/win32-displayconfig/tar.gz/ca20f5f312f8a1671b4c96dd1471f617aa78e478}
+  github.com/MaaAssistantArknights/win32-displayconfig/2ceddab6501db83e177d81b830ff7cf8dc871300:
+    resolution: {tarball: https://codeload.github.com/MaaAssistantArknights/win32-displayconfig/tar.gz/2ceddab6501db83e177d81b830ff7cf8dc871300}
     name: '@maa/win32-displayconfig'
     version: 0.1.1
     engines: {node: '>=16'}
