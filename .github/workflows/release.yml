@@ -79,7 +79,7 @@ jobs:
           build_script_name: prebuild # the script(npm run prebuild) run before electron-builder
           skip_install: "true"
           skip_build: "true"
-          args: --config electron-builder-${{ martix.goarch }}.json
+          args: --config electron-builder-${{ matrix.goarch }}.json
           github_token: ${{ secrets.GITHUB_TOKEN }}
           release: ${{ startsWith(github.ref, 'refs/tags/v') && github.event_name == 'push' && needs.get_metadata.outputs.branch == 'main'}}
           max_attempts: 5
