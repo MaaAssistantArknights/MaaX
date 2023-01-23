@@ -32,9 +32,6 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       NODE_OPTIONS: "--max_old_space_size=4096"
-
-   
-
     steps:
       - uses: actions/checkout@v3
         with:
@@ -44,14 +41,14 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
-          cache: 'yarn'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: yarn install
-
+        run: pnpm i
+      
       # https://github.com/marketplace/actions/electron-builder-action
       - name: Compile Electron app
-        run: yarn build
+        run: pnpm run build
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3

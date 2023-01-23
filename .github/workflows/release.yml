@@ -22,7 +22,7 @@ defaults:
 jobs:
   release:
     # see more environment https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idruns-on
-    runs-on: ${{ matrix.goos }}
+    runs-on: ${{ matrix.os }}
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       NODE_OPTIONS: "--max_old_space_size=4096"
@@ -30,11 +30,11 @@ jobs:
     strategy:
       matrix:
         node: ["18"]
-        goos: [windows-latest, ubuntu-latest]
-        goarch: ["amd64", "arm64"]
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        arch: ["amd64", "arm64"]
     steps:
       - name: Enable long path support on windows
-        if: matrix.goos == 'windows-latest'
+        if: matrix.os == 'windows-latest'
         shell: pwsh
         run: New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
       
@@ -81,7 +81,7 @@ jobs:
         with:
           skip_install: "true"
           skip_build: "true"
-          args: --config electron-builder-${{ matrix.goarch }}.json
+          args: --config electron-builder-${{ matrix.arch }}.json
           github_token: ${{ secrets.GITHUB_TOKEN }}
           release: ${{ startsWith(github.ref, 'refs/tags/v') && github.event_name == 'push' && needs.get_metadata.outputs.branch == 'main'}}
           max_attempts: 5
