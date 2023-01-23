@@ -75,6 +75,8 @@
     "arknights"
   ],
   "dependencies": {
+    "@tigerconnect/ffi-napi": "4.0.3-tc3",
+    "@tigerconnect/ref-napi": "4.0.0-tc8",
     "@types/lodash": "^4.14.191",
     "axios": "^0.27.2",
     "crypto-js": "^4.1.1",
@@ -82,11 +84,8 @@
     "electron-store": "^8.0.1",
     "electron-util": "^0.17.2",
     "execa": "^5.1.1",
-    "ffi-napi": "^4.0.3",
     "iconv-lite": "^0.6.3",
     "ps-list": "^7.2.0",
-    "ref-array-napi": "^1.2.2",
-    "ref-napi": "^3.0.3",
     "systeminformation": "^5.12.4",
     "tslog": "^3.3.3",
     "unzipper": "^0.10.11"
