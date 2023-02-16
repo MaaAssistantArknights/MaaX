@@ -7,6 +7,12 @@ export enum Locale {
   enUS = 'EnUS',
 }
 
+export enum TouchMode {
+  minitouch = 'minitouch',
+  maatouch = 'maatouch',
+  adb = 'adb'
+}
+
 export interface SettingState {
   penguinReportId: string
   yituliuReportId: string
@@ -23,6 +29,7 @@ export interface SettingState {
   }
   _locale: Locale
   monsters: boolean
+  touchMode: TouchMode
 }
 
 export interface SettingAction {
@@ -33,6 +40,7 @@ export interface SettingAction {
   updateVersionInfo: () => void
   setForMizuki: (forMizuki: boolean) => void
   toggleMonsters: () => void
+  setTouchMode: (mode: TouchMode) => void
 }
 
 export interface SettingGetters {
@@ -53,7 +61,8 @@ const useSettingStore = defineStore<'setting', SettingState, SettingGetters, Set
           ui: {}
         },
         _locale: Locale.zhCN,
-        monsters: false
+        monsters: false,
+        touchMode: TouchMode.minitouch
       }
     },
     getters: {
@@ -97,6 +106,9 @@ const useSettingStore = defineStore<'setting', SettingState, SettingGetters, Set
         }
         const i18n = useI18n()
         i18n.locale.value = this.locale
+      },
+      setTouchMode (mode: TouchMode) {
+        this.touchMode = mode
       }
     }
   }

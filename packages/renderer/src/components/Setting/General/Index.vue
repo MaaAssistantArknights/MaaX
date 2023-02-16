@@ -62,14 +62,9 @@ function canChangeForMizuki () {
     <h2 class="title">
       通用
     </h2>
-    <NSpace
-      vertical
-      justify="center"
-    >
+    <NSpace vertical>
       <NFormItem
-        :label-width="300"
-        label="语言"
-        label-placement="left"
+        label="界面语言"
       >
         <NSelect
           :value="settingStore.locale"
@@ -80,9 +75,7 @@ function canChangeForMizuki () {
         />
       </NFormItem>
       <NFormItem
-        :label-width="300"
         label="For Mizuki"
-        label-placement="left"
       >
         <NTooltip trigger="hover" :disabled="!canChangeForMizuki()">
           <template #trigger>

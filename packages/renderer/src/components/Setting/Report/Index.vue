@@ -25,9 +25,7 @@ function onlyAllowNumber (value: string) {
       justify="center"
     >
       <NFormItem
-        :label-width="300"
         label="企鹅物流汇报ID"
-        label-placement="left"
       >
         <NTooltip trigger="hover">
           <template #trigger>
@@ -42,9 +40,7 @@ function onlyAllowNumber (value: string) {
         </NTooltip>
       </NFormItem>
       <NFormItem
-        :label-width="300"
         label="一图流汇报ID"
-        label-placement="left"
       >
         <NTooltip trigger="hover">
           <template #trigger>

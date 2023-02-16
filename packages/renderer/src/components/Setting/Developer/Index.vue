@@ -5,7 +5,7 @@ import SystemInformation from './SystemInformation.vue'
 
 <template>
   <NSpace vertical>
-    <SystemInformation />
+    <!-- <SystemInformation /> -->
     <!-- <SystemStatus /> -->
     <!-- <h3 class="subtitle">系统状态</h3>
     <NSkeleton v-if="ssLoading" height="800px" :sharp="false" />
