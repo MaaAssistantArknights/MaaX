@@ -1,14 +1,14 @@
 import type { BrowserWindowConstructorOptions, BrowserWindow } from 'electron'
-import { is } from 'electron-util'
 import { join } from 'path'
 import { Singleton } from '@common/function/singletonDecorator'
 import useController from './control'
 import useTheme from './theme'
 import Storage from '@main/storageManager'
+import { getPlatform } from '@main/utils/os'
 
 const createWindow = (options?: BrowserWindowConstructorOptions): BrowserWindow => {
   const storage = new Storage()
-  const module = is.windows && storage.get('theme.acrylic')
+  const module = getPlatform() === 'windows' && storage.get('theme.acrylic')
     ? require('electron-acrylic-window')
     : require('electron')
   const Ctor = module.BrowserWindow
@@ -23,7 +23,7 @@ class WindowManager implements Module {
       transparent: true,
       frame: false,
       icon: join(__dirname, '../common/resources/icon.png'),
-      vibrancy: is.macos && storage.get('theme.acrylic') ? 'under-window' : 'appearance-based',
+      vibrancy: getPlatform() === 'macos' && storage.get('theme.acrylic') ? 'under-window' : 'appearance-based',
       width: 1024,
       height: 768,
       minWidth: 800,

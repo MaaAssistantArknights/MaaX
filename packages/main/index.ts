@@ -1,7 +1,7 @@
 import { app, BrowserWindow, shell } from 'electron'
 import { release } from 'os'
 import { join } from 'path'
-import { is } from 'electron-util'
+import { getPlatform, isInDev } from '@main/utils/os'
 
 import useDebug from '@main/utils/debug'
 import logger from '@main/utils/logger'
@@ -19,7 +19,7 @@ import DownloadManager from './downloadManager'
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()
 
 // Set application name for Windows 10+ notifications
-if (is.windows) app.setAppUserModelId(app.getName())
+if (getPlatform() === 'windows') app.setAppUserModelId(app.getName())
 
 if (!app.requestSingleInstanceLock()) {
   app.quit()
@@ -28,7 +28,7 @@ if (!app.requestSingleInstanceLock()) {
 
 async function createApp (): Promise<void> {
   const win = new WindowManager().getWindow()
-  if (app.isPackaged || !is.development) {
+  if (app.isPackaged || !isInDev()) {
     win.loadFile(join(__dirname, '../renderer/index.html'))
   } else {
     // 🚧 Use ['ENV_NAME'] avoid vite:define plugin
@@ -55,7 +55,7 @@ async function createApp (): Promise<void> {
     }
   }
   useHooks()
-  if (is.development) {
+  if (isInDev()) {
     logger.warn('You are in development mode')
     useDebug(win)
   }

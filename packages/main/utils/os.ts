@@ -1,4 +1,5 @@
 import SystemInformation from 'systeminformation'
+import electron from 'electron'
 
 export const getArch = (): Api.Maa.Arch => {
   let arch: Api.Maa.Arch = 'NoArch'
@@ -45,4 +46,11 @@ export const getDownloadUrlSuffix = (): string => {
       break
   }
   return ret
+}
+
+export const isInDev = (): boolean => {
+  // https://github.com/sindresorhus/electron-is-dev/blob/main/index.js
+  const isEnvSet = 'ELECTRON_IS_DEV' in process.env
+  const getFromEnv = Number.parseInt(process.env.ELECTRON_IS_DEV as string, 10) === 1
+  return isEnvSet ? getFromEnv : !electron.app.isPackaged
 }

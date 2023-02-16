@@ -1,5 +1,5 @@
 import logger from '@main/utils/logger'
-import { is } from 'electron-util'
+import { getPlatform } from '@main/utils/os'
 import execa, { ExecaError } from 'execa'
 import iconv from 'iconv-lite'
 
@@ -8,7 +8,7 @@ interface ProcessOutput {
   stderr: string
 }
 
-const textDecoder = (buf: Buffer): string => iconv.decode(buf, is.windows ? 'gb2312' : 'utf8')
+const textDecoder = (buf: Buffer): string => iconv.decode(buf, getPlatform() == 'windows' ? 'gb2312' : 'utf8')
 
 /**
  * 异步执行shell命令,
@@ -19,7 +19,7 @@ export async function $ (pieces: TemplateStringsArray, ...args: string[]): Promi
   const ret = { stderr: '', stdout: '' }
 
   let cmd = pieces[0]
-  if (is.windows) cmd = '& ' + pieces[0]
+  if (getPlatform() === 'windows') cmd = '& ' + pieces[0]
   let i = 0
   while (i < args.length) {
     cmd += args[i] + pieces[++i]
@@ -29,7 +29,7 @@ export async function $ (pieces: TemplateStringsArray, ...args: string[]): Promi
 
   try {
     const { stdout, stderr } = (await execa(cmd, {
-      shell: is.windows ? 'powershell' : 'bash',
+      shell: getPlatform() === 'windows' ? 'powershell' : 'bash',
       encoding: null
     }))
     ret.stdout = textDecoder(stdout)

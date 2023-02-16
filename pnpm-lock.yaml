@@ -31,7 +31,6 @@ specifiers:
   electron-builder: ^23.5.0
   electron-devtools-installer: ^3.2.0
   electron-store: ^8.0.1
-  electron-util: ^0.17.2
   eslint: ^8.9.0
   eslint-config-standard-with-typescript: ^21.0.1
   eslint-plugin-import: ^2.25.4
@@ -70,7 +69,6 @@ dependencies:
   crypto-js: 4.1.1
   electron-acrylic-window: 0.5.11
   electron-store: 8.1.0
-  electron-util: 0.17.2
   execa: 5.1.1
   iconv-lite: 0.6.3
   ps-list: 7.2.0
@@ -286,8 +284,8 @@ packages:
     resolution: {integrity: sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==}
     dev: true
 
-  /@intlify/bundle-utils/3.4.0_vue-i18n@9.2.2:
-    resolution: {integrity: sha512-2UQkqiSAOSPEHMGWlybqWm4G2K0X+FyYho5AwXz6QklSX1EY5EDmOSxZmwscn2qmKBnp6OYsme5kUrnN9xrWzQ==}
+  /@intlify/bundle-utils/4.0.0_vue-i18n@9.2.2:
+    resolution: {integrity: sha512-klXrYT9VXyKEXsD6UY3pShg0O5MPC07n0TZ5RrSs5ry6T1eZVolIFGJi9c3qcDrh1qjJxgikRnPBmD7qGDqbjw==}
     engines: {node: '>= 12'}
     peerDependencies:
       petite-vue-i18n: '*'
@@ -364,7 +362,7 @@ packages:
       vue-i18n:
         optional: true
     dependencies:
-      '@intlify/bundle-utils': 3.4.0_vue-i18n@9.2.2
+      '@intlify/bundle-utils': 4.0.0_vue-i18n@9.2.2
       '@intlify/shared': 9.3.0-beta.16
       '@rollup/pluginutils': 4.2.1
       debug: 4.3.4
@@ -2064,10 +2062,6 @@ packages:
       unzip-crx-3: 0.2.0
     dev: true
 
-  /electron-is-dev/1.2.0:
-    resolution: {integrity: sha512-R1oD5gMBPS7PVU8gJwH6CtT0e6VSoD0+SzSnYpNm+dBkcijgA+K7VAMHDfnRq/lkKPZArpzplTW6jfiMYosdzw==}
-    dev: false
-
   /electron-osx-sign/0.6.0:
     resolution: {integrity: sha512-+hiIEb2Xxk6eDKJ2FFlpofCnemCbjbT5jz+BKGpVBrRNT3kWTGs4DfNX6IzGwgi33hUcXF+kFs9JW+r6Wc1LRg==}
     engines: {node: '>=4.0.0'}
@@ -2103,13 +2097,6 @@ packages:
     dependencies:
       conf: 10.2.0
       type-fest: 2.19.0
-    dev: false
-
-  /electron-util/0.17.2:
-    resolution: {integrity: sha512-4Kg/aZxJ2BZklgyfH86px/D2GyROPyIcnAZar+7KiNmKI2I5l09pwQTP7V95zM3FVhgDQwV9iuJta5dyEvuWAw==}
-    dependencies:
-      electron-is-dev: 1.2.0
-      new-github-issue-url: 0.2.1
     dev: false
 
   /electron/20.3.9:
@@ -4031,11 +4018,6 @@ packages:
   /negotiator/0.6.3:
     resolution: {integrity: sha512-+EUsqGPLsM+j/zdChZjsnX51g4XrHFOIXwfnCVPGlQk/k5giakcKsuxCObBRu6DSm9opw/O6slWbJdghQM4bBg==}
     engines: {node: '>= 0.6'}
-    dev: false
-
-  /new-github-issue-url/0.2.1:
-    resolution: {integrity: sha512-md4cGoxuT4T4d/HDOXbrUHkTKrp/vp+m3aOA7XXVYwNsUNMK49g3SQicTSeV5GIz/5QVGAeYRAOlyp9OvlgsYA==}
-    engines: {node: '>=10'}
     dev: false
 
   /node-addon-api/1.7.2:
