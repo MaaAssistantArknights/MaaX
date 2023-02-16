@@ -1,5 +1,5 @@
-import ffi from 'ffi-napi'
-import ref from 'ref-napi'
+import ffi from '@tigerconnect/ffi-napi'
+import ref from '@tigerconnect/ref-napi'
 import logger from '@main/utils/logger'
 import { ipcMainSend } from '@main/utils/ipc-main'
 import { AsstMsg } from '@common/enum/callback'

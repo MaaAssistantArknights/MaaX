@@ -1,4 +1,4 @@
-# MeoAsstElectronUI
+# MaaAsstElectronUI
 
 ![Build Status](https://github.com/MaaAssistantArknights/MeoAsstElectronUI/workflows/Build%2FRelease/badge.svg) ![platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-blueviolet) ![license](https://img.shields.io/github/license/MaaAssistantArknights/MeoAsstElectronUI) ![commit](https://img.shields.io/github/commit-activity/m/MaaAssistantArknights/MeoAsstElectronUI?color=%23ff69b4)
 
@@ -43,13 +43,14 @@
 ### 调试（以VS Code为例）
 
 * 依赖安装
-  1. 打开终端输入`yarn`或`yarn install`
+  1. 安装`pnpm`: `npm install -g pnpm`
+  1. 打开终端输入`pnpm install`
 
 * 调试main进程：
   1. <kbd>Ctrl</kbd>/<kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>呼出命令面板
   2. 输入Debug，找到“Debug: Toggle Auto Attach”（切换自动附加）
   3. 选择“Only with flag”（仅带有标志）
-  4. 重启终端，输入`yarn dev`
+  4. 重启终端，输入`pnpm dev`
 
 * 调试renderer
   1. 按照上述步骤启动即可，会帮你打开Chrome Devtools，且带有最新的Vue Dev插件

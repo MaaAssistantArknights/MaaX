@@ -24,14 +24,14 @@ jobs:
   release:
     # see more environment https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idruns-on
     runs-on: ${{ matrix.os }}
-    env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
     strategy:
       matrix:
         node: ["18"]
-        os: [windows-latest]
-
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        arch: ["amd64", "arm64"]
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      NODE_OPTIONS: "--max_old_space_size=4096"
     steps:
       - uses: actions/checkout@v3
         with:
@@ -41,18 +41,18 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
-          cache: 'yarn'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: yarn install
-
+        run: pnpm i
+      
       # https://github.com/marketplace/actions/electron-builder-action
       - name: Compile Electron app
-        run: yarn build
+        run: pnpm run build
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.os }}-build
-          path: release/
+          path: release/*/*.zip
       

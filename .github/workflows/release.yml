@@ -25,18 +25,26 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      NODE_OPTIONS: "--max_old_space_size=4096"
 
     strategy:
       matrix:
         node: ["18"]
-        os: [windows-latest]
-
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        arch: ["amd64", "arm64"]
     steps:
+      - name: Enable long path support on windows
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem" -Name "LongPathsEnabled" -Value 1 -PropertyType DWORD -Force
+      
       - uses: actions/checkout@v3
         with:
           submodules: recursive
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7
       
-          
       - name: Check pre-release
         uses: actions-ecosystem/action-regex-match@v2
         id: pre-release
@@ -59,17 +67,21 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
-          cache: 'yarn'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: yarn install
+        run: pnpm install
+
+      - name: Run prebuild
+        run: pnpm prebuild
 
       # https://github.com/marketplace/actions/electron-builder-action
       - name: Compile & Release Electron app
-        uses: samuelmeuli/action-electron-builder@v1
+        uses: MaaAssistantArknights/maa-electronui-builder@master
         with:
-          build_script_name: prebuild
-          args: --config electron-builder.json
+          skip_install: "true"
+          skip_build: "true"
+          args: --config electron-builder-${{ matrix.arch }}.json
           github_token: ${{ secrets.GITHUB_TOKEN }}
           release: ${{ startsWith(github.ref, 'refs/tags/v') && github.event_name == 'push' && needs.get_metadata.outputs.branch == 'main'}}
           max_attempts: 5

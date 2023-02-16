@@ -5,7 +5,6 @@ import DownloadManager from '@main/downloadManager'
 import { ipcMainSend } from '@main/utils/ipc-main'
 import logger from '@main/utils/logger'
 import path from 'path'
-import { cpuFeature } from '@main/utils/environment'
 import { getArch, getDownloadUrlSuffix, getPlatform } from '@main/utils/os'
 import fs from 'fs'
 import { getAppBaseDir } from '@main/utils/path'
@@ -130,9 +129,7 @@ class DependencyInstaller extends ComponentInstaller {
       return undefined
     }
     fs.writeFileSync(this.upgradableFile, tag_name, 'utf-8')
-    const regexp = getArch() === 'x64' && cpuFeature.avx2
-      ? RegExp(`MAAComponent-Dependency-v(.+)${suffix}.zip`, 'g')
-      : RegExp(`MAAComponent-DependencyNoAvx-v(.+)${suffix}.zip`, 'g')
+    const regexp = RegExp(`MAAComponent-Dependency-v(.+)${suffix}.zip`, 'g')
     const dependency = assets.find((asset: any) => regexp.test(asset.name))
     if (!dependency) {
       logger.error('[Component Installer] Failed to find dependency')

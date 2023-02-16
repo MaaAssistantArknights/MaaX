@@ -4,7 +4,7 @@
   "artifactName": "${productName}-${os}-${arch}-${version}.${ext}",
   "asar": false,
   "asarUnpack": "**\\*.{node,dll}",
-  "copyright": "Copyright © 2022 Maa Team",
+  "copyright": "Copyright © 2023 Maa Team",
   "directories": {
     "output": "release/${version}",
     "buildResources": "packages/common/resources"
@@ -12,6 +12,7 @@
   "electronDownload": {
     "mirror": "https://npmmirror.com/mirrors/electron/"
   },
+  "npmRebuild": false,
   "files": [
     "dist"
   ],
@@ -30,7 +31,12 @@
   },
   "linux": {
     "target": [
-      "zip"
+      {
+        "target": "zip",
+        "arch": [
+          "x64"
+        ]
+      }
     ],
     "category": "Tools"
   }
