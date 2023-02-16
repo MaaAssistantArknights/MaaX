@@ -8,6 +8,7 @@ import ffi, { DynamicLibrary } from '@tigerconnect/ffi-napi'
 import ref from '@tigerconnect/ref-napi'
 import callbackHandle from './callback'
 import { getAppBaseDir } from '@main/utils/path'
+import { InstanceOptionKey } from '@main/../common/enum/core'
 
 const storage = new Storage()
 
@@ -15,7 +16,7 @@ const storage = new Storage()
 const BoolType = ref.types.bool
 const IntType = ref.types.int
 const AsstAsyncCallIdType = ref.types.int
-const AsstBoolType = ref.types.uint8
+// const AsstBoolType = ref.types.uint8
 // const IntArrayType = ArrayType(IntType)
 // const DoubleType = ref.types.double
 const ULLType = ref.types.ulonglong
@@ -347,7 +348,7 @@ class CoreLoader {
    * @returns
    */
   public AppendTask (uuid: string, type: string, params: string): number {
-    return this.MeoAsstLib.AsstAppendTask(this.GetUUID(uuid), type, params)
+    return this.MeoAsstLib.AsstAppendTask(this.GetCoreInstanceByUUID(uuid), type, params)
   }
 
   /**
@@ -359,7 +360,7 @@ class CoreLoader {
 
   public SetTaskParams (uuid: string, taskId: number, params: string): boolean {
     return this.MeoAsstLib.AsstSetTaskParams(
-      this.GetUUID(uuid),
+      this.GetCoreInstanceByUUID(uuid),
       taskId,
       params
     )
@@ -371,7 +372,7 @@ class CoreLoader {
    * @returns 是否成功
    */
   public Start (uuid: string): boolean {
-    return this.MeoAsstLib.AsstStart(this.GetUUID(uuid))
+    return this.MeoAsstLib.AsstStart(this.GetCoreInstanceByUUID(uuid))
   }
 
   /**
@@ -380,7 +381,7 @@ class CoreLoader {
    * @returns
    */
   public Stop (uuid: string): boolean {
-    return this.MeoAsstLib.AsstStop(this.GetUUID(uuid))
+    return this.MeoAsstLib.AsstStop(this.GetCoreInstanceByUUID(uuid))
   }
 
   /**
@@ -391,12 +392,12 @@ class CoreLoader {
    * @returns
    */
   public Click (uuid: string, x: number, y: number): boolean {
-    return this.MeoAsstLib.AsstClick(this.GetUUID(uuid), x, y)
+    return this.MeoAsstLib.AsstClick(this.GetCoreInstanceByUUID(uuid), x, y)
   }
 
   public GetImage (uuid: string): string {
     const buf = Buffer.alloc(5114514)
-    const len = this.MeoAsstLib.AsstGetImage(this.GetUUID(uuid), buf as any, buf.length)
+    const len = this.MeoAsstLib.AsstGetImage(this.GetCoreInstanceByUUID(uuid), buf as any, buf.length)
     const buf2 = buf.slice(0, len as number)
     const v2 = buf2.toString('base64')
     return v2
@@ -411,7 +412,7 @@ class CoreLoader {
     return this.MeoAsstLib.AsstGetVersion()
   }
 
-  public GetUUID (uuid: string): AsstInstancePtr {
+  public GetCoreInstanceByUUID (uuid: string): AsstInstancePtr {
     return this.MeoAsstPtr[uuid]
   }
 
@@ -421,6 +422,10 @@ class CoreLoader {
 
   public GetExtraRogueConfigPath (): string {
     return this.extraRogueConfig
+  }
+
+  public SetInstanceOption (uuid: string, key: InstanceOptionKey, value: string): boolean {
+    return this.MeoAsstLib.SetInstanceOption(this.GetCoreInstanceByUUID(uuid), key, value)
   }
 }
 

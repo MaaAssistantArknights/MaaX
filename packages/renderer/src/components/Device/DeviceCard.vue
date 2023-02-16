@@ -85,7 +85,7 @@ async function handleDeviceConnect () {
     duration: 0
   })
 
-  const ret = await window.ipcRenderer.invoke('main.CoreLoader:createExAndConnect', {
+  const ret = await window.ipcRenderer.invoke('main.CoreLoader:initCore', {
     address: device.value?.connectionString,
     uuid: device.value?.uuid,
     adb_path: device.value?.adbPath,

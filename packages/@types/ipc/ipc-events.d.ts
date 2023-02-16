@@ -11,7 +11,7 @@ type IpcMainHandleEvent =
   | 'main.CoreLoader:createEx'
   | 'main.CoreLoader:destroy'
   | 'main.CoreLoader:connect'
-  | 'main.CoreLoader:createExAndConnect'
+  | 'main.CoreLoader:initCore'
   | 'main.CoreLoader:disconnectAndDestroy'
   | 'main.CoreLoader:appendTask'
   | 'main.CoreLoader:setTaskParams'

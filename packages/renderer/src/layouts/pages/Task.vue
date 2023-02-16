@@ -55,7 +55,7 @@ async function handleStartUnconnected (task: Task) {
     if (device) {
       // 设备活了
       logger.debug(device)
-      const status = await window.ipcRenderer.invoke('main.CoreLoader:createExAndConnect', {
+      const status = await window.ipcRenderer.invoke('main.CoreLoader:initCore', {
         // 创建连接
         address: device.address,
         uuid: device.uuid,

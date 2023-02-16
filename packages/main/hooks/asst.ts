@@ -31,9 +31,10 @@ string,
       arg.config
     )
   },
-  'main.CoreLoader:createExAndConnect': async (_event, arg) => {
+  'main.CoreLoader:initCore': async (_event, arg) => {
     const createStatus = core.CreateEx(arg.uuid) ?? false
     if (!createStatus) console.log(`重复创建 ${JSON.stringify(arg)}`)
+
     return core.Connect(
       arg.address,
       arg.uuid,
