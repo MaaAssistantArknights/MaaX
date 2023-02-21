@@ -37,6 +37,20 @@ jobs:
         with:
           submodules: recursive
 
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 7
+
+      - name: Write config to npmrc(Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: echo -e "\nnode-linker = hoisted\nshamefully-hoist = true" >> $HOME/.npmrc
+
+      - name: Write config to npmrc(Windows)
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: echo  "`nnode-linker = hoisted`nshamefully-hoist = true" >> $env:USERPROFILE/.npmrc
+
       - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v3
         with:
