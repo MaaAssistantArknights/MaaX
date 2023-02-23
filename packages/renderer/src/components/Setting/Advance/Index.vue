@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { inject } from 'vue'
 import {
   NSelect,
   NFormItem,
@@ -30,6 +31,8 @@ function handleChangeTouchMode (mode: TouchMode) {
   show('将在下一次启动后生效', { type: 'info', duration: 3000, closable: true })
 }
 
+const coreSettingsDisabled = inject('coreSettingsDisabled') as { nre: boolean }
+
 // function forceRepaceAdb () {
 
 // }
@@ -54,6 +57,7 @@ function handleChangeTouchMode (mode: TouchMode) {
             :value="settingStore.touchMode"
             :options="touchModeOptions"
             :style="{ width: '200px' }"
+            :disabled="coreSettingsDisabled.nre"
             @update:value="handleChangeTouchMode"
           />
         </NFormItem>
@@ -62,6 +66,7 @@ function handleChangeTouchMode (mode: TouchMode) {
         >
           <NButton
             type="warning"
+            :disabled="coreSettingsDisabled.nre"
           >
             强制替换ADB
           </NButton>
@@ -71,6 +76,7 @@ function handleChangeTouchMode (mode: TouchMode) {
         >
           <NButton
             type="warning"
+            :disabled="coreSettingsDisabled.nre"
           >
             重置所有配置
           </NButton>
