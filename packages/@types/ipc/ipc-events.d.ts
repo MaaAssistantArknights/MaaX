@@ -26,6 +26,7 @@ type IpcMainHandleEvent =
   | 'main.DeviceDetector:getEmulators'
   | 'main.DeviceDetector:getDeviceUuid'
   | 'main.DeviceDetector:startEmulator'
+  | 'main.DeviceDetector:isDefaultAdbExists'
   | 'main.Util:getOsArch'
   | 'main.Util:getOsPlatform'
   | 'main.Util:getAppPath'

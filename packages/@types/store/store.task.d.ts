@@ -20,6 +20,7 @@ type TaskName =
   | 'rogue'
   | 'shutdown'
   | 'copilot'
+  | 'idle'
 
   type CoreTaskName =
   | 'Emulator'

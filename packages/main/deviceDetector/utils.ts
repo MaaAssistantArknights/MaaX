@@ -3,6 +3,7 @@ import { app } from 'electron'
 import path from 'path'
 import { getPlatform } from '@main/utils/os'
 import { $, $$ } from '@main/utils/shell'
+import fs from 'fs'
 import logger from '@main/utils/logger'
 
 const executableSuffix = getPlatform() === 'windows' ? '.exe' : ''
@@ -13,6 +14,10 @@ export const defaultAdbPath = path.join(
   'platform-tools',
   `adb${executableSuffix}`
 )
+
+export function isDefaultAdbExists (): boolean {
+  return fs.existsSync(defaultAdbPath)
+}
 
 export async function getDeviceUuid (address: string, adbPath = defaultAdbPath): Promise<string | false> {
   if (!adbPath) {

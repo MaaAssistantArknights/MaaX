@@ -94,7 +94,11 @@ export default function useAsstHooks (): void {
       return false
     }
     for (const eventName of Object.keys(asstHooks)) {
-      ipcMainHandle(eventName as IpcMainHandleEvent, asstHooks[eventName])
+      try {
+        ipcMainHandle(eventName as IpcMainHandleEvent, asstHooks[eventName])
+      } catch (e) {
+        logger.error('[ AsstHooks Error ] Fail to register event', eventName)
+      }
     }
     return true
   })

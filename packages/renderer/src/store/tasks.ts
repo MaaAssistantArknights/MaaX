@@ -28,11 +28,12 @@ export interface TaskAction {
   getTaskProcess: (uuid: string, taskId: string) => number | undefined
   stopAllTasks: (uuid: string) => void
   copyTask: (uuid: string, index: number) => boolean
+  copyTaskFromTemplate: (uuid: string, task_name: string) => boolean
   deleteTask: (uuid: string, index: number) => boolean
   fixTaskList: (uuid: string) => void
 }
 
-const defaultTaskConf: Record<string, Task> = {
+export const taskTemplate: Record<string, Task> = {
   emulator: {
     name: 'emulator',
     task_id: -1,
@@ -185,7 +186,33 @@ const defaultTaskConf: Record<string, Task> = {
       delay: 300
     },
     results: {}
+  },
+  idle: {
+    name: 'idle',
+    task_id: -1,
+    title: '挂机',
+    status: 'idle',
+    enable: false,
+    configurations: {
+      delay: 600
+    },
+    results: {}
   }
+}
+Object.freeze(taskTemplate)
+
+const defaultTaskConf: Record<string, Task> = {
+  emulator: _.cloneDeep(taskTemplate.emulator),
+  startup: _.cloneDeep(taskTemplate.startup),
+  fight: _.cloneDeep(taskTemplate.fight),
+  recruit: _.cloneDeep(taskTemplate.recruit),
+  infrast: _.cloneDeep(taskTemplate.infrast),
+  visit: _.cloneDeep(taskTemplate.visit),
+  mall: _.cloneDeep(taskTemplate.mall),
+  award: _.cloneDeep(taskTemplate.award),
+  rogue: _.cloneDeep(taskTemplate.rogue),
+  shutdown: _.cloneDeep(taskTemplate.shutdown),
+  idle: _.cloneDeep(taskTemplate.idle)
 }
 
 export const defaultTask = Object.values(defaultTaskConf)
@@ -318,7 +345,8 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
           (acc, cur) => (cur.name === target.name ? acc + 1 : acc),
           0
         )
-        if (nameCount < 2) return false
+        // 允许删除只有一份的任务
+        if (nameCount < 1) return false
         origin.splice(index, 1)
         return true
       }
@@ -326,6 +354,7 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
     },
     fixTaskList (uuid) {
       const origin = this.deviceTasks[uuid]
+      // STEP 1. update task config.
       origin?.forEach((task) => {
         task.title = defaultTaskConf[task.name].title
         if (
@@ -342,7 +371,24 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
           logger.info('task fixed')
           task.configurations = defaultTaskConf[task.name].configurations
         }
-      })
+      }
+
+      )
+      // STEP 2. add new tasks.
+      for (const [, conf] of Object.entries(defaultTaskConf)) {
+        if (!origin?.some((t) => t.name === conf.name)) {
+          origin?.push(_.cloneDeep(conf))
+        }
+      }
+    },
+    copyTaskFromTemplate (uuid, task_name) {
+      const origin = this.deviceTasks[uuid]
+      const task = taskTemplate[task_name]
+      if (task) {
+        origin?.push(task)
+        return true
+      }
+      return false
     }
   }
 })
