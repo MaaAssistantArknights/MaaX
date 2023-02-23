@@ -21,6 +21,7 @@ type TaskName =
   | 'shutdown'
   | 'copilot'
   | 'idle'
+  | 'ReclamationAlgorithm'
 
   type CoreTaskName =
   | 'Emulator'
@@ -34,6 +35,7 @@ type TaskName =
   | 'Roguelike'
   | 'Copilot'
   | 'Shutdown'
+  | 'ReclamationAlgorithm'
 
 interface Task {
   /**
