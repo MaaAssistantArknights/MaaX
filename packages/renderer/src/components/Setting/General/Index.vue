@@ -1,18 +1,15 @@
 <script lang="ts" setup>
 import {
   NSelect,
-  NSwitch,
   NFormItem,
   NTooltip,
   NSpace
 } from 'naive-ui'
-import useSettingStore, { Locale } from '@/store/settings'
-import useDeviceStore from '@/store/devices'
+import useSettingStore, { Locale, RogueTheme } from '@/store/settings'
 import { loadCoreResources } from '@/utils/load_extra_resources'
-import { ref } from 'vue'
+import { ref, inject } from 'vue'
 
 const settingStore = useSettingStore()
-const deviceStore = useDeviceStore()
 
 const localeOptions = [
   {
@@ -22,6 +19,17 @@ const localeOptions = [
   {
     label: 'English',
     value: Locale.enUS
+  }
+]
+
+const rogueOptions = [
+  {
+    label: '傀影',
+    value: RogueTheme.Phantom
+  },
+  {
+    label: '水月',
+    value: RogueTheme.Mizuki
   }
 ]
 
@@ -45,15 +53,12 @@ function handleChangeLocale (locale: Locale) {
   settingStore.changeLocale(locale)
 }
 
-async function handleChangeForMizuki (value: boolean) {
-  settingStore.setForMizuki(value)
+async function handleChangeRogueTheme (theme: RogueTheme) {
+  settingStore.changeRogueTheme(theme)
   await loadCoreResources()
 }
 
-function canChangeForMizuki () {
-  // 有任务进行中, 禁止修改此选项
-  return deviceStore.devices.some(device => device.status === 'tasking')
-}
+const coreSettingsDisabled = inject('coreSettingsDisabled') as { nre: boolean }
 
 </script>
 
@@ -74,15 +79,15 @@ function canChangeForMizuki () {
           @click="handleLanguageSelectClick"
         />
       </NFormItem>
-      <NFormItem
-        label="For Mizuki"
-      >
-        <NTooltip trigger="hover" :disabled="!canChangeForMizuki()">
+      <NFormItem label="肉鸽主题">
+        <NTooltip trigger="hover" :disabled="!coreSettingsDisabled.nre">
           <template #trigger>
-            <NSwitch
-              :value="settingStore.forMizuki"
-              :disabled="canChangeForMizuki()"
-              @update:value="handleChangeForMizuki"
+            <NSelect
+              :value="settingStore.rogueTheme"
+              :options="rogueOptions"
+              :style="{ width: '200px' }"
+              :disabled="coreSettingsDisabled.nre"
+              @update:value="handleChangeRogueTheme"
             />
           </template>
           这个选项无法在有任务进行中修改

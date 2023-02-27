@@ -13,10 +13,16 @@ export enum TouchMode {
   adb = 'adb'
 }
 
+// 肉鸽主题
+export enum RogueTheme {
+  Phantom = 'Phantom', // 傀影
+  Mizuki = 'Mizuki', // 水月
+}
+
 export interface SettingState {
   penguinReportId: string
   yituliuReportId: string
-  forMizuki: boolean
+  rogueTheme: RogueTheme
   version: {
     core: {
       current?: string
@@ -38,7 +44,7 @@ export interface SettingAction {
   setYituliuReportId: (reportId: string) => void
   changeLocale: (locale: Locale) => void
   updateVersionInfo: () => void
-  setForMizuki: (forMizuki: boolean) => void
+  changeRogueTheme: (theme: RogueTheme) => void
   toggleMonsters: () => void
   setTouchMode: (mode: TouchMode) => void
 }
@@ -55,7 +61,7 @@ const useSettingStore = defineStore<'setting', SettingState, SettingGetters, Set
       return {
         penguinReportId: '',
         yituliuReportId: '',
-        forMizuki: false,
+        rogueTheme: RogueTheme.Phantom,
         version: {
           core: {},
           ui: {}
@@ -94,8 +100,8 @@ const useSettingStore = defineStore<'setting', SettingState, SettingGetters, Set
         this.version.core.current = await version.core() ?? undefined
         this.version.ui.current = await version.ui()
       },
-      setForMizuki (forMizuki: boolean) {
-        this.forMizuki = forMizuki
+      changeRogueTheme (theme: RogueTheme) {
+        this.rogueTheme = theme
       },
       toggleMonsters () {
         this.monsters = !this.monsters
