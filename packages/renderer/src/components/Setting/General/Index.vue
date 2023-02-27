@@ -5,8 +5,9 @@ import {
   NTooltip,
   NSpace
 } from 'naive-ui'
-import useSettingStore, { Locale, RogueTheme } from '@/store/settings'
-import { loadCoreResources } from '@/utils/load_extra_resources'
+import useSettingStore, { Locale } from '@/store/settings'
+import { RogueTheme } from '@common/enum/settings'
+import { loadCoreResources } from '@/utils/core_functions'
 import { ref, inject } from 'vue'
 
 const settingStore = useSettingStore()

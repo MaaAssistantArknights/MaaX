@@ -9,6 +9,7 @@ import ref from '@tigerconnect/ref-napi'
 import callbackHandle from './callback'
 import { getAppBaseDir } from '@main/utils/path'
 import { InstanceOptionKey } from '@main/../common/enum/core'
+import { TouchMode } from '@common/enum/settings'
 
 const storage = new Storage()
 
@@ -426,6 +427,24 @@ class CoreLoader {
 
   public SetInstanceOption (uuid: string, key: InstanceOptionKey, value: string): boolean {
     return this.MeoAsstLib.SetInstanceOption(this.GetCoreInstanceByUUID(uuid), key, value)
+  }
+
+  /**
+   * @description change touchmode for all instances
+   * @param mode TouchMode
+   * @returns is all changes success
+   */
+  public ChangeTouchMode (mode: TouchMode): boolean {
+    let status = false
+    for (const uuid in this.MeoAsstPtr) {
+      if (this.MeoAsstPtr[uuid]) {
+        status = this.SetInstanceOption(uuid, InstanceOptionKey.TouchMode, mode)
+        if (!status) {
+          logger.error(`Change touch mode failed: ${uuid}`)
+        }
+      }
+    }
+    return status
   }
 }
 

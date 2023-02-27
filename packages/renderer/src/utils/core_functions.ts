@@ -1,5 +1,6 @@
 import logger from '@/hooks/caller/logger'
-import useSettingStore, { RogueTheme } from '@/store/settings'
+import useSettingStore from '@/store/settings'
+import { RogueTheme, TouchMode } from '@common/enum/settings'
 
 /**
  * roguelike theme extra resources
@@ -16,5 +17,15 @@ export async function loadCoreResources (): Promise<void> {
     status = await window.ipcRenderer.invoke('main.CoreLoader:loadResource', extraConfigPath)
     // eslint-disable-next-line vue/max-len
     logger.info('Load extra resources for roguelike theme \'mizuki\'', extraConfigPath, status === true ? 'success' : 'failed')
+  }
+}
+
+export async function changeTouchMode (mode: TouchMode): Promise<boolean> {
+  // check is RogueTheme contains mode
+  if (!Object.values(TouchMode).includes(mode)) {
+    logger.error('Invalid touchmode', mode)
+    return false
+  } else {
+    return await window.ipcRenderer.invoke('main.CoreLoader:changeTouchMode', mode)
   }
 }

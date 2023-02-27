@@ -84,6 +84,9 @@ string,
   },
   'main.CoreLoader:getLibPath': async (_event, arg) => {
     return core.libPath
+  },
+  'main.CoreLoader:changeTouchMode': async (_event, arg) => {
+    return core.ChangeTouchMode(arg.mode)
   }
 }
 

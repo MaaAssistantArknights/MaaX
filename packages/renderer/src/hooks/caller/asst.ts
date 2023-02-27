@@ -1,5 +1,5 @@
 import useSettingStore from '@/store/settings'
-import { loadCoreResources } from '@/utils/load_extra_resources'
+import { loadCoreResources } from '@/utils/core_functions'
 
 export default {
   load: async function (showTip = true) {

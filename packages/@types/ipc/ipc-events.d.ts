@@ -18,6 +18,7 @@ type IpcMainHandleEvent =
   | 'main.CoreLoader:start'
   | 'main.CoreLoader:stop'
   | 'main.CoreLoader:supportedStages'
+  | 'main.CoreLoader:changeTouchMode'
   | 'main.ScheduleRunner:shutdown'
   | 'main.ComponentManager:getStatus'
   | 'main.ComponentManager:install'

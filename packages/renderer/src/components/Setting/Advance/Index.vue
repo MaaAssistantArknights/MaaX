@@ -7,7 +7,9 @@ import {
   NButton
 } from 'naive-ui'
 import { show } from '@/utils/message'
-import useSettingStore, { TouchMode } from '@/store/settings'
+import useSettingStore from '@/store/settings'
+import { TouchMode } from '@common/enum/settings'
+import { changeTouchMode } from '@/utils/core_functions'
 
 const settingStore = useSettingStore()
 
@@ -26,9 +28,14 @@ const touchModeOptions = [
   }
 ]
 
-function handleChangeTouchMode (mode: TouchMode) {
+async function onChangeTouchMode (mode: TouchMode) {
+  return await changeTouchMode(mode)
+}
+
+async function handleChangeTouchMode (mode: TouchMode) {
   settingStore.setTouchMode(mode)
-  show('将在下一次启动后生效', { type: 'info', duration: 3000, closable: true })
+  const ret = await onChangeTouchMode(mode)
+  show(ret ? '修改成功' : '修改失败, 请查看log输出', { type: 'info', duration: 3000, closable: true })
 }
 
 const coreSettingsDisabled = inject('coreSettingsDisabled') as { nre: boolean }

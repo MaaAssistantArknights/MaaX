@@ -1,22 +1,11 @@
 import { defineStore } from 'pinia'
 import { useI18n } from 'vue-i18n'
 import version from '@/hooks/caller/version'
+import { RogueTheme, TouchMode } from '@common/enum/settings'
 
 export enum Locale {
   zhCN = 'ZhCN',
   enUS = 'EnUS',
-}
-
-export enum TouchMode {
-  minitouch = 'minitouch',
-  maatouch = 'maatouch',
-  adb = 'adb'
-}
-
-// 肉鸽主题
-export enum RogueTheme {
-  Phantom = 'Phantom', // 傀影
-  Mizuki = 'Mizuki', // 水月
 }
 
 export interface SettingState {
