@@ -429,22 +429,29 @@ class CoreLoader {
     return this.MeoAsstLib.SetInstanceOption(this.GetCoreInstanceByUUID(uuid), key, value)
   }
 
+  public SetTouchMode (uuid: string, mode: TouchMode): boolean {
+    if (!this.MeoAsstPtr[uuid]) {
+      return false
+    }
+    return this.SetInstanceOption(uuid, InstanceOptionKey.TouchMode, mode)
+  }
+
   /**
    * @description change touchmode for all instances
    * @param mode TouchMode
    * @returns is all changes success
    */
   public ChangeTouchMode (mode: TouchMode): boolean {
-    let status = false
     for (const uuid in this.MeoAsstPtr) {
       if (this.MeoAsstPtr[uuid]) {
-        status = this.SetInstanceOption(uuid, InstanceOptionKey.TouchMode, mode)
+        const status = this.SetTouchMode(uuid, mode)
         if (!status) {
-          logger.error(`Change touch mode failed: ${uuid}`)
+          logger.error(`Change touch mode failed on uuid: ${uuid}`)
+          return status
         }
       }
     }
-    return status
+    return true
   }
 }
 

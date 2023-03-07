@@ -28,13 +28,9 @@ const touchModeOptions = [
   }
 ]
 
-async function onChangeTouchMode (mode: TouchMode) {
-  return await changeTouchMode(mode)
-}
-
 async function handleChangeTouchMode (mode: TouchMode) {
   settingStore.setTouchMode(mode)
-  const ret = await onChangeTouchMode(mode)
+  const ret = await changeTouchMode(mode)
   show(ret ? '修改成功' : '修改失败, 请查看log输出', { type: 'info', duration: 3000, closable: true })
 }
 
