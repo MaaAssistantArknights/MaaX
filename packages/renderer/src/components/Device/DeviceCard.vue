@@ -14,6 +14,7 @@ import {
 import useDeviceStore from '@/store/devices'
 import router from '@/router'
 import useTaskStore from '@/store/tasks'
+import useSettingStore from '@/store/settings'
 // import useTaskIdStore from '@/store/taskId'
 import { show } from '@/utils/message'
 
@@ -24,6 +25,9 @@ const props = defineProps<{
 const themeVars = useThemeVars()
 const deviceStore = useDeviceStore()
 const taskStore = useTaskStore()
+const settingStore = useSettingStore()
+
+const touchMode = computed(() => settingStore.touchMode)
 // const taskIdStore = useTaskIdStore()
 const device = computed(() =>
   deviceStore.devices.find((device) => device.uuid === props.uuid)
@@ -89,8 +93,9 @@ async function handleDeviceConnect () {
     address: device.value?.connectionString,
     uuid: device.value?.uuid,
     adb_path: device.value?.adbPath,
-    config: device.value?.config
-  })
+    config: device.value?.config,
+    touch_mode: touchMode.value
+  } as InitCoreParam)
   connecting.destroy()
   if (!ret) {
     show(`${deviceDisplayName.value}连接失败, 尝试重启软件或者在设置界面重新安装`, {
@@ -98,14 +103,6 @@ async function handleDeviceConnect () {
       duration: 3000
     })
     deviceStore.updateDeviceStatus(device.value?.uuid as string, 'available')
-  }
-
-  // 初始化掉落物存储
-  if (!window.sessionStorage.getItem(device.value?.uuid as string)) {
-    window.sessionStorage.setItem(
-      device.value?.uuid as string,
-      '{"StageDrops":{}}'
-    )
   }
 
   // loadingMessage.destroy();

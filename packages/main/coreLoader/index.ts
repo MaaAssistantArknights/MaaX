@@ -426,7 +426,7 @@ class CoreLoader {
   }
 
   public SetInstanceOption (uuid: string, key: InstanceOptionKey, value: string): boolean {
-    return this.MeoAsstLib.SetInstanceOption(this.GetCoreInstanceByUUID(uuid), key, value)
+    return this.MeoAsstLib.AsstSetInstanceOption(this.GetCoreInstanceByUUID(uuid), key, value)
   }
 
   public SetTouchMode (uuid: string, mode: TouchMode): boolean {
