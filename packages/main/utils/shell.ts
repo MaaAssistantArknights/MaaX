@@ -8,7 +8,7 @@ interface ProcessOutput {
   stderr: string
 }
 
-const textDecoder = (buf: Buffer): string => iconv.decode(buf, getPlatform() == 'windows' ? 'gb2312' : 'utf8')
+const textDecoder = (buf: Buffer): string => iconv.decode(buf, getPlatform() === 'windows' ? 'gb2312' : 'utf8')
 
 /**
  * 异步执行shell命令,

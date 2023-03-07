@@ -79,11 +79,11 @@ const options: DropdownMixedOption[] = [
       {
         label: '无限肉鸽',
         key: 'rogue'
-      },
-      {
-        label: '生息演算',
-        key: 'ReclamationAlgorithm'
       }
+      // {
+      //   label: '生息演算',
+      //   key: 'ReclamationAlgorithm'
+      // }
     ]
   },
   {

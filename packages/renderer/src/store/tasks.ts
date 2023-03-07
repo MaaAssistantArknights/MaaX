@@ -197,18 +197,18 @@ export const taskTemplate: Record<string, Task> = {
       delay: 600
     },
     results: {}
-  },
-  ReclamationAlgorithm: {
-    name: 'ReclamationAlgorithm',
-    task_id: -1,
-    title: '生息演算',
-    status: 'idle',
-    enable: false,
-    configurations: {
-      mode: 0
-    },
-    results: {}
   }
+  // ReclamationAlgorithm: {
+  //   name: 'ReclamationAlgorithm',
+  //   task_id: -1,
+  //   title: '生息演算',
+  //   status: 'idle',
+  //   enable: false,
+  //   configurations: {
+  //     mode: 0
+  //   },
+  //   results: {}
+  // }
 }
 Object.freeze(taskTemplate)
 
