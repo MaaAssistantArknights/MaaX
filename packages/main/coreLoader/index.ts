@@ -50,10 +50,9 @@ function createVoidPointer (): ref.Value<void> {
 class CoreLoader {
   private readonly dependences: Record<string, string[]> = {
     win32: [
-      'opencv_world453',
-      'onnxruntime',
-      'paddle2onnx',
-      'fastdeploy'
+      'opencv_world4_maa.dll',
+      'onnxruntime_maa.dll',
+      'MaaDerpLearning.dll'
     ],
     linux: [
       'libiomp5.so',
@@ -131,14 +130,13 @@ class CoreLoader {
       this.Stop(uuid)
       this.Destroy(uuid)
     }
-    for (const dep of this.DepLibs) {
-      console.log(dep.path())
-      dep.close()
-    }
     try {
       this.DLib.close()
     } catch (e) {
       logger.error('close core error')
+    }
+    for (const dep of this.DepLibs) {
+      dep.close()
     }
     CoreLoader.loadStatus = false
   }
