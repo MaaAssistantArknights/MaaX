@@ -1,7 +1,5 @@
 type ComponentType =
   | 'Maa Core'
-  | 'Maa Resource'
-  | 'Maa Dependency'
   | 'Maa App'
   | 'Android Platform Tools'
 

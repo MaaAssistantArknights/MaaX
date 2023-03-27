@@ -126,14 +126,23 @@ class CoreInstaller extends ComponentInstaller {
       return undefined
     }
     fs.writeFileSync(this.upgradableFile, tag_name, 'utf-8')
-    const regexp = RegExp(`MAAComponent-Core-v(.+)${suffix}.zip`, 'g')
-    const core = assets.find((asset: any) => regexp.test(asset.name))
-    if (!core) {
+    let download
+    // find ota
+    const otaString = `MAAComponent-OTA-${currentVersion}_${tag_name as string}${suffix}.zip`
+    logger.info(`[Component Installer] Try to find OTA file name: ${otaString}`)
+    const otaExp = RegExp(otaString, 'g')
+    download = assets.find((asset: any) => otaExp.test(asset.name))
+    if (!download) {
+      logger.warn('[Component Installer] Could not get OTA asset, try to get full asset')
+      const fullExp = RegExp(`MAA-v(.+)${suffix}.zip`, 'g')
+      download = assets.find((asset: any) => fullExp.test(asset.name))
+    }
+    if (!download) {
       logger.error('[Component Installer] Failed to get core asset')
       return false
     }
     return {
-      url: core.browser_download_url,
+      url: download.browser_download_url,
       version: tag_name,
       releaseDate: published_at
     }

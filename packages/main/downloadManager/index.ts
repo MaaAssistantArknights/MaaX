@@ -8,10 +8,7 @@ import ComponentInstaller from '@main/componentManager/componentInstaller'
 import CoreInstaller from '@main/componentManager/installers/core'
 import AdbInstaller from '@main/componentManager/installers/adb'
 import { Singleton } from '@common/function/singletonDecorator'
-import logger from '@main/utils/logger'
 import { getAppBaseDir } from '@main/utils/path'
-import DependencyInstaller from '@main/componentManager/installers/dependency'
-import ResourceInstaller from '@main/componentManager/installers/resource'
 
 @Singleton
 class DownloadManager {
@@ -45,31 +42,11 @@ class DownloadManager {
           prevReceivedBytes: 0,
           receivedBytes: 0
         }
-      },
-      'Maa Dependency': {
-        state: 'interrupted',
-        paused: false,
-        savePath: '',
-        progress: {
-          prevReceivedBytes: 0,
-          receivedBytes: 0
-        }
-      },
-      'Maa Resource': {
-        state: 'interrupted',
-        paused: false,
-        savePath: '',
-        progress: {
-          prevReceivedBytes: 0,
-          receivedBytes: 0
-        }
       }
     }
     this.installers_ = {
       'Maa Core': new CoreInstaller(),
-      'Android Platform Tools': new AdbInstaller(),
-      'Maa Dependency': new DependencyInstaller(),
-      'Maa Resource': new ResourceInstaller()
+      'Android Platform Tools': new AdbInstaller()
     }
 
     for (const installer of Object.values(this.installers_)) {

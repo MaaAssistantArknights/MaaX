@@ -22,6 +22,7 @@ export const getComponentCore = async (): Promise<Component> => {
 
   if (coreVersion) {
     componentCore.status = 'installed'
+    fs.writeFileSync(componentCore.installer.versionFile, coreVersion, 'utf-8') // always check version
     const update = await componentCore.installer.checkUpdate()
     if (update) {
       componentCore.status = 'upgradable'

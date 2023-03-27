@@ -100,7 +100,7 @@ abstract class ComponentInstaller {
       }
     }
 
-    const url = 'https://api.github.com/repos/MaaAssistantArknights/MaaAssistantArknights/releases'
+    const url = 'https://api.github.com/repos/MaaAssistantArknights/MaaRelease/releases'
     const releaseResponse = await axios.get(url, {
       adapter: require('axios/lib/adapters/http.js'),
       proxy
