@@ -87,6 +87,9 @@ string,
   },
   'main.CoreLoader:changeTouchMode': async (_event, arg) => {
     return core.ChangeTouchMode(arg.mode)
+  },
+  'main.CoreLoader:asyncScreencap': async (_event, arg) => {
+    return core.AsyncScreencap(arg.uuid)
   }
 }
 

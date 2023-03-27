@@ -394,6 +394,17 @@ class CoreLoader {
     return this.MeoAsstLib.AsstClick(this.GetCoreInstanceByUUID(uuid), x, y)
   }
 
+  /**
+   * 异步请求截图, 在回调中取得截图完成事件后再使用GetImage获取截图
+   * @param uuid
+   * @param block 阻塞
+   * @returns
+   */
+  public AsyncScreencap (uuid: string, block: boolean = true): number | boolean {
+    if (!this.MeoAsstPtr[uuid]) return false
+    return this.MeoAsstLib.AsstAsyncScreencap(this.GetCoreInstanceByUUID(uuid), block)
+  }
+
   public GetImage (uuid: string): string {
     const buf = Buffer.alloc(5114514)
     const len = this.MeoAsstLib.AsstGetImage(this.GetCoreInstanceByUUID(uuid), buf as any, buf.length)

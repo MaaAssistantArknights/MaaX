@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import IconDisconnect from '@/assets/icons/disconnect.svg?component'
-// import DeviceDetailPopover from '@/components/Device/DeviceDetailPopover.vue'
+import DeviceDetailPopover from '@/components/Device/DeviceDetailPopover.vue'
 import IconLink from '@/assets/icons/link.svg?component'
 import {
   NButton,
@@ -151,11 +151,11 @@ async function handleDeviceConnect () {
           })()
         }}
       </NTooltip>
-      <!-- <DeviceDetailPopover :uuid="props.uuid"> -->
-      <div class="device-name">
-        {{ deviceDisplayName }}
-      </div>
-      <!-- </DeviceDetailPopover> -->
+      <DeviceDetailPopover :uuid="props.uuid">
+        <div class="device-name">
+          {{ deviceDisplayName }}
+        </div>
+      </DeviceDetailPopover>
     </NButton>
     <NSpace :align="'center'">
       <NPopconfirm

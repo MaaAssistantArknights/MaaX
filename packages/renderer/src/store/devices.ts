@@ -11,6 +11,7 @@ export interface DeviceAction {
   updateDeviceStatus: (uuid: string, status: DeviceStatus) => void
   removeNotInUseDevice: () => void
   updateDeviceUuid: (oldUuid: string, newUuid: string) => void
+  updateDeviceDisplayName: (uuid: string, displayName: string) => void
   getDevice: (uuid: string) => Device | undefined
   deleteDevice: (uuid: string) => void
 }
@@ -63,6 +64,12 @@ const useDeviceStore = defineStore<'device', DeviceState, {}, DeviceAction>(
         console.log(`new uuid: ${newUuid}`)
         if (origin != null) {
           origin.uuid = newUuid
+        }
+      },
+      updateDeviceDisplayName (uuid, displayName) {
+        const origin = this.devices.find((dev) => dev.uuid === uuid)
+        if (origin != null) {
+          origin.displayName = displayName
         }
       },
       deleteDevice (uuid) {

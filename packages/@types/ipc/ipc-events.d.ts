@@ -19,6 +19,8 @@ type IpcMainHandleEvent =
   | 'main.CoreLoader:stop'
   | 'main.CoreLoader:supportedStages'
   | 'main.CoreLoader:changeTouchMode'
+  | 'main.CoreLoader:asyncScreencap'
+  | 'main.CoreLoader:getScreencap'
   | 'main.ScheduleRunner:shutdown'
   | 'main.ComponentManager:getStatus'
   | 'main.ComponentManager:install'
@@ -69,6 +71,7 @@ type IpcRendererHandleEvent =
   | 'renderer.ComponentManager:updateStatus'
   | 'renderer.ComponentManager:installInterrupted'
   | 'renderer.ComponentManager:installDone'
+  | 'renderer.Device:getScreenshot'
 
 interface IpcMainEvent<T> {
   name: IpcMainHandleEvent
