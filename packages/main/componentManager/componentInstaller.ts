@@ -1,5 +1,5 @@
 import unzipper, { Entry } from 'unzipper'
-import axios from 'axios'
+import axios, { AxiosProxyConfig } from 'axios'
 import fs from 'fs'
 import path from 'path'
 import logger from '@main/utils/logger'
@@ -27,6 +27,8 @@ abstract class ComponentInstaller {
   protected abstract onProgress (progress: number): void
   protected abstract onCompleted (): void
   protected abstract onException (): void
+
+  protected readonly maxRetryTimes = 3
 
   protected unzipFile = (src: string, dist: string): void => {
     const files: Array<{
@@ -85,6 +87,18 @@ abstract class ComponentInstaller {
     if (this.releaseTemp && Date.now() - this.releaseTemp.updated < 5 * 60 * 1000) {
       return this.releaseTemp.data
     }
+    const proxy = await this.getProxy()
+    const url = 'https://api.github.com/repos/MaaAssistantArknights/MaaRelease/releases'
+
+    const releaseResponse = await axios.get(url, {
+      adapter: require('axios/lib/adapters/http.js'),
+      proxy
+    })
+    this.releaseTemp = { data: releaseResponse.data[0], updated: Date.now() }
+    return this.releaseTemp.data
+  }
+
+  protected getProxy = async (): Promise<AxiosProxyConfig | undefined> => {
     const proxyUrl = await detectSystemProxy(new WindowManager().getWindow())
     let proxy
     if (proxyUrl) {
@@ -99,14 +113,28 @@ abstract class ComponentInstaller {
         }
       }
     }
+    return proxy
+  }
 
-    const url = 'https://api.github.com/repos/MaaAssistantArknights/MaaRelease/releases'
-    const releaseResponse = await axios.get(url, {
-      adapter: require('axios/lib/adapters/http.js'),
-      proxy
-    })
-    this.releaseTemp = { data: releaseResponse.data[0], updated: Date.now() }
-    return this.releaseTemp.data
+  protected tryRequest = async (url: string, retryCount = this.maxRetryTimes) => {
+    const proxy = await this.getProxy()
+    for (let i = 0; i < retryCount; i++) {
+      try {
+        const response = await axios.get(url, {
+          adapter: require('axios/lib/adapters/http.js'),
+          proxy
+        })
+        return response
+      } catch (error) {
+        // eslint-disable-next-line vue/max-len
+        const errorText = `${error.code as string} | ${(error.response?.status) as string|undefined ?? ''} ${(error.response?.statusText) as string|undefined ?? ''}`
+        // eslint-disable-next-line vue/max-len
+        logger.error(`[Component Installer | ${this.componentType}] Error request on URL: ${url}, attempts: ${i + 1}/${retryCount},  Error: ${errorText}`)
+        if (i === retryCount - 1) {
+          return null
+        }
+      }
+    }
   }
 
   protected releaseTemp: {data: any, updated: number} | null = null

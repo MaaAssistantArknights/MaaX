@@ -105,6 +105,22 @@ class CoreInstaller extends ComponentInstaller {
     }
   }
 
+  public getRelease = async () => {
+    const apiUrls = ['https://api.github.com/repos/MaaAssistantArknights/MaaRelease/releases',
+      'https://gh.cirno.xyz/api.github.com/repos/MaaAssistantArknights/MaaRelease/releases']
+    for (const url of apiUrls) {
+      const releaseResponse = await this.tryRequest(url)
+      if (releaseResponse) {
+        this.releaseTemp = {
+          data: releaseResponse.data[0],
+          updated: Date.now()
+        }
+        break
+      }
+    }
+    return this.releaseTemp?.data
+  }
+
   public async checkUpdate (): Promise<Update | false | undefined> {
     let release = null
     try {
@@ -129,18 +145,20 @@ class CoreInstaller extends ComponentInstaller {
     let download
     // find ota
     const otaString = `MAAComponent-OTA-${currentVersion}_${tag_name as string}${suffix}.zip`
-    logger.info(`[Component Installer] Try to find OTA file name: ${otaString}`)
+    logger.info(`[Component Installer | ${this.componentType}] Attempting to find OTA update asset: ${otaString}`)
     const otaExp = RegExp(otaString, 'g')
     download = assets.find((asset: any) => otaExp.test(asset.name))
     if (!download) {
-      logger.warn('[Component Installer] Could not get OTA asset, try to get full asset')
+      // eslint-disable-next-line vue/max-len
+      logger.warn(`[Component Installer | ${this.componentType} ] Unable to acquire OTA update asset, attempting to obtain full update asset`)
       const fullExp = RegExp(`MAA-v(.+)${suffix}.zip`, 'g')
       download = assets.find((asset: any) => fullExp.test(asset.name))
     }
     if (!download) {
-      logger.error('[Component Installer] Failed to get core asset')
+      logger.error(`[Component Installer | ${this.componentType}] Failed to retrieve core update asset`)
       return false
     }
+    logger.info(`[Component Installer | ${this.componentType}] Found update asset: ${tag_name as string}`)
     return {
       url: download.browser_download_url,
       version: tag_name,
