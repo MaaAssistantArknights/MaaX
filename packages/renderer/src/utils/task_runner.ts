@@ -29,7 +29,7 @@ async function runTaskEmulator (uuid: string, task: Task): Promise<void> {
     if (device) {
       // 设备活了
       logger.silly('Emulator is alive', uuid)
-      const status = await window.ipcRenderer.invoke('main.CoreLoader:createExAndConnect', {
+      const status = await window.ipcRenderer.invoke('main.CoreLoader:initCore', {
         // 创建连接
         address: device.address,
         uuid: device.uuid,

@@ -52,7 +52,7 @@ const updateDisplayName = (displayName: string) => {
 </script>
 
 <template>
-  <NPopover :duration="50000" @update:show="onShow">
+  <NPopover @update:show="onShow">
     <template #trigger>
       <slot />
     </template>
