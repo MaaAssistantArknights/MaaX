@@ -69,6 +69,9 @@ const useDeviceStore = defineStore<'device', DeviceState, {}, DeviceAction>(
       updateDeviceDisplayName (uuid, displayName) {
         const origin = this.devices.find((dev) => dev.uuid === uuid)
         if (origin != null) {
+          if (displayName === '') {
+            displayName = origin.uuid // 如果为空，则使用uuid
+          }
           origin.displayName = displayName
         }
       },

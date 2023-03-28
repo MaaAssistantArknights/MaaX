@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import { NPopover, NImage, NInput, NIcon, NDescriptions, NDescriptionsItem, NDivider } from 'naive-ui'
 import useDeviceStore from '@/store/devices'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import logger from '@/hooks/caller/logger'
+import IconPencilAlt from '@/assets/icons/pencil-alt.svg?component'
 
 const deviceStore = useDeviceStore()
 
@@ -10,7 +11,8 @@ const props = defineProps<{
   uuid: string;
 }>()
 
-const emit = defineEmits(['update:show'])
+// const emit = defineEmits(['update:show'])
+const show = ref(false)
 
 const device = deviceStore.getDevice(props.uuid) as Device
 const screenshot = ref('')
@@ -24,6 +26,7 @@ const startGetScreenshot = async () => {
       screenshot.value = imageData.screenshot
     }
   })
+  if (timer) clearInterval(timer)
   timer = setInterval(async () => {
     logger.info('send asyncScreencap')
     await window.ipcRenderer.invoke('main.CoreLoader:asyncScreencap', { uuid: props.uuid })
@@ -36,14 +39,13 @@ const stopGetScreenshot = () => {
   window.ipcRenderer.off('renderer.Device:getScreenshot', () => {})
 }
 
-const onShow = async (show: boolean) => {
-  logger.warn('in show')
-  if (show) {
+watch(show, (newShowValue) => {
+  if (newShowValue) {
     startGetScreenshot()
   } else {
     stopGetScreenshot()
   }
-}
+})
 
 const updateDisplayName = (displayName: string) => {
   deviceStore.updateDeviceDisplayName(props.uuid, displayName)
@@ -52,7 +54,7 @@ const updateDisplayName = (displayName: string) => {
 </script>
 
 <template>
-  <NPopover @update:show="onShow">
+  <NPopover v-model:show="show" :duration="500">
     <template #trigger>
       <slot />
     </template>
@@ -64,21 +66,30 @@ const updateDisplayName = (displayName: string) => {
         :bordered="false"
         style="max-width: fit-content;"
       >
-        <NDescriptionsItem label="uuid">
-          {{ device.uuid }}
-        </NDescriptionsItem>
         <NDescriptionsItem label="name">
           <NInput
             v-model:value="device.displayName"
-            style="border: none !important;"
+            minlength="1"
+            maxlength="11"
             @update:value="updateDisplayName"
-          />
+          >
+            <template #prefix>
+              <NIcon :component="IconPencilAlt" />
+            </template>
+          </NInput>
+        </NDescriptionsItem>
+        <NDescriptionsItem label="uuid">
+          {{ device.uuid }}
+        </NDescriptionsItem>
+        <NDescriptionsItem label="address">
+          {{ device.address }}
         </NDescriptionsItem>
       </NDescriptions>
+
       <NDivider />
       <NImage
-        width="640"
-        height="360"
+        width="320"
+        height="180"
         src="screenshot"
       />
     </template>
