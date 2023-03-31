@@ -1,6 +1,8 @@
 import { app, BrowserWindow, shell } from 'electron'
 import { release } from 'os'
 import { join } from 'path'
+import fs from 'fs'
+import { spawn } from 'child_process'
 import { getPlatform, isInDev } from '@main/utils/os'
 
 import useDebug from '@main/utils/debug'
@@ -73,6 +75,30 @@ app.on('window-all-closed', () => {
   // const win = new Window().get();
   // win = null;
   app.quit()
+})
+
+app.on('will-quit', () => {
+  const tokenPath = join(app.getPath('temp'), 'clearConfigToken')
+  const exist = fs.existsSync(tokenPath)
+  if (exist) {
+    fs.rmSync(tokenPath)
+    //仅能对正式环境使用
+    if (!isInDev()) {
+      const pid = process.pid.toString()
+      const appPath = join(app.getPath('appData'), app.getName())
+      const exePath = process.argv[0]
+      const out = fs.openSync('./out.log', 'a')
+      const err = fs.openSync('./out.log', 'a')
+      const subprocess = spawn('cmd.exe', ['/c', join(__dirname, 'clearAppConfig.bat'), appPath, pid, exePath], {
+        detached: true,
+        // stdio: ['ignore']
+        stdio: ['ignore', out, err]
+      })
+      subprocess.unref()
+      // app.relaunch()
+      app.exit()
+    }
+  }
 })
 
 app.on('second-instance', () => {

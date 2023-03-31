@@ -34,6 +34,11 @@ async function handleChangeTouchMode (mode: TouchMode) {
   show(ret ? '修改成功' : '修改失败, 请查看log输出', { type: 'info', duration: 3000, closable: true })
 }
 
+async function removeAllConfig () {
+  await window.ipcRenderer.invoke('main.Util:RemoveAllConfig')
+  show('重置成功', { type: 'info', duration: 3000, closable: true })
+}
+
 const coreSettingsDisabled = inject('coreSettingsDisabled') as { nre: boolean }
 
 // function forceRepaceAdb () {
@@ -80,6 +85,7 @@ const coreSettingsDisabled = inject('coreSettingsDisabled') as { nre: boolean }
           <NButton
             type="warning"
             :disabled="coreSettingsDisabled.nre"
+            @click="removeAllConfig"
           >
             重置所有配置
           </NButton>
