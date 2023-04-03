@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { NScrollbar, useMessage } from 'naive-ui'
+import { NScrollbar, useMessage, useDialog } from 'naive-ui'
 import asst from '@/hooks/caller/asst'
 import { onMounted } from 'vue'
 
 window.$message = useMessage()
+window.$dialog = useDialog()
 
 onMounted(asst.load)
 

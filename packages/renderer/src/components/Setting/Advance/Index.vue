@@ -7,6 +7,7 @@ import {
   NButton
 } from 'naive-ui'
 import { show } from '@/utils/message'
+import { confirm } from '@/utils/dialog'
 import useSettingStore from '@/store/settings'
 import { TouchMode } from '@common/enum/settings'
 import { changeTouchMode } from '@/utils/core_functions'
@@ -34,9 +35,17 @@ async function handleChangeTouchMode (mode: TouchMode) {
   show(ret ? '修改成功' : '修改失败, 请查看log输出', { type: 'info', duration: 3000, closable: true })
 }
 
-async function removeAllConfig () {
-  await window.ipcRenderer.invoke('main.Util:RemoveAllConfig')
-  show('重置成功', { type: 'info', duration: 3000, closable: true })
+async function removeAllConfigDialog () {
+  confirm({
+    title: '重置所有配置',
+    content: '重置所有配置将重启程序，你确定？',
+    positiveText: '确定',
+    negativeText: '取消',
+    maskClosable: false,
+    onPositiveClick: async() => {
+      await window.ipcRenderer.invoke('main.Util:RemoveAllConfig')
+    }
+  })
 }
 
 const coreSettingsDisabled = inject('coreSettingsDisabled') as { nre: boolean }
@@ -85,7 +94,7 @@ const coreSettingsDisabled = inject('coreSettingsDisabled') as { nre: boolean }
           <NButton
             type="warning"
             :disabled="coreSettingsDisabled.nre"
-            @click="removeAllConfig"
+            @click="removeAllConfigDialog"
           >
             重置所有配置
           </NButton>

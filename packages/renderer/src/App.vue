@@ -7,6 +7,7 @@ import {
   NGlobalStyle,
   NConfigProvider,
   NMessageProvider,
+  NDialogProvider,
   GlobalThemeOverrides,
   darkTheme,
   ThemeCommonVars
@@ -102,10 +103,12 @@ onMounted(() => {
   >
     <div class="background" />
     <NMessageProvider>
-      <NGlobalStyle />
-      <WindowController />
-      <SideBar />
-      <Main />
+      <NDialogProvider>
+        <NGlobalStyle />
+        <WindowController />
+        <SideBar />
+        <Main />
+      </NDialogProvider>
     </NMessageProvider>
   </NConfigProvider>
 </template>
