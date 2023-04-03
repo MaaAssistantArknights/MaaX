@@ -45,6 +45,7 @@ type IpcMainHandleEvent =
   | 'main.Util:LogFatal'
   | 'main.Util:CleanLogs'
   | 'main.Util:CleanDownloadCache'
+  | 'main.Util:RemoveAllConfig'
   | 'main.Util:GetCacheInfo'
   | 'main.Task:readInfrastConfig'
   | 'main.StorageManager:get'
