@@ -2,7 +2,7 @@
 
 ![Build Status](https://github.com/MaaAssistantArknights/MeoAsstElectronUI/workflows/Build%2FRelease/badge.svg) ![platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-blueviolet) ![license](https://img.shields.io/github/license/MaaAssistantArknights/MeoAsstElectronUI) ![commit](https://img.shields.io/github/commit-activity/m/MaaAssistantArknights/MeoAsstElectronUI?color=%23ff69b4)
 
-## UI特点
+## UI 特点
 
 * **Windows**,**Mac**和**linux**都可以用（一个不落，我全都要
 * 使用了**全新**的设计语言（好看就完事辣
@@ -29,31 +29,31 @@
 
 ## 致谢
 
-### npm包及开源库
+### npm 包及开源库
 
 * boilerplate from [electron-vue-vite](https://github.com/caoxiemeihao/electron-vue-vite)
 * 可拖拽组件：[Sortable.Js](https://www.npmjs.com/package/sortablejs)
-* API访问：[axios](https://www.npmjs.com/package/axios)
-* App框架：[Electron](https://www.electronjs.org/)
+* API 访问：[axios](https://www.npmjs.com/package/axios)
+* App 框架：[Electron](https://www.electronjs.org/)
 * 工具函数：[lodash](https://lodash.com/)
-* UI组件：[naive-ui](https://www.naiveui.com/)
+* UI 组件：[naive-ui](https://www.naiveui.com/)
 
 ## 开发相关
 
-### 调试（以VS Code为例）
+### 调试（以 VSCode 为例）
 
 * 依赖安装
   1. 安装`pnpm`: `npm install -g pnpm`
   1. 打开终端输入`pnpm install`
 
-* 调试main进程：
-  1. <kbd>Ctrl</kbd>/<kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>呼出命令面板
-  2. 输入Debug，找到“Debug: Toggle Auto Attach”（切换自动附加）
+* 调试 main 进程：
+  1. <kbd>Ctrl</kbd>/<kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> 呼出命令面板
+  2. 输入 Debug，找到“Debug: Toggle Auto Attach”（切换自动附加）
   3. 选择“Only with flag”（仅带有标志）
   4. 重启终端，输入`pnpm dev`
 
-* 调试renderer
-  1. 按照上述步骤启动即可，会帮你打开Chrome Devtools，且带有最新的Vue Dev插件
+* 调试 renderer
+  1. 按照上述步骤启动即可，会帮你打开 Chrome Devtools，且带有最新的 Vue Dev 插件
 
 ### 开发者群
 
