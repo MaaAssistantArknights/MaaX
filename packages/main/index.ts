@@ -87,12 +87,12 @@ app.on('will-quit', () => {
       const pid = process.pid.toString()
       const appPath = join(app.getPath('appData'), app.getName())
       const exePath = process.argv[0]
-      const out = fs.openSync('./out.log', 'a')
-      const err = fs.openSync('./out.log', 'a')
+      // const out = fs.openSync('./out.log', 'a')
+      // const err = fs.openSync('./out.log', 'a')
       const subprocess = spawn('cmd.exe', ['/c', join(__dirname, 'clearAppConfig.bat'), appPath, pid, exePath], {
         detached: true,
-        // stdio: ['ignore']
-        stdio: ['ignore', out, err]
+        stdio: ['ignore']
+        // stdio: ['ignore', out, err]
       })
       subprocess.unref()
       // app.relaunch()
