@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, ref, provide } from 'vue'
-import { NSpace, NButton, NSwitch, NIcon, NTooltip } from 'naive-ui'
+import { computed, ref, provide, h } from 'vue'
+import { NSpace, NButton, NSwitch, NIcon, NTooltip, NSelect, NInput, SelectOption } from 'naive-ui'
 import _ from 'lodash'
 import Draggable from 'vuedraggable'
 import TaskCard from '@/components/Task/TaskCard.vue'
@@ -28,9 +28,9 @@ const actionLoading = ref(false)
 const uuid = computed(() => router.currentRoute.value.params.uuid as string)
 const tasks = computed(() => {
   if (!taskStore.deviceTasks[uuid.value]) {
-    taskStore.newTask(uuid.value)
+    taskStore.initDeviceTask(uuid.value)
   }
-  return taskStore.deviceTasks[uuid.value]
+  return taskStore.getCurrentTaskGroup(uuid.value)?.tasks
 })
 
 function handleDragMove (event: any) {
@@ -163,7 +163,27 @@ function handleTaskConfigurationUpdate (key: string, value: any, index: number) 
   )
 }
 
+function handleCreateNewTaskGroup () {
+  const newTaskGroup = taskStore.newTaskGroup(uuid.value)
+  taskStore.deviceTasks[uuid.value].groups.push(newTaskGroup)
+  taskStore.deviceTasks[uuid.value].current = newTaskGroup.index
+}
+
+function handleChangeTaskGroupIndex (value: number) {
+  taskStore.deviceTasks[uuid.value].current = value
+}
+
+const taskGroupOptions = computed(() => {
+  const options: SelectOption[] = []
+  taskStore.deviceTasks[uuid.value]?.groups.forEach((v) => {
+    options.push({ label: v.name, value: v.index })
+  })
+  return options
+})
+
 provide('update:configuration', handleTaskConfigurationUpdate)
+const currentTaskGroupIndexValue = ref(taskStore.deviceTasks[uuid.value].current)
+
 </script>
 
 <template>
@@ -175,9 +195,22 @@ provide('update:configuration', handleTaskConfigurationUpdate)
       <h2>任务</h2>
 
       <NSpace align="center">
-        <!-- <NDropdown>
-        <NButton type="primary">切换配置</NButton>
-      </NDropdown> -->
+        <NSelect
+          v-model:value="currentTaskGroupIndexValue"
+          :options="taskGroupOptions"
+          :consistent-menu-width="false"
+          @update:value="handleChangeTaskGroupIndex"
+        >
+          <template #action>
+            <NButton
+              text
+              @click="handleCreateNewTaskGroup"
+            >
+              点此新建任务组
+            </NButton>
+          </template>
+        </NSelect>
+
         <NTooltip class="detail-toggle-switch">
           <template #trigger>
             <NSwitch

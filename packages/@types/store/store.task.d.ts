@@ -98,3 +98,23 @@ interface Task {
   configurations: Record<string, unknown>
   results: Record<string, any>
 }
+
+interface TaskGroup {
+  /**
+   * @props 任务组名
+   */
+  name: string
+  /**
+   * @props 任务组id
+   */
+  index: number
+  /**
+   * @props 任务组内的任务列表
+  */
+  tasks: Task[]
+}
+
+interface TaskGroups {
+  current: number
+  groups: TaskGroup[]
+}

@@ -90,20 +90,20 @@ const useDeviceStore = defineStore<'device', DeviceState, {}, DeviceAction>(
         const connectRetry = 3
         const retryTimeout = 8000
 
-        function * timeoutGenerator (timeout: number = retryTimeout) {
+        function * timeoutGenerator (timeout: number = retryTimeout): Generator<number, void, unknown> {
           yield timeout
           timeout *= 2 // 8s 16s 32s 一分钟还不能启动的模拟器建议卸载(
           // TODO 寻思超时时间设置后面可以拉到一个配置里去
         }
 
         if (!origin) return false
-        const wakeUpMessage = show(`正在尝试启动设备 ${origin.displayName}`, {
+        const wakeUpMessage = show(`正在尝试启动设备 ${origin.displayName as string}`, {
           type: 'loading',
           duration: 0
         })
 
         if (!origin.commandLine || origin.commandLine === '') {
-          wakeUpMessage.content = `设备 ${origin.displayName} 未配置启动命令, 请手动刷新设备`
+          wakeUpMessage.content = `设备 ${origin.displayName as string} 未配置启动命令, 请手动刷新设备`
           wakeUpMessage.type = 'warning'
           wakeUpMessage.duration = 3000
           wakeUpMessage.closable = true
@@ -115,7 +115,7 @@ const useDeviceStore = defineStore<'device', DeviceState, {}, DeviceAction>(
         let device
         for (let i = 0; i < connectRetry; i++) {
           const to = timeout.next().value as number
-          logger.info(`wait ${to}ms for emulator ${origin.displayName} start`)
+          logger.info(`wait ${to}ms for emulator ${origin.displayName as string} start`)
           await new Promise(resolve => setTimeout(resolve, to))
           const devices: Device[] = await window.ipcRenderer.invoke('main.DeviceDetector:getEmulators')
           device = devices.find(d => d.uuid === origin.uuid)
@@ -126,7 +126,7 @@ const useDeviceStore = defineStore<'device', DeviceState, {}, DeviceAction>(
             origin.emulatorPath = device.emulatorPath
             origin.adbPath = device.adbPath
 
-            wakeUpMessage.content = `设备 ${origin.displayName} 启动成功`
+            wakeUpMessage.content = `设备 ${origin.displayName as string} 启动成功`
             wakeUpMessage.type = 'success'
             wakeUpMessage.duration = 3000
             wakeUpMessage.closable = true
@@ -136,7 +136,7 @@ const useDeviceStore = defineStore<'device', DeviceState, {}, DeviceAction>(
         // fail
         origin.status = 'unknown'
         origin.connectionString = ''
-        wakeUpMessage.content = `设备 ${origin.displayName} 启动失败`
+        wakeUpMessage.content = `设备 ${origin.displayName as string} 启动失败`
         wakeUpMessage.type = 'error'
         wakeUpMessage.closable = true
         return false
