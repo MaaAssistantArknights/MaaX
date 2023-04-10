@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia'
 import logger from '@/hooks/caller/logger'
+import { runStartEmulator } from '@/utils/task_runner'
+import { show } from '@/utils/message'
 
 export interface DeviceState {
   devices: Device[]
@@ -14,6 +16,7 @@ export interface DeviceAction {
   updateDeviceDisplayName: (uuid: string, displayName: string) => void
   getDevice: (uuid: string) => Device | undefined
   deleteDevice: (uuid: string) => void
+  wakeUpDevice: (uuid: string) => Promise<boolean>
 }
 
 const useDeviceStore = defineStore<'device', DeviceState, {}, DeviceAction>(
@@ -81,6 +84,62 @@ const useDeviceStore = defineStore<'device', DeviceState, {}, DeviceAction>(
       },
       getDevice (uuid) {
         return this.devices.find((dev) => dev.uuid === uuid)
+      },
+      async wakeUpDevice (uuid) { // try wake up emulator by start command line
+        const origin = this.devices.find((dev) => dev.uuid === uuid)
+        const connectRetry = 3
+        const retryTimeout = 8000
+
+        function * timeoutGenerator (timeout: number = retryTimeout) {
+          yield timeout
+          timeout *= 2 // 8s 16s 32s 一分钟还不能启动的模拟器建议卸载(
+          // TODO 寻思超时时间设置后面可以拉到一个配置里去
+        }
+
+        if (!origin) return false
+        const wakeUpMessage = show(`正在尝试启动设备 ${origin.displayName}`, {
+          type: 'loading',
+          duration: 0
+        })
+
+        if (!origin.commandLine || origin.commandLine === '') {
+          wakeUpMessage.content = `设备 ${origin.displayName} 未配置启动命令, 请手动刷新设备`
+          wakeUpMessage.type = 'warning'
+          wakeUpMessage.duration = 3000
+          wakeUpMessage.closable = true
+          return false
+        }
+        origin.status = 'connecting'
+        window.ipcRenderer.invoke('main.DeviceDetector:startEmulator', origin.commandLine)
+        const timeout = timeoutGenerator()
+        let device
+        for (let i = 0; i < connectRetry; i++) {
+          const to = timeout.next().value as number
+          logger.info(`wait ${to}ms for emulator ${origin.displayName} start`)
+          await new Promise(resolve => setTimeout(resolve, to))
+          const devices: Device[] = await window.ipcRenderer.invoke('main.DeviceDetector:getEmulators')
+          device = devices.find(d => d.uuid === origin.uuid)
+          if (device) {
+            origin.status = 'available'
+            origin.connectionString = device.connectionString
+            origin.pid = device.pid
+            origin.emulatorPath = device.emulatorPath
+            origin.adbPath = device.adbPath
+
+            wakeUpMessage.content = `设备 ${origin.displayName} 启动成功`
+            wakeUpMessage.type = 'success'
+            wakeUpMessage.duration = 3000
+            wakeUpMessage.closable = true
+            return true // start successfull
+          }
+        }
+        // fail
+        origin.status = 'unknown'
+        origin.connectionString = ''
+        wakeUpMessage.content = `设备 ${origin.displayName} 启动失败`
+        wakeUpMessage.type = 'error'
+        wakeUpMessage.closable = true
+        return false
       }
     }
   }

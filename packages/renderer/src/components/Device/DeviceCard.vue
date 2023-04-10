@@ -80,11 +80,23 @@ async function handleDeviceConnect () {
   if (!disconnectedStatus.has(device.value?.status ?? 'unknown')) {
     return
   }
+  if (!device.value?.uuid) {
+    show('设备uuid不存在', {
+      type: 'error',
+      duration: 3000
+    })
+    return
+  }
 
-  // taskIdStore.newTaskId(device.value?.uuid as string)
+  // 无地址, 尝试唤醒模拟器
+  if (!device.value?.connectionString || device?.value?.connectionString?.length === 0) {
+    if (!await deviceStore.wakeUpDevice(device.value?.uuid)) {
+      return
+    }
+  }
 
   deviceStore.updateDeviceStatus(device.value?.uuid as string, 'connecting')
-  const connecting = show(`${deviceDisplayName.value}连接中...`, {
+  const connecting = show(`${deviceDisplayName.value} 连接中...`, {
     type: 'loading',
     duration: 0
   })
@@ -98,7 +110,7 @@ async function handleDeviceConnect () {
   } as InitCoreParam)
   connecting.destroy()
   if (!ret) {
-    show(`${deviceDisplayName.value}连接失败, 尝试重启软件或者在设置界面重新安装`, {
+    show(`${deviceDisplayName.value} 连接失败`, {
       type: 'error',
       duration: 3000
     })

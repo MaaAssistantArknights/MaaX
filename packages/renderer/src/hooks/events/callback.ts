@@ -199,7 +199,7 @@ export default function useCallbackEvents (): void {
               details
             } = data
             const device = deviceStore.getDevice(uuid)
-            const name = device?.displayName ?? device?.address ?? uuid
+            const name = device?.displayName ?? device?.connectionString ?? uuid
             // eslint-disable-next-line no-new
             new Notification(
               'Maa Assistant Arknights',
@@ -216,7 +216,7 @@ export default function useCallbackEvents (): void {
             const task = taskStore.getTask(uuid.trim(), task => task.task_id === taskid)
             if (task && !task.configurations.skip_robot) {
               const device = deviceStore.getDevice(uuid)
-              const name = device?.displayName ?? device?.address ?? uuid
+              const name = device?.displayName ?? device?.connectionString ?? uuid
               // eslint-disable-next-line no-new
               new Notification(
                 'Maa Assistant Arknights',

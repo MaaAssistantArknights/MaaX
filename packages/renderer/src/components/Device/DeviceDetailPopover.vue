@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { NPopover, NImage, NInput, NIcon, NDescriptions, NDescriptionsItem, NDivider } from 'naive-ui'
+import { NPopover, NImage, NInput, NIcon, NDescriptions, NDescriptionsItem, NDivider, NEllipsis, NText } from 'naive-ui'
 import useDeviceStore from '@/store/devices'
 import { ref, watch } from 'vue'
 import logger from '@/hooks/caller/logger'
@@ -60,13 +60,18 @@ const updateDisplayName = (displayName: string) => {
     </template>
     <template #default>
       <NDescriptions
-        label-placement="left"
+        label-placement="top"
         label-align="left"
-        :column="1"
+        :column="0"
         :bordered="false"
         style="max-width: fit-content;"
       >
-        <NDescriptionsItem label="name">
+        <NDescriptionsItem>
+          <template #label>
+            <NText type="info">
+              备注:
+            </NText>
+          </template>
           <NInput
             v-model:value="device.displayName"
             minlength="1"
@@ -78,11 +83,31 @@ const updateDisplayName = (displayName: string) => {
             </template>
           </NInput>
         </NDescriptionsItem>
-        <NDescriptionsItem label="uuid">
+        <NDescriptionsItem>
+          <template #label>
+            <NText type="info">
+              设备标识符:
+            </NText>
+          </template>
           {{ device.uuid }}
         </NDescriptionsItem>
-        <NDescriptionsItem label="address">
-          {{ device.address }}
+        <NDescriptionsItem>
+          <template #label>
+            <NText type="info">
+              连接地址:
+            </NText>
+          </template>
+          {{ device.connectionString.length > 0 ? device.connectionString : '刷新以查看' }}
+        </NDescriptionsItem>
+        <NDescriptionsItem>
+          <template #label>
+            <NText type="info">
+              启动命令:
+            </NText>
+          </template>
+          <NEllipsis style="max-width: 300px">
+            {{ device.commandLine }}
+          </NEllipsis>
         </NDescriptionsItem>
       </NDescriptions>
 
