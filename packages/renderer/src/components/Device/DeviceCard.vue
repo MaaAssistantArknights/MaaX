@@ -59,7 +59,9 @@ function handleJumpToTask () {
     return
   }
    */
-
+  if (!taskStore.getCurrentTaskGroup(props.uuid)) {
+    taskStore.initDeviceTask(props.uuid)
+  }
   taskStore.fixTaskList(props.uuid)
   if (!isCurrent.value) router.push(`/task/${device.value?.uuid}`)
 }
