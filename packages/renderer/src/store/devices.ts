@@ -135,7 +135,7 @@ const useDeviceStore = defineStore<'device', DeviceState, {}, DeviceAction>(
         }
         // fail
         origin.status = 'unknown'
-        origin.connectionString = ''
+        origin.address = ''
         wakeUpMessage.content = `设备 ${origin.displayName as string} 启动失败`
         wakeUpMessage.type = 'error'
         wakeUpMessage.closable = true
