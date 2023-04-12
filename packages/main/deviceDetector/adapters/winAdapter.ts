@@ -60,9 +60,9 @@ async function testPort (
 function getBluestackInstanceName (cmd: string): string {
   const instanceExp = /".*"\s"?--instance"?\s"?([^"\s]*)"?/g
   const res = [...cmd.matchAll(instanceExp)].map((v) => v[1])
-  console.log('instance Name:')
-  console.log(res)
-  return res ? res[0] : 'unknown'
+  const name = res ? res[0] : 'unknown'
+  logger.info('[winAdapter] Get bluestack instance name: ', name)
+  return name
 }
 
 @Singleton
@@ -125,9 +125,6 @@ class WindowsAdapter implements EmulatorAdapter {
         console.log(err)
         success = false
       }
-
-      console.log('success status:')
-      console.log(success)
       if (!success) {
         // 通过读注册表失败, 使用 netstat 抓一个5开头的端口充数
         const regExp = '\\s*TCP\\s*127.0.0.1:(5\\d{3,4})\\s*' // 提取端口
@@ -165,8 +162,6 @@ class WindowsAdapter implements EmulatorAdapter {
     }
      */
     }
-    console.log('e:::')
-    console.log(e)
     // return e
   }
 
@@ -284,7 +279,6 @@ class WindowsAdapter implements EmulatorAdapter {
     const LdVBoxHeadlessPath = await getPnamePath('LdVBoxHeadless.exe') // LdVBoxHeadless.exe路径
     const VBoxManagePath = path.resolve(path.dirname(LdVBoxHeadlessPath), 'VBoxManage.exe') // VBoxManage.exe路径
     const port = (await $`"${VBoxManagePath}" showvminfo ${statvm[1]} --machinereadable`).stdout.match(/Forwarding\(1\)="tcp_5\d\d\d_5\d\d\d,tcp,,(\d*),,/)
-    logger.silly('port', port)
     if (port) {
       e.address = `127.0.0.1:${port[1]}`
     }
@@ -311,25 +305,8 @@ class WindowsAdapter implements EmulatorAdapter {
           }
         }
       })
-    // await $`"${defaultAdbPath}" disconnect`
-    // Promise.all(
-    //   emulators.map(e => {
-    //     if (e.pname === 'HD-Player.exe') {
-    //       return this.getBluestack(e)
-    //     } else if (e.pname === 'NoxVMHandle.exe') {
-    //       return this.getNox(e)
-    //     } else if (e.pname === 'NemuHeadless.exe') {
-    //       return this.getMumu(e)
-    //     } else if (e.pname === 'LdVBoxHeadless.exe') {
-    //       return this.getLd(e)
-    //     } else if (e.pname === 'MEmuHeadless.exe') {
-    //       return this.getXY(e)
-    //     }
-    //     return Promise.resolve()
-    //     // return Promise.reject()
-    //   })
-    // ).then(() => Promise.resolve(emulators))
-    //   .catch()
+
+    // TODO: rft
     for await (const e of emulators) {
       if (e.pname === 'HD-Player.exe') {
         await this.getBluestack(e)
@@ -344,14 +321,18 @@ class WindowsAdapter implements EmulatorAdapter {
       }
     }
 
+    const availableEmulators: Emulator[] = []
     for await (const e of emulators) {
       const uuid = await getDeviceUuid(e.address as string, defaultAdbPath) // 不再使用模拟器自带的adb来获取uuid
-      if (uuid) {
+      if (uuid && uuid.length > 0) {
         e.uuid = uuid
       }
       logger.silly(`emulator: ${JSON.stringify(e)}`)
     }
-    return emulators
+    emulators.forEach((e) => {
+      if (e.address && e.uuid && e.adbPath && e.config && e.commandLine && e.displayName) availableEmulators.push(e)
+    })
+    return availableEmulators
   }
 }
 
