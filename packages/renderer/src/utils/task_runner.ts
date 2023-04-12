@@ -79,7 +79,7 @@ async function runTaskIdle (uuid: string, task: Task): Promise<void> {
 
 export async function runTasks (uuid: string): Promise<void> {
   const taskStore = useTaskStore()
-  const tasks = taskStore.deviceTasks[uuid]
+  const tasks = taskStore.getCurrentTaskGroup(uuid)?.tasks
   // 寻找第一个可用的任务
   const task = tasks?.find((task) => task.enable && task.status === 'idle')
   if (task) {
