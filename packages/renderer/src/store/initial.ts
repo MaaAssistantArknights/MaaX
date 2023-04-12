@@ -22,7 +22,7 @@ export async function initialStore (): Promise<void> {
       storage.devices = storage.devices.map((device) => ({
         ...device,
         status: 'unknown',
-        connectionString: '',
+        address: '',
         pid: ''
       }))
       return storage

@@ -46,7 +46,7 @@ const useDeviceStore = defineStore<'device', DeviceState, {}, DeviceAction>(
             origin.status = 'available'
             origin.pid = device.pid
             origin.adbPath = device.adbPath ?? defaultAdbPath
-            origin.connectionString = device.connectionString
+            origin.address = device.address
             // origin.displayName = device.displayName
             origin.commandLine = device.commandLine
           }
@@ -121,7 +121,7 @@ const useDeviceStore = defineStore<'device', DeviceState, {}, DeviceAction>(
           device = devices.find(d => d.uuid === origin.uuid)
           if (device) {
             origin.status = 'available'
-            origin.connectionString = device.connectionString
+            origin.address = device.address
             origin.pid = device.pid
             origin.emulatorPath = device.emulatorPath
             origin.adbPath = device.adbPath

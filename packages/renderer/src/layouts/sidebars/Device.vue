@@ -53,7 +53,7 @@ function deviceInfoParser (devices: Device[]): any[] {
       ret.push({
         status: status,
         uuid: info.uuid,
-        connectionString: info.address,
+        address: info.address,
         config: info.config,
         commandLine: info.commandLine,
         adbPath: info.adbPath,

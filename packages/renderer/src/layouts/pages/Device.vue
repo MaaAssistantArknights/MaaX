@@ -7,10 +7,10 @@ import IconLink from '@/assets/icons/link.svg?component'
 import _ from 'lodash'
 import { show } from '@/utils/message'
 
-const connectionString = ref('')
+const address = ref('')
 const deviceStore = useDeviceStore()
 
-function connectionStringChecker (cs: string) {
+function addressChecker (cs: string) {
   let [ip, port] = cs.split(':')
   if (!port) {
     // adb默认端口
@@ -34,15 +34,15 @@ function connectionStringChecker (cs: string) {
 }
 
 async function handleCustomConnect () {
-  console.log(connectionString.value)
-  if (connectionStringChecker(connectionString.value)) {
+  console.log(address.value)
+  if (addressChecker(address.value)) {
     const loading = show('正在连接', { type: 'loading', duration: 0 })
-    if (deviceStore.devices.find(dev => dev.connectionString === connectionString.value)) {
+    if (deviceStore.devices.find(dev => dev.address === address.value)) {
       loading.destroy()
       show('设备已经存在了哦', { type: 'warning', duration: 5000 })
       return
     }
-    const uuid = await window.ipcRenderer.invoke('main.DeviceDetector:getDeviceUuid', connectionString.value)
+    const uuid = await window.ipcRenderer.invoke('main.DeviceDetector:getDeviceUuid', address.value)
     if (!(uuid as string | false)) {
       loading.destroy()
       show('连接失败，检查一下地址吧', { type: 'error', duration: 5000 })
@@ -51,7 +51,7 @@ async function handleCustomConnect () {
     deviceStore.mergeSearchResult([
       {
         uuid: uuid as string,
-        connectionString: connectionString.value,
+        address: address.value,
         name: 'General'
       }
     ])
@@ -91,7 +91,7 @@ async function handleCustomConnect () {
       >
         <NFormItem label="模拟器 / 设备地址">
           <NInput
-            v-model:value="connectionString"
+            v-model:value="address"
             placeholder="e.g. 127.0.0.1:5555"
           />
         </NFormItem>

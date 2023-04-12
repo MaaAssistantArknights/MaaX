@@ -33,7 +33,7 @@ const device = computed(() =>
   deviceStore.devices.find((device) => device.uuid === props.uuid)
 )
 const deviceDisplayName = computed(
-  () => device.value?.displayName || device.value?.connectionString
+  () => device.value?.displayName || device.value?.address
 )
 const routeUuid = computed(
   () => router.currentRoute.value.params.uuid as string | undefined
@@ -89,7 +89,7 @@ async function handleDeviceConnect () {
   }
 
   // 无地址, 尝试唤醒模拟器
-  if (!device.value?.connectionString || device?.value?.connectionString?.length === 0) {
+  if (!device.value?.address || device?.value?.address?.length === 0) {
     if (!await deviceStore.wakeUpDevice(device.value?.uuid)) {
       return
     }
@@ -102,7 +102,7 @@ async function handleDeviceConnect () {
   })
 
   const ret = await window.ipcRenderer.invoke('main.CoreLoader:initCore', {
-    address: device.value?.connectionString,
+    address: device.value?.address,
     uuid: device.value?.uuid,
     adb_path: device.value?.adbPath,
     config: device.value?.config,

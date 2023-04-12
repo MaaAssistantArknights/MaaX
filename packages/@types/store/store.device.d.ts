@@ -29,7 +29,7 @@ interface Device {
   /**
    * @props 设备连接地址
    */
-  connectionString: string
+  address: string
   /**
    * @props 设备状态
    * ---
@@ -69,7 +69,7 @@ interface Device {
 interface NativeDevice {
   uuid: string
   pid?: string
-  connectionString: string
+  address: string
   name: EmulatorName
   adbPath?: string
   tag?: string

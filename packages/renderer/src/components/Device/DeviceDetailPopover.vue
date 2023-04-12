@@ -97,7 +97,7 @@ const updateDisplayName = (displayName: string) => {
               连接地址:
             </NText>
           </template>
-          {{ device.connectionString.length > 0 ? device.connectionString : '刷新以查看' }}
+          {{ device.address.length > 0 ? device.address : '刷新以查看' }}
         </NDescriptionsItem>
         <NDescriptionsItem>
           <template #label>
