@@ -55,6 +55,7 @@ const useDeviceStore = defineStore<'device', DeviceState, {}, DeviceAction>(
       updateDeviceStatus (uuid, status) {
         const origin = this.devices.find((dev) => dev.uuid === uuid)
         if (origin != null) {
+          logger.info('change device status', origin.uuid, origin.status, '->', status)
           origin.status = status
         }
       },
@@ -125,6 +126,8 @@ const useDeviceStore = defineStore<'device', DeviceState, {}, DeviceAction>(
             origin.pid = device.pid
             origin.emulatorPath = device.emulatorPath
             origin.adbPath = device.adbPath
+            origin.config = device.config
+            origin.commandLine = device.commandLine
 
             wakeUpMessage.content = `设备 ${origin.displayName as string} 启动成功`
             wakeUpMessage.type = 'success'

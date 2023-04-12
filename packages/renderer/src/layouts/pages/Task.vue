@@ -11,6 +11,7 @@ import Configuration from '@/components/Task/configurations/Index.vue'
 
 import useTaskStore from '@/store/tasks'
 import useDeviceStore from '@/store/devices'
+import useSettingStore from '@/store/settings'
 import { show } from '@/utils/message'
 
 import router from '@/router'
@@ -20,8 +21,9 @@ import { runTasks, runStartEmulator } from '@/utils/task_runner'
 
 const taskStore = useTaskStore()
 const deviceStore = useDeviceStore()
+const settingStore = useSettingStore()
 // const taskIdStore = useTaskIdStore()
-
+const touchMode = computed(() => settingStore.touchMode)
 const isGrid = ref(false)
 const actionLoading = ref(false)
 
@@ -85,10 +87,8 @@ async function handleSubStart () {
     show('请至少选择一个任务', { type: 'warning', duration: 5000 })
     return
   }
-
-  await runTasks(uuid.value)
-
   deviceStore.updateDeviceStatus(uuid.value as string, 'tasking')
+  await runTasks(uuid.value)
 
   await window.ipcRenderer.invoke('main.CoreLoader:start', {
     uuid: uuid.value
@@ -120,25 +120,55 @@ async function handleStart () {
     await handleSubStart()
   } else if (device && device.status === 'available') {
     // 设备可用但未连接, 先尝试连接再开始任务
-    // TODO:
-    show('请先连接设备', { type: 'warning', duration: 2000 })
-  } else {
-    // 设备状态为 unknown 或 disconnect , 检查子任务'启动模拟器'是否开启，如果开启则先启动模拟器再开始任务
-    // 查找是否有启动模拟器任务
-    const task = taskStore.getTask(uuid.value as string, task => task.name === 'emulator' && task.enable)
-    if (task) {
-      // 有启动模拟器任务
-      if (!task.configurations.commandLine) {
-        // 设备没有获取到用于启动模拟器的命令行参数
-        show('该设备启动参数不可用, 请尝试先连接设备', { type: 'warning', duration: 2000 })
-        return
-      }
-      await handleStartUnconnected(task)
-    } else {
-      show("请先 '启动并搜索模拟器' 或 '勾选启动模拟器子任务'", {
-        type: 'warning',
+    deviceStore.updateDeviceStatus(device.uuid as string, 'connecting')
+    const connecting = show(`${device.displayName} 连接中...`, {
+      type: 'loading',
+      duration: 0
+    })
+
+    const ret = await window.ipcRenderer.invoke('main.CoreLoader:initCore', {
+      address: device.address,
+      uuid: device.uuid,
+      adb_path: device.adbPath,
+      config: device.config,
+      touch_mode: touchMode.value
+    } as InitCoreParam)
+    connecting.destroy()
+    if (ret) {
+      deviceStore.updateDeviceStatus(device.uuid as string, 'connected')
+      show(`${device.displayName} 连接成功`, {
+        type: 'success',
         duration: 3000
       })
+      await handleSubStart()
+    } else {
+      show(`${device.displayName} 连接失败`, {
+        type: 'error',
+        duration: 3000
+      })
+    }
+  } else {
+    // 设备状态为 unknown 或 disconnect , 检查是否有启动模拟器的参数, 如果有则尝试自启动, 没有则提示
+    if (device?.commandLine && device.commandLine?.length > 0) { // 有启动参数
+      if (await deviceStore.wakeUpDevice(uuid.value)) { // 有启动参数, 且自启成功
+        const ret = await window.ipcRenderer.invoke('main.CoreLoader:initCore', {
+          address: device.address,
+          uuid: device.uuid,
+          adb_path: device.adbPath,
+          config: device.config,
+          touch_mode: touchMode.value
+        } as InitCoreParam)
+        if (ret) {
+          await new Promise(resolve => setTimeout(resolve, 2000))
+          await handleSubStart()
+        } else {
+          show('设备自启失败, 请尝试手动启动设备', { type: 'warning', duration: 2000 })
+        }
+      } else { // 有启动参数, 但自启失败
+        show('设备自启失败, 请尝试手动启动设备', { type: 'warning', duration: 2000 })
+      }
+    } else { // 无启动参数
+      show('设备启动参数未知, 请先刷新设备列表或尝试手动连接', { type: 'warning', duration: 2000 })
     }
   }
 }
