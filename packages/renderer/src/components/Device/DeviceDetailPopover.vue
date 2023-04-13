@@ -40,11 +40,11 @@ const stopGetScreenshot = () => {
 }
 
 watch(show, (newShowValue) => {
-  if (newShowValue) {
-    startGetScreenshot()
-  } else {
-    stopGetScreenshot()
-  }
+  // if (newShowValue) {
+  //   startGetScreenshot()
+  // } else {
+  //   stopGetScreenshot()
+  // }
 })
 
 const updateDisplayName = (displayName: string) => {

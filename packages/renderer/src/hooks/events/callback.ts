@@ -340,12 +340,11 @@ export default function useCallbackEvents (): void {
         }
         case 'Connected': {
           const device = deviceStore.getDevice(uuid)
-          show(
-            `${device?.displayName ?? ''}连接成功`,
-            { type: 'success' },
-            true
-          )
-          deviceStore.updateDeviceStatus(uuid, 'connected')
+          if (device?.status === 'waitingTask') {
+            deviceStore.updateDeviceStatus(uuid, 'waitingTaskEnd')
+          } else {
+            deviceStore.updateDeviceStatus(uuid, 'connected')
+          }
           break
         }
         case 'UnsupportedResolution': {

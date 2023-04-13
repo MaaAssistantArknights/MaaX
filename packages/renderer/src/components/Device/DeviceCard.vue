@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import IconDisconnect from '@/assets/icons/disconnect.svg?component'
 import DeviceDetailPopover from '@/components/Device/DeviceDetailPopover.vue'
 import IconLink from '@/assets/icons/link.svg?component'
@@ -9,7 +9,8 @@ import {
   NIcon,
   NSpace,
   NPopconfirm,
-  useThemeVars
+  useThemeVars,
+  MessageReactive
 } from 'naive-ui'
 import useDeviceStore from '@/store/devices'
 import router from '@/router'
@@ -17,6 +18,7 @@ import useTaskStore from '@/store/tasks'
 import useSettingStore from '@/store/settings'
 // import useTaskIdStore from '@/store/taskId'
 import { show } from '@/utils/message'
+import logger from '@/hooks/caller/logger'
 
 const props = defineProps<{
   uuid: string;
@@ -48,17 +50,45 @@ const disconnectedStatus: Set<DeviceStatus> = new Set([
   'unknown'
 ])
 
+let connectShow: MessageReactive | undefined
+watch(() => device.value?.status, (newStatus) => {
+  logger.info('device status changed', newStatus)
+  if (connectShow) connectShow.destroy()
+  connectShow = undefined
+  switch (newStatus) {
+    case 'connecting':
+      connectShow = show(`${deviceDisplayName.value}正在连接...`, {
+        type: 'loading',
+        duration: 0
+      })
+      break
+    case 'waitingTask':
+      connectShow = show(`${deviceDisplayName.value}正在连接并等待执行任务...`, {
+        type: 'loading',
+        duration: 0
+      })
+      break
+    case 'connected':
+      connectShow = show(`${deviceDisplayName.value}已连接`, {
+        type: 'success',
+        duration: 3000
+      })
+      break
+    case 'disconnected':
+      connectShow = show(`${deviceDisplayName.value}已断开连接`, {
+        type: 'info',
+        duration: 3000
+      })
+      break
+  }
+}, { deep: true })
+
 // function disconnectDevice (uuid: string) {}
 
 // function connectDevice (uuid: string) {}
 
 function handleJumpToTask () {
   // 未连接的设备也可以查看任务
-  /**
-  if (!connectedStatus.has(device.value?.status ?? 'unknown')) {
-    return
-  }
-   */
   if (!taskStore.getCurrentTaskGroup(props.uuid)) {
     taskStore.initDeviceTask(props.uuid)
   }
@@ -71,10 +101,6 @@ function handleDeviceDisconnect () {
   window.ipcRenderer.send('main.CoreLoader:disconnectAndDestroy', { uuid: device.value?.uuid })
   taskStore.stopAllTasks(device.value?.uuid as string)
   deviceStore.updateDeviceStatus(device.value?.uuid as string, 'disconnected')
-  show(`${deviceDisplayName.value}已断开连接 `, {
-    type: 'success',
-    duration: 3000
-  })
   router.push('/device')
 }
 
@@ -98,28 +124,13 @@ async function handleDeviceConnect () {
   }
 
   deviceStore.updateDeviceStatus(device.value?.uuid as string, 'connecting')
-  const connecting = show(`${deviceDisplayName.value} 连接中...`, {
-    type: 'loading',
-    duration: 0
-  })
-
-  const ret = await window.ipcRenderer.invoke('main.CoreLoader:initCore', {
+  await window.ipcRenderer.invoke('main.CoreLoader:initCoreAsync', {
     address: device.value?.address,
     uuid: device.value?.uuid,
     adb_path: device.value?.adbPath,
     config: device.value?.config,
     touch_mode: touchMode.value
   } as InitCoreParam)
-  connecting.destroy()
-  if (!ret) {
-    show(`${deviceDisplayName.value} 连接失败`, {
-      type: 'error',
-      duration: 3000
-    })
-    deviceStore.updateDeviceStatus(device.value?.uuid as string, 'available')
-  }
-
-  // loadingMessage.destroy();
 }
 </script>
 
@@ -263,6 +274,12 @@ async function handleDeviceConnect () {
   }
 
   &[data-status="connecting"]::before {
+    background-color: #28cd41;
+    animation: connecting 1s cubic-bezier(0.46, 1, 0.76, 0.94) alternate
+      infinite;
+  }
+
+  &[data-status="waitingTask"]::before {
     background-color: #28cd41;
     animation: connecting 1s cubic-bezier(0.46, 1, 0.76, 0.94) alternate
       infinite;

@@ -327,16 +327,22 @@ class CoreLoader {
     }
   }
 
+  /** @deprecated 已废弃，将在接下来的版本中移除 */
+  public Connect (address: string, uuid: string, adbPath: string, config: string): boolean {
+    return this.MeoAsstLib.AsstConnect(this.MeoAsstPtr[uuid], adbPath, address, config)
+  }
+
   /**
    * @description 连接
    * @param address 连接地址
    * @param uuid 设备唯一标识符
    * @param adbPath adb路径
    * @param config 模拟器名称, 自定义设备为'General'
+   * @param block 是否阻塞
    * @returns 是否连接成功
    */
-  public Connect (address: string, uuid: string, adbPath: string, config: string): boolean {
-    return this.MeoAsstLib.AsstConnect(this.MeoAsstPtr[uuid], adbPath, address, config)
+  public AsyncConnect (address: string, uuid: string, adbPath: string, config: string, block: boolean = false): number {
+    return this.MeoAsstLib.AsstAsyncConnect(this.MeoAsstPtr[uuid], adbPath, address, config, block)
   }
 
   /**

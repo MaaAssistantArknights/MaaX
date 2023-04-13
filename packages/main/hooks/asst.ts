@@ -31,11 +31,23 @@ string,
       arg.config
     )
   },
+  /** @Deprecated */
   'main.CoreLoader:initCore': async (_event, arg: InitCoreParam) => {
     const createStatus = core.CreateEx(arg.uuid) ?? false
-    if (!createStatus) console.log(`重复创建 ${JSON.stringify(arg)}`)
+    if (!createStatus) logger.warn(`重复创建 ${JSON.stringify(arg)}`)
     if (!core.SetTouchMode(arg.uuid, arg.touch_mode)) logger.warn('Set touch mode failed', arg.touch_mode)
     return core.Connect(
+      arg.address,
+      arg.uuid,
+      arg.adb_path,
+      arg.config
+    )
+  },
+  'main.CoreLoader:initCoreAsync': async (_event, arg: InitCoreParam) => {
+    const createStatus = core.CreateEx(arg.uuid) ?? false
+    if (!createStatus) logger.warn(`重复创建 ${JSON.stringify(arg)}`)
+    if (!core.SetTouchMode(arg.uuid, arg.touch_mode)) logger.warn('Set touch mode failed', arg.touch_mode)
+    return core.AsyncConnect(
       arg.address,
       arg.uuid,
       arg.adb_path,

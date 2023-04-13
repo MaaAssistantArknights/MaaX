@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, provide, h } from 'vue'
+import { computed, ref, provide, watch} from 'vue'
 import { NSpace, NButton, NSwitch, NIcon, NTooltip, NSelect, NInput, SelectOption } from 'naive-ui'
 import _ from 'lodash'
 import Draggable from 'vuedraggable'
@@ -28,6 +28,9 @@ const isGrid = ref(false)
 const actionLoading = ref(false)
 
 const uuid = computed(() => router.currentRoute.value.params.uuid as string)
+const device = computed(() =>
+  deviceStore.devices.find((device) => device.uuid === uuid.value)
+)
 const tasks = computed(() => {
   if (!taskStore.deviceTasks[uuid.value]) {
     taskStore.initDeviceTask(uuid.value)
@@ -45,6 +48,15 @@ const deviceStatus = computed(() => {
   const device = deviceStore.getDevice(uuid.value as string)
   if (!device) return 'unknown'
   return device.status
+})
+
+watch(()=>device.value?.status, async (newStatus) => {
+  switch(newStatus) {
+    case 'waitingTaskEnd':
+      deviceStore.updateDeviceStatus(uuid.value, 'tasking')
+      await handleSubStart()
+      break
+  }
 })
 
 async function handleStartUnconnected (task: Task) {
@@ -110,7 +122,7 @@ async function handleSubStop () {
   taskStore.stopAllTasks(uuid.value as string) // 停止所有任务
 }
 
-async function handleStart () {
+async function handleStart() {
   const device = deviceStore.getDevice(uuid.value as string)
   if (device && device.status === 'tasking') {
     // 设备进行中, 可停止任务
@@ -120,51 +132,27 @@ async function handleStart () {
     await handleSubStart()
   } else if (device && device.status === 'available') {
     // 设备可用但未连接, 先尝试连接再开始任务
-    deviceStore.updateDeviceStatus(device.uuid as string, 'connecting')
-    const connecting = show(`${device.displayName} 连接中...`, {
-      type: 'loading',
-      duration: 0
-    })
-
-    const ret = await window.ipcRenderer.invoke('main.CoreLoader:initCore', {
+    deviceStore.updateDeviceStatus(device.uuid as string, 'waitingTask')
+    await window.ipcRenderer.invoke('main.CoreLoader:initCoreAsync', {
       address: device.address,
       uuid: device.uuid,
       adb_path: device.adbPath,
       config: device.config,
       touch_mode: touchMode.value
     } as InitCoreParam)
-    connecting.destroy()
-    if (ret) {
-      deviceStore.updateDeviceStatus(device.uuid as string, 'connected')
-      show(`${device.displayName} 连接成功`, {
-        type: 'success',
-        duration: 3000
-      })
-      await handleSubStart()
-    } else {
-      show(`${device.displayName} 连接失败`, {
-        type: 'error',
-        duration: 3000
-      })
-    }
   } else {
     // 设备状态为 unknown 或 disconnect , 检查是否有启动模拟器的参数, 如果有则尝试自启动, 没有则提示
     if (device?.commandLine && device.commandLine?.length > 0) { // 有启动参数
       if (await deviceStore.wakeUpDevice(uuid.value)) { // 有启动参数, 且自启成功
-        const ret = await window.ipcRenderer.invoke('main.CoreLoader:initCore', {
+        deviceStore.updateDeviceStatus(device.uuid as string, 'waitingTask')
+        await window.ipcRenderer.invoke('main.CoreLoader:initCore', {
           address: device.address,
           uuid: device.uuid,
           adb_path: device.adbPath,
           config: device.config,
           touch_mode: touchMode.value
         } as InitCoreParam)
-        if (ret) {
-          await new Promise(resolve => setTimeout(resolve, 2000))
-          await handleSubStart()
-        } else {
-          show('设备自启失败, 请尝试手动启动设备', { type: 'warning', duration: 2000 })
-        }
-      } else { // 有启动参数, 但自启失败
+      } else {
         show('设备自启失败, 请尝试手动启动设备', { type: 'warning', duration: 2000 })
       }
     } else { // 无启动参数

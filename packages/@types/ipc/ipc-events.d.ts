@@ -12,6 +12,7 @@ type IpcMainHandleEvent =
   | 'main.CoreLoader:destroy'
   | 'main.CoreLoader:connect'
   | 'main.CoreLoader:initCore'
+  | 'main.CoreLoader:initCoreAsync'
   | 'main.CoreLoader:disconnectAndDestroy'
   | 'main.CoreLoader:appendTask'
   | 'main.CoreLoader:setTaskParams'

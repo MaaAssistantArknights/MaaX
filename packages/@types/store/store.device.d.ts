@@ -2,6 +2,9 @@ type DeviceStatus =
   | 'available'
   | 'connecting'
   | 'connected'
+  | 'wakingUp' // 正在尝试启动
+  | 'waitingTask' // 等待设备链接后自动开始任务
+  | 'waitingTaskEnd' // 链接成功, 可以开始任务
   | 'tasking'
   | 'disconnected'
   | 'unknown'
