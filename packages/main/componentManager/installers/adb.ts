@@ -6,6 +6,7 @@ import { ipcMainSend } from '@main/utils/ipc-main'
 import logger from '@main/utils/logger'
 import path from 'path'
 import { getAppBaseDir } from '@main/utils/path'
+import { getPlatform } from '@main/utils/os'
 
 @Singleton
 class AdbInstaller extends ComponentInstaller {
@@ -93,10 +94,25 @@ class AdbInstaller extends ComponentInstaller {
   }
 
   public async checkUpdate (): Promise<Update | false | undefined> {
-    return {
-      url: 'https://dl.google.com/android/repository/platform-tools-latest-windows.zip',
-      version: 'latest',
-      releaseDate: ''
+    const platform = getPlatform()
+    if (platform === 'windows') {
+      return {
+        url: 'https://dl.google.com/android/repository/platform-tools-latest-windows.zip',
+        version: 'latest',
+        releaseDate: ''
+      }
+    } else if (platform === 'macos') {
+      return {
+        url: 'https://dl.google.com/android/repository/platform-tools-latest-darwin.zip',
+        version: 'latest',
+        releaseDate: ''
+      }
+    } else {
+      return {
+        url: 'https://dl.google.com/android/repository/platform-tools-latest-linux.zip',
+        version: 'latest',
+        releaseDate: ''
+      }
     }
   }
 
