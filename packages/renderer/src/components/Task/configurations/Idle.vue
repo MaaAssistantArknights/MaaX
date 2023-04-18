@@ -9,7 +9,7 @@ import {
   formattedDurationToSeconds
 } from '@/utils/time_picker'
 import _ from 'lodash'
-import { show } from '@/utils/message'
+import { showMessage } from '@/utils/message'
 
 const deviceStore = useDeviceStore()
 const taskStore = useTaskStore()

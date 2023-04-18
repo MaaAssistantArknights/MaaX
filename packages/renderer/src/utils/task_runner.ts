@@ -1,7 +1,7 @@
 import logger from '@/hooks/caller/logger'
 import useTaskStore from '@/store/tasks'
 import { TaskChainMap } from '@common/enum/callback'
-import { show } from './message'
+import { showMessage } from './message'
 import { convertToCoreTaskConfiguration } from './task_helper'
 
 let selfIncreasedId = 1000000
@@ -43,7 +43,7 @@ async function runTaskEmulator (uuid: string, task: Task): Promise<void> {
       } else {
         taskStore.updateTaskStatus(uuid, task.task_id, 'exception', 0)
         logger.warn('Emulator is alive but failed to connect', uuid)
-        show('检测到设备, 但连接失败', {
+        showMessage('检测到设备, 但连接失败', {
           type: 'error',
           duration: 0,
           closable: true
@@ -52,7 +52,7 @@ async function runTaskEmulator (uuid: string, task: Task): Promise<void> {
     } else {
       // 设备没活
       taskStore.updateTaskStatus(uuid, task.task_id, 'exception', 0)
-      show('启动设备失败', {
+      showMessage('启动设备失败', {
         type: 'error',
         duration: 0,
         closable: true

@@ -12,7 +12,7 @@ import Configuration from '@/components/Task/configurations/Index.vue'
 import useTaskStore from '@/store/tasks'
 import useDeviceStore from '@/store/devices'
 import useSettingStore from '@/store/settings'
-import { show } from '@/utils/message'
+import { showMessage } from '@/utils/message'
 
 import router from '@/router'
 import Result from '@/components/Task/results/Index.vue'
@@ -84,7 +84,7 @@ async function handleStartUnconnected (task: Task) {
       }
     } else {
       // 设备没活
-      show('启动设备失败', {
+      showMessage('启动设备失败', {
         type: 'error',
         duration: 0,
         closable: true
@@ -96,7 +96,7 @@ async function handleStartUnconnected (task: Task) {
 
 async function handleSubStart () {
   if (_.findIndex(tasks.value, (task) => task.enable === true) === -1) {
-    show('请至少选择一个任务', { type: 'warning', duration: 5000 })
+    showMessage('请至少选择一个任务', { type: 'warning', duration: 5000 })
     return
   }
   deviceStore.updateDeviceStatus(uuid.value as string, 'tasking')
@@ -114,9 +114,9 @@ async function handleSubStop () {
   }) // 等待core停止任务
   actionLoading.value = false
   if (!status) {
-    show('停止任务失败', { type: 'error', duration: 5000 })
+    showMessage('停止任务失败', { type: 'error', duration: 5000 })
   } else {
-    show('已停止任务', { type: 'success', duration: 5000 })
+    showMessage('已停止任务', { type: 'success', duration: 5000 })
   }
   deviceStore.updateDeviceStatus(uuid.value as string, 'connected') // 将设备状态改为已连接
   taskStore.stopAllTasks(uuid.value as string) // 停止所有任务
@@ -153,10 +153,10 @@ async function handleStart() {
           touch_mode: touchMode.value
         } as InitCoreParam)
       } else {
-        show('设备自启失败, 请尝试手动启动设备', { type: 'warning', duration: 2000 })
+        showMessage('设备自启失败, 请尝试手动启动设备', { type: 'warning', duration: 2000 })
       }
     } else { // 无启动参数
-      show('设备启动参数未知, 请先刷新设备列表或尝试手动连接', { type: 'warning', duration: 2000 })
+      showMessage('设备启动参数未知, 请先刷新设备列表或尝试手动连接', { type: 'warning', duration: 2000 })
     }
   }
 }
@@ -168,7 +168,7 @@ function handleTaskCopy (index: number) {
 function handleTaskDelete (index: number) {
   const status = taskStore.deleteTask(uuid.value, index)
   if (!status) {
-    show('删除任务失败', { type: 'error', duration: 12 })
+    showMessage('删除任务失败', { type: 'error', duration: 12 })
   }
 }
 

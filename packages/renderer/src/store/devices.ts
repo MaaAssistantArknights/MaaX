@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import logger from '@/hooks/caller/logger'
 import { runStartEmulator } from '@/utils/task_runner'
-import { show } from '@/utils/message'
+import { showMessage } from '@/utils/message'
 
 export interface DeviceState {
   devices: Device[]
@@ -98,7 +98,7 @@ const useDeviceStore = defineStore<'device', DeviceState, {}, DeviceAction>(
         }
 
         if (!origin) return false
-        const wakeUpMessage = show(`正在尝试启动设备 ${origin.displayName as string}`, {
+        const wakeUpMessage = showMessage(`正在尝试启动设备 ${origin.displayName as string}`, {
           type: 'loading',
           duration: 0
         })

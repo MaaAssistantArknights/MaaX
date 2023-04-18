@@ -17,11 +17,11 @@ import router from '@/router'
 import useTaskStore from '@/store/tasks'
 import useSettingStore from '@/store/settings'
 // import useTaskIdStore from '@/store/taskId'
-import { show } from '@/utils/message'
+import { showMessage } from '@/utils/message'
 import logger from '@/hooks/caller/logger'
 
 const props = defineProps<{
-  uuid: string;
+  device: Device;
 }>()
 
 const themeVars = useThemeVars()
@@ -31,16 +31,14 @@ const settingStore = useSettingStore()
 
 const touchMode = computed(() => settingStore.touchMode)
 // const taskIdStore = useTaskIdStore()
-const device = computed(() =>
-  deviceStore.devices.find((device) => device.uuid === props.uuid)
-)
+
 const deviceDisplayName = computed(
-  () => device.value?.displayName || device.value?.address
+  () => props.device.displayName || props.device.address
 )
 const routeUuid = computed(
   () => router.currentRoute.value.params.uuid as string | undefined
 )
-const isCurrent = computed(() => routeUuid.value === props.uuid)
+const isCurrent = computed(() => routeUuid.value === props.device.uuid)
 
 const connectedStatus: Set<DeviceStatus> = new Set(['connected', 'tasking'])
 const disconnectedStatus: Set<DeviceStatus> = new Set([
@@ -51,31 +49,31 @@ const disconnectedStatus: Set<DeviceStatus> = new Set([
 ])
 
 let connectShow: MessageReactive | undefined
-watch(() => device.value?.status, (newStatus) => {
+watch(() => props.device.status, (newStatus) => {
   logger.info('device status changed', newStatus)
   if (connectShow) connectShow.destroy()
   connectShow = undefined
   switch (newStatus) {
     case 'connecting':
-      connectShow = show(`${deviceDisplayName.value}正在连接...`, {
+      connectShow = showMessage(`${deviceDisplayName.value}正在连接...`, {
         type: 'loading',
         duration: 0
       })
       break
     case 'waitingTask':
-      connectShow = show(`${deviceDisplayName.value}正在连接并等待执行任务...`, {
+      connectShow = showMessage(`${deviceDisplayName.value}正在连接并等待执行任务...`, {
         type: 'loading',
         duration: 0
       })
       break
     case 'connected':
-      connectShow = show(`${deviceDisplayName.value}已连接`, {
+      connectShow = showMessage(`${deviceDisplayName.value}已连接`, {
         type: 'success',
         duration: 3000
       })
       break
     case 'disconnected':
-      connectShow = show(`${deviceDisplayName.value}已断开连接`, {
+      connectShow = showMessage(`${deviceDisplayName.value}已断开连接`, {
         type: 'info',
         duration: 3000
       })
@@ -87,29 +85,29 @@ watch(() => device.value?.status, (newStatus) => {
 
 // function connectDevice (uuid: string) {}
 
-function handleJumpToTask () {
+function handleJumpToTask() {
   // 未连接的设备也可以查看任务
-  if (!taskStore.getCurrentTaskGroup(props.uuid)) {
-    taskStore.initDeviceTask(props.uuid)
+  if (!taskStore.getCurrentTaskGroup(props.device.uuid)) {
+    taskStore.initDeviceTask(props.device.uuid)
   }
-  taskStore.fixTaskList(props.uuid)
-  if (!isCurrent.value) router.push(`/task/${device.value?.uuid}`)
+  taskStore.fixTaskList(props.device.uuid)
+  if (!isCurrent.value) router.push(`/task/${props.device.uuid}`)
 }
 
-function handleDeviceDisconnect () {
+function handleDeviceDisconnect() {
   // task stop
-  window.ipcRenderer.send('main.CoreLoader:disconnectAndDestroy', { uuid: device.value?.uuid })
-  taskStore.stopAllTasks(device.value?.uuid as string)
-  deviceStore.updateDeviceStatus(device.value?.uuid as string, 'disconnected')
+  window.ipcRenderer.send('main.CoreLoader:disconnectAndDestroy', { uuid: props.device.uuid })
+  taskStore.stopAllTasks(props.device.uuid as string)
+  deviceStore.updateDeviceStatus(props.device.uuid as string, 'disconnected')
   router.push('/device')
 }
 
-async function handleDeviceConnect () {
-  if (!disconnectedStatus.has(device.value?.status ?? 'unknown')) {
+async function handleDeviceConnect() {
+  if (!disconnectedStatus.has(props.device.status ?? 'unknown')) {
     return
   }
-  if (!device.value?.uuid) {
-    show('设备uuid不存在', {
+  if (!props.device.uuid) {
+    showMessage('设备uuid不存在', {
       type: 'error',
       duration: 3000
     })
@@ -117,18 +115,18 @@ async function handleDeviceConnect () {
   }
 
   // 无地址, 尝试唤醒模拟器
-  if (!device.value?.address || device?.value?.address?.length === 0) {
-    if (!await deviceStore.wakeUpDevice(device.value?.uuid)) {
+  if (!props.device.address || props.device.address.length === 0) {
+    if (!await deviceStore.wakeUpDevice(props.device.uuid)) {
       return
     }
   }
 
-  deviceStore.updateDeviceStatus(device.value?.uuid as string, 'connecting')
+  deviceStore.updateDeviceStatus(props.device.uuid as string, 'connecting')
   await window.ipcRenderer.invoke('main.CoreLoader:initCoreAsync', {
-    address: device.value?.address,
-    uuid: device.value?.uuid,
-    adb_path: device.value?.adbPath,
-    config: device.value?.config,
+    address: props.device.address,
+    uuid: props.device.uuid,
+    adb_path: props.device.adbPath,
+    config: props.device.config,
     touch_mode: touchMode.value
   } as InitCoreParam)
 }
@@ -152,10 +150,7 @@ async function handleDeviceConnect () {
     >
       <NTooltip>
         <template #trigger>
-          <div
-            class="device-status"
-            :data-status="device?.status"
-          />
+          <div class="device-status" :data-status="device?.status" />
         </template>
         {{
           (() => {
@@ -176,7 +171,7 @@ async function handleDeviceConnect () {
           })()
         }}
       </NTooltip>
-      <DeviceDetailPopover :uuid="props.uuid">
+      <DeviceDetailPopover :uuid="props.device.uuid">
         <div class="device-name">
           {{ deviceDisplayName }}
         </div>
@@ -275,14 +270,12 @@ async function handleDeviceConnect () {
 
   &[data-status="connecting"]::before {
     background-color: #28cd41;
-    animation: connecting 1s cubic-bezier(0.46, 1, 0.76, 0.94) alternate
-      infinite;
+    animation: connecting 1s cubic-bezier(0.46, 1, 0.76, 0.94) alternate infinite;
   }
 
   &[data-status="waitingTask"]::before {
     background-color: #28cd41;
-    animation: connecting 1s cubic-bezier(0.46, 1, 0.76, 0.94) alternate
-      infinite;
+    animation: connecting 1s cubic-bezier(0.46, 1, 0.76, 0.94) alternate infinite;
   }
 
   &[data-status="connected"]::before {

@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { NButton, NIcon, NMenu, MenuOption } from 'naive-ui'
-import { h, ref, Ref } from 'vue'
+import { h, ref, Ref, computed } from 'vue'
 import DeviceCard from '@/components/Device/DeviceCard.vue'
+import useDeviceStore from '@/store/devices'
 import router from '@/router'
 import { RouterLink } from 'vue-router'
 import IconChevronLeft from '@/assets/icons/chevron-left.svg?component'
 
+const deviceStore = useDeviceStore()
+
 const currentUuid = router.currentRoute.value.params.uuid as string
+const currentDevice = computed(() => deviceStore.devices.find(device => device.uuid !== currentUuid))
 
 const menuActiveKey: Ref<string | null> = ref(null)
 const menuOptions: MenuOption[] = [
@@ -58,7 +62,7 @@ const menuOptions: MenuOption[] = [
     </NButton>
     <h2>当前设备</h2>
     <div class="current-device">
-      <DeviceCard :uuid="currentUuid" />
+      <DeviceCard :device="currentDevice!" />
     </div>
     <h2>小工具</h2>
     <NMenu v-model:value="menuActiveKey" :options="menuOptions" />

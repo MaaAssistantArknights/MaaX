@@ -5,7 +5,7 @@ import useDeviceStore from '@/store/devices'
 // import { uuidV4 } from "@common/uuid";
 import IconLink from '@/assets/icons/link.svg?component'
 import _ from 'lodash'
-import { show } from '@/utils/message'
+import { showMessage } from '@/utils/message'
 
 const address = ref('')
 const deviceStore = useDeviceStore()
@@ -36,16 +36,16 @@ function addressChecker (cs: string) {
 async function handleCustomConnect () {
   console.log(address.value)
   if (addressChecker(address.value)) {
-    const loading = show('正在连接', { type: 'loading', duration: 0 })
+    const loading = showMessage('正在连接', { type: 'loading', duration: 0 })
     if (deviceStore.devices.find(dev => dev.address === address.value)) {
       loading.destroy()
-      show('设备已经存在了哦', { type: 'warning', duration: 5000 })
+      showMessage('设备已经存在了哦', { type: 'warning', duration: 5000 })
       return
     }
     const uuid = await window.ipcRenderer.invoke('main.DeviceDetector:getDeviceUuid', address.value)
     if (!(uuid as string | false)) {
       loading.destroy()
-      show('连接失败，检查一下地址吧', { type: 'error', duration: 5000 })
+      showMessage('连接失败，检查一下地址吧', { type: 'error', duration: 5000 })
       return
     }
     deviceStore.mergeSearchResult([
@@ -57,7 +57,7 @@ async function handleCustomConnect () {
     ])
     loading.destroy()
   } else {
-    show('设备地址不对哦，检查一下吧', { type: 'error', duration: 5000 })
+    showMessage('设备地址不对哦，检查一下吧', { type: 'error', duration: 5000 })
   }
 }
 </script>

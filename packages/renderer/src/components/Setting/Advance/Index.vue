@@ -6,7 +6,7 @@ import {
   NSpace,
   NButton
 } from 'naive-ui'
-import { show } from '@/utils/message'
+import { showMessage } from '@/utils/message'
 import { confirm } from '@/utils/dialog'
 import useSettingStore from '@/store/settings'
 import { TouchMode } from '@common/enum/settings'
@@ -32,7 +32,7 @@ const touchModeOptions = [
 async function handleChangeTouchMode (mode: TouchMode) {
   settingStore.setTouchMode(mode)
   const ret = await changeTouchMode(mode)
-  show(ret ? '修改成功' : '修改失败, 请查看log输出', { type: 'info', duration: 3000, closable: true })
+  showMessage(ret ? '修改成功' : '修改失败, 请查看log输出', { type: 'info', duration: 3000, closable: true })
 }
 
 async function removeAllConfigDialog () {
