@@ -73,7 +73,7 @@ function deviceInfoParser(devices: Device[]): any[] {
     )
   } else {
     showMessage(
-      t('device.availableDevice', { count: ret.length }),
+      t('device.availableDeviceFound', { count: ret.length }),
       {
         type: 'info'
       },
