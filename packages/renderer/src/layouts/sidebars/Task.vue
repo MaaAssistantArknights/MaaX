@@ -11,7 +11,7 @@ import { computed } from 'vue'
 
 const deviceStore = useDeviceStore()
 const currentUuid = computed(() => router.currentRoute.value.params.uuid as string)
-const currentDevice = computed(() => deviceStore.devices.find(device => device.uuid !== currentUuid.value))
+const currentDevice = computed(() => deviceStore.devices.find(device => device.uuid === currentUuid.value))
 const otherDevices = deviceStore.devices.filter(device => device.uuid !== currentUuid.value)
 </script>
 
