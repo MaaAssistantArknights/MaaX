@@ -2,6 +2,9 @@ type DeviceStatus =
   | 'available'
   | 'connecting'
   | 'connected'
+  | 'wakingUp' // 正在尝试启动
+  | 'waitingTask' // 等待设备链接后自动开始任务
+  | 'waitingTaskEnd' // 链接成功, 可以开始任务
   | 'tasking'
   | 'disconnected'
   | 'unknown'
@@ -29,7 +32,7 @@ interface Device {
   /**
    * @props 设备连接地址
    */
-  connectionString: string
+  address: string
   /**
    * @props 设备状态
    * ---
@@ -69,7 +72,7 @@ interface Device {
 interface NativeDevice {
   uuid: string
   pid?: string
-  connectionString: string
+  address: string
   name: EmulatorName
   adbPath?: string
   tag?: string

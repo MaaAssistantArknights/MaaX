@@ -50,6 +50,7 @@ module.exports = {
     "@typescript-eslint/promise-function-async": "off",
     "@typescript-eslint/naming-convention": "off",
     "camelcase": "off",
-    "vue/prop-name-casing": "off"
+    "vue/prop-name-casing": "off",
+    "space-before-function-paren": "off",
   },
 };

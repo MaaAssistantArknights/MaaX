@@ -8,6 +8,8 @@ import ffi, { DynamicLibrary } from '@tigerconnect/ffi-napi'
 import ref from '@tigerconnect/ref-napi'
 import callbackHandle from './callback'
 import { getAppBaseDir } from '@main/utils/path'
+import { InstanceOptionKey } from '@main/../common/enum/core'
+import { TouchMode } from '@common/enum/settings'
 
 const storage = new Storage()
 
@@ -15,7 +17,7 @@ const storage = new Storage()
 const BoolType = ref.types.bool
 const IntType = ref.types.int
 const AsstAsyncCallIdType = ref.types.int
-const AsstBoolType = ref.types.uint8
+// const AsstBoolType = ref.types.uint8
 // const IntArrayType = ArrayType(IntType)
 // const DoubleType = ref.types.double
 const ULLType = ref.types.ulonglong
@@ -48,10 +50,9 @@ function createVoidPointer (): ref.Value<void> {
 class CoreLoader {
   private readonly dependences: Record<string, string[]> = {
     win32: [
-      'opencv_world453',
-      'onnxruntime',
-      'paddle2onnx',
-      'fastdeploy'
+      'opencv_world4_maa.dll',
+      'onnxruntime_maa.dll',
+      'MaaDerpLearning.dll'
     ],
     linux: [
       'libiomp5.so',
@@ -129,14 +130,13 @@ class CoreLoader {
       this.Stop(uuid)
       this.Destroy(uuid)
     }
-    for (const dep of this.DepLibs) {
-      console.log(dep.path())
-      dep.close()
-    }
     try {
       this.DLib.close()
     } catch (e) {
       logger.error('close core error')
+    }
+    for (const dep of this.DepLibs) {
+      dep.close()
     }
     CoreLoader.loadStatus = false
   }
@@ -327,16 +327,22 @@ class CoreLoader {
     }
   }
 
+  /** @deprecated 已废弃，将在接下来的版本中移除 */
+  public Connect (address: string, uuid: string, adbPath: string, config: string): boolean {
+    return this.MeoAsstLib.AsstConnect(this.MeoAsstPtr[uuid], adbPath, address, config)
+  }
+
   /**
    * @description 连接
    * @param address 连接地址
    * @param uuid 设备唯一标识符
    * @param adbPath adb路径
    * @param config 模拟器名称, 自定义设备为'General'
+   * @param block 是否阻塞
    * @returns 是否连接成功
    */
-  public Connect (address: string, uuid: string, adbPath: string, config: string): boolean {
-    return this.MeoAsstLib.AsstConnect(this.MeoAsstPtr[uuid], adbPath, address, config)
+  public AsyncConnect (address: string, uuid: string, adbPath: string, config: string, block: boolean = false): number {
+    return this.MeoAsstLib.AsstAsyncConnect(this.MeoAsstPtr[uuid], adbPath, address, config, block)
   }
 
   /**
@@ -347,7 +353,7 @@ class CoreLoader {
    * @returns
    */
   public AppendTask (uuid: string, type: string, params: string): number {
-    return this.MeoAsstLib.AsstAppendTask(this.GetUUID(uuid), type, params)
+    return this.MeoAsstLib.AsstAppendTask(this.GetCoreInstanceByUUID(uuid), type, params)
   }
 
   /**
@@ -359,7 +365,7 @@ class CoreLoader {
 
   public SetTaskParams (uuid: string, taskId: number, params: string): boolean {
     return this.MeoAsstLib.AsstSetTaskParams(
-      this.GetUUID(uuid),
+      this.GetCoreInstanceByUUID(uuid),
       taskId,
       params
     )
@@ -371,7 +377,7 @@ class CoreLoader {
    * @returns 是否成功
    */
   public Start (uuid: string): boolean {
-    return this.MeoAsstLib.AsstStart(this.GetUUID(uuid))
+    return this.MeoAsstLib.AsstStart(this.GetCoreInstanceByUUID(uuid))
   }
 
   /**
@@ -380,7 +386,7 @@ class CoreLoader {
    * @returns
    */
   public Stop (uuid: string): boolean {
-    return this.MeoAsstLib.AsstStop(this.GetUUID(uuid))
+    return this.MeoAsstLib.AsstStop(this.GetCoreInstanceByUUID(uuid))
   }
 
   /**
@@ -391,12 +397,23 @@ class CoreLoader {
    * @returns
    */
   public Click (uuid: string, x: number, y: number): boolean {
-    return this.MeoAsstLib.AsstClick(this.GetUUID(uuid), x, y)
+    return this.MeoAsstLib.AsstClick(this.GetCoreInstanceByUUID(uuid), x, y)
+  }
+
+  /**
+   * 异步请求截图, 在回调中取得截图完成事件后再使用GetImage获取截图
+   * @param uuid
+   * @param block 阻塞
+   * @returns
+   */
+  public AsyncScreencap (uuid: string, block: boolean = true): number | boolean {
+    if (!this.MeoAsstPtr[uuid]) return false
+    return this.MeoAsstLib.AsstAsyncScreencap(this.GetCoreInstanceByUUID(uuid), block)
   }
 
   public GetImage (uuid: string): string {
     const buf = Buffer.alloc(5114514)
-    const len = this.MeoAsstLib.AsstGetImage(this.GetUUID(uuid), buf as any, buf.length)
+    const len = this.MeoAsstLib.AsstGetImage(this.GetCoreInstanceByUUID(uuid), buf as any, buf.length)
     const buf2 = buf.slice(0, len as number)
     const v2 = buf2.toString('base64')
     return v2
@@ -411,7 +428,7 @@ class CoreLoader {
     return this.MeoAsstLib.AsstGetVersion()
   }
 
-  public GetUUID (uuid: string): AsstInstancePtr {
+  public GetCoreInstanceByUUID (uuid: string): AsstInstancePtr {
     return this.MeoAsstPtr[uuid]
   }
 
@@ -421,6 +438,35 @@ class CoreLoader {
 
   public GetExtraRogueConfigPath (): string {
     return this.extraRogueConfig
+  }
+
+  public SetInstanceOption (uuid: string, key: InstanceOptionKey, value: string): boolean {
+    return this.MeoAsstLib.AsstSetInstanceOption(this.GetCoreInstanceByUUID(uuid), key, value)
+  }
+
+  public SetTouchMode (uuid: string, mode: TouchMode): boolean {
+    if (!this.MeoAsstPtr[uuid]) {
+      return false
+    }
+    return this.SetInstanceOption(uuid, InstanceOptionKey.TouchMode, mode)
+  }
+
+  /**
+   * @description change touchmode for all instances
+   * @param mode TouchMode
+   * @returns is all changes success
+   */
+  public ChangeTouchMode (mode: TouchMode): boolean {
+    for (const uuid in this.MeoAsstPtr) {
+      if (this.MeoAsstPtr[uuid]) {
+        const status = this.SetTouchMode(uuid, mode)
+        if (!status) {
+          logger.error(`Change touch mode failed on uuid: ${uuid}`)
+          return status
+        }
+      }
+    }
+    return true
   }
 }
 

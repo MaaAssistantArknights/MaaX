@@ -1,4 +1,5 @@
 import type { MessageApiInjection } from 'naive-ui/lib/message/src/MessageProvider'
+import type { DialogApiInjection } from 'naive-ui/lib/dialog/src/DialogProvider'
 export { }
 
 declare global {
@@ -18,6 +19,7 @@ declare global {
     }
     removeLoading: () => void
     $message: MessageApiInjection
+    $dialog: DialogApiInjection
     updateLoadingText: (text: string) => void
   }
 }

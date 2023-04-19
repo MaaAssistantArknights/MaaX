@@ -1,6 +1,6 @@
 import { ipcMainHandle, ipcMainSend } from '@main/utils/ipc-main'
 import { nativeTheme, BrowserWindow } from 'electron'
-import { is } from 'electron-util'
+import { getPlatform } from '@main/utils/os'
 import Storage from '@main/storageManager'
 
 export default function useTheme (window: BrowserWindow): void {
@@ -11,7 +11,7 @@ export default function useTheme (window: BrowserWindow): void {
 
   ipcMainHandle('main.AppearanceManager:themeUpdated', async (event, isDark) => {
     const storage = new Storage()
-    if (is.windows && storage.get('theme.acrylic')) {
+    if (getPlatform() === 'windows' && storage.get('theme.acrylic')) {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const { setVibrancy } = require('electron-acrylic-window')
       setVibrancy(window, {
@@ -19,7 +19,7 @@ export default function useTheme (window: BrowserWindow): void {
         effect: 'acrylic'
       })
     }
-    if (is.macos && storage.get('theme.acrylic')) {
+    if (getPlatform() === 'macos' && storage.get('theme.acrylic')) {
       window.setVibrancy(isDark ? 'dark' : 'light')
     }
   })

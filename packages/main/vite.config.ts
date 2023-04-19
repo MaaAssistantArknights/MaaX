@@ -6,6 +6,7 @@ import path from 'path'
 export default defineConfig({
   root: __dirname,
   base: './',
+  publicDir: './aftercare',
   resolve: {
     alias: {
       '@main': __dirname,

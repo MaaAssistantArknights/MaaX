@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { useI18n } from 'vue-i18n'
 import version from '@/hooks/caller/version'
+import { RogueTheme, TouchMode } from '@common/enum/settings'
 
 export enum Locale {
   zhCN = 'ZhCN',
@@ -10,7 +11,7 @@ export enum Locale {
 export interface SettingState {
   penguinReportId: string
   yituliuReportId: string
-  forMizuki: boolean
+  rogueTheme: RogueTheme
   version: {
     core: {
       current?: string
@@ -23,6 +24,7 @@ export interface SettingState {
   }
   _locale: Locale
   monsters: boolean
+  touchMode: TouchMode
 }
 
 export interface SettingAction {
@@ -31,8 +33,9 @@ export interface SettingAction {
   setYituliuReportId: (reportId: string) => void
   changeLocale: (locale: Locale) => void
   updateVersionInfo: () => void
-  setForMizuki: (forMizuki: boolean) => void
+  changeRogueTheme: (theme: RogueTheme) => void
   toggleMonsters: () => void
+  setTouchMode: (mode: TouchMode) => void
 }
 
 export interface SettingGetters {
@@ -47,13 +50,14 @@ const useSettingStore = defineStore<'setting', SettingState, SettingGetters, Set
       return {
         penguinReportId: '',
         yituliuReportId: '',
-        forMizuki: false,
+        rogueTheme: RogueTheme.Phantom,
         version: {
           core: {},
           ui: {}
         },
         _locale: Locale.zhCN,
-        monsters: false
+        monsters: false,
+        touchMode: TouchMode.minitouch
       }
     },
     getters: {
@@ -85,8 +89,8 @@ const useSettingStore = defineStore<'setting', SettingState, SettingGetters, Set
         this.version.core.current = await version.core() ?? undefined
         this.version.ui.current = await version.ui()
       },
-      setForMizuki (forMizuki: boolean) {
-        this.forMizuki = forMizuki
+      changeRogueTheme (theme: RogueTheme) {
+        this.rogueTheme = theme
       },
       toggleMonsters () {
         this.monsters = !this.monsters
@@ -97,6 +101,9 @@ const useSettingStore = defineStore<'setting', SettingState, SettingGetters, Set
         }
         const i18n = useI18n()
         i18n.locale.value = this.locale
+      },
+      setTouchMode (mode: TouchMode) {
+        this.touchMode = mode
       }
     }
   }

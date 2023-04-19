@@ -60,9 +60,9 @@ async function testPort (
 function getBluestackInstanceName (cmd: string): string {
   const instanceExp = /".*"\s"?--instance"?\s"?([^"\s]*)"?/g
   const res = [...cmd.matchAll(instanceExp)].map((v) => v[1])
-  console.log('instance Name:')
-  console.log(res)
-  return res ? res[0] : 'unknown'
+  const name = res ? res[0] : 'unknown'
+  logger.info('[winAdapter] Get bluestack instance name: ', name)
+  return name
 }
 
 @Singleton
@@ -71,17 +71,13 @@ class WindowsAdapter implements EmulatorAdapter {
     // const confPortExp = /bst.instance.Nougat64_?\d?.status.adb_port="(\d{4,6})"/g
     // const e: Emulator = { pname, pid }
     e.config = 'BlueStacks'
-    e.adbPath = path.join(
-      path.dirname(JSON.parse(
-        (await $`Get-WmiObject -Query "select ExecutablePath FROM Win32_Process where ProcessID=${e.pid}" | Select-Object -Property ExecutablePath | ConvertTo-Json`).stdout
-      ).ExecutablePath),
-      'HD-Adb.exe'
-    )
+    const exePath = JSON.parse(
+      (await $`Get-WmiObject -Query "select ExecutablePath FROM Win32_Process where ProcessID=${e.pid}" | Select-Object -Property ExecutablePath | ConvertTo-Json`).stdout
+    ).ExecutablePath
+    e.adbPath = path.join(path.dirname(exePath), 'HD-Adb.exe')
     const cmd = await getCommandLine(e.pid)
     e.commandLine = cmd // 从命令行启动的指令
-    const arg = getBluestackInstanceName(await cmd)
-    console.log('arg:')
-    console.log(arg)
+    const arg = getBluestackInstanceName(cmd)
     const confPath = path.join(
       path.normalize(JSON.parse(
         (await $`Get-ItemProperty -Path Registry::HKEY_LOCAL_MACHINE\\SOFTWARE\\BlueStacks_nxt | Select-Object -Property UserDefinedDir | ConvertTo-Json`).stdout
@@ -98,8 +94,6 @@ class WindowsAdapter implements EmulatorAdapter {
         ))].map(
           (v) => v.PSChildName
         ) // 蓝叠CN注册表中的模拟器id
-        console.log('emulator name:')
-        console.log(emulatorName)
         if (emulatorName.length === 0) success = false
         else {
           for await (const v of emulatorName) {
@@ -112,7 +106,6 @@ class WindowsAdapter implements EmulatorAdapter {
               !success
             ) {
               // 端口没有被占用, 测试端口成功, 本次循环未使用这个端口
-              console.log('use bs cn')
               inUsePorts.push(port)
               e.address = `127.0.0.1:${port}`
               e.displayName = 'BlueStack CN [regedit]'
@@ -122,12 +115,8 @@ class WindowsAdapter implements EmulatorAdapter {
           }
         }
       } catch (err) {
-        console.log(err)
         success = false
       }
-
-      console.log('success status:')
-      console.log(success)
       if (!success) {
         // 通过读注册表失败, 使用 netstat 抓一个5开头的端口充数
         const regExp = '\\s*TCP\\s*127.0.0.1:(5\\d{3,4})\\s*' // 提取端口
@@ -165,8 +154,6 @@ class WindowsAdapter implements EmulatorAdapter {
     }
      */
     }
-    console.log('e:::')
-    console.log(e)
     // return e
   }
 
@@ -284,11 +271,9 @@ class WindowsAdapter implements EmulatorAdapter {
     const LdVBoxHeadlessPath = await getPnamePath('LdVBoxHeadless.exe') // LdVBoxHeadless.exe路径
     const VBoxManagePath = path.resolve(path.dirname(LdVBoxHeadlessPath), 'VBoxManage.exe') // VBoxManage.exe路径
     const port = (await $`"${VBoxManagePath}" showvminfo ${statvm[1]} --machinereadable`).stdout.match(/Forwarding\(1\)="tcp_5\d\d\d_5\d\d\d,tcp,,(\d*),,/)
-    logger.silly('port', port)
     if (port) {
       e.address = `127.0.0.1:${port[1]}`
     }
-    console.log(e)
   }
 
   async getAdbDevices (): Promise<Device[]> {
@@ -311,25 +296,8 @@ class WindowsAdapter implements EmulatorAdapter {
           }
         }
       })
-    // await $`"${defaultAdbPath}" disconnect`
-    // Promise.all(
-    //   emulators.map(e => {
-    //     if (e.pname === 'HD-Player.exe') {
-    //       return this.getBluestack(e)
-    //     } else if (e.pname === 'NoxVMHandle.exe') {
-    //       return this.getNox(e)
-    //     } else if (e.pname === 'NemuHeadless.exe') {
-    //       return this.getMumu(e)
-    //     } else if (e.pname === 'LdVBoxHeadless.exe') {
-    //       return this.getLd(e)
-    //     } else if (e.pname === 'MEmuHeadless.exe') {
-    //       return this.getXY(e)
-    //     }
-    //     return Promise.resolve()
-    //     // return Promise.reject()
-    //   })
-    // ).then(() => Promise.resolve(emulators))
-    //   .catch()
+
+    // TODO: rft
     for await (const e of emulators) {
       if (e.pname === 'HD-Player.exe') {
         await this.getBluestack(e)
@@ -344,14 +312,18 @@ class WindowsAdapter implements EmulatorAdapter {
       }
     }
 
+    const availableEmulators: Emulator[] = []
     for await (const e of emulators) {
       const uuid = await getDeviceUuid(e.address as string, defaultAdbPath) // 不再使用模拟器自带的adb来获取uuid
-      if (uuid) {
+      if (uuid && uuid.length > 0) {
         e.uuid = uuid
       }
       logger.silly(`emulator: ${JSON.stringify(e)}`)
     }
-    return emulators
+    emulators.forEach((e) => {
+      if (e.address && e.uuid && e.adbPath && e.config && e.commandLine && e.displayName) availableEmulators.push(e)
+    })
+    return availableEmulators
   }
 }
 

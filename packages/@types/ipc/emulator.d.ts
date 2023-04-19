@@ -10,6 +10,6 @@ interface Emulator {
   emulatorPath?: string // 模拟器路径
 }
 
-interface Device {
-  address?: string // 127.0.0.1:5555 或者 emulator-114514 类似
-}
+// interface Device {
+//   address?: string // 127.0.0.1:5555 或者 emulator-114514 类似
+// }

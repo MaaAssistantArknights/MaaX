@@ -2,7 +2,7 @@ import useDeviceStore from '@/store/devices'
 import useTaskStore from '@/store/tasks'
 import useSettingStore from '@/store/settings'
 
-import { show } from '@/utils/message'
+import { showMessage } from '@/utils/message'
 import { AsstMsg } from '@common/enum/callback'
 import type { MessageReactive } from 'naive-ui'
 
@@ -340,20 +340,19 @@ export default function useCallbackEvents (): void {
         }
         case 'Connected': {
           const device = deviceStore.getDevice(uuid)
-          show(
-            `${device?.displayName ?? ''}连接成功`,
-            { type: 'success' },
-            true
-          )
-          deviceStore.updateDeviceStatus(uuid, 'connected')
+          if (device?.status === 'waitingTask') {
+            deviceStore.updateDeviceStatus(uuid, 'waitingTaskEnd')
+          } else {
+            deviceStore.updateDeviceStatus(uuid, 'connected')
+          }
           break
         }
         case 'UnsupportedResolution': {
-          show('不支持这个分辨率', { type: 'error' })
+          showMessage('不支持这个分辨率', { type: 'error' })
           break
         }
         case 'ResolutionError': {
-          show('获取分辨率失败', { type: 'error' })
+          showMessage('获取分辨率失败', { type: 'error' })
           break
         }
         case 'Reconnecting': {
@@ -361,7 +360,7 @@ export default function useCallbackEvents (): void {
             messages[uuid].destroy()
           }
           const device = deviceStore.getDevice(uuid)
-          messages[uuid] = show(`${device?.displayName ?? ''}尝试重连中...`, {
+          messages[uuid] = showMessage(`${device?.displayName ?? ''}尝试重连中...`, {
             type: 'loading'
           })
           deviceStore.updateDeviceStatus(uuid, 'connecting')
@@ -372,7 +371,7 @@ export default function useCallbackEvents (): void {
             messages[uuid].destroy()
           }
           const device = deviceStore.getDevice(uuid)
-          show(`${device?.displayName ?? ''}重连成功`, { type: 'success' })
+          showMessage(`${device?.displayName ?? ''}重连成功`, { type: 'success' })
           deviceStore.updateDeviceStatus(uuid, 'connected')
           break
         }
@@ -380,9 +379,9 @@ export default function useCallbackEvents (): void {
           const device = deviceStore.getDevice(uuid)
           if (device?.status === 'connecting') {
             messages[uuid]?.destroy()
-            show(`${device?.displayName ?? ''}重连失败`, { type: 'error' })
+            showMessage(`${device?.displayName ?? ''}重连失败`, { type: 'error' })
           } else {
-            show(
+            showMessage(
               `${device?.displayName ?? ''}已断开连接`,
               { type: 'info' },
               true
@@ -398,7 +397,7 @@ export default function useCallbackEvents (): void {
     [AsstMsg.AllTasksCompleted]: (data: Callback.AllTasksCompleted) => {
       const deviceStore = useDeviceStore()
       deviceStore.updateDeviceStatus(data.uuid.trim(), 'connected')
-      show('所有任务完成了( •̀ ω •́ )✧', { type: 'info' })
+      showMessage('所有任务完成了( •̀ ω •́ )✧', { type: 'info' })
       // eslint-disable-next-line no-new
       new Notification('Maa Assistant Arknights',
         { body: '所有任务完成了( •̀ ω •́ )✧' }

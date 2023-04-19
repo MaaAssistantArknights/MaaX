@@ -56,11 +56,15 @@ const otherDevices = deviceStore.devices.filter(device => device.uuid !== curren
       </NSpace>
     </NSpace>
     <div class="current-device">
-      <DeviceCard :uuid="currentUuid" />
+      <DeviceCard :device="currentDevice!" />
     </div>
     <h2>其他设备</h2>
     <div class="other-devices">
-      <DeviceCard v-for="device in otherDevices" :key="device.uuid" :uuid="device.uuid" />
+      <DeviceCard
+        v-for="device in otherDevices"
+        :key="device.uuid"
+        :device="device"
+      />
     </div>
   </div>
 </template>

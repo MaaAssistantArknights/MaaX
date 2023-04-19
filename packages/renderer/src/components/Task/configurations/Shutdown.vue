@@ -13,7 +13,7 @@ import {
 } from '@/utils/time_picker'
 // import useTaskIdStore from '@/store/taskId'
 import router from '@/router'
-import { show } from '@/utils/message'
+import { showMessage } from '@/utils/message'
 import logger from '@/hooks/caller/logger'
 import { inject } from 'vue'
 
@@ -56,7 +56,7 @@ function handleCancelShutdown () {
   // taskId?.forEach((id) => {
   //   clearInterval(id)
   // })
-  show('已取消定时任务', { type: 'success' })
+  showMessage('已取消定时任务', { type: 'success' })
 }
 
 const props = defineProps<{

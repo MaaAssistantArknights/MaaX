@@ -1,17 +1,18 @@
 import { $ } from '@main/utils/shell'
-import { is } from 'electron-util'
+import { getPlatform } from '@main/utils/os'
 import WindowManager from '@main/windowManager'
 import logger from '@main/utils/logger'
 import { ipcMainHandle } from '@main/utils/ipc-main'
 
 async function shutdownEmulator (pid: string): Promise<void> {
   logger.silly('Shutdown Emulator')
+  const platform = getPlatform()
 
-  if (is.windows) {
+  if (platform === 'windows') {
     await $`taskkill /pid ${pid} /f`
-  } else if (is.linux) {
+  } else if (platform === 'linux') {
     await $`kill -9 ${pid}` // TODO: 未测试
-  } else if (is.macos) {
+  } else if (platform === 'macos') {
     await $`kill -9 ${pid}` // TODO: 未测试
   }
 }
@@ -25,10 +26,11 @@ async function shutdownMAA (): Promise<void> {
 
 async function shutdownComputer (): Promise<void> {
   logger.silly('Shutdown MAA')
+  const platform = getPlatform()
 
-  if (is.windows) {
+  if (platform === 'windows') {
     $`shutdown -s -t 60`
-  } else if (is.linux) {
+  } else if (platform === 'linux') {
     $`shutdown -h -t 60` // TODO: 未测试
   } else {
     $`shutdown -h -t 60` // TODO: 未测试

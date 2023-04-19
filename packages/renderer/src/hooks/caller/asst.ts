@@ -1,5 +1,5 @@
 import useSettingStore from '@/store/settings'
-import { loadCoreResources } from '@/utils/load_extra_resources'
+import { loadCoreResources } from '@/utils/core_functions'
 
 export default {
   load: async function (showTip = true) {
@@ -13,9 +13,7 @@ export default {
     window.removeLoading()
 
     const components: Partial<Record<ComponentType, ComponentStatus>> = {
-      'Maa Core': await window.ipcRenderer.invoke('main.ComponentManager:getStatus', 'Maa Core'),
-      'Maa Resource': await window.ipcRenderer.invoke('main.ComponentManager:getStatus', 'Maa Resource'),
-      'Maa Dependency': await window.ipcRenderer.invoke('main.ComponentManager:getStatus', 'Maa Dependency')
+      'Maa Core': await window.ipcRenderer.invoke('main.ComponentManager:getStatus', 'Maa Core')
     }
 
     const showError = showTip ? window.$message.error : undefined

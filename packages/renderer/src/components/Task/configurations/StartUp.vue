@@ -4,7 +4,7 @@ import { inject } from 'vue'
 
 interface StartUpConfiguration {
   client_type: string; // 服务器
-  start_game_enable: boolean; // 是否自动启动客户端
+  start_game_enabled: boolean; // 是否自动启动客户端
 }
 
 const serverOptions = [
@@ -56,9 +56,9 @@ function handleUpdateConfiguration (key: string, value: any) {
     >
       <NCheckbox
         :disabled="configurationDisabled.re"
-        :checked="props.configurations.start_game_enable"
+        :checked="props.configurations.start_game_enabled"
         @update:checked="
-          (checked) => handleUpdateConfiguration('start_game_enable', checked)
+          (checked) => handleUpdateConfiguration('start_game_enabled', checked)
         "
       >
         自动启动客户端

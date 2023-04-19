@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import { app } from 'electron'
 import { manager } from '@main/utils/logger'
 import { ipcMainHandle } from '@main/utils/ipc-main'
 import { getAppBaseDir } from '@main/utils/path'
@@ -54,5 +55,10 @@ export default function useClearHooks (): void {
         fs.rmSync(filepath)
       }
     }
+  })
+
+  ipcMainHandle('main.Util:RemoveAllConfig', async (event) => {
+    fs.writeFileSync(path.join(app.getPath('temp'),'clearConfigToken'), '1')
+    app.quit()
   })
 }

@@ -2,7 +2,7 @@ import { MessageOptions } from 'naive-ui'
 import { VNodeChild } from 'vue'
 import type { MessageReactive } from 'naive-ui'
 
-export const hide = (): void => {
+export const hideAllMessages = (): void => {
   window.$message.destroyAll()
 }
 
@@ -12,11 +12,11 @@ export const hide = (): void => {
  * @param options 神谕选项
  * @param _hide 隐藏之前的神谕
  */
-export const show = (
+export const showMessage = (
   content: string | (() => VNodeChild),
-  options?: MessageOptions,
-  _hide?: boolean
+  options: MessageOptions = {},
+  _hide: boolean = false
 ): MessageReactive => {
-  if (_hide) hide()
+  if (_hide) hideAllMessages()
   return window.$message.create(content, options)
 }

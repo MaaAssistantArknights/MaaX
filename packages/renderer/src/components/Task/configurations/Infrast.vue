@@ -13,7 +13,7 @@ import {
 } from 'naive-ui'
 import Draggable from 'vuedraggable'
 import _ from 'lodash'
-import { show } from '@/utils/message'
+import { showMessage } from '@/utils/message'
 
 type FacilityType =
   | 'Mfg'
@@ -152,21 +152,21 @@ async function handleSelectInfrastConfig (options: { file: UploadFileInfo }) {
 
 async function infrastConfigParse (path: string|undefined) {
   if (!path) {
-    show('请选择配置文件')
+    showMessage('请选择配置文件')
     return
   }
   infrastConfig.path.value = path
   // eslint-disable-next-line vue/max-len
   const raw_content = await window.ipcRenderer.invoke('main.Task:readInfrastConfig', { filepath: infrastConfig.path.value }) as string
   if (raw_content.length < 1) {
-    show('读取基建文件文件失败', { type: 'error', duration: 0, closable: true })
+    showMessage('读取基建文件文件失败', { type: 'error', duration: 0, closable: true })
     return
   }
   try {
     const content = JSON.parse(raw_content)
     infrastConfig.title.value = content.title
     if (!content.plans) {
-      show('读取基建文件文件失败, 文件缺少配置', { type: 'error', duration: 0, closable: true })
+      showMessage('读取基建文件文件失败, 文件缺少配置', { type: 'error', duration: 0, closable: true })
       return
     }
     handleUpdateConfiguration('filename', path)
@@ -178,7 +178,7 @@ async function infrastConfigParse (path: string|undefined) {
       })
     })
   } catch (e) {
-    show('读取基建文件文件失败', { type: 'error', duration: 0, closable: true })
+    showMessage('读取基建文件文件失败', { type: 'error', duration: 0, closable: true })
     return
   }
 

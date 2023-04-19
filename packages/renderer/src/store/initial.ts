@@ -22,7 +22,7 @@ export async function initialStore (): Promise<void> {
       storage.devices = storage.devices.map((device) => ({
         ...device,
         status: 'unknown',
-        connectionString: '',
+        address: '',
         pid: ''
       }))
       return storage
@@ -31,15 +31,17 @@ export async function initialStore (): Promise<void> {
       return storage
     },
     tasks: (storage: TaskState) => {
-      for (const tasks of Object.values(storage.deviceTasks)) {
-        for (const task of tasks) {
-          task.task_id = -1
-          task.progress = 0
-          task.startTime = undefined
-          task.endTime = undefined
-          task.status = 'idle'
-          task.results = {}
-          task.showResult = false
+      for (const taskGroups of Object.values(storage.deviceTasks)) {
+        for (const taskGroup of taskGroups.groups) {
+          for (const task of taskGroup.tasks) {
+            task.task_id = -1
+            task.progress = 0
+            task.startTime = undefined
+            task.endTime = undefined
+            task.status = 'idle'
+            task.results = {}
+            task.showResult = false
+          }
         }
       }
       return storage

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { provide, computed } from 'vue'
 import {
   NForm
 } from 'naive-ui'
@@ -10,18 +11,32 @@ import About from '@/components/Setting/About'
 import Clear from '@/components/Setting/Clear/Index.vue'
 import Report from '@/components/Setting/Report/Index.vue'
 import General from '@/components/Setting/General/Index.vue'
+import Advance from '@/components/Setting/Advance/Index.vue'
+
+import useDeviceStore from '@/store/devices'
+
+const deviceStore = useDeviceStore()
+
+provide(
+  'coreSettingsDisabled',
+  computed(() => {
+    return { nre: deviceStore.devices.some(device => device.status === 'tasking') }
+  })
+)
 
 </script>
 
 <template>
   <NForm
     class="setting-form"
-    :label-width="150"
+    label-width="250px"
     :show-feedback="false"
+    label-placement="left"
   >
     <General />
     <Report />
     <Version />
+    <Advance />
     <Appearance />
     <Clear />
     <About />

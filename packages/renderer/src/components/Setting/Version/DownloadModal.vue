@@ -116,9 +116,7 @@ const handleMouseLeave = () => {
 const components: ComponentType[] = [
   'Maa App',
   'Maa Core',
-  'Android Platform Tools',
-  'Maa Dependency',
-  'Maa Resource'
+  'Android Platform Tools'
 ]
 
 onMounted(() => {

@@ -4,7 +4,7 @@ import { compareObjKey } from '@/utils/task_helper'
 import logger from '@/hooks/caller/logger'
 
 export interface TaskState {
-  deviceTasks: Record<string, Task[]>
+  deviceTasks: Record<string, TaskGroups>
 }
 
 export interface TaskAction {
@@ -23,16 +23,20 @@ export interface TaskAction {
   ) => void
   changeTaskOrder: (uuid: string, from: number, to: number) => void
   updateTask: (uuid: string, tasks: Task[]) => void
-  newTask: (uuid: string) => void
+  newTask: () => Task[]
+  initDeviceTask: (uuid: string) => void
+  newTaskGroup: (uuid: string) => TaskGroup
+  getCurrentTaskGroup: (uuid: string) => TaskGroup | undefined
   getTask: (uuid: string, predicate: (task: Task) => boolean) => Task | undefined
   getTaskProcess: (uuid: string, taskId: string) => number | undefined
   stopAllTasks: (uuid: string) => void
   copyTask: (uuid: string, index: number) => boolean
+  copyTaskFromTemplate: (uuid: string, task_name: string) => boolean
   deleteTask: (uuid: string, index: number) => boolean
   fixTaskList: (uuid: string) => void
 }
 
-const defaultTaskConf: Record<string, Task> = {
+export const taskTemplate: Record<string, Task> = {
   emulator: {
     name: 'emulator',
     task_id: -1,
@@ -185,7 +189,44 @@ const defaultTaskConf: Record<string, Task> = {
       delay: 300
     },
     results: {}
+  },
+  idle: {
+    name: 'idle',
+    task_id: -1,
+    title: '挂机',
+    status: 'idle',
+    enable: false,
+    configurations: {
+      delay: 600
+    },
+    results: {}
   }
+  // ReclamationAlgorithm: {
+  //   name: 'ReclamationAlgorithm',
+  //   task_id: -1,
+  //   title: '生息演算',
+  //   status: 'idle',
+  //   enable: false,
+  //   configurations: {
+  //     mode: 0
+  //   },
+  //   results: {}
+  // }
+}
+Object.freeze(taskTemplate)
+
+const defaultTaskConf: Record<string, Task> = {
+  emulator: _.cloneDeep(taskTemplate.emulator),
+  startup: _.cloneDeep(taskTemplate.startup),
+  fight: _.cloneDeep(taskTemplate.fight),
+  recruit: _.cloneDeep(taskTemplate.recruit),
+  infrast: _.cloneDeep(taskTemplate.infrast),
+  visit: _.cloneDeep(taskTemplate.visit),
+  mall: _.cloneDeep(taskTemplate.mall),
+  award: _.cloneDeep(taskTemplate.award),
+  rogue: _.cloneDeep(taskTemplate.rogue),
+  shutdown: _.cloneDeep(taskTemplate.shutdown),
+  idle: _.cloneDeep(taskTemplate.idle)
 }
 
 export const defaultTask = Object.values(defaultTaskConf)
@@ -198,8 +239,8 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
   },
   actions: {
     updateTaskConfigurations (uuid, key, value, predicate) {
-      const origin = this.deviceTasks[uuid]
-      const task = origin?.find(predicate)
+      const tasks = this.getCurrentTaskGroup(uuid)?.tasks
+      const task = tasks?.find(predicate)
       if (task) {
         const configurations = _.set(task.configurations, key, value)
         if (task.task_id > 0 && ['processing', 'waiting'].includes(task.status)) {
@@ -213,7 +254,7 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
     },
     updateTaskStatus (uuid, taskId, status, progress) {
       const origin = this.deviceTasks[uuid]
-      const task = origin?.find((task) => task.task_id === taskId)
+      const task = this.getTask(uuid, (task) => task.task_id === taskId)
       if (task) {
         const statusChanged = status !== task.status
 
@@ -239,8 +280,7 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
       }
     },
     mergeTaskResult (uuid, taskId, patch) {
-      const origin = this.deviceTasks[uuid]
-      const task = origin?.find((task) => task.task_id === taskId)
+      const task = this.getTask(uuid, (task) => task.task_id === taskId)
       if (task) {
         _.mergeWith(task.results, patch, (objValue, srcValue) => {
           if (_.isArray(objValue)) {
@@ -251,34 +291,40 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
     },
     changeTaskOrder (uuid, from, to) {
       const origin = this.deviceTasks[uuid]
-      if (origin) {
-        const item = origin.splice(from, 1)
-        origin.splice(to, 0, item[0])
+      const taskGroup = this.getCurrentTaskGroup(uuid)
+      if (taskGroup) {
+        const item = taskGroup.tasks.splice(from, 1)
+        taskGroup.tasks.splice(to, 0, item[0])
       }
     },
     updateTask (uuid, tasks) {
-      const { deviceTasks } = this
-      deviceTasks[uuid] = tasks
+      const taskGroup = this.getCurrentTaskGroup(uuid)
+      if (taskGroup) taskGroup.tasks = tasks
     },
-    newTask (uuid) {
-      const { deviceTasks } = this
-      deviceTasks[uuid] = []
+    newTask () {
+      const tasks = []
       for (const [, v] of Object.entries(defaultTaskConf)) {
-        deviceTasks[uuid].push(_.cloneDeep(v))
+        tasks.push(_.cloneDeep(v))
       }
+      return tasks
     },
     getTask (uuid, predicate) {
-      const origin = this.deviceTasks[uuid]
-      const task = origin?.find(predicate)
+      const current = this.deviceTasks[uuid].current
+      if (!this.deviceTasks[uuid].groups[current]) {
+        return
+      }
+      const taskGroup = this.deviceTasks[uuid].groups.find((group) => group.index === current)
+      const task = taskGroup?.tasks?.find(predicate)
       return task
     },
     getTaskProcess (uuid, taskId) {
       const origin = this.deviceTasks[uuid]
-      const task = origin?.find((task) => task.name === taskId)
+      const task = this.getTask(uuid, (task) => task.name === taskId)
       return task != null ? task.progress : 0
     },
     stopAllTasks (uuid) {
-      const origin = this.deviceTasks[uuid]
+      const origin = this.getCurrentTaskGroup(uuid)?.tasks
+
       if (origin) {
         origin.forEach((task) => {
           if (task.status !== 'idle') {
@@ -292,9 +338,9 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
       }
     },
     copyTask (uuid, index) {
-      const origin = this.deviceTasks[uuid]
-      const task = origin?.at(index)
-      if (task) {
+      const tasks = this.getCurrentTaskGroup(uuid)?.tasks
+      const task = tasks?.at(index)
+      if (tasks && task) {
         const newTask: Task = {
           ..._.cloneDeep(task),
           task_id: -1,
@@ -305,28 +351,32 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
           progress: undefined,
           results: {}
         }
-        origin.splice(index, 0, newTask)
+        tasks.splice(index, 0, newTask)
         return true
       }
       return false
     },
     deleteTask (uuid, index) {
-      const origin = this.deviceTasks[uuid]
-      if (origin) {
-        const target = origin[index]
-        const nameCount = origin.reduce(
+      const taskGroup = this.getCurrentTaskGroup(uuid)?.tasks
+      const origin = taskGroup?.at(index)
+      if (taskGroup && origin) {
+        const target = taskGroup[index]
+        const nameCount = taskGroup.reduce(
           (acc, cur) => (cur.name === target.name ? acc + 1 : acc),
           0
         )
-        if (nameCount < 2) return false
-        origin.splice(index, 1)
+        // 允许删除只有一份的任务
+        if (nameCount < 1) return false
+        taskGroup.splice(index, 1)
         return true
       }
       return false
     },
     fixTaskList (uuid) {
-      const origin = this.deviceTasks[uuid]
-      origin?.forEach((task) => {
+      const origin = this.getCurrentTaskGroup(uuid)?.tasks
+      if (!origin) return
+      // STEP 1. update task config.
+      origin.forEach((task) => {
         task.title = defaultTaskConf[task.name].title
         if (
           !compareObjKey(
@@ -342,7 +392,48 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
           logger.info('task fixed')
           task.configurations = defaultTaskConf[task.name].configurations
         }
-      })
+      }
+
+      )
+      // STEP 2. add new tasks.
+      for (const [, conf] of Object.entries(defaultTaskConf)) {
+        if (!origin?.some((t) => t.name === conf.name)) {
+          origin?.push(_.cloneDeep(conf))
+        }
+      }
+    },
+    copyTaskFromTemplate (uuid, task_name) {
+      const origin = this.getCurrentTaskGroup(uuid)?.tasks
+      const task = taskTemplate[task_name]
+      if (task) {
+        origin?.push(task)
+        return true
+      }
+      return false
+    },
+    newTaskGroup (uuid) { // 新建任务组
+      const origin = this.deviceTasks[uuid]
+      let group_id = 1
+      if (origin) {
+        group_id = Math.max(...origin.groups.map((group) => group.index), 1) + 1
+      }
+      const newTaskGroup: TaskGroup = {
+        index: group_id,
+        name: `New Task Group #${group_id}`,
+        tasks: this.newTask()
+      }
+      return newTaskGroup
+    },
+    initDeviceTask (uuid) {
+      this.deviceTasks[uuid] = {
+        current: 1,
+        groups: [this.newTaskGroup(uuid)]
+      }
+    },
+    getCurrentTaskGroup (uuid) {
+      const origin = this.deviceTasks[uuid]
+      const current = origin?.current
+      return origin?.groups.find((group) => group.index === current)
     }
   }
 })

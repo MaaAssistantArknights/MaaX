@@ -6,9 +6,10 @@ import {
   NButton,
   NTooltip,
   NText,
-  NTime
+  NTime,
+  useDialog
 } from 'naive-ui'
-// import { useI18n } from 'vue-i18n'
+import { useI18n } from 'vue-i18n'
 import IconRefresh from '@/assets/icons/refresh.svg?component'
 import IconSettings from '@/assets/icons/settings.svg?component'
 import DeviceCard from '@/components/Device/DeviceCard.vue'
@@ -16,9 +17,10 @@ import DeviceCard from '@/components/Device/DeviceCard.vue'
 import useDeviceStore from '@/store/devices'
 import useSettingStore from '@/store/settings'
 
-import { show } from '@/utils/message'
+import { showMessage } from '@/utils/message'
 
-// const { t } = useI18n()
+const dialog = useDialog()
+const { t } = useI18n()
 const connectedStatus = ['connected', 'tasking']
 const deviceStore = useDeviceStore()
 const settingStore = useSettingStore()
@@ -34,26 +36,23 @@ const disconnectedDevices = computed(() =>
 /**
  * @description 过滤不可用的连接设备，并在神谕上提示
  */
-function deviceInfoParser (devices: Device[]): any[] {
+function deviceInfoParser(devices: Device[]): any[] {
   const ret: any[] = []
   devices.forEach((info) => {
-    let status = 'available'
     if (!info.uuid) {
-      show(
-        `设备 ${info.address} 连接失败, 请检查是否开启了 USB 调试, 或请详细阅读使用文档捏`,
+      showMessage(
+        t('device.connectionError', { address: info.address }),
         {
           type: 'error',
           duration: 0,
           closable: true
-        },
-        false
+        }
       )
-      status = 'unknown'
     } else {
       ret.push({
-        status: status,
+        status: 'available',
         uuid: info.uuid,
-        connectionString: info.address,
+        address: info.address,
         config: info.config,
         commandLine: info.commandLine,
         adbPath: info.adbPath,
@@ -63,8 +62,8 @@ function deviceInfoParser (devices: Device[]): any[] {
     }
   })
   if (ret.length === 0) {
-    show(
-      '未找到任何可用设备! 请重试',
+    showMessage(
+      t('device.noAvailableDevice'),
       {
         type: 'info',
         duration: 0,
@@ -73,8 +72,8 @@ function deviceInfoParser (devices: Device[]): any[] {
       true
     )
   } else {
-    show(
-      `已找到 ${ret.length} 台可用设备`,
+    showMessage(
+      t('device.availableDevice', { count: ret.length }),
       {
         type: 'info'
       },
@@ -84,15 +83,31 @@ function deviceInfoParser (devices: Device[]): any[] {
   return ret
 }
 
-async function handleRefreshDevices () {
-  show('正在更新设备列表...', { type: 'loading', duration: 0 })
+async function handleRefreshDevices() {
+  const is_exist = await window.ipcRenderer.invoke('main.DeviceDetector:isDefaultAdbExists')
+  if (!is_exist) {
+    showMessage(t('device.adbNotAvailable'), {
+      type: 'error',
+      duration: 0,
+      closable: true
+    })
+    return
+  }
+
+  const refreshingMessage = showMessage(t('device.refreshingDevices'), { type: 'loading', duration: 0 })
 
   window.ipcRenderer.invoke('main.DeviceDetector:getEmulators').then(
     ret => {
       const devices = deviceInfoParser(ret)
       deviceStore.mergeSearchResult(devices)
     }
-  )
+  ).catch(() => {
+    refreshingMessage.destroy()
+    dialog.error({
+      title: t('Common.error'),
+      content: t('device.refreshingError')
+    })
+  })
 }
 
 const now = ref(Date.now())
@@ -104,27 +119,16 @@ setInterval(() => {
 
 <template>
   <div>
-    <NButton
-      text
-      style="font-size: 24px"
-      @click="$router.push({ path: '/settings' })"
-    >
+    <NButton text style="font-size: 24px" @click="$router.push({ path: '/settings' })">
       <NIcon>
         <IconSettings />
       </NIcon>
     </NButton>
     <h2>已连接的设备</h2>
     <div class="connected-devices">
-      <DeviceCard
-        v-for="device in connectedDevices"
-        :key="device.uuid"
-        :uuid="device.uuid"
-      />
+      <DeviceCard v-for="device in connectedDevices" :key="device.uuid" :device="device" />
     </div>
-    <NSpace
-      :justify="'space-between'"
-      :align="'center'"
-    >
+    <NSpace :justify="'space-between'" :align="'center'">
       <h2>其他设备</h2>
       <NTooltip>
         <template #trigger>
@@ -143,19 +147,15 @@ setInterval(() => {
       </NTooltip>
     </NSpace>
     <div class="disconnected-devices">
-      <DeviceCard
-        v-for="device in disconnectedDevices"
-        :key="device.uuid"
-        :uuid="device.uuid"
-      />
+      <DeviceCard v-for="device in disconnectedDevices" :key="device.uuid" :device="device" />
     </div>
     <!-- <div class="unknown-devices">
-      <DeviceCard
-        v-for="device in unknownDevices"
-        :uuid="device.uuid"
-        :key="device.uuid"
-      />
-    </div> -->
+                  <DeviceCard
+                    v-for="device in unknownDevices"
+                    :uuid="device.uuid"
+                    :key="device.uuid"
+                  />
+                </div> -->
     <div :style="{ textAlign: 'center' }">
       <NText depth="2">
         {{ $t("Common.lastUpdate") }}:&nbsp;

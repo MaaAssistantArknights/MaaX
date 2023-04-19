@@ -1,9 +1,10 @@
-import { is } from 'electron-util'
+import { getPlatform } from '@main/utils/os'
 
 const getAdapter = async (): Promise<EmulatorAdapter> => {
-  if (is.windows) {
+  const platform = getPlatform()
+  if (platform === 'windows') {
     return (await import('./winAdapter')).default
-  } else if (is.macos) {
+  } else if (platform === 'macos') {
     return (await import('./macAdapter')).default
   } else {
     return (await import('./linuxAdapter')).default
