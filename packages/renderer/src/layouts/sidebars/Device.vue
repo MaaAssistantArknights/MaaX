@@ -6,9 +6,10 @@ import {
   NButton,
   NTooltip,
   NText,
-  NTime
+  NTime,
+  useDialog
 } from 'naive-ui'
-// import { useI18n } from 'vue-i18n'
+import { useI18n } from 'vue-i18n'
 import IconRefresh from '@/assets/icons/refresh.svg?component'
 import IconSettings from '@/assets/icons/settings.svg?component'
 import DeviceCard from '@/components/Device/DeviceCard.vue'
@@ -18,7 +19,8 @@ import useSettingStore from '@/store/settings'
 
 import { showMessage } from '@/utils/message'
 
-// const { t } = useI18n()
+const dialog = useDialog()
+const { t } = useI18n()
 const connectedStatus = ['connected', 'tasking']
 const deviceStore = useDeviceStore()
 const settingStore = useSettingStore()
@@ -39,7 +41,7 @@ function deviceInfoParser(devices: Device[]): any[] {
   devices.forEach((info) => {
     if (!info.uuid) {
       showMessage(
-        `设备 ${info.address} 连接失败, 请检查是否开启了 USB 调试, 或请详细阅读使用文档捏`,
+        t('device.connectionError', { address: info.address }),
         {
           type: 'error',
           duration: 0,
@@ -61,7 +63,7 @@ function deviceInfoParser(devices: Device[]): any[] {
   })
   if (ret.length === 0) {
     showMessage(
-      '未找到任何可用设备! 请重试',
+      t('device.noAvailableDevice'),
       {
         type: 'info',
         duration: 0,
@@ -71,7 +73,7 @@ function deviceInfoParser(devices: Device[]): any[] {
     )
   } else {
     showMessage(
-      `已找到 ${ret.length} 台可用设备`,
+      t('device.availableDevice', { count: ret.length }),
       {
         type: 'info'
       },
@@ -84,7 +86,7 @@ function deviceInfoParser(devices: Device[]): any[] {
 async function handleRefreshDevices() {
   const is_exist = await window.ipcRenderer.invoke('main.DeviceDetector:isDefaultAdbExists')
   if (!is_exist) {
-    showMessage('未下载 ADB, 请先前往设置界面下载 ADB', {
+    showMessage(t('device.adbNotAvailable'), {
       type: 'error',
       duration: 0,
       closable: true
@@ -92,19 +94,19 @@ async function handleRefreshDevices() {
     return
   }
 
-  showMessage('正在更新设备列表...', { type: 'loading', duration: 0 })
+  const refreshingMessage = showMessage(t('device.refreshingDevices'), { type: 'loading', duration: 0 })
 
   window.ipcRenderer.invoke('main.DeviceDetector:getEmulators').then(
     ret => {
       const devices = deviceInfoParser(ret)
       deviceStore.mergeSearchResult(devices)
     }
-  ).catch(error => {
-    showMessage(error.message, {
-      type: 'error',
-      duration: 0,
-      closable: true
-    }, true)
+  ).catch(() => {
+    refreshingMessage.destroy()
+    dialog.error({
+      title: t('Common.error'),
+      content: t('device.refreshingError')
+    })
   })
 }
 
@@ -124,11 +126,7 @@ setInterval(() => {
     </NButton>
     <h2>已连接的设备</h2>
     <div class="connected-devices">
-      <DeviceCard
-        v-for="device in connectedDevices"
-        :key="device.uuid"
-        :device="device"
-      />
+      <DeviceCard v-for="device in connectedDevices" :key="device.uuid" :device="device" />
     </div>
     <NSpace :justify="'space-between'" :align="'center'">
       <h2>其他设备</h2>
@@ -149,19 +147,15 @@ setInterval(() => {
       </NTooltip>
     </NSpace>
     <div class="disconnected-devices">
-      <DeviceCard
-        v-for="device in disconnectedDevices"
-        :key="device.uuid"
-        :device="device"
-      />
+      <DeviceCard v-for="device in disconnectedDevices" :key="device.uuid" :device="device" />
     </div>
     <!-- <div class="unknown-devices">
-              <DeviceCard
-                v-for="device in unknownDevices"
-                :uuid="device.uuid"
-                :key="device.uuid"
-              />
-            </div> -->
+                  <DeviceCard
+                    v-for="device in unknownDevices"
+                    :uuid="device.uuid"
+                    :key="device.uuid"
+                  />
+                </div> -->
     <div :style="{ textAlign: 'center' }">
       <NText depth="2">
         {{ $t("Common.lastUpdate") }}:&nbsp;

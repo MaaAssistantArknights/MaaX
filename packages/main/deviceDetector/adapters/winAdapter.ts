@@ -71,17 +71,13 @@ class WindowsAdapter implements EmulatorAdapter {
     // const confPortExp = /bst.instance.Nougat64_?\d?.status.adb_port="(\d{4,6})"/g
     // const e: Emulator = { pname, pid }
     e.config = 'BlueStacks'
-    e.adbPath = path.join(
-      path.dirname(JSON.parse(
-        (await $`Get-WmiObject -Query "select ExecutablePath FROM Win32_Process where ProcessID=${e.pid}" | Select-Object -Property ExecutablePath | ConvertTo-Json`).stdout
-      ).ExecutablePath),
-      'HD-Adb.exe'
-    )
+    const exePath = JSON.parse(
+      (await $`Get-WmiObject -Query "select ExecutablePath FROM Win32_Process where ProcessID=${e.pid}" | Select-Object -Property ExecutablePath | ConvertTo-Json`).stdout
+    ).ExecutablePath
+    e.adbPath = path.join(path.dirname(exePath), 'HD-Adb.exe')
     const cmd = await getCommandLine(e.pid)
     e.commandLine = cmd // 从命令行启动的指令
-    const arg = getBluestackInstanceName(await cmd)
-    console.log('arg:')
-    console.log(arg)
+    const arg = getBluestackInstanceName(cmd)
     const confPath = path.join(
       path.normalize(JSON.parse(
         (await $`Get-ItemProperty -Path Registry::HKEY_LOCAL_MACHINE\\SOFTWARE\\BlueStacks_nxt | Select-Object -Property UserDefinedDir | ConvertTo-Json`).stdout
@@ -98,8 +94,6 @@ class WindowsAdapter implements EmulatorAdapter {
         ))].map(
           (v) => v.PSChildName
         ) // 蓝叠CN注册表中的模拟器id
-        console.log('emulator name:')
-        console.log(emulatorName)
         if (emulatorName.length === 0) success = false
         else {
           for await (const v of emulatorName) {
@@ -112,7 +106,6 @@ class WindowsAdapter implements EmulatorAdapter {
               !success
             ) {
               // 端口没有被占用, 测试端口成功, 本次循环未使用这个端口
-              console.log('use bs cn')
               inUsePorts.push(port)
               e.address = `127.0.0.1:${port}`
               e.displayName = 'BlueStack CN [regedit]'
@@ -122,7 +115,6 @@ class WindowsAdapter implements EmulatorAdapter {
           }
         }
       } catch (err) {
-        console.log(err)
         success = false
       }
       if (!success) {
@@ -282,7 +274,6 @@ class WindowsAdapter implements EmulatorAdapter {
     if (port) {
       e.address = `127.0.0.1:${port[1]}`
     }
-    console.log(e)
   }
 
   async getAdbDevices (): Promise<Device[]> {
