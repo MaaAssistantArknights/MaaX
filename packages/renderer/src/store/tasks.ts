@@ -253,8 +253,10 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
       }
     },
     updateTaskStatus (uuid, taskId, status, progress) {
-      const origin = this.deviceTasks[uuid]
       const task = this.getTask(uuid, (task) => task.task_id === taskId)
+      if (!task) {
+        logger.warn(`Task ${uuid}|${taskId} not found`)
+      }
       if (task) {
         const statusChanged = status !== task.status
 
@@ -290,7 +292,6 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
       }
     },
     changeTaskOrder (uuid, from, to) {
-      const origin = this.deviceTasks[uuid]
       const taskGroup = this.getCurrentTaskGroup(uuid)
       if (taskGroup) {
         const item = taskGroup.tasks.splice(from, 1)
@@ -309,16 +310,11 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
       return tasks
     },
     getTask (uuid, predicate) {
-      const current = this.deviceTasks[uuid].current
-      if (!this.deviceTasks[uuid].groups[current]) {
-        return
-      }
-      const taskGroup = this.deviceTasks[uuid].groups.find((group) => group.index === current)
-      const task = taskGroup?.tasks?.find(predicate)
+      const tasks = this.getCurrentTaskGroup(uuid)?.tasks
+      const task = tasks?.find(predicate)
       return task
     },
     getTaskProcess (uuid, taskId) {
-      const origin = this.deviceTasks[uuid]
       const task = this.getTask(uuid, (task) => task.name === taskId)
       return task != null ? task.progress : 0
     },

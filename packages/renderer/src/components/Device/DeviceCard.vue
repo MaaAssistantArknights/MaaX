@@ -84,12 +84,15 @@ function handleJumpToTask() {
   // 未连接的设备也可以查看任务
   // 2023.4.19: 先不做支持了，这会导致一些ui上的问题，比如正在连接的消息框无法关闭
   //            理想方案是把正在连接的消息框变成全局唯一实例
-  // if (!taskStore.getCurrentTaskGroup(props.device.uuid)) {
-  //   taskStore.initDeviceTask(props.device.uuid)
+
+  // FIXME: feature要! 框的bug再修
+
+  // if (!connectedStatus.has(props.device.status)) {
+  //   // TODO: 提示设备未连接
+  //   return
   // }
-  if (!connectedStatus.has(props.device.status)) {
-    // TODO: 提示设备未连接
-    return
+  if (!taskStore.getCurrentTaskGroup(props.device.uuid)) {
+    taskStore.initDeviceTask(props.device.uuid)
   }
   taskStore.fixTaskList(props.device.uuid)
   if (!isCurrent.value) router.push(`/task/${props.device.uuid}`)
