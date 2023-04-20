@@ -21,7 +21,28 @@ defaults:
 
 jobs:
   release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check pre-release
+        uses: actions-ecosystem/action-regex-match@v2
+        id: pre-release
+        with:
+          text: ${{ github.ref_name }}
+          regex: '(alpha)|(beta)|(rc)'
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          prerelease: ${{ steps.pre-release.outputs.match != '' }}
+          draft: true
+  build:
     # see more environment https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idruns-on
+    needs: release
     runs-on: ${{ matrix.os }}
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -56,24 +77,6 @@ jobs:
         shell: pwsh
         run: echo "`nnode-linker = hoisted`nshamefully-hoist = true" >> $env:USERPROFILE/.npmrc
 
-      - name: Check pre-release
-        uses: actions-ecosystem/action-regex-match@v2
-        id: pre-release
-        with:
-          text: ${{ github.ref_name }}
-          regex: '(alpha)|(beta)|(rc)'
-
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          prerelease: ${{ steps.pre-release.outputs.match != '' }}
-          draft: true
-
       - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v3
         with:
@@ -96,4 +99,3 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           release: ${{ startsWith(github.ref, 'refs/tags/v') && github.event_name == 'push' && needs.get_metadata.outputs.branch == 'main'}}
           max_attempts: 5
-      

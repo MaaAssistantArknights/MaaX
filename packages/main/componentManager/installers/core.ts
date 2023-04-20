@@ -18,7 +18,7 @@ class CoreInstaller extends ComponentInstaller {
     try {
       if (this.downloader_) {
         const update = await this.checkUpdate()
-        if (typeof update === 'boolean' /* && update === false */) {
+        if (typeof update === 'boolean' && !update) {
           this.onException()
           return
         }

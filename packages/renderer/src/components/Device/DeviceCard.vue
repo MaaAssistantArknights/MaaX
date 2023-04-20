@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Ref, computed, ref } from 'vue'
+import { computed } from 'vue'
 import IconDisconnect from '@/assets/icons/disconnect.svg?component'
 import DeviceDetailPopover from '@/components/Device/DeviceDetailPopover.vue'
 import IconLink from '@/assets/icons/link.svg?component'
@@ -9,10 +9,8 @@ import {
   NIcon,
   NSpace,
   NPopconfirm,
-  useThemeVars,
-  MessageReactive
+  useThemeVars
 } from 'naive-ui'
-import { whenever } from '@vueuse/core'
 
 import useDeviceStore from '@/store/devices'
 import router from '@/router'
@@ -41,8 +39,6 @@ const routeUuid = computed(
 )
 const isCurrent = computed(() => routeUuid.value === props.device.uuid)
 
-const currentStatus = computed(() => props.device.status ?? 'unknown')
-
 const connectedStatus: Set<DeviceStatus> = new Set(['connected', 'tasking'])
 const disconnectedStatus: Set<DeviceStatus> = new Set([
   'available',
@@ -50,31 +46,6 @@ const disconnectedStatus: Set<DeviceStatus> = new Set([
   'connecting',
   'unknown'
 ])
-
-const connectMessage: Ref<MessageReactive | undefined> = ref()
-whenever(() => currentStatus.value === 'connecting', () => {
-  if (connectMessage.value) connectMessage.value.destroy()
-  connectMessage.value = showMessage(`${deviceDisplayName.value}正在连接...`, {
-    type: 'loading',
-    duration: 0
-  })
-}, { flush: 'sync' })
-
-whenever(() => currentStatus.value === 'disconnected', () => {
-  if (connectMessage.value) connectMessage.value.destroy()
-  connectMessage.value = showMessage(`${deviceDisplayName.value}已断开连接`, {
-    type: 'info',
-    duration: 3000
-  })
-}, { flush: 'sync' })
-
-whenever(() => currentStatus.value === 'connected' || currentStatus.value === 'tasking', () => {
-  if (connectMessage.value) connectMessage.value.destroy()
-  connectMessage.value = showMessage(`${deviceDisplayName.value}已连接`, {
-    type: 'success',
-    duration: 3000
-  })
-}, { flush: 'sync' })
 
 // function disconnectDevice (uuid: string) {}
 
@@ -91,6 +62,7 @@ function handleJumpToTask() {
   //   // TODO: 提示设备未连接
   //   return
   // }
+  // 4.20完成了
   if (!taskStore.getCurrentTaskGroup(props.device.uuid)) {
     taskStore.initDeviceTask(props.device.uuid)
   }

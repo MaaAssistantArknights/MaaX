@@ -10,11 +10,9 @@ import {
   NTooltip,
   NPopconfirm
 } from 'naive-ui'
-import { useI18n } from 'vue-i18n'
 import useComponentStore from '@/store/components'
 import useDeviceStore from '@/store/devices'
 
-const { t } = useI18n()
 const componentStore = useComponentStore()
 const deviceStore = useDeviceStore()
 
@@ -147,7 +145,7 @@ onMounted(() => {
     <NCard title="组件安装">
       <NSpace vertical>
         <NAlert type="info">
-          {{ $t("download.needInstallAll") }}
+          {{ $t('download.needInstallAll') }}
         </NAlert>
         <div
           v-for="component of components"
@@ -181,7 +179,7 @@ onMounted(() => {
                   installerStatusText(
                     componentStore[component].installerStatus
                   ),
-                ].filter(text => !!text).join(" - ")
+                ].filter(text => !!text).join(' - ')
               }}
             </div>
             <NPopconfirm v-else :disabled="!isTasking" @positive-click="() => handleInstall(component)">

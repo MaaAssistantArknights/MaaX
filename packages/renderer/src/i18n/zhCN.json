@@ -51,10 +51,10 @@
     }
   },
   "device": {
-    "disconnecting": "{0}断开中...",
-    "disconnected": "{0}已断开连接",
-    "connecting": "{0}连接中...",
-    "connected": "{0}已连接",
+    "disconnecting": "{deviceName}断开中...",
+    "disconnected": "{deviceName}已断开连接",
+    "connecting": "{deviceName}连接中...",
+    "connected": "{deviceName}已连接",
     "disconnectFromTasking": "当前设备正在进行任务, 确定断开连接?",
     "disconnectFromOther": "确定断开连接?",
     "connectionError": "设备 {address} 连接失败, 请检查是否开启了 USB 调试, 或请详细阅读使用文档捏",
@@ -99,7 +99,8 @@
     "startInstall": "开始安装",
     "needInstallAll": "必须安装完所需组件才能继续",
     "btnNotInstall": "开始安装",
-    "btnInstalling": "正在安装"
+    "btnInstalling": "正在安装",
+    "installFailed": "`{componentType}`安装失败, 请过一会再试试吧"
   },
   "SystemInformation": {
     "System": {
