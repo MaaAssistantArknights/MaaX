@@ -68,7 +68,7 @@ whenever(() => currentStatus.value === 'disconnected', () => {
   })
 }, { flush: 'sync' })
 
-whenever(() => currentStatus.value === 'connected', () => {
+whenever(() => currentStatus.value === 'connected' || currentStatus.value === 'tasking', () => {
   if (connectMessage.value) connectMessage.value.destroy()
   connectMessage.value = showMessage(`${deviceDisplayName.value}已连接`, {
     type: 'success',

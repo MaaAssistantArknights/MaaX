@@ -27,13 +27,17 @@ export interface TaskAction {
   initDeviceTask: (uuid: string) => void
   newTaskGroup: (uuid: string) => TaskGroup
   getCurrentTaskGroup: (uuid: string) => TaskGroup | undefined
-  getTask: (uuid: string, predicate: (task: Task) => boolean) => Task | undefined
+  getTask: (
+    uuid: string,
+    predicate: (task: Task) => boolean
+  ) => Task | undefined
   getTaskProcess: (uuid: string, taskId: string) => number | undefined
   stopAllTasks: (uuid: string) => void
   copyTask: (uuid: string, index: number) => boolean
   copyTaskFromTemplate: (uuid: string, task_name: string) => boolean
   deleteTask: (uuid: string, index: number) => boolean
   fixTaskList: (uuid: string) => void
+  resetToIdle: (uuid: string) => void
 }
 
 export const taskTemplate: Record<string, Task> = {
@@ -243,7 +247,10 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
       const task = tasks?.find(predicate)
       if (task) {
         const configurations = _.set(task.configurations, key, value)
-        if (task.task_id > 0 && ['processing', 'waiting'].includes(task.status)) {
+        if (
+          task.task_id > 0 &&
+          ['processing', 'waiting'].includes(task.status)
+        ) {
           window.ipcRenderer.invoke('main.CoreLoader:setTaskParams', {
             uuid,
             task_id: task.task_id,
@@ -268,6 +275,7 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
               break
             case 'processing':
               task.startTime = Date.now()
+              task.results = {}
               break
             case 'skipped':
             case 'success':
@@ -388,9 +396,7 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
           logger.info('task fixed')
           task.configurations = defaultTaskConf[task.name].configurations
         }
-      }
-
-      )
+      })
       // STEP 2. add new tasks.
       for (const [, conf] of Object.entries(defaultTaskConf)) {
         if (!origin?.some((t) => t.name === conf.name)) {
@@ -407,11 +413,13 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
       }
       return false
     },
-    newTaskGroup (uuid) { // 新建任务组
+    newTaskGroup (uuid) {
+      // 新建任务组
       const origin = this.deviceTasks[uuid]
       let group_id = 1
       if (origin) {
-        group_id = Math.max(...origin.groups.map((group) => group.index), 1) + 1
+        group_id =
+          Math.max(...origin.groups.map((group) => group.index), 1) + 1
       }
       const newTaskGroup: TaskGroup = {
         index: group_id,
@@ -430,6 +438,16 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
       const origin = this.deviceTasks[uuid]
       const current = origin?.current
       return origin?.groups.find((group) => group.index === current)
+    },
+    resetToIdle (uuid) {
+      this.deviceTasks[uuid].groups.forEach((group) => {
+        group.tasks.forEach((task) => {
+          task.status = 'idle'
+          task.progress = 0
+          task.startTime = undefined
+          task.endTime = undefined
+        })
+      })
     }
   }
 })

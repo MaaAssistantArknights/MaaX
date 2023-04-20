@@ -82,7 +82,7 @@ const coreSettingsDisabled = inject('coreSettingsDisabled') as { nre: boolean }
           label="强制替换ADB"
         >
           <NButton
-            type="warning"
+            type="error"
             :disabled="coreSettingsDisabled.nre"
           >
             强制替换ADB
@@ -92,7 +92,7 @@ const coreSettingsDisabled = inject('coreSettingsDisabled') as { nre: boolean }
           label="重置所有配置"
         >
           <NButton
-            type="warning"
+            type="error"
             :disabled="coreSettingsDisabled.nre"
             @click="removeAllConfigDialog"
           >
