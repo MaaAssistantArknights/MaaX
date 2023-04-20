@@ -1,6 +1,6 @@
 {
-  "name": "meo-assistant-arknights",
-  "version": "2.0.0-beta.1",
+  "name": "maa-x",
+  "version": "2.0.0-beta.2",
   "main": "dist/main/index.cjs",
   "author": "_ChingC <chingc.ccmail@gmail.com>",
   "templateBy": "草鞋没号 <308487730@qq.com>",

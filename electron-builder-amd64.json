@@ -1,6 +1,6 @@
 {
-  "appId": "com.maa.assistant-arknights",
-  "productName": "MaaAssistantArknights",
+  "appId": "com.maa.maa-x",
+  "productName": "MaaX",
   "artifactName": "${productName}-${os}-${arch}-${version}.${ext}",
   "asar": false,
   "asarUnpack": "**\\*.{node,dll}",
