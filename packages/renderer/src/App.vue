@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import WindowController from './components/WindowController.vue'
-import Main from './containers/Main.vue'
-import SideBar from './containers/SideBar.vue'
+import WindowController from '@/components/WindowController.vue'
+import Main from '@/containers/Main.vue'
+import SideBar from '@/containers/SideBar.vue'
+import GlobalNotifier from '@/components/GlobalNotifier.vue'
 
 import {
   NGlobalStyle,
@@ -104,10 +105,12 @@ onMounted(() => {
     <div class="background" />
     <NMessageProvider>
       <NDialogProvider>
-        <NGlobalStyle />
-        <WindowController />
-        <SideBar />
-        <Main />
+        <GlobalNotifier>
+          <NGlobalStyle />
+          <WindowController />
+          <SideBar />
+          <Main />
+        </GlobalNotifier>
       </NDialogProvider>
     </NMessageProvider>
   </NConfigProvider>
@@ -138,6 +141,7 @@ onMounted(() => {
   background-size: cover;
   opacity: var(--inner-opacity);
 }
+
 .n-message-wrapper {
   z-index: 20;
 }
