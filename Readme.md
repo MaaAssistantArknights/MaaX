@@ -1,4 +1,5 @@
-# MaaAsstElectronUI
+# MaaX
+> 更好，更强大的Maa
 
 ![Build Status](https://github.com/MaaAssistantArknights/MeoAsstElectronUI/workflows/Build%2FRelease/badge.svg) ![platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-blueviolet) ![license](https://img.shields.io/github/license/MaaAssistantArknights/MeoAsstElectronUI) ![commit](https://img.shields.io/github/commit-activity/m/MaaAssistantArknights/MeoAsstElectronUI?color=%23ff69b4)
 
@@ -55,6 +56,7 @@
 * 调试 renderer
   1. 按照上述步骤启动即可，会帮你打开 Chrome Devtools，且带有最新的 Vue Dev 插件
 
-### 开发者群
+### QQ 群
 
-QQ 群：655031753
+开发群：655031753
+测试群：232785290
