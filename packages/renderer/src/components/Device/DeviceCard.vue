@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue'
+import { Ref, computed, ref } from 'vue'
 import IconDisconnect from '@/assets/icons/disconnect.svg?component'
 import DeviceDetailPopover from '@/components/Device/DeviceDetailPopover.vue'
 import IconLink from '@/assets/icons/link.svg?component'
@@ -12,13 +12,14 @@ import {
   useThemeVars,
   MessageReactive
 } from 'naive-ui'
+import { whenever } from '@vueuse/core'
+
 import useDeviceStore from '@/store/devices'
 import router from '@/router'
 import useTaskStore from '@/store/tasks'
 import useSettingStore from '@/store/settings'
 // import useTaskIdStore from '@/store/taskId'
 import { showMessage } from '@/utils/message'
-import logger from '@/hooks/caller/logger'
 
 const props = defineProps<{
   device: Device;
@@ -40,6 +41,8 @@ const routeUuid = computed(
 )
 const isCurrent = computed(() => routeUuid.value === props.device.uuid)
 
+const currentStatus = computed(() => props.device.status ?? 'unknown')
+
 const connectedStatus: Set<DeviceStatus> = new Set(['connected', 'tasking'])
 const disconnectedStatus: Set<DeviceStatus> = new Set([
   'available',
@@ -48,38 +51,30 @@ const disconnectedStatus: Set<DeviceStatus> = new Set([
   'unknown'
 ])
 
-let connectShow: MessageReactive | undefined
-watch(() => props.device.status, (newStatus) => {
-  logger.info('device status changed', newStatus)
-  if (connectShow) connectShow.destroy()
-  connectShow = undefined
-  switch (newStatus) {
-    case 'connecting':
-      connectShow = showMessage(`${deviceDisplayName.value}正在连接...`, {
-        type: 'loading',
-        duration: 0
-      })
-      break
-    case 'waitingTask':
-      connectShow = showMessage(`${deviceDisplayName.value}正在连接并等待执行任务...`, {
-        type: 'loading',
-        duration: 0
-      })
-      break
-    case 'connected':
-      connectShow = showMessage(`${deviceDisplayName.value}已连接`, {
-        type: 'success',
-        duration: 3000
-      })
-      break
-    case 'disconnected':
-      connectShow = showMessage(`${deviceDisplayName.value}已断开连接`, {
-        type: 'info',
-        duration: 3000
-      })
-      break
-  }
-}, { deep: true })
+const connectMessage: Ref<MessageReactive | undefined> = ref()
+whenever(() => currentStatus.value === 'connecting', () => {
+  if (connectMessage.value) connectMessage.value.destroy()
+  connectMessage.value = showMessage(`${deviceDisplayName.value}正在连接...`, {
+    type: 'loading',
+    duration: 0
+  })
+}, { flush: 'sync' })
+
+whenever(() => currentStatus.value === 'disconnected', () => {
+  if (connectMessage.value) connectMessage.value.destroy()
+  connectMessage.value = showMessage(`${deviceDisplayName.value}已断开连接`, {
+    type: 'info',
+    duration: 3000
+  })
+}, { flush: 'sync' })
+
+whenever(() => currentStatus.value === 'connected' || currentStatus.value === 'tasking', () => {
+  if (connectMessage.value) connectMessage.value.destroy()
+  connectMessage.value = showMessage(`${deviceDisplayName.value}已连接`, {
+    type: 'success',
+    duration: 3000
+  })
+}, { flush: 'sync' })
 
 // function disconnectDevice (uuid: string) {}
 
@@ -87,6 +82,15 @@ watch(() => props.device.status, (newStatus) => {
 
 function handleJumpToTask() {
   // 未连接的设备也可以查看任务
+  // 2023.4.19: 先不做支持了，这会导致一些ui上的问题，比如正在连接的消息框无法关闭
+  //            理想方案是把正在连接的消息框变成全局唯一实例
+
+  // FIXME: feature要! 框的bug再修
+
+  // if (!connectedStatus.has(props.device.status)) {
+  //   // TODO: 提示设备未连接
+  //   return
+  // }
   if (!taskStore.getCurrentTaskGroup(props.device.uuid)) {
     taskStore.initDeviceTask(props.device.uuid)
   }
@@ -235,13 +239,14 @@ async function handleDeviceConnect() {
   align-items: center;
   transition: background-color 0.3s var(--n-bezier);
   justify-content: space-between;
+  padding: 0 12px;
 }
 
 .device-info {
   flex: 1;
   border-radius: inherit;
   justify-content: flex-start;
-  padding: 12px 16px;
+  padding: 12px 0;
 }
 
 .device-status {

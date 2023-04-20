@@ -11,7 +11,7 @@ import { computed } from 'vue'
 
 const deviceStore = useDeviceStore()
 const currentUuid = computed(() => router.currentRoute.value.params.uuid as string)
-const currentDevice = computed(() => deviceStore.devices.find(device => device.uuid !== currentUuid.value))
+const currentDevice = computed(() => deviceStore.devices.find(device => device.uuid === currentUuid.value))
 const otherDevices = deviceStore.devices.filter(device => device.uuid !== currentUuid.value)
 </script>
 
@@ -25,7 +25,7 @@ const otherDevices = deviceStore.devices.filter(device => device.uuid !== curren
     <NSpace justify="space-between" align="center">
       <h2>当前设备</h2>
       <NSpace>
-        <NTooltip>
+        <!-- <NTooltip>
           <template #trigger>
             <NButton
               :disabled="
@@ -42,7 +42,7 @@ const otherDevices = deviceStore.devices.filter(device => device.uuid !== curren
             </NButton>
           </template>
           小工具
-        </NTooltip>
+        </NTooltip> -->
         <NTooltip>
           <template #trigger>
             <NButton text style="font-size: 24px" @click="$router.push({ path: '/device' })">

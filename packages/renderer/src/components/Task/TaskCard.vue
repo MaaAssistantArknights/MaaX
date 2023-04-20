@@ -93,9 +93,9 @@ provide(
   computed(() => {
     const notEditableStatus: TaskStatus[] = ['exception', 'skipped', 'stopped', 'success', 'warning']
     return {
-      // runtime editable
+      // 运行时可编辑任务用
       re: notEditableStatus.includes(props.taskInfo.status),
-      // non runtime editable
+      // 运行时不可编辑任务用
       nre: [...notEditableStatus, 'processing'].includes(props.taskInfo.status)
     }
   })

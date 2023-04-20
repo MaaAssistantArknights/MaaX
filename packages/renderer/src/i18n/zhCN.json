@@ -57,9 +57,9 @@
     "connected": "{0}已连接",
     "disconnectFromTasking": "当前设备正在进行任务, 确定断开连接?",
     "disconnectFromOther": "确定断开连接?",
-    "connectionError": "设备 {0} 连接失败, 请检查是否开启了 USB 调试, 或请详细阅读使用文档捏",
+    "connectionError": "设备 {address} 连接失败, 请检查是否开启了 USB 调试, 或请详细阅读使用文档捏",
     "noDeviceAvailable": "未找到任何可用设备! 请重试",
-    "availableDeviceFound": "找到 {0} 台可用设备",
+    "availableDeviceFound": "找到 {count} 台可用设备",
     "adbNotAvailable": "未下载 ADB, 请先前往设置界面下载 ADB",
     "refreshingDevices": "正在刷新设备列表...",
     "refreshingError": "刷新设备列表失败, 请重试"
