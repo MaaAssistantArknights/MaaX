@@ -82,7 +82,7 @@
     "@types/lodash": "^4.14.191",
     "axios": "^0.27.2",
     "crypto-js": "^4.1.1",
-    "electron-acrylic-window": "^0.5.11",
+    "electron-acrylic-window": "https://github.com/MaaAssistantArknights/electron-acrylic-window.git#main",
     "electron-store": "^8.1.0",
     "execa": "^5.1.1",
     "iconv-lite": "^0.6.3",
