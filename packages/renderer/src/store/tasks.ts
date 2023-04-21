@@ -340,6 +340,7 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
           }
         })
       }
+      this.resetToIdle(uuid)
     },
     copyTask (uuid, index) {
       const tasks = this.getCurrentTaskGroup(uuid)?.tasks

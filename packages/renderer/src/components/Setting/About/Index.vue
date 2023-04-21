@@ -90,7 +90,7 @@ const credits = [
           </NListItem>
         </NList>
         <NText :style="{float: 'right'}">
-          © 2022 Maa Team All Rights Reserved
+          © {{ new Date().getFullYear() }} Maa Team All Rights Reserved
         </NText>
       </NCollapseTransition>
     </NSpace>
