@@ -65,10 +65,6 @@ const options: DropdownMixedOption[] = [
         key: 'recruit'
       },
       {
-        label: '访问好友',
-        key: 'visit'
-      },
-      {
         label: '信用购物',
         key: 'mall'
       },

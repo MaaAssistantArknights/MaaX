@@ -27,6 +27,12 @@ export interface TaskAction {
   initDeviceTask: (uuid: string) => void
   newTaskGroup: (uuid: string) => TaskGroup
   getCurrentTaskGroup: (uuid: string) => TaskGroup | undefined
+  changeTaskGroupName: (
+    uuid: string,
+    task_group_id: number,
+    name: string
+  ) => void
+  deleteTaskGroup: (uuid: string, task_group_id: number) => void
   getTask: (
     uuid: string,
     predicate: (task: Task) => boolean
@@ -134,15 +140,6 @@ export const taskTemplate: Record<string, Task> = {
     },
     results: {}
   },
-  visit: {
-    name: 'visit',
-    task_id: -1,
-    title: '访问好友',
-    status: 'idle',
-    enable: true,
-    configurations: {},
-    results: {}
-  },
   mall: {
     name: 'mall',
     task_id: -1,
@@ -225,7 +222,6 @@ const defaultTaskConf: Record<string, Task> = {
   fight: _.cloneDeep(taskTemplate.fight),
   recruit: _.cloneDeep(taskTemplate.recruit),
   infrast: _.cloneDeep(taskTemplate.infrast),
-  visit: _.cloneDeep(taskTemplate.visit),
   mall: _.cloneDeep(taskTemplate.mall),
   award: _.cloneDeep(taskTemplate.award),
   rogue: _.cloneDeep(taskTemplate.rogue),
@@ -382,6 +378,7 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
       if (!origin) return
       // STEP 1. update task config.
       origin.forEach((task) => {
+        if (!defaultTaskConf[task.name]) return
         task.title = defaultTaskConf[task.name].title
         if (
           !compareObjKey(
@@ -420,25 +417,26 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
       let group_id = 1
       if (origin) {
         group_id =
-          Math.max(...origin.groups.map((group) => group.index), 1) + 1
+          Math.max(...origin.groups.map((group) => group.id), 1) + 1
       }
       const newTaskGroup: TaskGroup = {
-        index: group_id,
+        id: group_id,
         name: `New Task Group #${group_id}`,
         tasks: this.newTask()
       }
       return newTaskGroup
     },
     initDeviceTask (uuid) {
+      const newGroup = this.newTaskGroup(uuid)
       this.deviceTasks[uuid] = {
-        current: 1,
-        groups: [this.newTaskGroup(uuid)]
+        currentId: 1,
+        groups: [newGroup]
       }
     },
     getCurrentTaskGroup (uuid) {
       const origin = this.deviceTasks[uuid]
-      const current = origin?.current
-      return origin?.groups.find((group) => group.index === current)
+      const current = origin?.currentId
+      return origin?.groups.find((group) => group.id === current)
     },
     resetToIdle (uuid) {
       this.deviceTasks[uuid].groups.forEach((group) => {
@@ -449,6 +447,29 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
           task.endTime = undefined
         })
       })
+    },
+    changeTaskGroupName (uuid: string, task_group_id: number, name: string) {
+      const origin = this.deviceTasks[uuid]
+      const group = origin?.groups.find((group) => group.id === task_group_id)
+      if (group) {
+        group.name = name
+      }
+    },
+    deleteTaskGroup (uuid: string, task_group_id: number) {
+      const origin = this.deviceTasks[uuid]
+      if (origin.groups.length === 1) {
+        throw new Error('taskGroupIsLast')
+      }
+      const group = origin?.groups.find((group) => group.id === task_group_id)
+      if (group) {
+        if (group.tasks.some((task) => task.status !== 'idle')) {
+          throw new Error('taskIsRunning')
+        }
+        const index = origin.groups.indexOf(group)
+        origin.groups.splice(index, 1)
+        // 回到上一个任务组
+        origin.currentId = origin.groups[index - 1].id
+      }
     }
   }
 })

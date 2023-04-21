@@ -107,7 +107,7 @@ interface TaskGroup {
   /**
    * @props 任务组id
    */
-  index: number
+  id: number
   /**
    * @props 任务组内的任务列表
   */
@@ -115,6 +115,6 @@ interface TaskGroup {
 }
 
 interface TaskGroups {
-  current: number
+  currentId: number
   groups: TaskGroup[]
 }

@@ -16,6 +16,7 @@ import ComponentManager from '@main/componentManager'
 import CoreLoader from '@main/coreLoader'
 import DeviceDetector from '@main/deviceDetector'
 import DownloadManager from './downloadManager'
+import { getAppBaseDir } from './utils/path'
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()
@@ -82,22 +83,13 @@ app.on('will-quit', () => {
   const exist = fs.existsSync(tokenPath)
   if (exist) {
     fs.rmSync(tokenPath)
-    //仅能对正式环境使用
-    if (!isInDev()) {
-      const pid = process.pid.toString()
-      const appPath = join(app.getPath('appData'), app.getName())
-      const exePath = process.argv[0]
-      // const out = fs.openSync('./out.log', 'a')
-      // const err = fs.openSync('./out.log', 'a')
-      const subprocess = spawn('cmd.exe', ['/c', join(__dirname, 'clearAppConfig.bat'), appPath, pid, exePath], {
-        detached: true,
-        stdio: ['ignore']
-        // stdio: ['ignore', out, err]
-      })
-      subprocess.unref()
-      // app.relaunch()
-      app.exit()
-    }
+    // 仅能对正式环境使用
+    // if (!isInDev()) {
+    const configFilePath = join(getAppBaseDir(), 'config.json')
+    fs.rmSync(configFilePath)
+    // app.relaunch()
+    app.exit()
+    // }
   }
 })
 
