@@ -10,12 +10,21 @@
     "prebuild": "vue-tsc --project packages/renderer/tsconfig.json --noEmit && node --max-old-space-size=4096 scripts/build.mjs",
     "build": "electron-builder",
     "debug": "npm run prebuild && vite ./packages/renderer",
-    "lint": "eslint --ext .js,.ts,.vue --fix packages/main packages/renderer"
+    "lint": "eslint --ext .js,.ts,.vue --fix packages/main packages/renderer",
+    "make": "electron-forge make",
+    "start": "electron-forge start",
+    "package": "electron-forge package"
   },
   "engines": {
     "node": ">=18.12.0"
   },
   "devDependencies": {
+    "@electron-forge/cli": "^6.1.1",
+    "@electron-forge/maker-deb": "^6.1.1",
+    "@electron-forge/maker-rpm": "^6.1.1",
+    "@electron-forge/maker-squirrel": "^6.1.1",
+    "@electron-forge/maker-zip": "^6.1.1",
+    "@electron-forge/plugin-vite": "^6.1.1",
     "@intlify/vite-plugin-vue-i18n": "^5.0.1",
     "@types/animejs": "^3.1.7",
     "@types/cron": "^1.7.3",
@@ -83,6 +92,7 @@
     "axios": "^0.27.2",
     "crypto-js": "^4.1.1",
     "electron-acrylic-window": "^0.5.11",
+    "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^8.1.0",
     "execa": "^5.1.1",
     "iconv-lite": "^0.6.3",
