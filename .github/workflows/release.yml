@@ -49,6 +49,7 @@ jobs:
       NODE_OPTIONS: "--max_old_space_size=4096"
 
     strategy:
+      fail-fast: false
       matrix:
         node: ["18"]
         os: [windows-latest, ubuntu-latest, macos-latest]
