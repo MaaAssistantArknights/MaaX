@@ -77,6 +77,6 @@ jobs:
         run: pnpm install
 
       - name: Build and publish
-        run: pnpm publish
+        run: pnpm run publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
