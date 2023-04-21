@@ -28,7 +28,7 @@ jobs:
         id: pre-release
         with:
           text: ${{ github.ref_name }}
-          regex: '(alpha)|(beta)|(rc)'
+          regex: "(alpha)|(beta)|(rc)"
 
       - name: Create Release
         id: create_release
@@ -71,21 +71,12 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install
 
-      - name: Run prebuild
-        run: pnpm prebuild
-
-      # https://github.com/marketplace/actions/electron-builder-action
-      - name: Compile & Release Electron app
-        uses: MaaAssistantArknights/maa-electronui-builder@master
-        with:
-          skip_install: "true"
-          skip_build: "true"
-          args: --config electron-builder-${{ matrix.arch }}.json
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          release: ${{ startsWith(github.ref, 'refs/tags/v') && github.event_name == 'push' && needs.get_metadata.outputs.branch == 'main'}}
-          max_attempts: 5
+      - name: Build and publish
+        run: pnpm publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
