@@ -1,9 +1,8 @@
 name: "Build/PullRequest"
 
 on:
-  pull_request:
+  push:
     branches: 
-    - main
     - dev
     paths-ignore:
     - "**.md"
@@ -50,13 +49,9 @@ jobs:
       - name: Install dependencies
         run: pnpm i
       
+      - name: Run prebuild
+        run: pnpm run prebuild
+
       # https://github.com/marketplace/actions/electron-builder-action
       - name: Compile Electron app
-        run: pnpm run build
-
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ matrix.os }}-build
-          path: release/*/*.zip
-      
+        run: pnpm run build --config electron-builder-${{ matrix.arch }}.json
