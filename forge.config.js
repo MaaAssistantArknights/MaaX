@@ -58,9 +58,15 @@ module.exports = {
       },
     },
   ],
-  hooks: {
-    postPackage: async (forgeConfig, options) => {
-      console.info('Packages built at:', options.outputPaths);
+  publishers: [
+    {
+      name: '@electron-forge/publisher-github',
+      config: {
+        repository: {
+          owner: 'MaaAssistantArknights',
+          name: 'MaaX'
+        },
+      }
     }
-  }
+  ]
 };
