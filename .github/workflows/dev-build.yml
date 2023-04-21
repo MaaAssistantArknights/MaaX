@@ -1,9 +1,8 @@
 name: "Build/PullRequest"
 
 on:
-  pull_request:
+  push:
     branches: 
-    - main
     - dev
     paths-ignore:
     - "**.md"
@@ -41,16 +40,6 @@ jobs:
         with:
           version: 7
 
-      - name: Write config to npmrc(Ubuntu)
-        if: matrix.os == 'ubuntu-latest'
-        shell: bash
-        run: echo -e "\nnode-linker = hoisted\nshamefully-hoist = true" >> $HOME/.npmrc
-
-      - name: Write config to npmrc(Windows)
-        if: matrix.os == 'windows-latest'
-        shell: pwsh
-        run: echo  "`nnode-linker = hoisted`nshamefully-hoist = true" >> $env:USERPROFILE/.npmrc
-
       - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v3
         with:
@@ -60,13 +49,9 @@ jobs:
       - name: Install dependencies
         run: pnpm i
       
+      - name: Run prebuild
+        run: pnpm run prebuild
+
       # https://github.com/marketplace/actions/electron-builder-action
       - name: Compile Electron app
-        run: pnpm run build
-
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ matrix.os }}-build
-          path: release/*/*.zip
-      
+        run: pnpm run build --config electron-builder-${{ matrix.arch }}.json

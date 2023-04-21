@@ -91,7 +91,7 @@ const deviceStatus = computed(() => deviceStore.getDevice(uuid)?.status ?? 'disc
 provide(
   'configurationDisabled',
   computed(() => {
-    const notEditableStatus: TaskStatus[] = ['exception', 'skipped', 'stopped', 'success', 'warning']
+    const notEditableStatus: TaskStatus[] = ['exception', 'skipped', 'success', 'warning']
     return {
       // 运行时可编辑任务用
       re: notEditableStatus.includes(props.taskInfo.status),
