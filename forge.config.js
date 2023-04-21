@@ -19,7 +19,7 @@ module.exports = {
         return false;
       }
       return true;
-    }
+    },
     // asar: true,
   },
   rebuildConfig: {
