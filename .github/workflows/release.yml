@@ -52,7 +52,7 @@ jobs:
       matrix:
         node: ["18"]
         os: [windows-latest, ubuntu-latest, macos-latest]
-        arch: ["amd64", "arm64"]
+        arch: ["x64", "arm64"]
     steps:
       - name: Enable long path support on windows
         if: matrix.os == 'windows-latest'
@@ -77,6 +77,6 @@ jobs:
         run: pnpm install
 
       - name: Build and publish
-        run: pnpm run publish
+        run: pnpm run publish --arch=${{ matrix.arch }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
