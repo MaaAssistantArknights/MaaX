@@ -25,7 +25,6 @@ module.exports = {
   rebuildConfig: {
     buildPath: __dirname,
     extraModules: Object.keys(info.dependencies),
-    force: true,
   },
   makers: [
     {
