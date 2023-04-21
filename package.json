@@ -12,7 +12,8 @@
     "lint": "eslint --ext .js,.ts,.vue --fix packages/main packages/renderer",
     "make": "electron-forge make",
     "start": "electron-forge start",
-    "package": "electron-forge package"
+    "package": "electron-forge package",
+    "publish": "electron-forge publish"
   },
   "engines": {
     "node": ">=18.12.0"
