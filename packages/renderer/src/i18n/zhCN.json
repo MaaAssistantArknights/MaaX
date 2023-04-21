@@ -28,6 +28,7 @@
   "coreLoader": {},
   "sotrageManager": {},
   "task": {
+    "taskGroupName": "任务组名称",
     "fight": {
       "levelChoose": "关卡选择"
     },
@@ -208,5 +209,10 @@
       "InterfaceType": "连接方式",
       "Size": "磁盘大小"
     }
+  },
+  "errors": {
+    "taskIsRunning": "当前有任务正在进行中",
+    "cannotBeEmpty": "`{name}`不能为空",
+    "taskGroupIsLast": "不可以删除只有一份的任务哦"
   }
 }

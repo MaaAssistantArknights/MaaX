@@ -20,7 +20,7 @@ defaults:
     shell: "bash"
 
 jobs:
-  release:
+  build:
     # see more environment https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idruns-on
     runs-on: ${{ matrix.os }}
     strategy:
@@ -48,10 +48,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm i
-      
-      - name: Run prebuild
-        run: pnpm run prebuild
 
-      # https://github.com/marketplace/actions/electron-builder-action
       - name: Compile Electron app
-        run: pnpm run build --config electron-builder-${{ matrix.arch }}.json
+        run: pnpm make

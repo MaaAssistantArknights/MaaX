@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, ref, provide, watch} from 'vue'
-import { NSpace, NButton, NSwitch, NIcon, NTooltip, NSelect, NInput, SelectOption } from 'naive-ui'
+import { computed, ref, provide, watch } from 'vue'
+import { NSpace, NButton, NSwitch, NIcon, NTooltip, NSelect, SelectOption } from 'naive-ui'
 import _ from 'lodash'
 import Draggable from 'vuedraggable'
 import TaskCard from '@/components/Task/TaskCard.vue'
@@ -8,6 +8,7 @@ import NewTask from '@/components/Task/NewTask.vue'
 import IconList from '@/assets/icons/list.svg?component'
 import IconGrid from '@/assets/icons/grid.svg?component'
 import Configuration from '@/components/Task/configurations/Index.vue'
+import TaskGroupActions from '@/components/Task/TaskGroupActions.vue'
 
 import useTaskStore from '@/store/tasks'
 import useDeviceStore from '@/store/devices'
@@ -38,7 +39,7 @@ const tasks = computed(() => {
   return taskStore.getCurrentTaskGroup(uuid.value)?.tasks
 })
 
-function handleDragMove (event: any) {
+function handleDragMove(event: any) {
   if (event.related.classList.contains('undraggable')) {
     return false
   }
@@ -50,8 +51,8 @@ const deviceStatus = computed(() => {
   return device.status
 })
 
-watch(()=>device.value?.status, async (newStatus) => {
-  switch(newStatus) {
+watch(() => device.value?.status, async (newStatus) => {
+  switch (newStatus) {
     case 'waitingTaskEnd':
       deviceStore.updateDeviceStatus(uuid.value, 'tasking')
       await handleSubStart()
@@ -59,7 +60,7 @@ watch(()=>device.value?.status, async (newStatus) => {
   }
 })
 
-async function handleStartUnconnected (task: Task) {
+async function handleStartUnconnected(task: Task) {
   deviceStore.updateDeviceStatus(uuid.value, 'tasking')
   await runStartEmulator(uuid.value, task)
   task.schedule_id = setTimeout(async () => {
@@ -94,7 +95,7 @@ async function handleStartUnconnected (task: Task) {
   // (task.delay as number)*1000
 }
 
-async function handleSubStart () {
+async function handleSubStart() {
   if (_.findIndex(tasks.value, (task) => task.enable === true) === -1) {
     showMessage('请至少选择一个任务', { type: 'warning', duration: 5000 })
     return
@@ -107,7 +108,7 @@ async function handleSubStart () {
   })
 }
 
-async function handleSubStop () {
+async function handleSubStop() {
   actionLoading.value = true
   const status = await window.ipcRenderer.invoke('main.CoreLoader:stop', {
     uuid: uuid.value
@@ -161,18 +162,18 @@ async function handleStart() {
   }
 }
 
-function handleTaskCopy (index: number) {
+function handleTaskCopy(index: number) {
   taskStore.copyTask(uuid.value, index)
 }
 
-function handleTaskDelete (index: number) {
+function handleTaskDelete(index: number) {
   const status = taskStore.deleteTask(uuid.value, index)
   if (!status) {
     showMessage('删除任务失败', { type: 'error', duration: 12 })
   }
 }
 
-function handleTaskConfigurationUpdate (key: string, value: any, index: number) {
+function handleTaskConfigurationUpdate(key: string, value: any, index: number) {
   taskStore.updateTaskConfigurations(
     uuid.value,
     key,
@@ -181,38 +182,45 @@ function handleTaskConfigurationUpdate (key: string, value: any, index: number) 
   )
 }
 
-function handleCreateNewTaskGroup () {
+function handleCreateNewTaskGroup() {
   const newTaskGroup = taskStore.newTaskGroup(uuid.value)
   taskStore.deviceTasks[uuid.value].groups.push(newTaskGroup)
-  taskStore.deviceTasks[uuid.value].current = newTaskGroup.index
+  taskStore.deviceTasks[uuid.value].currentId = newTaskGroup.id
 }
 
-function handleChangeTaskGroupIndex (value: number) {
-  taskStore.deviceTasks[uuid.value].current = value
+function handleChangeTaskGroupIndex(value: number) {
+  taskStore.deviceTasks[uuid.value].currentId = value
 }
 
 const taskGroupOptions = computed(() => {
   const options: SelectOption[] = []
   taskStore.deviceTasks[uuid.value]?.groups.forEach((v) => {
-    options.push({ label: v.name, value: v.index })
+    options.push({ label: v.name, value: v.id })
   })
   return options
 })
 
 provide('update:configuration', handleTaskConfigurationUpdate)
-const currentTaskGroupIndexValue = ref(taskStore.deviceTasks[uuid.value].current)
-
+const currentTaskGroupIndexValue = computed({
+  get() {
+    return taskStore.deviceTasks[uuid.value].currentId
+  },
+  set(value) {
+    taskStore.deviceTasks[uuid.value].currentId = value
+  }
+})
+const currentTaskGroup = computed(() => taskStore.getCurrentTaskGroup(uuid.value))
 </script>
 
 <template>
   <div>
-    <NSpace
-      justify="space-between"
-      align="center"
-    >
+    <NSpace justify="space-between" align="center">
       <h2>任务</h2>
-
       <NSpace align="center">
+        <TaskGroupActions
+          :device-uuid="uuid"
+          :task-group="currentTaskGroup"
+        />
         <NSelect
           v-model:value="currentTaskGroupIndexValue"
           :options="taskGroupOptions"
@@ -220,10 +228,7 @@ const currentTaskGroupIndexValue = ref(taskStore.deviceTasks[uuid.value].current
           @update:value="handleChangeTaskGroupIndex"
         >
           <template #action>
-            <NButton
-              text
-              @click="handleCreateNewTaskGroup"
-            >
+            <NButton text @click="handleCreateNewTaskGroup">
               点此新建任务组
             </NButton>
           </template>
@@ -231,10 +236,7 @@ const currentTaskGroupIndexValue = ref(taskStore.deviceTasks[uuid.value].current
 
         <NTooltip class="detail-toggle-switch">
           <template #trigger>
-            <NSwitch
-              v-model:value="isGrid"
-              size="large"
-            >
+            <NSwitch v-model:value="isGrid" size="large">
               <template #checked-icon>
                 <NIcon size="16">
                   <IconGrid />
@@ -270,7 +272,7 @@ const currentTaskGroupIndexValue = ref(taskStore.deviceTasks[uuid.value].current
       :class="isGrid ? 'cards-grid' : ''"
       @move="handleDragMove"
     >
-      <template #item="{element: task, index}">
+      <template #item="{ element: task, index }">
         <TaskCard
           v-model:showResult="task.showResult"
           :is-collapsed="!isGrid"
@@ -279,11 +281,7 @@ const currentTaskGroupIndexValue = ref(taskStore.deviceTasks[uuid.value].current
           @copy="() => handleTaskCopy(index)"
           @delete="() => handleTaskDelete(index)"
         >
-          <Result
-            v-if="task.showResult"
-            :name="task.name"
-            :results="task.results"
-          />
+          <Result v-if="task.showResult" :name="task.name" :results="task.results" />
           <Configuration
             v-else
             :name="task.name"
@@ -293,13 +291,8 @@ const currentTaskGroupIndexValue = ref(taskStore.deviceTasks[uuid.value].current
         </TaskCard>
       </template>
     </Draggable>
-    <div
-      class="cards"
-      :class="isGrid ? 'cards-grid' : ''"
-    >
-      <NewTask
-        :is-collapsed="!isGrid"
-      />
+    <div class="cards" :class="isGrid ? 'cards-grid' : ''">
+      <NewTask :is-collapsed="!isGrid" />
     </div>
   </div>
 </template>

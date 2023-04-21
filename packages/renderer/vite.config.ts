@@ -14,16 +14,6 @@ export default defineConfig({
   plugins: [
     vue(),
     svgLoader(),
-    resolveElectron(),
-    /**
-     * Here you can specify other modules
-     * 🚧 You have to make sure that your module is in `dependencies` and not in the` devDependencies`,
-     *    which will ensure that the electron-builder can package it correctly
-     * @example
-     * {
-     *   'electron-store': 'const Store = require("electron-store"); export default Store;',
-     * }
-     */
     vueI18n({
       include: path.resolve(__dirname, 'src/i18n/**')
     })

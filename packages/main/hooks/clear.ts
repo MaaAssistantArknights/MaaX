@@ -58,7 +58,7 @@ export default function useClearHooks (): void {
   })
 
   ipcMainHandle('main.Util:RemoveAllConfig', async (event) => {
-    fs.writeFileSync(path.join(app.getPath('temp'),'clearConfigToken'), '1')
+    fs.writeFileSync(path.join(app.getPath('temp'), 'clearConfigToken'), '1')
     app.quit()
   })
 }
