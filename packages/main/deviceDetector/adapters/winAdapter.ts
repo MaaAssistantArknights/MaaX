@@ -15,7 +15,8 @@ const emulatorList = [
   'LdVBoxHeadless.exe', // 雷电模拟器
   'NoxVMHandle.exe', // 夜神模拟器
   'NemuHeadless.exe', // mumu模拟器
-  'MEmuHeadless.exe' // 逍遥模拟器
+  'MEmuHeadless.exe', // 逍遥模拟器
+  'Ld9BoxHeadless.exe' // 雷电9
 ]
 const regPNamePid = /(.{3,25}[^\s*])\s*([0-9]*)\s.*\s*/g
 // get "HD-Player.exe  3396 Console    1  79,692 K"
@@ -198,8 +199,6 @@ class WindowsAdapter implements EmulatorAdapter {
     const noxPath = path.dirname(await getPnamePath('Nox.exe'))
     e.adbPath = path.resolve(noxPath, 'nox_adb.exe')
     const noxConsole = path.resolve(noxPath, 'NoxConsole.exe')
-    logger.debug('Get NoxConsole.exe path: ', noxConsole)
-    logger.debug('Get Nox.exe path: ', e.adbPath)
     const noxConsoleList = (await $`${noxConsole} list`).stdout
     const noxConsoleListArr = noxConsoleList.split('\r\n')
     for (const line of noxConsoleListArr) {
@@ -252,16 +251,14 @@ class WindowsAdapter implements EmulatorAdapter {
     const cmd = await getCommandLine(e.pid) // headless.exe的启动参数, 实际上是不可用的, 提取其中的comment为模拟器真实名称, statvm为模拟器uuid
     const statvm = cmd.match(/--startvm (\w*-\w*-\w*-\w*-\w*)/) // 获取模拟器uuid, statvm
     const realName = cmd.match(/--comment ([\d+\w]*) /) // 获取真实名称, realName
-    logger.silly('realname', realName)
-    logger.silly('startvm', statvm)
     if (!realName || !statvm) return
     const confPath = path.resolve(path.dirname(emulatorPath), 'vms', 'config', `${realName[1]}.config`) // 模拟器配置文件路径
-    logger.silly(`LD conf_path: ${confPath}`)
     assert(
       existsSync(confPath),
       `${realName[1]}.config not exist! path: ${confPath}`
     )
     const confDetail = readFileSync(confPath, 'utf-8') // 读config
+    logger.silly(confDetail)
     const displayName = confDetail.match(/"statusSettings.playerName":\s*"([^"]+)"/) // 读配置文件, 获取模拟器显示名称 displayName
     if (displayName) { // 当新建模拟器时, 不一定会有此选项, 如果没有, 则取realName最后一个数字, 手动拼接
       e.commandLine = '"' + consolePath + '" launch --name ' + displayName[1] // 真实命令行启动指令
@@ -270,6 +267,42 @@ class WindowsAdapter implements EmulatorAdapter {
     }
     const LdVBoxHeadlessPath = await getPnamePath('LdVBoxHeadless.exe') // LdVBoxHeadless.exe路径
     const VBoxManagePath = path.resolve(path.dirname(LdVBoxHeadlessPath), 'VBoxManage.exe') // VBoxManage.exe路径
+    const port = (await $`"${VBoxManagePath}" showvminfo ${statvm[1]} --machinereadable`).stdout.match(/Forwarding\(1\)="tcp_5\d\d\d_5\d\d\d,tcp,,(\d*),,/)
+    if (port) {
+      e.address = `127.0.0.1:${port[1]}`
+    }
+  }
+
+  protected async getLd9 (e: Emulator): Promise<void> {
+    // 雷电9模拟器识别
+    e.config = 'LDPlayer'
+    e.displayName = '雷电模拟器9'
+    const emulatorPath = await getPnamePath('dnplayer.exe') // dnplayer.exe路径, 和模拟器配置信息等在一起
+    const consolePath = path.resolve(path.dirname(emulatorPath), 'ldconsole.exe') // dnconsole.exe路径, 用于启动模拟器
+    e.adbPath = path.resolve(path.dirname(emulatorPath), 'adb.exe') // adb路径
+    const cmd = await getCommandLine(e.pid) // headless.exe的启动参数, 实际上是不可用的, 提取其中的comment为模拟器真实名称, statvm为模拟器uuid
+    const statvm = cmd.match(/--startvm (\w*-\w*-\w*-\w*-\w*)/) // 获取模拟器uuid, statvm
+    const realName = cmd.match(/--comment ([\d+\w]*) /) // 获取真实名称, realName
+    if (!realName || !statvm) return
+    const confPath = path.resolve(path.dirname(emulatorPath), 'vms', 'config', `${realName[1]}.config`) // 模拟器配置文件路径
+    assert(
+      existsSync(confPath),
+          `${realName[1]}.config not exist! path: ${confPath}`
+    )
+    const confDetail = readFileSync(confPath, 'utf-8') // 读config
+    const displayName = confDetail.match(/"statusSettings.playerName":\s*"([^"]+)"/) // 读配置文件, 获取模拟器显示名称 displayName
+    if (displayName) { // 当新建模拟器时, 不一定会有此选项, 如果没有, 则取realName最后一个数字, 手动拼接
+      e.commandLine = '"' + consolePath + '" launch --name ' + displayName[1] // 真实命令行启动指令
+    } else {
+      const launchIndexReg = RegExp(`(\\d+),.*,\\d+,\\d+,\\d+,\\d+,${e.pid},.*`)
+      const emulatorIndex = (await $`${consolePath} list2`).stdout.match(launchIndexReg) // 匹配当前正在运行的模拟器列表, 寻找索引
+      if (emulatorIndex) {
+        logger.info('Get LD9 Emulator Index: ', emulatorIndex[1])
+        e.commandLine = '"' + consolePath + '" launch --index ' + emulatorIndex[1] // 真实命令行启动指令
+      }
+    }
+    const Ld9VBoxHeadlessPath = await getPnamePath('Ld9BoxHeadless.exe') // LdVBoxHeadless.exe路径
+    const VBoxManagePath = path.resolve(path.dirname(Ld9VBoxHeadlessPath), 'VBoxManage.exe') // VBoxManage.exe路径
     const port = (await $`"${VBoxManagePath}" showvminfo ${statvm[1]} --machinereadable`).stdout.match(/Forwarding\(1\)="tcp_5\d\d\d_5\d\d\d,tcp,,(\d*),,/)
     if (port) {
       e.address = `127.0.0.1:${port[1]}`
@@ -309,6 +342,8 @@ class WindowsAdapter implements EmulatorAdapter {
         await this.getLd(e)
       } else if (e.pname === 'MEmuHeadless.exe') {
         await this.getXY(e)
+      } else if (e.pname === 'Ld9BoxHeadless.exe') {
+        await this.getLd9(e)
       }
     }
 
