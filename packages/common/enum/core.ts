@@ -8,3 +8,9 @@ export enum InstanceOptionKey {
   DeploymentWithPause = 3, // 是否暂停下干员，同时影响抄作业、肉鸽、保全
   // "1" | "0"
 }
+
+// 肉鸽主题
+export enum RogueTheme {
+  Phantom = 'Phantom', // 傀影
+  Mizuki = 'Mizuki', // 水月
+}

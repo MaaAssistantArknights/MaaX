@@ -2,13 +2,10 @@
 import {
   NSelect,
   NFormItem,
-  NTooltip,
   NSpace
 } from 'naive-ui'
 import useSettingStore, { Locale } from '@/store/settings'
-import { RogueTheme } from '@common/enum/settings'
-import { loadCoreResources } from '@/utils/core_functions'
-import { ref, inject } from 'vue'
+import { ref } from 'vue'
 
 const settingStore = useSettingStore()
 
@@ -20,17 +17,6 @@ const localeOptions = [
   {
     label: 'English',
     value: Locale.enUS
-  }
-]
-
-const rogueOptions = [
-  {
-    label: '傀影',
-    value: RogueTheme.Phantom
-  },
-  {
-    label: '水月',
-    value: RogueTheme.Mizuki
   }
 ]
 
@@ -54,13 +40,6 @@ function handleChangeLocale (locale: Locale) {
   settingStore.changeLocale(locale)
 }
 
-async function handleChangeRogueTheme (theme: RogueTheme) {
-  settingStore.changeRogueTheme(theme)
-  await loadCoreResources()
-}
-
-const coreSettingsDisabled = inject('coreSettingsDisabled') as { nre: boolean }
-
 </script>
 
 <template>
@@ -79,20 +58,6 @@ const coreSettingsDisabled = inject('coreSettingsDisabled') as { nre: boolean }
           @update:value="handleChangeLocale"
           @click="handleLanguageSelectClick"
         />
-      </NFormItem>
-      <NFormItem label="肉鸽主题">
-        <NTooltip trigger="hover" :disabled="!coreSettingsDisabled.nre">
-          <template #trigger>
-            <NSelect
-              :value="settingStore.rogueTheme"
-              :options="rogueOptions"
-              :style="{ width: '200px' }"
-              :disabled="coreSettingsDisabled.nre"
-              @update:value="handleChangeRogueTheme"
-            />
-          </template>
-          这个选项无法在有任务进行中修改
-        </NTooltip>
       </NFormItem>
     </NSpace>
   </div>

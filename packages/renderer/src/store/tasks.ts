@@ -169,13 +169,17 @@ export const taskTemplate: Record<string, Task> = {
     status: 'idle',
     enable: true,
     configurations: {
+      theme: 'Phantom',
       mode: 0,
       starts_count: 999,
+      investment_enabled: true,
       investments_count: 999,
       stop_when_investment_full: true,
-      squad: '默认分队',
-      roles: '默认职业组',
-      core_char: ''
+      squad: '指挥分队',
+      roles: '取长补短',
+      core_char: '',
+      use_support: false,
+      use_nonfriend_support: false
     },
     results: {}
   },
