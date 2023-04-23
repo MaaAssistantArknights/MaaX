@@ -5,7 +5,6 @@ type IpcMainHandleEvent =
   | 'main.CoreLoader:getCorePath'
   | 'main.CoreLoader:getCoreVersion'
   | 'main.CoreLoader:loadResource'
-  | 'main.CoreLoader:getExtraRoguePath'
   | 'main.CoreLoader:getLibPath'
   | 'main.CoreLoader:create'
   | 'main.CoreLoader:createEx'

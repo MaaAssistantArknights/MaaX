@@ -91,9 +91,6 @@ string,
   'main.CoreLoader:getImage': async (_event, arg) => {
     return core.GetImage(arg.uuid)
   },
-  'main.CoreLoader:getExtraRoguePath': async (_event, arg) => {
-    return core.GetExtraRogueConfigPath()
-  },
   'main.CoreLoader:getLibPath': async (_event, arg) => {
     return core.libPath
   },
