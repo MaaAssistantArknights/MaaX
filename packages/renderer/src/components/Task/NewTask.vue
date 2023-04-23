@@ -140,7 +140,12 @@ const handleShowDropdown = (e: MouseEvent) => {
     >
       <template #header>
         <div style="width :100%">
-          <NDropdown trigger="hover" :options="options" @select="handleSelectNewTask">
+          <NDropdown
+            v-if="props.isCollapsed"
+            trigger="hover"
+            :options="options"
+            @select="handleSelectNewTask"
+          >
             <div ref="cardHeaderRef" class="card-header">
               <NSpace>
                 <span class="card-title"> {{ props.isCollapsed ? '新建任务' : '' }} </span>
@@ -149,6 +154,7 @@ const handleShowDropdown = (e: MouseEvent) => {
             </div>
           </NDropdown>
         </div>
+        <div v-if="!props.isCollapsed" style="width :100%" class="card-header" />
       </template>
       <div class="card-content">
         <NScrollbar @contextmenu="handleShowDropdown">

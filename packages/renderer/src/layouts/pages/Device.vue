@@ -38,7 +38,12 @@ async function handleCustomConnect () {
   if (addressChecker(address.value)) {
     const loading = showMessage('正在连接', { type: 'loading', duration: 0 })
     if (deviceStore.devices.find(dev => dev.address === address.value)) {
-      loading.destroy()
+      // 设置一个短延迟保证destroy可以正常执行
+      // 删掉的话加相同设备就会多一个永续的正在连接
+      // 或者把底下那条uuid的挪到这个if之前也行
+      setTimeout(() => {
+        loading.destroy()
+      }, 1)
       showMessage('设备已经存在了哦', { type: 'warning', duration: 5000 })
       return
     }

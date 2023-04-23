@@ -73,9 +73,8 @@ const useDeviceStore = defineStore<'device', DeviceState, {}, DeviceAction>(
       updateDeviceDisplayName (uuid, displayName) {
         const origin = this.devices.find((dev) => dev.uuid === uuid)
         if (origin != null) {
-          if (displayName === '') {
-            displayName = origin.uuid // 如果为空，则使用uuid
-          }
+          // 相较于uuid，地址会更方便用户读取，而显示已经默认空display显示地址了
+          // 同时如果是用户自己输入的地址显示也不会变成uuid
           origin.displayName = displayName
         }
       },

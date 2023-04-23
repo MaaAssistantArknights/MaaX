@@ -63,6 +63,7 @@ function handleJumpToTask() {
   //   return
   // }
   // 4.20完成了
+  // 问题似乎是router在push之后并不会刷新对应的页面
   if (!taskStore.getCurrentTaskGroup(props.device.uuid)) {
     taskStore.initDeviceTask(props.device.uuid)
   }
