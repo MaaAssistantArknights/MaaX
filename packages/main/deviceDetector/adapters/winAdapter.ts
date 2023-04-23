@@ -268,7 +268,11 @@ class WindowsAdapter implements EmulatorAdapter {
     }
     const vmIndex = vmName[1].match(/MuMuPlayer-12.0-(\d+)/)
     if (vmIndex) {
-      e.commandLine = `"${emuPath}" -v ${vmIndex[1]}`
+      if (vmIndex[1] === '0') {
+        e.commandLine = `"${emuPath}"` // 默认启动第一个模拟器
+      } else {
+        e.commandLine = `"${emuPath}" -v ${vmIndex[1]}`
+      }
     }
   }
 
