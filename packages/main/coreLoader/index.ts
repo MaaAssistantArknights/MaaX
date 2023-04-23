@@ -68,7 +68,6 @@ class CoreLoader {
     linux: 'libMeoAssistant.so'
   }
 
-  private readonly extraRogueConfig: string = '\\resource\\addition\\Roguelike2\\'
   private DLib!: ffi.DynamicLibrary;
   private static libPath: string
   private static readonly libPathKey = 'libPath';
@@ -434,10 +433,6 @@ class CoreLoader {
 
   public Log (level: string, message: string): void {
     return this.MeoAsstLib.AsstLog(level, message)
-  }
-
-  public GetExtraRogueConfigPath (): string {
-    return this.extraRogueConfig
   }
 
   public SetInstanceOption (uuid: string, key: InstanceOptionKey, value: string): boolean {
