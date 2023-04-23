@@ -39,9 +39,7 @@ class CoreInstaller extends ComponentInstaller {
     return this.status_
   }
 
-  protected onStart (): void {
-
-  }
+  protected onStart (): void {}
 
   protected onProgress (progress: number): void {
     ipcMainSend('renderer.ComponentManager:updateStatus', {
@@ -89,7 +87,7 @@ class CoreInstaller extends ComponentInstaller {
       this.status_ = 'exception'
       this.onException()
     }
-  }
+  };
 
   public readonly unzipHandle = {
     handleUnzipUpdate: (percent: number) => {
@@ -103,11 +101,13 @@ class CoreInstaller extends ComponentInstaller {
       this.status_ = 'exception'
       this.onException()
     }
-  }
+  };
 
   public getRelease = async () => {
-    const apiUrls = ['https://api.github.com/repos/MaaAssistantArknights/MaaRelease/releases',
-      'https://gh.cirno.xyz/api.github.com/repos/MaaAssistantArknights/MaaRelease/releases']
+    const apiUrls = [
+      'https://gh.cirno.xyz/api.github.com/repos/MaaAssistantArknights/MaaRelease/releases',
+      'https://api.github.com/repos/MaaAssistantArknights/MaaRelease/releases'
+    ]
     for (const url of apiUrls) {
       const releaseResponse = await this.tryRequest(url)
       if (releaseResponse) {
@@ -119,7 +119,7 @@ class CoreInstaller extends ComponentInstaller {
       }
     }
     return this.releaseTemp?.data
-  }
+  };
 
   public async checkUpdate (): Promise<Update | false | undefined> {
     let release = null
@@ -128,37 +128,50 @@ class CoreInstaller extends ComponentInstaller {
     } catch (e: any) {
       logger.error(
         '[Component Installer] Failed to get latest release: ' +
-        (e.response
-          ? `${String(e.response.status)} ${String(e.response.statusText)}`
-          : 'Request Timeout')
+          (e.response
+            ? `${String(e.response.status)} ${String(e.response.statusText)}`
+            : 'Request Timeout')
       )
       return false
     }
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { assets, tag_name, published_at } = release
     const suffix = getDownloadUrlSuffix()
-    const currentVersion = fs.existsSync(this.versionFile) ? fs.readFileSync(this.versionFile, 'utf-8') : ''
+    const currentVersion = fs.existsSync(this.versionFile)
+      ? fs.readFileSync(this.versionFile, 'utf-8')
+      : ''
     if (currentVersion === tag_name) {
       return undefined
     }
     fs.writeFileSync(this.upgradableFile, tag_name, 'utf-8')
-    let download
     // find ota
-    const otaString = `MAAComponent-OTA-${currentVersion}_${tag_name as string}${suffix}.zip`
-    logger.info(`[Component Installer | ${this.componentType}] Attempting to find OTA update asset: ${otaString}`)
-    const otaExp = RegExp(otaString, 'g')
-    download = assets.find((asset: any) => otaExp.test(asset.name))
+    const otaString = `MAAComponent-OTA-${currentVersion}_${
+      tag_name as string
+    }${suffix}.zip`
+    logger.info(
+      `[Component Installer | ${this.componentType}] Attempting to find OTA update asset: ${otaString}`
+    )
+    const otaExp = new RegExp(otaString, 'g')
+    let download = assets.find((asset: any) => otaExp.test(asset.name))
     if (!download) {
-      // eslint-disable-next-line vue/max-len
-      logger.warn(`[Component Installer | ${this.componentType} ] Unable to acquire OTA update asset, attempting to obtain full update asset`)
-      const fullExp = RegExp(`MAA-v(.+)${suffix}.zip`, 'g')
+      logger.warn(
+        `[Component Installer | ${this.componentType}] ` +
+          'Unable to acquire OTA update asset, attempting to obtain full update asset'
+      )
+      const fullExp = new RegExp(`MAA-v(.+)${suffix}.zip`, 'g')
       download = assets.find((asset: any) => fullExp.test(asset.name))
     }
     if (!download) {
-      logger.error(`[Component Installer | ${this.componentType}] Failed to retrieve core update asset`)
+      logger.error(
+        `[Component Installer | ${this.componentType}] Failed to retrieve core update asset`
+      )
       return false
     }
-    logger.info(`[Component Installer | ${this.componentType}] Found update asset: ${tag_name as string}`)
+    logger.info(
+      `[Component Installer | ${this.componentType}] Found update asset: ${
+        tag_name as string
+      }`
+    )
     return {
       url: download.browser_download_url,
       version: tag_name,
@@ -166,12 +179,20 @@ class CoreInstaller extends ComponentInstaller {
     }
   }
 
-  protected status_: InstallerStatus = 'pending'
-  public downloader_: DownloadManager | null = null
+  protected status_: InstallerStatus = 'pending';
+  public downloader_: DownloadManager | null = null;
 
-  private readonly versionFile = path.join(getAppBaseDir(), 'core/core_version')
-  private readonly upgradableFile = path.join(getAppBaseDir(), 'core/core_upgradable')
-  protected readonly componentType: ComponentType = 'Maa Core'
+  private readonly versionFile = path.join(
+    getAppBaseDir(),
+    'core/core_version'
+  );
+
+  private readonly upgradableFile = path.join(
+    getAppBaseDir(),
+    'core/core_upgradable'
+  );
+
+  protected readonly componentType: ComponentType = 'Maa Core';
 }
 
 export default CoreInstaller
