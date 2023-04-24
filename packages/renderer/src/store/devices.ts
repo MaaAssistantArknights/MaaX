@@ -110,7 +110,7 @@ const useDeviceStore = defineStore<'device', DeviceState, {}, DeviceAction>(
           return false
         }
         origin.status = 'connecting'
-        window.ipcRenderer.invoke('main.DeviceDetector:startEmulator', origin.commandLine)
+        window.ipcRenderer.invoke('main.DeviceDetector:startEmulator2', origin.commandLine)
         const timeout = timeoutGenerator()
         let device
         for (let i = 0; i < connectRetry; i++) {
