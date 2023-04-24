@@ -48,6 +48,7 @@ type IpcMainHandleEvent =
   | 'main.Util:CleanDownloadCache'
   | 'main.Util:RemoveAllConfig'
   | 'main.Util:GetCacheInfo'
+  | 'main.Util:openFolder'
   | 'main.Task:readInfrastConfig'
   | 'main.StorageManager:get'
   | 'main.StorageManager:set'

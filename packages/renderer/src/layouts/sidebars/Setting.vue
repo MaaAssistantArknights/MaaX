@@ -38,6 +38,10 @@ import { NButton, NIcon, NAnchor, NAnchorLink } from 'naive-ui'
         href="#clear"
       />
       <NAnchorLink
+        title="其他"
+        href="#other"
+      />
+      <NAnchorLink
         title="关于"
         href="#about"
       />
