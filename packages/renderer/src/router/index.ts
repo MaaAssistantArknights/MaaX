@@ -3,6 +3,9 @@ import { createMemoryHistory, createRouter, RouteRecordRaw } from 'vue-router'
 import SideBarTask from '@/layouts/sidebars/Task.vue'
 import PageTask from '@/layouts/pages/Task.vue'
 
+import SideBarTask2 from '@/layouts/sidebars/Task2.vue'
+import PageTask2 from '@/layouts/pages/Task2.vue'
+
 import SideBarSetting from '@/layouts/sidebars/Setting.vue'
 import PageSetting from '@/layouts/pages/Setting.vue'
 
@@ -22,6 +25,13 @@ const routes: RouteRecordRaw[] = [
     components: {
       Main: PageTask,
       SideBar: SideBarTask
+    }
+  },
+  {
+    path: '/task2/:uuid',
+    components: {
+      Main: PageTask2,
+      SideBar: SideBarTask2
     }
   },
   {

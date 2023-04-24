@@ -68,7 +68,14 @@ function handleJumpToTask() {
     taskStore.initDeviceTask(props.device.uuid)
   }
   taskStore.fixTaskList(props.device.uuid)
-  if (!isCurrent.value) router.push(`/task/${props.device.uuid}`)
+  console.log(router.currentRoute.value.path.charAt(5), isCurrent.value)
+  if (router.currentRoute.value.path.charAt(5) !== '2') {
+    console.log('push task2')
+    if (!isCurrent.value) router.push(`/task2/${props.device.uuid}`)
+  } else {
+    console.log('push task')
+    if (!isCurrent.value) router.push(`/task/${props.device.uuid}`)
+  }
 }
 
 function handleDeviceDisconnect() {
