@@ -87,8 +87,7 @@ app.on('will-quit', () => {
     // if (!isInDev()) {
     const configFilePath = join(getAppBaseDir(), 'config.json')
     fs.rmSync(configFilePath)
-    // app.relaunch()
-    app.exit()
+    app.relaunch()
     // }
   }
 })

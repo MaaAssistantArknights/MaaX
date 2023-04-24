@@ -12,6 +12,7 @@ import Clear from '@/components/Setting/Clear/Index.vue'
 import Report from '@/components/Setting/Report/Index.vue'
 import General from '@/components/Setting/General/Index.vue'
 import Advance from '@/components/Setting/Advance/Index.vue'
+import Other from '@/components/Setting/Other/Index.vue'
 
 import useDeviceStore from '@/store/devices'
 
@@ -39,6 +40,7 @@ provide(
     <Advance />
     <Appearance />
     <Clear />
+    <Other />
     <About />
     <div id="develop">
       <h2 class="title">

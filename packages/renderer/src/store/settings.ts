@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { useI18n } from 'vue-i18n'
 import version from '@/hooks/caller/version'
-import { RogueTheme, TouchMode } from '@common/enum/settings'
+import { TouchMode } from '@common/enum/settings'
 
 export enum Locale {
   zhCN = 'ZhCN',
@@ -11,7 +11,6 @@ export enum Locale {
 export interface SettingState {
   penguinReportId: string
   yituliuReportId: string
-  rogueTheme: RogueTheme
   version: {
     core: {
       current?: string
@@ -33,7 +32,6 @@ export interface SettingAction {
   setYituliuReportId: (reportId: string) => void
   changeLocale: (locale: Locale) => void
   updateVersionInfo: () => void
-  changeRogueTheme: (theme: RogueTheme) => void
   toggleMonsters: () => void
   setTouchMode: (mode: TouchMode) => void
 }
@@ -50,7 +48,6 @@ const useSettingStore = defineStore<'setting', SettingState, SettingGetters, Set
       return {
         penguinReportId: '',
         yituliuReportId: '',
-        rogueTheme: RogueTheme.Phantom,
         version: {
           core: {},
           ui: {}
@@ -88,9 +85,6 @@ const useSettingStore = defineStore<'setting', SettingState, SettingGetters, Set
       async updateVersionInfo () {
         this.version.core.current = await version.core() ?? undefined
         this.version.ui.current = await version.ui()
-      },
-      changeRogueTheme (theme: RogueTheme) {
-        this.rogueTheme = theme
       },
       toggleMonsters () {
         this.monsters = !this.monsters

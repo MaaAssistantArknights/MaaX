@@ -16,7 +16,8 @@ const emulatorList = [
   'NoxVMHandle.exe', // 夜神模拟器
   'NemuHeadless.exe', // mumu模拟器
   'MEmuHeadless.exe', // 逍遥模拟器
-  'Ld9BoxHeadless.exe' // 雷电9
+  'Ld9BoxHeadless.exe', // 雷电9
+  'MuMuVMMHeadless.exe' // mumu12
 ]
 const regPNamePid = /(.{3,25}[^\s*])\s*([0-9]*)\s.*\s*/g
 // get "HD-Player.exe  3396 Console    1  79,692 K"
@@ -199,12 +200,12 @@ class WindowsAdapter implements EmulatorAdapter {
     const noxPath = path.dirname(await getPnamePath('Nox.exe'))
     e.adbPath = path.resolve(noxPath, 'nox_adb.exe')
     const noxConsole = path.resolve(noxPath, 'NoxConsole.exe')
-    const noxConsoleList = (await $`${noxConsole} list`).stdout
+    const noxConsoleList = (await $`"${noxConsole}" list`).stdout
     const noxConsoleListArr = noxConsoleList.split('\r\n')
     for (const line of noxConsoleListArr) {
       const arr = line.split(',')
       if (arr.length > 1 && (arr.pop() as string).toString() === e.pid.toString()) {
-        e.commandLine = noxConsole + ` launch -name:${arr[2]}`
+        e.commandLine = `"${noxConsole}"` + ` launch -name:${arr[2]}`
         const vmName = arr[1]
         const configPath = path.resolve(noxPath, 'BignoxVMS', vmName, `${vmName}.vbox`)
         if (!configPath) {
@@ -239,6 +240,40 @@ class WindowsAdapter implements EmulatorAdapter {
     }
     e.displayName = 'MuMu模拟器'
     e.config = 'MuMuEmulator'
+  }
+
+  protected async getMumu12 (e: Emulator): Promise<void> {
+    e.config = 'MuMuEmulator'
+    e.displayName = 'MuMu模拟器12'
+    const emuPath = await getPnamePath('MuMuPlayer.exe') // 模拟器启动器路径
+    e.adbPath = path.resolve(emuPath, '../adb.exe') // 模拟器adb路径
+    const cmd = await getCommandLine(e.pid)
+    const vmName = cmd.match(/--comment ([.\w-]+) --startvm/)
+    if (!vmName) {
+      logger.info('Found mumu12, but vmName not found, cmd:', cmd)
+      return
+    }
+    logger.info('Found mumu12, vmName:', vmName[1]) // 寻找模拟器名, 配置在mumu根目录的vms里
+    const configPath = path.resolve(emuPath, `../../vms/${vmName[1]}/configs`) + '\\vm_config.json'
+    if (!existsSync(configPath)) {
+      logger.error('MuMu config file not exist!', configPath)
+      return
+    }
+    const conf = readFileSync(configPath, 'utf-8')
+    try {
+      const confPort = JSON.parse(conf).vm.nat.port_forward.adb.host_port as string
+      e.address = `127.0.0.1:${confPort}`
+    } catch (e) {
+      logger.error(e)
+    }
+    const vmIndex = vmName[1].match(/MuMuPlayer-12.0-(\d+)/)
+    if (vmIndex) {
+      if (vmIndex[1] === '0') {
+        e.commandLine = `"${emuPath}"` // 默认启动第一个模拟器
+      } else {
+        e.commandLine = `"${emuPath}" -v ${vmIndex[1]}`
+      }
+    }
   }
 
   protected async getLd (e: Emulator): Promise<void> {
@@ -344,6 +379,8 @@ class WindowsAdapter implements EmulatorAdapter {
         await this.getXY(e)
       } else if (e.pname === 'Ld9BoxHeadless.exe') {
         await this.getLd9(e)
+      } else if (e.pname === 'MuMuVMMHeadless.exe') {
+        await this.getMumu12(e)
       }
     }
 
