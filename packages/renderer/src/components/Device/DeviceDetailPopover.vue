@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { NPopover, NImage, NInput, NIcon, NDescriptions, NDescriptionsItem, NDivider, NEllipsis, NText } from 'naive-ui'
+import { NPopover, NImage, NInput, NIcon, NDescriptions, NDescriptionsItem, NDivider, NTooltip, NText } from 'naive-ui'
 import useDeviceStore from '@/store/devices'
 import { ref, watch } from 'vue'
 import logger from '@/hooks/caller/logger'
@@ -105,9 +105,22 @@ const updateDisplayName = (displayName: string) => {
               启动命令:
             </NText>
           </template>
-          <NEllipsis style="max-width: 300px">
-            {{ device.commandLine }}
-          </NEllipsis>
+          <NTooltip trigger="hover">
+            <template #trigger>
+              <NInput
+                v-model:value="device.commandLine"
+                type="textarea"
+                placeholder="启动命令"
+                :autosize="{ minRows: 3 }"
+                style="min-width: 100%"
+              >
+                <template #prefix>
+                  <NIcon :component="IconPencilAlt" />
+                </template>
+              </NInput>
+            </template>
+            模拟器自动启动命令, 非必要请不要修改这里的内容, 留空将会在下一次链接时尝试自动获取
+          </NTooltip>
         </NDescriptionsItem>
       </NDescriptions>
 
