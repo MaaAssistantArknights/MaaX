@@ -100,21 +100,22 @@ const options: DropdownMixedOption[] = [
 
 const showDropdown = ref(false)
 
-const dropdownPosition = ref({
-  x: 0,
-  y: 0
-})
+const refX = ref(0)
+const refY = ref(0)
 
 const handleShowDropdown = (e: MouseEvent) => {
+  if (showDropdown.value) return
   e.preventDefault()
   showDropdown.value = false
   nextTick().then(() => {
     showDropdown.value = true
-    dropdownPosition.value = {
-      x: e.clientX,
-      y: e.clientY
-    }
+    refX.value = e.clientX
+    refY.value = e.clientY
   })
+}
+
+const onClickoutside = () => {
+  showDropdown.value = false
 }
 
 </script>
@@ -137,27 +138,29 @@ const handleShowDropdown = (e: MouseEvent) => {
             ? `1px dashed ${themeVars.primaryColor}`
             : 'dashed white'
       }"
+      @mouseover="handleShowDropdown"
     >
       <template #header>
+        <NDropdown
+          trigger="manual"
+          :options="options"
+          :x="refX"
+          :y="refY"
+          :show="showDropdown"
+          :on-clickoutside="onClickoutside"
+          @select="handleSelectNewTask"
+        />
         <div style="width :100%">
-          <NDropdown
-            v-if="props.isCollapsed"
-            trigger="hover"
-            :options="options"
-            @select="handleSelectNewTask"
-          >
-            <div ref="cardHeaderRef" class="card-header">
-              <NSpace>
-                <span class="card-title"> {{ props.isCollapsed ? '新建任务' : '' }} </span>
-              </NSpace>
-              <NSpace justify="end" align="center" />
-            </div>
-          </NDropdown>
+          <div ref="cardHeaderRef" class="card-header">
+            <NSpace>
+              <span class="card-title"> {{ props.isCollapsed ? '新建任务' : '' }} </span>
+            </NSpace>
+            <NSpace justify="end" align="center" />
+          </div>
         </div>
-        <div v-if="!props.isCollapsed" style="width :100%" class="card-header" />
       </template>
       <div class="card-content">
-        <NScrollbar @contextmenu="handleShowDropdown">
+        <NScrollbar>
           <slot />
         </NScrollbar>
       </div>

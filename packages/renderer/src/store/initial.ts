@@ -19,7 +19,7 @@ export async function initialStore (): Promise<void> {
 
   const patcher: Record<string, Patcher<any>> = {
     device: (storage: DeviceState) => {
-      storage.devices = storage.devices.map((device) => (device.pid === undefined // 如果pid未定义则说明为手动输入，不刷新地址
+      storage.devices = storage.devices.map((device) => (device.config === 'General'
         ? {
             ...device,
             status: 'unknown'

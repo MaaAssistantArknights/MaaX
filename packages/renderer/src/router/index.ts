@@ -28,13 +28,6 @@ const routes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/task2/:uuid',
-    components: {
-      Main: PageTask2,
-      SideBar: SideBarTask2
-    }
-  },
-  {
     path: '/settings',
     components: {
       Main: PageSetting,

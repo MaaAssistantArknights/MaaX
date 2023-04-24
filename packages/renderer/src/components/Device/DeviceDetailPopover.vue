@@ -47,8 +47,18 @@ watch(show, (newShowValue) => {
   // }
 })
 
-const updateDisplayName = (displayName: string) => {
-  deviceStore.updateDeviceDisplayName(props.uuid, displayName)
+const tempName = ref('')
+// if (device.displayName !== undefined) tempName.value = device.displayName
+
+const updateDisplayName = (event) => {
+  console.log(tempName.value)
+  console.log(device.displayName)
+  if (tempName.value === '') {
+    if (device.displayName !== undefined) tempName.value = device.displayName
+    else tempName.value = device.uuid
+  }
+
+  deviceStore.updateDeviceDisplayName(props.uuid, tempName.value)
 }
 
 </script>
@@ -73,10 +83,9 @@ const updateDisplayName = (displayName: string) => {
             </NText>
           </template>
           <NInput
-            v-model:value="device.displayName"
-            minlength="1"
+            v-model:value="tempName"
             maxlength="11"
-            @update:value="updateDisplayName"
+            @change="updateDisplayName"
           >
             <template #prefix>
               <NIcon :component="IconPencilAlt" />
