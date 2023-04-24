@@ -200,12 +200,12 @@ class WindowsAdapter implements EmulatorAdapter {
     const noxPath = path.dirname(await getPnamePath('Nox.exe'))
     e.adbPath = path.resolve(noxPath, 'nox_adb.exe')
     const noxConsole = path.resolve(noxPath, 'NoxConsole.exe')
-    const noxConsoleList = (await $`${noxConsole} list`).stdout
+    const noxConsoleList = (await $`"${noxConsole}" list`).stdout
     const noxConsoleListArr = noxConsoleList.split('\r\n')
     for (const line of noxConsoleListArr) {
       const arr = line.split(',')
       if (arr.length > 1 && (arr.pop() as string).toString() === e.pid.toString()) {
-        e.commandLine = noxConsole + ` launch -name:${arr[2]}`
+        e.commandLine = `"${noxConsole}"` + ` launch -name:${arr[2]}`
         const vmName = arr[1]
         const configPath = path.resolve(noxPath, 'BignoxVMS', vmName, `${vmName}.vbox`)
         if (!configPath) {
