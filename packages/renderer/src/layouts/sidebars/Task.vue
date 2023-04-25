@@ -16,14 +16,10 @@ let currentDevice = computed(() => deviceStore.devices.find(device => device.uui
 let otherDevices = deviceStore.devices.filter(device => device.uuid !== currentUuid.value)
 
 onBeforeRouteUpdate((to, from, next) => {
-  console.log(to)
   deviceStore = useDeviceStore()
   currentUuid = computed(() => to.params.uuid as string)
   currentDevice = computed(() => deviceStore.devices.find(device => device.uuid === currentUuid.value))
   otherDevices = deviceStore.devices.filter(device => device.uuid !== currentUuid.value)
-  console.log(currentUuid.value)
-  console.log(currentDevice.value)
-  console.log(otherDevices[0])
   next()
 })
 </script>

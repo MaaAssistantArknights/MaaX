@@ -53,9 +53,6 @@ onBeforeRouteUpdate((to, from, next) => {
     () => router.currentRoute.value.params.uuid as string | undefined
   )
   isCurrent = computed(() => routeUuid.value === props.device.uuid)
-  console.log(deviceDisplayName)
-  console.log(routeUuid.value)
-  console.log(isCurrent.value)
   next()
 })
 
