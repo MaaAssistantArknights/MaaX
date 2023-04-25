@@ -1,3 +1,8 @@
+type __PropertyArray = Electron.OpenDialogOptions['properties']
+type __CleanUndefined<T> = T extends undefined ? never : T
+
+type DialogProperty = __CleanUndefined<__PropertyArray> extends (infer T)[] ? T : never
+
 type IpcMainHandleEventType__AutoRegister = {
   'main.CoreLoader:loadResource': (arg: { path: string }) => boolean
   'main.CoreLoader:getImage': (arg: { uuid: string }) => string
@@ -62,7 +67,7 @@ type IpcMainHandleEventType = IpcMainHandleEventType__AutoRegister & {
   'main.WindowManager:toggleMaximized': () => boolean | Error
   'main.WindowManager:minimize': () => boolean
   'main.WindowManager:isMaximized': () => boolean
-  'main.WindowManager:openDialog': (title: string, properties: DialogProperty[], filters:  Electron.FileFilter[]) => Promise<Electron.OpenDialogReturnValue>
+  'main.WindowManager:openDialog': (title: string, properties: DialogProperty[], filters: Electron.FileFilter[]) => Promise<Electron.OpenDialogReturnValue>
   'main.WindowManager:loaded': () => void
 }
 
