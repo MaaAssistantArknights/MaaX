@@ -12,28 +12,33 @@ import {
   NAvatar
 } from 'naive-ui'
 import gamedataApi from '@/api/gamedata'
+import type { Operator as _Operator, OperatorProfession } from '@/api/gamedata/types'
 import { getOperatorAvatar, getProfessionImage } from '@/utils/game_image'
 import useThemeStore from '@/store/theme'
+
+interface Operator extends _Operator {
+  image?: string
+}
 
 const themeStore = useThemeStore()
 
 const props = defineProps<{
   show: boolean;
-  selectedOperators: any[];
+  selectedOperators: Operator[];
 }>()
 
 const emit = defineEmits<{
   (event: 'update:show', value: boolean): void
-  (event: 'remove:operator', operator: any): void
-  (event: 'add:operator', operator: any): void
+  (event: 'remove:operator', operator: Operator): void
+  (event: 'add:operator', operator: Operator): void
 }>()
 
-const operators: Ref<any[]> = ref([])
+const operators: Ref<Operator[]> = ref([])
 const loading = ref(false)
 
 const counts = computed(() => _.countBy(props.selectedOperators, 'profession'))
 
-const professions = {
+const professions: Record<OperatorProfession, string> = {
   WARRIOR: '近卫',
   MEDIC: '医疗',
   SPECIAL: '特种',
@@ -46,7 +51,7 @@ const professions = {
 
 onMounted(async () => {
   loading.value = true
-  operators.value = Object.values((await gamedataApi.getAllOperators()) as Object).filter(
+  operators.value = Object.values((await gamedataApi.getAllOperators())).filter(
     (operator) => operator.nationId !== null
   )
 
@@ -66,7 +71,7 @@ const getProfessionTab = (professionCode: string, professionName: string): VNode
   ])
 }
 
-const toggleSelected = (operator: any) => {
+const toggleSelected = (operator: Operator) => {
   const find = _.find(props.selectedOperators, (op) => op.name === operator.name)
   if (find) {
     emit('remove:operator', operator)
