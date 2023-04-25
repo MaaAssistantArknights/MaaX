@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { NInput, NAlert, NButton, NIcon, NText, NForm, NFormItem } from 'naive-ui'
+import { ref, onMounted } from 'vue'
+import { NInput, NAlert, NButton, NIcon, NText, NForm, NFormItem, useDialog } from 'naive-ui'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 import useDeviceStore from '@/store/devices'
+import useSettingStore from '@/store/settings'
 // import { uuidV4 } from "@common/uuid";
 import IconLink from '@/assets/icons/link.svg?component'
 import _ from 'lodash'
@@ -9,8 +12,10 @@ import { showMessage } from '@/utils/message'
 
 const address = ref('')
 const deviceStore = useDeviceStore()
+const dialog = useDialog()
+const { t } = useI18n()
 
-function addressChecker (cs: string) {
+function addressChecker(cs: string) {
   let [ip, port] = cs.split(':')
   if (!port) {
     // adb默认端口
@@ -33,7 +38,7 @@ function addressChecker (cs: string) {
   })
 }
 
-async function handleCustomConnect () {
+async function handleCustomConnect() {
   console.log(address.value)
   if (addressChecker(address.value)) {
     const loading = showMessage('正在连接', { type: 'loading', duration: 0 })
@@ -60,25 +65,44 @@ async function handleCustomConnect () {
     showMessage('设备地址不对哦，检查一下吧', { type: 'error', duration: 5000 })
   }
 }
+
+const router = useRouter()
+const settingStore = useSettingStore()
+
+onMounted(async () => {
+  // 检查是否没有正确安装组件
+  await settingStore.updateVersionInfo()
+  if (!settingStore.version.core.current && settingStore.hintCoreNotInstalled) {
+    dialog.info({
+      title: t('Common.hint'),
+      content: t('componentManager.notInstalled',
+        { componentType: t('download["Maa Core"]') }
+      ),
+      positiveText: t('Common.goNow'),
+      negativeText: t('Common.dontShowAgain'),
+      onPositiveClick: () => {
+        router.push({
+          path: '/settings',
+          query: {
+            requireInstallComponent: 1
+          }
+        })
+      },
+      onNegativeClick: () => {
+        settingStore.dontShowCoreNotInstalled()
+      }
+    })
+  }
+})
 </script>
 
 <template>
   <div>
-    <NAlert
-      title="连接一个设备 / 模拟器以继续"
-      type="info"
-      closable
-    >
-      <NText
-        tag="div"
-        :depth="3"
-      >
+    <NAlert title="连接一个设备 / 模拟器以继续" type="info" closable>
+      <NText tag="div" :depth="3">
         1. 双击可用设备快速连接
       </NText>
-      <NText
-        tag="div"
-        :depth="3"
-      >
+      <NText tag="div" :depth="3">
         2. 连接到自定义设备地址
       </NText>
     </NAlert>
@@ -90,18 +114,11 @@ async function handleCustomConnect () {
         :label-align="'right'"
       >
         <NFormItem label="模拟器 / 设备地址">
-          <NInput
-            v-model:value="address"
-            placeholder="e.g. 127.0.0.1:5555"
-          />
+          <NInput v-model:value="address" placeholder="e.g. 127.0.0.1:5555" />
         </NFormItem>
         <!-- 保持空格，使button和input对齐 -->
         <NFormItem label=" ">
-          <NButton
-            type="primary"
-            class="operation"
-            @click="handleCustomConnect"
-          >
+          <NButton type="primary" class="operation" @click="handleCustomConnect">
             <span>添加</span>
             <NIcon size="24px">
               <IconLink />
@@ -120,6 +137,7 @@ async function handleCustomConnect () {
   justify-content: center;
   margin-top: 60px;
 }
+
 .form-connect-inner {
   min-width: 300px;
   width: 50%;

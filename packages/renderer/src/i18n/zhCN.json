@@ -7,6 +7,10 @@
     "cancel": "取消",
     "error": "错误",
     "N/A": "N/A",
+    "hint": "提示",
+    "goNow": "立即前往",
+    "maybeLater": "以后再说",
+    "dontShowAgain": "不再提示",
     "Boolean": {
       "Yes": "是",
       "No": "否",
@@ -15,6 +19,7 @@
     }
   },
   "componentManager": {
+    "notInstalled": "{componentType}未安装，是否跳转到安装界面？",
     "adbNotSupport": "这个系统 {0} Adb好像不支持...",
     "osNotSupport": "这个系统 {0} Maa好像不支持...",
     "getPackageFail": "服务器睡着惹(￣o￣) . z Z, 待会再试试吧",
