@@ -6,7 +6,10 @@ import { onMounted } from 'vue'
 window.$message = useMessage()
 window.$dialog = useDialog()
 
-onMounted(asst.load)
+onMounted(async () => {
+  await asst.upgradeCore()
+  await asst.load()
+})
 
 </script>
 

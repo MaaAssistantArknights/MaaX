@@ -7,6 +7,7 @@ import path from 'path'
 import fs from 'fs'
 import { getAppBaseDir } from '@main/utils/path'
 import { getDownloadUrlSuffix } from '@main/utils/os'
+import CoreLoader from '@main/coreLoader'
 
 @Singleton
 class CoreInstaller extends ComponentInstaller {
@@ -15,6 +16,27 @@ class CoreInstaller extends ComponentInstaller {
   }
 
   public async install (): Promise<void> {
+    try {
+      if (this.downloader_) {
+        const update = await this.checkUpdate()
+        if (typeof update === 'boolean' && !update) {
+          this.onException()
+          return
+        }
+        if (!update) {
+          logger.info('[Component Installer] No update available')
+          this.onCompleted()
+          return
+        }
+        this.downloader_?.downloadComponent(update.url, this.componentType)
+        this.status_ = 'downloading'
+      }
+    } catch (e) {
+      logger.error(e)
+    }
+  }
+
+  public async upgrade (): Promise<void> {
     try {
       if (this.downloader_) {
         const update = await this.checkUpdate()
@@ -71,17 +93,32 @@ class CoreInstaller extends ComponentInstaller {
     })
   }
 
+  protected onDownloadedUpgrade (): void {
+    ipcMainSend('renderer.ComponentManager:downloadUpgradeDone', {
+      type: this.componentType,
+      status: this.status_,
+      progress: 0
+    })
+  }
+
   public readonly downloadHandle = {
     handleDownloadUpdate: (task: DownloadTask) => {
       this.onProgress(0.8 * (task.progress.precent ?? 0))
     },
     handleDownloadCompleted: (task: DownloadTask) => {
-      this.status_ = 'unzipping'
-      this.onProgress(0.8)
+      const coreVersion = (new CoreLoader()).GetCoreVersion()
 
-      const src = task.savePath
-      const dist = path.join(getAppBaseDir(), 'core')
-      this.unzipFile(src, dist)
+      if (coreVersion) { // 存在core, 需要更新
+        this.status_ = 'restart'
+        this.onDownloadedUpgrade()
+      } else {
+        this.status_ = 'unzipping'
+        this.onProgress(0.8)
+
+        const src = task.savePath
+        const dist = path.join(getAppBaseDir(), 'core')
+        this.unzipFile(src, dist)
+      }
     },
     handleDownloadInterrupted: () => {
       this.status_ = 'exception'
@@ -172,6 +209,8 @@ class CoreInstaller extends ComponentInstaller {
         tag_name as string
       }`
     )
+    fs.writeFileSync(this.upgradeFile, download.name, 'utf-8')
+
     return {
       url: download.browser_download_url,
       version: tag_name,
@@ -182,15 +221,23 @@ class CoreInstaller extends ComponentInstaller {
   protected status_: InstallerStatus = 'pending';
   public downloader_: DownloadManager | null = null;
 
+  // 当前版本
   private readonly versionFile = path.join(
     getAppBaseDir(),
     'core/core_version'
   );
 
+  // 可升级版本
   private readonly upgradableFile = path.join(
     getAppBaseDir(),
     'core/core_upgradable'
   );
+
+  // 升级文件名
+  private readonly upgradeFile = path.join(
+    getAppBaseDir(),
+    'core/core_upgrade'
+  )
 
   protected readonly componentType: ComponentType = 'Maa Core';
 }

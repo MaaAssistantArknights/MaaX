@@ -24,6 +24,11 @@ class ComponentManager implements Module {
         this.components_[componentName] = await this.update[componentName]()
         this.components_[componentName]?.installer?.install()
       })
+
+    ipcMainHandle('main.ComponentManager:upgrade',
+      async (event, componentName: ComponentType) => {
+        this.components_[componentName]?.installer?.upgrade()
+      })
   }
 
   public get name (): string {

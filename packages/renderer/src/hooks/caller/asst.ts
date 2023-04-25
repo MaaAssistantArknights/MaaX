@@ -39,9 +39,14 @@ export default {
         loaded = false
         break
       }
+      if (status === 'need-restart') {
+        loaded = true
+        break
+      }
     }
 
     return loaded
   },
-  dispose: async () => await (window.ipcRenderer.invoke('main.CoreLoader:dispose') as Promise<void>)
+  dispose: async () => await (window.ipcRenderer.invoke('main.CoreLoader:dispose')),
+  upgradeCore: async () => await (window.ipcRenderer.invoke('main.CoreLoader:upgrade'))
 }

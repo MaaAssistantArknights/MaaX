@@ -96,6 +96,7 @@
     "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^8.1.0",
     "execa": "^5.1.1",
+    "extract-zip": "^2.0.1",
     "iconv-lite": "^0.6.3",
     "ps-list": "^7.2.0",
     "semver": "^7.3.8",

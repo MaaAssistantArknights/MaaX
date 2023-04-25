@@ -30,6 +30,7 @@ type IpcMainHandleEventType = IpcMainHandleEventType__AutoRegister & {
   'main.CoreLoader:dispose': () => void
   // 'main.CoreLoader:getCorePath'
   'main.CoreLoader:getCoreVersion': () => string | null
+  'main.CoreLoader:upgrade': () => Promise<void>
 
   'main.ScheduleRunner:shutdown': (arg: { option: 'shutdownEmulator' | 'shutdownAll' | 'shutdownComputer', pid: string }) => Promise<void>
   'main.ComponentManager:getStatus': (componentName: ComponentType) => Promise<ComponentStatus | undefined>
@@ -59,6 +60,7 @@ type IpcMainHandleEventType = IpcMainHandleEventType__AutoRegister & {
   'main.Util:RemoveAllConfig': () => void
   'main.Util:GetCacheInfo': () => { log: number, download: number }
   'main.Util:openFolder': (type: 'core' | 'ui-log' | 'core-log') => void
+  'main.Util:restart': () => void
   'main.Task:readInfrastConfig': (args: { filepath: string }) => string
   'main.StorageManager:get': (key: string) => any
   'main.StorageManager:set': (key: string, val: any) => boolean

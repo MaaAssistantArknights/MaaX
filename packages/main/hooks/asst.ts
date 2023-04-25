@@ -34,7 +34,7 @@ const asstHooks: {
     )
   },
   /** @Deprecated */
-  'main.CoreLoader:initCore': (_event, arg: InitCoreParam) => {
+  'main.CoreLoader:initCore': (_event, arg) => {
     const createStatus = core.CreateEx(arg.uuid) ?? false
     if (!createStatus) logger.warn(`重复创建 ${JSON.stringify(arg)}`)
     if (!core.SetTouchMode(arg.uuid, arg.touch_mode)) logger.warn('Set touch mode failed', arg.touch_mode)
@@ -45,7 +45,7 @@ const asstHooks: {
       arg.config
     )
   },
-  'main.CoreLoader:initCoreAsync': (_event, arg: InitCoreParam) => {
+  'main.CoreLoader:initCoreAsync': (_event, arg) => {
     const createStatus = core.CreateEx(arg.uuid) ?? false
     if (!createStatus) logger.warn(`重复创建 ${JSON.stringify(arg)}`)
     if (!core.SetTouchMode(arg.uuid, arg.touch_mode)) logger.warn('Set touch mode failed', arg.touch_mode)
@@ -105,6 +105,10 @@ const asstHooks: {
 }
 
 export default function useAsstHooks (): void {
+  ipcMainHandle('main.CoreLoader:upgrade', async (_event) => {
+    return await core.Upgrade()
+  })
+
   ipcMainHandle('main.CoreLoader:load', (_event) => {
     core.load()
     if (!core.loadStatus) {

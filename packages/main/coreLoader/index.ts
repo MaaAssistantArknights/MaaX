@@ -3,13 +3,14 @@ import Storage from '@main/storageManager'
 import path from 'path'
 import _ from 'lodash'
 import logger from '@main/utils/logger'
-import { existsSync, mkdirSync } from 'fs'
+import { existsSync, mkdirSync, readFileSync, unlinkSync } from 'fs'
 import ffi, { DynamicLibrary } from '@tigerconnect/ffi-napi'
 import ref from '@tigerconnect/ref-napi'
 import callbackHandle from './callback'
 import { getAppBaseDir } from '@main/utils/path'
 import { InstanceOptionKey } from '@main/../common/enum/core'
 import { TouchMode } from '@common/enum/settings'
+import extract from 'extract-zip'
 
 const storage = new Storage()
 
@@ -462,6 +463,28 @@ class CoreLoader {
       }
     }
     return true
+  }
+
+  public async Upgrade (): Promise<void> {
+    logger.info('Start upgrade core')
+    const currentVersionFile = path.join(getAppBaseDir(), 'core', 'core_version')
+    const currentVersion = existsSync(currentVersionFile) ? readFileSync(currentVersionFile, 'utf-8') : 'CUR_NOT_FOUND'
+    const upgradeVersionFile = path.join(getAppBaseDir(), 'core', 'core_upgradable')
+    const upgradeVersion = existsSync(upgradeVersionFile) ? readFileSync(upgradeVersionFile, 'utf-8') : 'UPG_NOT_FOUND'
+    if (currentVersion !== upgradeVersion) {
+      const upgradeFilePath = path.join(getAppBaseDir(), 'core', 'core_upgrade')
+      const upgradeFileName = existsSync(upgradeFilePath) ? readFileSync(upgradeFilePath, 'utf-8') : null
+      if (upgradeFileName) {
+        // eslint-disable-next-line vue/max-len
+        logger.info(`[CoreLoader] Start upgrade core, current version: ${currentVersion}, upgrade version: ${upgradeVersion}, upgrade file: ${upgradeFileName}`)
+        unlinkSync(upgradeFilePath) // 提前删除, 防止因为压缩包损坏导致重复尝试更新
+        const unzipFile = path.join(getAppBaseDir(), 'download', upgradeFileName)
+        const dist = path.join(getAppBaseDir(), 'core')
+        if (existsSync(unzipFile)) {
+          await extract(unzipFile, { dir: dist })
+        }
+      }
+    }
   }
 }
 
