@@ -18,12 +18,12 @@
     "adbNotSupport": "这个系统 {0} Adb好像不支持...",
     "osNotSupport": "这个系统 {0} Maa好像不支持...",
     "getPackageFail": "服务器睡着惹(￣o￣) . z Z, 待会再试试吧",
-    "downloadingCore": "Maa Core下载中{0}",
-    "updatingCore": "Maa Core更新中",
-    "unpackingCore": "Maa Core解压中",
-    "downloadingUI": "Maa App下载中{0}",
-    "updatingUI": "Maa App更新中",
-    "unpackingUI": "Maa App解压中"
+    "downloadingCore": "正在下载Maa Core：{0}",
+    "updatingCore": "正在更新Maa Core...",
+    "unpackingCore": "正在安装Maa Core...",
+    "downloadingUI": "正在下载MaaX：{0}",
+    "updatingUI": "正在更新MaaX...",
+    "unpackingUI": "正在安装MaaX..."
   },
   "coreLoader": {},
   "sotrageManager": {},
@@ -90,7 +90,7 @@
   "download": {
     "Maa Core": "Maa 核心组件",
     "Android Platform Tools": "Android 设备连接组件",
-    "Maa App": "Maa 应用",
+    "Maa App": "MaaX 应用",
     "Maa Dependency": "Maa 核心依赖组件",
     "Maa Resource": "Maa 资源文件",
     "downloading": "下载中 {0}%",
