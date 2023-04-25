@@ -103,6 +103,10 @@ string,
 }
 
 export default function useAsstHooks (): void {
+  ipcMainHandle('main.CoreLoader:upgrade', async (_event, arg) => {
+    return await core.Upgrade()
+  })
+
   ipcMainHandle('main.CoreLoader:load', (_event) => {
     core.load()
     if (!core.loadStatus) {

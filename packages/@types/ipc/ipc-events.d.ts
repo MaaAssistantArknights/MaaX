@@ -21,9 +21,11 @@ type IpcMainHandleEvent =
   | 'main.CoreLoader:changeTouchMode'
   | 'main.CoreLoader:asyncScreencap'
   | 'main.CoreLoader:getScreencap'
+  | 'main.CoreLoader:upgrade'
   | 'main.ScheduleRunner:shutdown'
   | 'main.ComponentManager:getStatus'
   | 'main.ComponentManager:install'
+  | 'main.ComponentManager:upgrade'
   | 'main.DeviceDetector:getAdbPath'
   | 'main.DeviceDetector:getAdbDevices'
   | 'main.DeviceDetector:getEmulators'
@@ -49,6 +51,7 @@ type IpcMainHandleEvent =
   | 'main.Util:RemoveAllConfig'
   | 'main.Util:GetCacheInfo'
   | 'main.Util:openFolder'
+  | 'main.Util:restart'
   | 'main.Task:readInfrastConfig'
   | 'main.StorageManager:get'
   | 'main.StorageManager:set'
@@ -74,6 +77,7 @@ type IpcRendererHandleEvent =
   | 'renderer.ComponentManager:updateStatus'
   | 'renderer.ComponentManager:installInterrupted'
   | 'renderer.ComponentManager:installDone'
+  | 'renderer.ComponentManager:downloadUpgradeDone'
   | 'renderer.Device:getScreenshot'
 
 interface IpcMainEvent<T> {
