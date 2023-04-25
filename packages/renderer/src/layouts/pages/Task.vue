@@ -19,6 +19,7 @@ import router from '@/router'
 import Result from '@/components/Task/results/Index.vue'
 import logger from '@/hooks/caller/logger'
 import { runTasks, runStartEmulator } from '@/utils/task_runner'
+import { onBeforeRouteUpdate } from 'vue-router'
 
 const taskStore = useTaskStore()
 const deviceStore = useDeviceStore()
@@ -28,11 +29,11 @@ const touchMode = computed(() => settingStore.touchMode)
 const isGrid = ref(false)
 const actionLoading = ref(false)
 
-const uuid = computed(() => router.currentRoute.value.params.uuid as string)
-const device = computed(() =>
+let uuid = computed(() => router.currentRoute.value.params.uuid as string)
+let device = computed(() =>
   deviceStore.devices.find((device) => device.uuid === uuid.value)
 )
-const tasks = computed(() => {
+let tasks = computed(() => {
   if (!taskStore.deviceTasks[uuid.value]) {
     taskStore.initDeviceTask(uuid.value)
   }
@@ -45,7 +46,7 @@ function handleDragMove(event: any) {
   }
 }
 
-const deviceStatus = computed(() => {
+let deviceStatus = computed(() => {
   const device = deviceStore.getDevice(uuid.value as string)
   if (!device) return 'unknown'
   return device.status
@@ -192,7 +193,7 @@ function handleChangeTaskGroupIndex(value: number) {
   taskStore.deviceTasks[uuid.value].currentId = value
 }
 
-const taskGroupOptions = computed(() => {
+let taskGroupOptions = computed(() => {
   const options: SelectOption[] = []
   taskStore.deviceTasks[uuid.value]?.groups.forEach((v) => {
     options.push({ label: v.name, value: v.id })
@@ -201,7 +202,7 @@ const taskGroupOptions = computed(() => {
 })
 
 provide('update:configuration', handleTaskConfigurationUpdate)
-const currentTaskGroupIndexValue = computed({
+let currentTaskGroupIndexValue = computed({
   get() {
     return taskStore.deviceTasks[uuid.value].currentId
   },
@@ -209,7 +210,43 @@ const currentTaskGroupIndexValue = computed({
     taskStore.deviceTasks[uuid.value].currentId = value
   }
 })
-const currentTaskGroup = computed(() => taskStore.getCurrentTaskGroup(uuid.value))
+let currentTaskGroup = computed(() => taskStore.getCurrentTaskGroup(uuid.value))
+
+onBeforeRouteUpdate((to, from, next) => {
+  uuid = computed(() => to.params.uuid as string)
+  device = computed(() =>
+    deviceStore.devices.find((device) => device.uuid === uuid.value)
+  )
+  tasks = computed(() => {
+    if (!taskStore.deviceTasks[uuid.value]) {
+      taskStore.initDeviceTask(uuid.value)
+    }
+    return taskStore.getCurrentTaskGroup(uuid.value)?.tasks
+  })
+  deviceStatus = computed(() => {
+    const device = deviceStore.getDevice(uuid.value as string)
+    if (!device) return 'unknown'
+    return device.status
+  })
+  taskGroupOptions = computed(() => {
+    const options: SelectOption[] = []
+    taskStore.deviceTasks[uuid.value]?.groups.forEach((v) => {
+      options.push({ label: v.name, value: v.id })
+    })
+    return options
+  })
+  console.log(taskGroupOptions.value)
+  currentTaskGroupIndexValue = computed({
+    get() {
+      return taskStore.deviceTasks[uuid.value].currentId
+    },
+    set(value) {
+      taskStore.deviceTasks[uuid.value].currentId = value
+    }
+  })
+  currentTaskGroup = computed(() => taskStore.getCurrentTaskGroup(uuid.value))
+  next()
+})
 </script>
 
 <template>
