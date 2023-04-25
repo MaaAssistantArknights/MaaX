@@ -24,6 +24,7 @@ export interface SettingState {
   _locale: Locale
   monsters: boolean
   touchMode: TouchMode
+  hintCoreNotInstalled: boolean
 }
 
 export interface SettingAction {
@@ -34,6 +35,7 @@ export interface SettingAction {
   updateVersionInfo: () => Promise<void>
   toggleMonsters: () => void
   setTouchMode: (mode: TouchMode) => void
+  dontShowCoreNotInstalled: () => void
 }
 
 export interface SettingGetters {
@@ -54,7 +56,8 @@ const useSettingStore = defineStore<'setting', SettingState, SettingGetters, Set
         },
         _locale: Locale.zhCN,
         monsters: false,
-        touchMode: TouchMode.minitouch
+        touchMode: TouchMode.minitouch,
+        hintCoreNotInstalled: true
       }
     },
     getters: {
@@ -98,6 +101,9 @@ const useSettingStore = defineStore<'setting', SettingState, SettingGetters, Set
       },
       setTouchMode (mode: TouchMode) {
         this.touchMode = mode
+      },
+      dontShowCoreNotInstalled () {
+        this.hintCoreNotInstalled = false
       }
     }
   }
