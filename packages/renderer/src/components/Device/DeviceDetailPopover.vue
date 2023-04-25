@@ -48,7 +48,7 @@ watch(show, (newShowValue) => {
 })
 
 const tempName = ref('')
-// if (device.displayName !== undefined) tempName.value = device.displayName
+if (device.displayName !== undefined) tempName.value = device.displayName
 
 const updateDisplayName = (event) => {
   console.log(tempName.value)

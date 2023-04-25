@@ -7,12 +7,22 @@ import DeviceCard from '@/components/Device/DeviceCard.vue'
 import router from '@/router'
 
 import useDeviceStore from '@/store/devices'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
+import { onBeforeRouteUpdate } from 'vue-router'
 
-const deviceStore = useDeviceStore()
-const currentUuid = computed(() => router.currentRoute.value.params.uuid as string)
-const currentDevice = computed(() => deviceStore.devices.find(device => device.uuid === currentUuid.value))
-const otherDevices = deviceStore.devices.filter(device => device.uuid !== currentUuid.value)
+let deviceStore = useDeviceStore()
+let currentUuid = computed(() => router.currentRoute.value.params.uuid as string)
+let currentDevice = computed(() => deviceStore.devices.find(device => device.uuid === currentUuid.value))
+let otherDevices = deviceStore.devices.filter(device => device.uuid !== currentUuid.value)
+
+onBeforeRouteUpdate((to, from, next) => {
+  console.log(to)
+  deviceStore = useDeviceStore()
+  currentUuid = computed(() => to.params.uuid as string)
+  currentDevice = computed(() => deviceStore.devices.find(device => device.uuid === currentUuid.value))
+  otherDevices = deviceStore.devices.filter(device => device.uuid !== currentUuid.value)
+  next()
+})
 </script>
 
 <template>
