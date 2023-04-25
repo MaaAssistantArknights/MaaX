@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, provide, watch } from 'vue'
+import { computed, ref, provide, watch, Vue } from 'vue'
 import { NSpace, NButton, NSwitch, NIcon, NTooltip, NSelect, SelectOption } from 'naive-ui'
 import _ from 'lodash'
 import Draggable from 'vuedraggable'
@@ -212,6 +212,8 @@ let currentTaskGroupIndexValue = computed({
 })
 let currentTaskGroup = computed(() => taskStore.getCurrentTaskGroup(uuid.value))
 
+const key = ref(0)
+
 onBeforeRouteUpdate((to, from, next) => {
   uuid = computed(() => to.params.uuid as string)
   device = computed(() =>
@@ -228,14 +230,6 @@ onBeforeRouteUpdate((to, from, next) => {
     if (!device) return 'unknown'
     return device.status
   })
-  taskGroupOptions = computed(() => {
-    const options: SelectOption[] = []
-    taskStore.deviceTasks[uuid.value]?.groups.forEach((v) => {
-      options.push({ label: v.name, value: v.id })
-    })
-    return options
-  })
-  console.log(taskGroupOptions.value)
   currentTaskGroupIndexValue = computed({
     get() {
       return taskStore.deviceTasks[uuid.value].currentId
@@ -244,7 +238,16 @@ onBeforeRouteUpdate((to, from, next) => {
       taskStore.deviceTasks[uuid.value].currentId = value
     }
   })
+  taskGroupOptions = computed(() => {
+    const options: SelectOption[] = []
+    taskStore.deviceTasks[uuid.value]?.groups.forEach((v) => {
+      options.push({ label: v.name, value: v.id })
+    })
+    return options
+  })
+  console.log(taskGroupOptions.value)
   currentTaskGroup = computed(() => taskStore.getCurrentTaskGroup(uuid.value))
+  key.value++
   next()
 })
 </script>
@@ -259,6 +262,7 @@ onBeforeRouteUpdate((to, from, next) => {
           :task-group="currentTaskGroup"
         />
         <NSelect
+          :key="key"
           v-model:value="currentTaskGroupIndexValue"
           :options="taskGroupOptions"
           :consistent-menu-width="false"
