@@ -18,6 +18,7 @@ import useTaskStore from '@/store/tasks'
 import useSettingStore from '@/store/settings'
 // import useTaskIdStore from '@/store/taskId'
 import { showMessage } from '@/utils/message'
+import { onBeforeRouteUpdate } from 'vue-router'
 
 const props = defineProps<{
   device: Device;
@@ -34,10 +35,10 @@ const touchMode = computed(() => settingStore.touchMode)
 const deviceDisplayName = computed(
   () => props.device.displayName || props.device.address
 )
-const routeUuid = computed(
+let routeUuid = computed(
   () => router.currentRoute.value.params.uuid as string | undefined
 )
-const isCurrent = computed(() => routeUuid.value === props.device.uuid)
+let isCurrent = computed(() => routeUuid.value === props.device.uuid)
 
 const connectedStatus: Set<DeviceStatus> = new Set(['connected', 'tasking'])
 const disconnectedStatus: Set<DeviceStatus> = new Set([
@@ -46,6 +47,17 @@ const disconnectedStatus: Set<DeviceStatus> = new Set([
   'connecting',
   'unknown'
 ])
+
+onBeforeRouteUpdate((to, from, next) => {
+  routeUuid = computed(
+    () => router.currentRoute.value.params.uuid as string | undefined
+  )
+  isCurrent = computed(() => routeUuid.value === props.device.uuid)
+  console.log(deviceDisplayName)
+  console.log(routeUuid.value)
+  console.log(isCurrent.value)
+  next()
+})
 
 // function disconnectDevice (uuid: string) {}
 

@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { NPopover, NImage, NInput, NIcon, NDescriptions, NDescriptionsItem, NDivider, NEllipsis, NText } from 'naive-ui'
 import useDeviceStore from '@/store/devices'
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import logger from '@/hooks/caller/logger'
 import IconPencilAlt from '@/assets/icons/pencil-alt.svg?component'
+import { onBeforeRouteUpdate } from 'vue-router'
 
 const deviceStore = useDeviceStore()
 
@@ -14,9 +15,10 @@ const props = defineProps<{
 // const emit = defineEmits(['update:show'])
 const show = ref(false)
 
-const device = deviceStore.getDevice(props.uuid) as Device
+const device = computed(() => deviceStore.getDevice(props.uuid) as Device)
 const screenshot = ref('')
 let timer: NodeJS.Timer|null = null
+const tempName = ref('')
 
 const startGetScreenshot = async () => {
   logger.info('send get')
@@ -40,6 +42,7 @@ const stopGetScreenshot = () => {
 }
 
 watch(show, (newShowValue) => {
+  if (device.value.displayName !== undefined) tempName.value = device.value.displayName
   // if (newShowValue) {
   //   startGetScreenshot()
   // } else {
@@ -47,15 +50,12 @@ watch(show, (newShowValue) => {
   // }
 })
 
-const tempName = ref('')
-if (device.displayName !== undefined) tempName.value = device.displayName
-
 const updateDisplayName = (event) => {
   console.log(tempName.value)
-  console.log(device.displayName)
+  console.log(device.value.displayName)
   if (tempName.value === '') {
-    if (device.displayName !== undefined) tempName.value = device.displayName
-    else tempName.value = device.uuid
+    if (device.value.displayName !== undefined) tempName.value = device.value.displayName
+    else tempName.value = device.value.uuid
   }
 
   deviceStore.updateDeviceDisplayName(props.uuid, tempName.value)
