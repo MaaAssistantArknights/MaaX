@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { onMounted, computed, ref } from 'vue'
+import { useRoute } from 'vue-router'
 import useSettingStore from '@/store/settings'
 import {
   NSpace,
@@ -40,8 +41,15 @@ function showDownloadModal () {
   show.value = true
 }
 
+const route = useRoute()
+
 onMounted(async () => {
-  settingStore.updateVersionInfo()
+  if (route.query.requireInstallComponent) {
+    // 已经在Device页面做过更新
+    show.value = true
+  } else {
+    settingStore.updateVersionInfo()
+  }
 })
 </script>
 

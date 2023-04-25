@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { NInput, NAlert, NButton, NIcon, NText, NForm, NFormItem } from 'naive-ui'
+import { useRouter } from 'vue-router'
 import useDeviceStore from '@/store/devices'
+import useSettingStore from '@/store/settings'
 // import { uuidV4 } from "@common/uuid";
 import IconLink from '@/assets/icons/link.svg?component'
 import _ from 'lodash'
@@ -10,7 +12,7 @@ import { showMessage } from '@/utils/message'
 const address = ref('')
 const deviceStore = useDeviceStore()
 
-function addressChecker (cs: string) {
+function addressChecker(cs: string) {
   let [ip, port] = cs.split(':')
   if (!port) {
     // adb默认端口
@@ -60,6 +62,22 @@ async function handleCustomConnect () {
     showMessage('设备地址不对哦，检查一下吧', { type: 'error', duration: 5000 })
   }
 }
+
+const router = useRouter()
+const settingStore = useSettingStore()
+
+onMounted(async () => {
+  // 检查是否没有正确安装组件
+  await settingStore.updateVersionInfo()
+  if (!settingStore.version.core.current) {
+    router.push({
+      path: '/settings',
+      query: {
+        requireInstallComponent: 1
+      }
+    })
+  }
+})
 </script>
 
 <template>

@@ -31,7 +31,7 @@ export interface SettingAction {
   setPenguinReportId: (reportId: string) => void
   setYituliuReportId: (reportId: string) => void
   changeLocale: (locale: Locale) => void
-  updateVersionInfo: () => void
+  updateVersionInfo: () => Promise<void>
   toggleMonsters: () => void
   setTouchMode: (mode: TouchMode) => void
 }
