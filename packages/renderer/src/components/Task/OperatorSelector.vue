@@ -22,7 +22,11 @@ const props = defineProps<{
   selectedOperators: any[];
 }>()
 
-const emit = defineEmits(['update:show', 'remove:operator', 'add:operator'])
+const emit = defineEmits<{
+  (event: 'update:show', value: boolean): void
+  (event: 'remove:operator', operator: any): void
+  (event: 'add:operator', operator: any): void
+}>()
 
 const operators: Ref<any[]> = ref([])
 const loading = ref(false)

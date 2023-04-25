@@ -10,7 +10,10 @@ const props = defineProps<{
   show: boolean
 }>()
 
-const emit = defineEmits(['select', 'update:show'])
+const emit = defineEmits<{
+  (event: 'select', key: string): void
+  (event: 'update:show', value: boolean): void
+}>()
 
 const options = [
   {

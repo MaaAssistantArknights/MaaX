@@ -23,7 +23,11 @@ const isTasking = computed(() =>
 const props = defineProps<{
   show: boolean;
 }>()
-defineEmits(['close', 'update:show'])
+
+defineEmits<{
+  (event: 'close'): void
+  (event: 'update:show', value: boolean): void
+}>()
 
 const showTooltip: Ref<ComponentType | undefined> = ref()
 

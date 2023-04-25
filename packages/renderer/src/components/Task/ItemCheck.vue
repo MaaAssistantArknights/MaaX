@@ -10,7 +10,9 @@ const props = defineProps<{
   itemid: string;
 }>()
 
-const emit = defineEmits(['update:checked'])
+const emit = defineEmits<{
+  (event: 'update:checked', value: boolean): void
+}>()
 
 </script>
 

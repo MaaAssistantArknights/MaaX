@@ -53,7 +53,12 @@ const others = ref(
   )
 )
 
-const emit = defineEmits(['update:show', 'update:item'])
+const emit = defineEmits<{
+  (event: 'update:show', value: boolean): void
+  (event: 'update:item', item: {
+    buy_first: string[], blacklist: string[]
+  }): void
+}>()
 
 function handleUpdate () {
   emit('update:item', { buy_first: buy_first.value, blacklist: blacklist.value })
