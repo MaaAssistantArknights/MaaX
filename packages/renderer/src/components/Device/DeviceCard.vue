@@ -72,7 +72,7 @@ function handleJumpToTask() {
 
 function handleDeviceDisconnect() {
   // task stop
-  window.ipcRenderer.send('main.CoreLoader:disconnectAndDestroy', { uuid: props.device.uuid })
+  window.ipcRenderer.invoke('main.CoreLoader:disconnectAndDestroy', { uuid: props.device.uuid })
   taskStore.stopAllTasks(props.device.uuid as string)
   deviceStore.updateDeviceStatus(props.device.uuid as string, 'disconnected')
   router.push('/device')

@@ -6,24 +6,26 @@ import logger from '@main/utils/logger'
 
 const core = new CoreLoader()
 
-const asstHooks: Record<
-string,
-(event: import('electron').IpcMainInvokeEvent, ...args: any[]) => Promise<any>
-> = {
-  'main.CoreLoader:loadResource': async (_event, arg) => {
-    return core.LoadResource(arg.path) ?? false
+const asstHooks: {
+  [key in keyof IpcMainHandleEventType__AutoRegister]: (
+    event: import('electron').IpcMainInvokeEvent,
+    ...arg: Parameters<IpcMainHandleEventType__AutoRegister[key]>
+  ) => ReturnType<IpcMainHandleEventType__AutoRegister[key]>
+} = {
+  'main.CoreLoader:loadResource': (_event, arg) => {
+    return !!core.LoadResource(arg.path) ?? false
   },
-  'main.CoreLoader:create': async (_event, _arg) => {
+  'main.CoreLoader:create': (_event) => {
     return core.Create() ?? false
   },
-  'main.CoreLoader:createEx': async (_event, arg) => {
+  'main.CoreLoader:createEx': (_event, arg) => {
     return core.CreateEx(arg.address)
   },
-  'main.CoreLoader:destroy': async (_event, arg) => {
+  'main.CoreLoader:destroy': (_event, arg) => {
     core.Destroy(arg.uuid)
     return true
   },
-  'main.CoreLoader:connect': async (_event, arg) => {
+  'main.CoreLoader:connect': (_event, arg) => {
     return core.Connect(
       arg.address,
       arg.uuid,
@@ -32,7 +34,7 @@ string,
     )
   },
   /** @Deprecated */
-  'main.CoreLoader:initCore': async (_event, arg: InitCoreParam) => {
+  'main.CoreLoader:initCore': (_event, arg: InitCoreParam) => {
     const createStatus = core.CreateEx(arg.uuid) ?? false
     if (!createStatus) logger.warn(`重复创建 ${JSON.stringify(arg)}`)
     if (!core.SetTouchMode(arg.uuid, arg.touch_mode)) logger.warn('Set touch mode failed', arg.touch_mode)
@@ -43,7 +45,7 @@ string,
       arg.config
     )
   },
-  'main.CoreLoader:initCoreAsync': async (_event, arg: InitCoreParam) => {
+  'main.CoreLoader:initCoreAsync': (_event, arg: InitCoreParam) => {
     const createStatus = core.CreateEx(arg.uuid) ?? false
     if (!createStatus) logger.warn(`重复创建 ${JSON.stringify(arg)}`)
     if (!core.SetTouchMode(arg.uuid, arg.touch_mode)) logger.warn('Set touch mode failed', arg.touch_mode)
@@ -54,29 +56,29 @@ string,
       arg.config
     )
   },
-  'main.CoreLoader:disconnectAndDestroy': async (_event, arg) => {
+  'main.CoreLoader:disconnectAndDestroy': (_event, arg) => {
     core.Stop(arg.uuid)
     core.Destroy(arg.uuid)
     return true
   },
 
-  'main.CoreLoader:appendTask': async (_event, arg) => {
+  'main.CoreLoader:appendTask': (_event, arg) => {
     return core.AppendTask(
       arg.uuid,
       arg.type,
       JSON.stringify(arg.params)
     )
   },
-  'main.CoreLoader:setTaskParams': async (_event, arg) => {
+  'main.CoreLoader:setTaskParams': (_event, arg) => {
     return core.SetTaskParams(arg.uuid, arg.task_id, JSON.stringify(arg.params))
   },
-  'main.CoreLoader:start': async (_event, arg) => {
+  'main.CoreLoader:start': (_event, arg) => {
     return core.Start(arg.uuid)
   },
-  'main.CoreLoader:stop': async (_event, arg) => {
+  'main.CoreLoader:stop': (_event, arg) => {
     return core.Stop(arg.uuid)
   },
-  'main.CoreLoader:supportedStages': async (_event) => {
+  'main.CoreLoader:supportedStages': (_event) => {
     if (!core.loadStatus) {
       logger.silly('core unloaded, return empty supported stages')
       return []
@@ -88,16 +90,16 @@ string,
     )
     return stages
   },
-  'main.CoreLoader:getImage': async (_event, arg) => {
+  'main.CoreLoader:getImage': (_event, arg) => {
     return core.GetImage(arg.uuid)
   },
-  'main.CoreLoader:getLibPath': async (_event, arg) => {
+  'main.CoreLoader:getLibPath': (_event) => {
     return core.libPath
   },
-  'main.CoreLoader:changeTouchMode': async (_event, arg) => {
+  'main.CoreLoader:changeTouchMode': (_event, arg) => {
     return core.ChangeTouchMode(arg.mode)
   },
-  'main.CoreLoader:asyncScreencap': async (_event, arg) => {
+  'main.CoreLoader:asyncScreencap': (_event, arg) => {
     return core.AsyncScreencap(arg.uuid)
   }
 }
@@ -109,8 +111,11 @@ export default function useAsstHooks (): void {
       return false
     }
     for (const eventName of Object.keys(asstHooks)) {
+      const e = eventName as keyof IpcMainHandleEventType__AutoRegister
       try {
-        ipcMainHandle(eventName as IpcMainHandleEvent, asstHooks[eventName])
+        // TODO: 看看怎么把类型弄过去
+        // @ts-ignore
+        ipcMainHandle(e, asstHooks[e])
       } catch (e) {
         logger.error('[ AsstHooks Error ] Fail to register event', eventName)
       }

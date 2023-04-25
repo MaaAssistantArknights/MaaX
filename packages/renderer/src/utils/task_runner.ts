@@ -12,17 +12,18 @@ export async function runStartEmulator (uuid: string, task: Task): Promise<void>
   task.task_id = genUiTaskId()
   // 不await
   taskStore.updateTaskStatus(uuid, task.task_id, 'processing', 0)
-  window.ipcRenderer.invoke('main.DeviceDetector:startEmulator', task.configurations.commandLine)
+  window.ipcRenderer.invoke('main.DeviceDetector:startEmulator', task.configurations.commandLine as string)
 }
 
 async function runTaskEmulator (uuid: string, task: Task): Promise<void> {
   const taskStore = useTaskStore()
   task.task_id = genUiTaskId()
   taskStore.updateTaskStatus(uuid, task.task_id, 'processing', 0)
-  window.ipcRenderer.invoke('main.DeviceDetector:startEmulator', task.configurations.commandLine)
+  window.ipcRenderer.invoke('main.DeviceDetector:startEmulator', task.configurations.commandLine as string)
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   task.schedule_id = setTimeout(async () => {
-    const devices: any[] = await window.ipcRenderer.invoke(
+    // FIXME: Emulator无法转换为Device
+    const devices: Device[] = await window.ipcRenderer.invoke(
       'main.DeviceDetector:getEmulators'
     ) // 等待时间结束后进行一次设备搜索，但不合并结果
     const device = devices.find((device) => device.uuid === uuid) // 检查指定uuid的设备是否存在

@@ -9,5 +9,5 @@ interface InitCoreParam {
   uuid: string
   adb_path: string
   config: string
-  touch_mode: TouchMode
+  // touch_mode: TouchMode
 }

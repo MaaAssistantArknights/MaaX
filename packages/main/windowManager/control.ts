@@ -1,4 +1,4 @@
-import { ipcMainHandle } from '@main/utils/ipc-main'
+import { ipcMainHandle, ipcMainOn } from '@main/utils/ipc-main'
 import type { BrowserWindow } from 'electron'
 import { ipcMain, dialog } from 'electron'
 
@@ -14,13 +14,13 @@ type DialogProperty =
   | 'dontAddToRecent'
 
 export default function useController (window: BrowserWindow): void {
-  ipcMain.on('main.WindowManager:closeWindow', () => {
+  ipcMainOn('main.WindowManager:closeWindow', () => {
     if (window.isClosable()) {
       window.close()
     }
   })
 
-  ipcMain.handle('main.WindowManager:toggleMaximized', async (event) => {
+  ipcMainHandle('main.WindowManager:toggleMaximized', (event) => {
     if (!window.isMaximized() && window.isMaximizable()) {
       window.maximize()
       return true
@@ -32,14 +32,16 @@ export default function useController (window: BrowserWindow): void {
     }
   })
 
-  ipcMain.handle('main.WindowManager:minimize', async (event) => {
+  ipcMainHandle('main.WindowManager:minimize', (event) => {
     if (window.isMinimizable()) {
       window.minimize()
       return true
+    } else {
+      return false
     }
   })
 
-  ipcMain.handle('main.WindowManager:isMaximized', async (event) => {
+  ipcMainHandle('main.WindowManager:isMaximized', (event) => {
     return window.isMaximized()
   })
 
