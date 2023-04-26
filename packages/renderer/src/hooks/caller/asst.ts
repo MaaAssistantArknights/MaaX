@@ -47,6 +47,6 @@ export default {
 
     return loaded
   },
-  dispose: async () => await (window.ipcRenderer.invoke('main.CoreLoader:dispose') as Promise<void>),
-  upgradeCore: async () => await (window.ipcRenderer.invoke('main.CoreLoader:upgrade') as Promise<void>)
+  dispose: async () => await (window.ipcRenderer.invoke('main.CoreLoader:dispose')),
+  upgradeCore: async () => await (window.ipcRenderer.invoke('main.CoreLoader:upgrade'))
 }

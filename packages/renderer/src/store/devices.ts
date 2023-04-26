@@ -118,6 +118,7 @@ const useDeviceStore = defineStore<'device', DeviceState, {}, DeviceAction>(
           const to = timeout.next().value as number
           logger.info(`wait ${to}ms for emulator ${origin.displayName as string} start`)
           await new Promise(resolve => setTimeout(resolve, to))
+          // FIXME: Emulator无法转换为Device
           const devices: Device[] = await window.ipcRenderer.invoke('main.DeviceDetector:getEmulators')
           device = devices.find(d => d.uuid === origin.uuid)
           if (device) {

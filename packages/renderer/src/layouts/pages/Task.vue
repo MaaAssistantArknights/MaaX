@@ -77,7 +77,7 @@ async function handleStartUnconnected(task: Task) {
         uuid: device.uuid,
         adb_path: device.adbPath,
         config: device.config
-      })
+      } as InitCoreParam) // ERROR!
       if (status) {
         taskStore.updateTaskStatus(uuid.value, task.task_id, 'success', 0)
         logger.silly('自动启动模拟器成功')
@@ -140,7 +140,7 @@ async function handleStart() {
       adb_path: device.adbPath,
       config: device.config,
       touch_mode: touchMode.value
-    } as InitCoreParam)
+    })
   } else {
     // 设备状态为 unknown 或 disconnect , 检查是否有启动模拟器的参数, 如果有则尝试自启动, 没有则提示
     if (device?.commandLine && device.commandLine?.length > 0) { // 有启动参数
@@ -152,7 +152,7 @@ async function handleStart() {
           adb_path: device.adbPath,
           config: device.config,
           touch_mode: touchMode.value
-        } as InitCoreParam)
+        })
       } else {
         showMessage('设备自启失败, 请尝试手动启动设备', { type: 'warning', duration: 2000 })
       }

@@ -98,6 +98,7 @@ async function handleRefreshDevices() {
 
   window.ipcRenderer.invoke('main.DeviceDetector:getEmulators').then(
     ret => {
+      // FIXME: Emulator无法转换为Device
       const devices = deviceInfoParser(ret)
       deviceStore.mergeSearchResult(devices)
     }
