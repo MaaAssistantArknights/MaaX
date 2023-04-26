@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { provide, computed } from 'vue'
-import {
-  NForm
-} from 'naive-ui'
+import { NForm } from 'naive-ui'
 
 import Developer from '@/components/Setting/Developer'
 import Version from '@/components/Setting/Version'
@@ -12,6 +10,7 @@ import Clear from '@/components/Setting/Clear/Index.vue'
 import Report from '@/components/Setting/Report/Index.vue'
 import General from '@/components/Setting/General/Index.vue'
 import Advance from '@/components/Setting/Advance/Index.vue'
+import Other from '@/components/Setting/Other/Index.vue'
 
 import useDeviceStore from '@/store/devices'
 
@@ -20,10 +19,11 @@ const deviceStore = useDeviceStore()
 provide(
   'coreSettingsDisabled',
   computed(() => {
-    return { nre: deviceStore.devices.some(device => device.status === 'tasking') }
+    return {
+      nre: deviceStore.devices.some(device => device.status === 'tasking'),
+    }
   })
 )
-
 </script>
 
 <template>
@@ -39,11 +39,10 @@ provide(
     <Advance />
     <Appearance />
     <Clear />
+    <Other />
     <About />
     <div id="develop">
-      <h2 class="title">
-        开发者
-      </h2>
+      <h2 class="title">开发者</h2>
       <Developer />
     </div>
   </NForm>
@@ -61,7 +60,8 @@ provide(
 
 <style lang="less">
 .setting-form {
-  .title, .subtitle {
+  .title,
+  .subtitle {
     text-align: left;
   }
 }

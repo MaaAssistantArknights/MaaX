@@ -1,7 +1,7 @@
 import service from './service'
 
 export default {
-  async getCompletePackage (
+  async getCompletePackage(
     platform: Api.Maa.Platform,
     arch: Api.Maa.Arch,
     version: string,
@@ -15,11 +15,12 @@ export default {
       hash: string
     }>(`/download/${platform}/${arch}/${version}`, {
       params: {
-        component
-      }
+        component,
+      },
     })
   },
-  async getDiffPackage (platform: Api.Maa.Platform,
+  async getDiffPackage(
+    platform: Api.Maa.Platform,
     arch: Api.Maa.Arch,
     from: string,
     to: string,
@@ -35,8 +36,8 @@ export default {
       params: {
         component,
         from,
-        to
-      }
+        to,
+      },
     })
-  }
+  },
 }

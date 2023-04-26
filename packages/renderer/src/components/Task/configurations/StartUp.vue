@@ -1,33 +1,37 @@
 <script setup lang="ts">
 import { NCheckbox, NFormItem, NSelect } from 'naive-ui'
 import { inject } from 'vue'
+import type { GetConfig } from './types'
 
-interface StartUpConfiguration {
-  client_type: string; // 服务器
-  start_game_enabled: boolean; // 是否自动启动客户端
-}
+type StartUpConfig = GetConfig<'StartUp'>
 
 const serverOptions = [
   {
     value: 'Official',
-    label: 'CN-Official'
+    label: 'CN-Official',
   },
   {
     value: 'BiliBili',
-    label: 'CN-BiliBili'
-  }
+    label: 'CN-BiliBili',
+  },
 ]
 
 const props = defineProps<{
-  configurations: StartUpConfiguration;
+  configurations: StartUpConfig
   taskIndex: number
 }>()
 
-const updateTaskConfigurations = inject('update:configuration') as
-  (key: string, value: any, index: number) => void
-const configurationDisabled = inject('configurationDisabled') as {re: boolean, nre: boolean}
+const updateTaskConfigurations = inject('update:configuration') as (
+  key: string,
+  value: any,
+  index: number
+) => void
+const configurationDisabled = inject('configurationDisabled') as {
+  re: boolean
+  nre: boolean
+}
 
-function handleUpdateConfiguration (key: string, value: any) {
+function handleUpdateConfiguration(key: string, value: any) {
   updateTaskConfigurations(key, value, props.taskIndex)
 }
 </script>
@@ -45,7 +49,7 @@ function handleUpdateConfiguration (key: string, value: any) {
         :disabled="configurationDisabled.nre"
         :value="props.configurations.client_type"
         :options="serverOptions"
-        @update:value="(value) => handleUpdateConfiguration('client_type', value)"
+        @update:value="value => handleUpdateConfiguration('client_type', value)"
       />
     </NFormItem>
     <NFormItem
@@ -58,7 +62,7 @@ function handleUpdateConfiguration (key: string, value: any) {
         :disabled="configurationDisabled.nre"
         :checked="props.configurations.start_game_enabled"
         @update:checked="
-          (checked) => handleUpdateConfiguration('start_game_enabled', checked)
+          checked => handleUpdateConfiguration('start_game_enabled', checked)
         "
       >
         自动启动客户端

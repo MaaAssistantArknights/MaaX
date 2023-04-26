@@ -9,27 +9,29 @@ import logger from '@/hooks/caller/logger'
 
 type Patcher<T> = (storage: T) => T
 
-export async function initialStore (): Promise<void> {
+export async function initialStor(): Promise<void> {
   const stores: Record<string, Store> = {
     device: useDeviceStore(),
     setting: useSettingStore(),
     tasks: useTaskStore(),
-    theme: useThemeStore()
+    theme: useThemeStore(),
   }
 
   const patcher: Record<string, Patcher<any>> = {
     device: (storage: DeviceState) => {
-      storage.devices = storage.devices.map((device) => (device.config === 'General'
-        ? {
-            ...device,
-            status: 'unknown'
-          }
-        : {
-            ...device,
-            status: 'unknown',
-            address: '',
-            pid: ''
-          }))
+      storage.devices = storage.devices.map(device =>
+        device.config === 'General'
+          ? {
+              ...device,
+              status: 'unknown',
+            }
+          : {
+              ...device,
+              status: 'unknown',
+              address: '',
+              pid: '',
+            }
+      )
       return storage
     },
     setting: (storage: SettingState) => {
@@ -53,17 +55,19 @@ export async function initialStore (): Promise<void> {
     },
     theme: (storage: ThemeState) => {
       return storage
-    }
+    },
   }
 
   const promises = []
 
   for (const [storeId, store] of Object.entries(stores)) {
-    promises.push(storage.get(storeId).then(s => {
-      if (s) {
-        store.$patch(patcher[storeId](s))
-      }
-    }))
+    promises.push(
+      storage.get(storeId).then(s => {
+        if (s) {
+          store.$patch(patcher[storeId](s))
+        }
+      })
+    )
   }
 
   Promise.all(promises).then(() => {

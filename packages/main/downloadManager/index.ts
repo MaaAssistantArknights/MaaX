@@ -12,7 +12,7 @@ import { getAppBaseDir } from '@main/utils/path'
 
 @Singleton
 class DownloadManager {
-  constructor () {
+  constructor() {
     // initialize variables
     this.window_ = new WindowManager().getWindow()
     this.tasks_ = {
@@ -22,8 +22,8 @@ class DownloadManager {
         savePath: '',
         progress: {
           prevReceivedBytes: 0,
-          receivedBytes: 0
-        }
+          receivedBytes: 0,
+        },
       },
       'Maa Core': {
         state: 'interrupted',
@@ -31,8 +31,8 @@ class DownloadManager {
         savePath: '',
         progress: {
           prevReceivedBytes: 0,
-          receivedBytes: 0
-        }
+          receivedBytes: 0,
+        },
       },
       'Android Platform Tools': {
         state: 'interrupted',
@@ -40,13 +40,13 @@ class DownloadManager {
         savePath: '',
         progress: {
           prevReceivedBytes: 0,
-          receivedBytes: 0
-        }
-      }
+          receivedBytes: 0,
+        },
+      },
     }
     this.installers_ = {
       'Maa Core': new CoreInstaller(),
-      'Android Platform Tools': new AdbInstaller()
+      'Android Platform Tools': new AdbInstaller(),
     }
 
     for (const installer of Object.values(this.installers_)) {
@@ -56,18 +56,24 @@ class DownloadManager {
       fs.mkdirSync(this.download_path)
     }
     // register hook
-    this.window_.webContents.session.on('will-download', this.handleWillDownload)
+    this.window_.webContents.session.on(
+      'will-download',
+      this.handleWillDownload
+    )
   }
 
-  public get name (): string {
+  public get name(): string {
     return 'DownloadManager'
   }
 
-  public get version (): string {
+  public get version(): string {
     return '1.0.0'
   }
 
-  public async downloadComponent (url: string, component: ComponentType): Promise<void> {
+  public async downloadComponent(
+    url: string,
+    component: ComponentType
+  ): Promise<void> {
     this.will_download_ = component
     this.window_.webContents.downloadURL(url)
   }
@@ -82,7 +88,10 @@ class DownloadManager {
     this.tasks_[component]._sourceItem?.cancel()
   }
 
-  private readonly handleWillDownload = (event: Electron.Event, item: Electron.DownloadItem): void => {
+  private readonly handleWillDownload = (
+    event: Electron.Event,
+    item: Electron.DownloadItem
+  ): void => {
     const component = this.will_download_
     if (!component) {
       event.preventDefault()
@@ -99,11 +108,11 @@ class DownloadManager {
         totalBytes: item.getTotalBytes(),
         receivedBytes: 0,
         prevReceivedBytes: 0,
-        precent: 0
+        precent: 0,
       },
       paused: item.isPaused(),
       savePath: item.getSavePath(),
-      _sourceItem: item
+      _sourceItem: item,
     }
 
     // 将文件存储到this.download_path
@@ -147,11 +156,14 @@ class DownloadManager {
     const totalBytes = item.getTotalBytes()
 
     this.tasks_[component].state = state
-    this.tasks_[component].speed = receivedBytes - this.tasks_[component].progress.prevReceivedBytes
+    this.tasks_[component].speed =
+      receivedBytes - this.tasks_[component].progress.prevReceivedBytes
     this.tasks_[component].progress.receivedBytes = receivedBytes
     this.tasks_[component].progress.prevReceivedBytes = receivedBytes
     this.tasks_[component].progress.totalBytes = totalBytes
-    this.tasks_[component].progress.precent = totalBytes ? (receivedBytes / totalBytes) : undefined
+    this.tasks_[component].progress.precent = totalBytes
+      ? receivedBytes / totalBytes
+      : undefined
     this.tasks_[component].paused = item.isPaused()
 
     const installer = this.installers_[component]
@@ -191,7 +203,9 @@ class DownloadManager {
   private will_download_?: ComponentType
 
   private readonly window_: BrowserWindow
-  private readonly installers_: { [component in ComponentType]?: ComponentInstaller }
+  private readonly installers_: {
+    [component in ComponentType]?: ComponentInstaller
+  }
   private readonly download_path = path.join(getAppBaseDir(), 'download')
 }
 

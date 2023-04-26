@@ -17,5 +17,5 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
-  "include": ["./**/*.ts", "../@types/**/*.d.ts", "../common/**/*.ts"]
+  "include": ["./**/*.ts", "./**/*.vue", "../@types/**/*.d.ts", "../common/**/*.ts"]
 }

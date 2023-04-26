@@ -3,34 +3,36 @@ import { ref, inject } from 'vue'
 import { NButton, NFormItem, NCheckbox } from 'naive-ui'
 
 import MallSelect from '../MallSelect.vue'
+import type { GetConfig } from './types'
 
 const showModal = ref(false)
 
-interface MallConfiguration {
-  blacklist: string[]
-  buy_first: string[]
-  shopping: boolean
-}
+type MallConfig = GetConfig<'Mall'>
 
 const props = defineProps<{
-  configurations: MallConfiguration;
+  configurations: MallConfig
   taskIndex: number
 }>()
 
-const updateTaskConfigurations = inject('update:configuration') as
-  (key: string, value: any, index: number) => void
-const configurationDisabled = inject('configurationDisabled') as {re: boolean, nre: boolean}
+const updateTaskConfigurations = inject('update:configuration') as (
+  key: string,
+  value: any,
+  index: number
+) => void
+const configurationDisabled = inject('configurationDisabled') as {
+  re: boolean
+  nre: boolean
+}
 
-function handleUpdateConfiguration (key: string, value: any) {
+function handleUpdateConfiguration(key: string, value: any) {
   updateTaskConfigurations(key, value, props.taskIndex)
 }
 
-function handleItemUpdate (items: { buy_first: string[], blacklist: string[] }) {
+function handleItemUpdate(items: { buy_first: string[]; blacklist: string[] }) {
   for (const [key, list] of Object.entries(items)) {
     handleUpdateConfiguration(key, list)
   }
 }
-
 </script>
 
 <template>

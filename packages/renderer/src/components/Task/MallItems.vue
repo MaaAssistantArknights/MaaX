@@ -1,21 +1,19 @@
 <script lang="ts" setup>
 import Draggable from 'vuedraggable'
-import {
-  NText,
-  NImage
-} from 'naive-ui'
+import { NText, NImage } from 'naive-ui'
 import router from '@/router'
 import { getItemBorderedImage } from '@/utils/game_image'
 
 const uuid = router.currentRoute.value.params.uuid as string
 
 const props = defineProps<{
-  text: string;
+  text: string
   items: string[]
 }>()
 
-defineEmits(['updated'])
-
+defineEmits<{
+  (event: 'updated'): void
+}>()
 </script>
 
 <template>
@@ -43,6 +41,6 @@ defineEmits(['updated'])
 
 <style lang="less" scoped>
 .item {
-  display: inline-block
+  display: inline-block;
 }
 </style>

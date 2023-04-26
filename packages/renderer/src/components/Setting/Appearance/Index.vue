@@ -10,7 +10,7 @@ import {
   NSelect,
   NInputNumber,
   NDivider,
-  NCard
+  NCard,
 } from 'naive-ui'
 import useThemeStore from '@/store/theme'
 const themeStore = useThemeStore()
@@ -18,56 +18,64 @@ const themeStore = useThemeStore()
 const themeOptions = [
   {
     label: '跟随系统',
-    value: 'system'
+    value: 'system',
   },
   {
     label: '浅色',
-    value: 'maa-light'
+    value: 'maa-light',
   },
   {
     label: '深色',
-    value: 'maa-dark'
-  }
+    value: 'maa-dark',
+  },
 ]
 
-async function openBgFileSelector (): Promise<URL | undefined> {
+async function openBgFileSelector(): Promise<URL | undefined> {
   const { filePaths } = await window.ipcRenderer.invoke(
     'main.WindowManager:openDialog',
     '选择背景图片',
     ['openFile'],
     [
       { name: 'Images', extensions: ['jpg', 'png', 'jpeg'] },
-      { name: 'All Files', extensions: ['*'] }
+      { name: 'All Files', extensions: ['*'] },
     ]
   )
   if (filePaths?.length <= 0) {
     return undefined
   }
   const filepath: string = filePaths[0]
-  return new URL(filepath.startsWith('file://') ? filepath : `file://${filepath}`)
+  return new URL(
+    filepath.startsWith('file://') ? filepath : `file://${filepath}`
+  )
 }
 
-async function handleLightBgSelect () {
+async function handleLightBgSelect() {
   const url = await openBgFileSelector()
-  themeStore.updateBgLight({ url: url?.href, opacity: themeStore.bgLight.opacity })
+  themeStore.updateBgLight({
+    url: url?.href,
+    opacity: themeStore.bgLight.opacity,
+  })
 }
 
-async function handleDarkBgSelect () {
+async function handleDarkBgSelect() {
   const url = await openBgFileSelector()
-  themeStore.updateBgDark({ url: url?.href, opacity: themeStore.bgDark.opacity })
+  themeStore.updateBgDark({
+    url: url?.href,
+    opacity: themeStore.bgDark.opacity,
+  })
 }
 
-function handleUpdateBgLightOpacity (value: number | null) {
+function handleUpdateBgLightOpacity(value: number | null) {
   themeStore.updateBgLight({ url: themeStore.bgLight.url, opacity: value ?? 1 })
 }
 
-function handleUpdateBgDarkOpacity (value: number | null) {
+function handleUpdateBgDarkOpacity(value: number | null) {
   themeStore.updateBgDark({ url: themeStore.bgDark.url, opacity: value ?? 1 })
 }
 
 const bgPreviewWidth = ref(0)
 
-function handleWindowResize () {
+function handleWindowResize() {
   bgPreviewWidth.value = window.innerWidth - 700
 }
 
@@ -79,15 +87,13 @@ onMounted(() => {
 
 <template>
   <div id="appearance">
-    <h2 class="title">
-      外观
-    </h2>
+    <h2 class="title">外观</h2>
     <NFormItem label="背景颜色">
       <NSelect
         :value="themeStore.theme"
         :options="themeOptions"
         :style="{ width: '200px' }"
-        @update:value="(value) => themeStore.updateTheme(value)"
+        @update:value="value => themeStore.updateTheme(value)"
       />
     </NFormItem>
     <NFormItem label="主题色不透明度">
@@ -96,22 +102,22 @@ onMounted(() => {
         :min="0"
         :max="1"
         :step="0.01"
-        :format-tooltip="(value) => `${Math.floor(value * 100)}%`"
+        :format-tooltip="value => `${Math.floor(value * 100)}%`"
         :style="{ width: '300px' }"
-        @update:value="(value) => themeStore.updateColorOpacity(value)"
+        @update:value="value => themeStore.updateColorOpacity(value)"
       />
     </NFormItem>
     <NFormItem label="开启亚克力效果（重启应用生效）">
       <NSwitch
         :value="themeStore.acrylic"
-        @update:value="(value) => themeStore.updateAcrylic(value)"
+        @update:value="value => themeStore.updateAcrylic(value)"
       />
     </NFormItem>
     <NDivider />
     <NFormItem label="背景随主题变换">
       <NSwitch
         :value="themeStore.bgFollowTheme"
-        @update:value="(value) => themeStore.updateBgFollowTheme(value)"
+        @update:value="value => themeStore.updateBgFollowTheme(value)"
       />
     </NFormItem>
     <NFormItem label="背景图片" :label-style="{ justifyContent: 'center' }">
@@ -133,8 +139,8 @@ onMounted(() => {
                 :min="0"
                 :max="1"
                 :step="0.01"
-                :format="(value) => `${Math.floor((value ?? 0) * 100)}%`"
-                :parse="(input) => Number(input.replace('%', '')) / 100"
+                :format="value => `${Math.floor((value ?? 0) * 100)}%`"
+                :parse="input => Number(input.replace('%', '')) / 100"
                 @update:value="handleUpdateBgLightOpacity"
               />
             </NFormItem>
@@ -165,8 +171,8 @@ onMounted(() => {
                 :min="0"
                 :max="1"
                 :step="0.01"
-                :format="(value) => `${Math.floor((value ?? 0) * 100)}%`"
-                :parse="(input) => Number(input.replace('%', '')) / 100"
+                :format="value => `${Math.floor((value ?? 0) * 100)}%`"
+                :parse="input => Number(input.replace('%', '')) / 100"
                 @update:value="handleUpdateBgDarkOpacity"
               />
             </NFormItem>

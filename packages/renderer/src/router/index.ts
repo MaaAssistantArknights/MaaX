@@ -21,49 +21,49 @@ const routes: RouteRecordRaw[] = [
     path: '/task/:uuid',
     components: {
       Main: PageTask,
-      SideBar: SideBarTask
-    }
+      SideBar: SideBarTask,
+    },
   },
   {
     path: '/settings',
     components: {
       Main: PageSetting,
-      SideBar: SideBarSetting
-    }
+      SideBar: SideBarSetting,
+    },
   },
   {
     path: '/device',
     components: {
       Main: PageDevice,
-      SideBar: SideBarDevice
-    }
+      SideBar: SideBarDevice,
+    },
   },
   {
     path: '/tool/:uuid',
     components: {
       Main: PageTool,
-      SideBar: SideBarTool
+      SideBar: SideBarTool,
     },
     children: [
       {
         path: 'copilot',
-        component: ToolCopilot
+        component: ToolCopilot,
       },
       {
         path: 'item',
-        component: ToolItem
+        component: ToolItem,
       },
       {
         path: 'recruit',
-        component: ToolRecruit
-      }
-    ]
-  }
+        component: ToolRecruit,
+      },
+    ],
+  },
 ]
 
 const router = createRouter({
   history: createMemoryHistory(),
-  routes
+  routes,
 })
 
 router.beforeEach((to, from, next) => {

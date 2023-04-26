@@ -10,11 +10,11 @@ import { getPlatform } from '@main/utils/os'
 
 @Singleton
 class AdbInstaller extends ComponentInstaller {
-  public constructor () {
+  public constructor() {
     super()
   }
 
-  public async install (): Promise<void> {
+  public async install(): Promise<void> {
     try {
       if (this.downloader_) {
         const update = await this.checkUpdate()
@@ -28,37 +28,35 @@ class AdbInstaller extends ComponentInstaller {
     }
   }
 
-  public get status (): InstallerStatus {
+  public get status(): InstallerStatus {
     return this.status_
   }
 
-  protected onStart (): void {
+  protected onStart(): void {}
 
-  }
-
-  protected onProgress (progress: number): void {
+  protected onProgress(progress: number): void {
     ipcMainSend('renderer.ComponentManager:updateStatus', {
       type: this.componentType,
       status: this.status_,
-      progress
+      progress,
     })
   }
 
-  protected onCompleted (): void {
+  protected onCompleted(): void {
     this.status_ = 'done'
     ipcMainSend('renderer.ComponentManager:installDone', {
       type: this.componentType,
       status: this.status_,
-      progress: 0 // 不显示进度条
+      progress: 0, // 不显示进度条
     })
   }
 
-  protected onException (): void {
+  protected onException(): void {
     this.status_ = 'exception'
     ipcMainSend('renderer.ComponentManager:installInterrupted', {
       type: this.componentType,
       status: this.status_,
-      progress: 0
+      progress: 0,
     })
   }
 
@@ -76,7 +74,7 @@ class AdbInstaller extends ComponentInstaller {
     handleDownloadInterrupted: () => {
       this.status_ = 'exception'
       this.onException()
-    }
+    },
   }
 
   public readonly unzipHandle = {
@@ -90,28 +88,28 @@ class AdbInstaller extends ComponentInstaller {
     handleUnzipInterrupted: () => {
       this.status_ = 'exception'
       this.onException()
-    }
+    },
   }
 
-  public async checkUpdate (): Promise<Update | false | undefined> {
+  public async checkUpdate(): Promise<Update | false | undefined> {
     const platform = getPlatform()
     if (platform === 'windows') {
       return {
         url: 'https://dl.google.com/android/repository/platform-tools-latest-windows.zip',
         version: 'latest',
-        releaseDate: ''
+        releaseDate: '',
       }
     } else if (platform === 'macos') {
       return {
         url: 'https://dl.google.com/android/repository/platform-tools-latest-darwin.zip',
         version: 'latest',
-        releaseDate: ''
+        releaseDate: '',
       }
     } else {
       return {
         url: 'https://dl.google.com/android/repository/platform-tools-latest-linux.zip',
         version: 'latest',
-        releaseDate: ''
+        releaseDate: '',
       }
     }
   }

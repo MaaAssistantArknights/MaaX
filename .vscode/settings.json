@@ -9,4 +9,8 @@
     "packages/renderer/src/i18n"
   ],
   "i18n-ally.keystyle": "nested",
+  "[javascript][typescript][vue][css][less]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }

@@ -1,3 +1,1 @@
-type BooleanDisplayOption =
-  | 'Right/Wrong'
-  | 'Yes/No'
+type BooleanDisplayOption = 'Right/Wrong' | 'Yes/No'

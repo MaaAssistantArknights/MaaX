@@ -65,7 +65,7 @@ interface Device {
   /**
    * @props 模拟器命令行参数
    * @description 启动参数, 比如蓝叠启动指定实例的 "--instance" "114514"
-  */
+   */
   commandLine?: string
 }
 

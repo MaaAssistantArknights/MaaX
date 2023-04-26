@@ -12,8 +12,8 @@ const callbackHandle = ffi.Callback(
     logger.silly(data)
     ipcMainSend('renderer.CoreLoader:callback', {
       code,
-      data: JSON.parse(data)
-      // customArgs
+      data: JSON.parse(data),
+      // customArgs,
     })
   }
 )

@@ -1,7 +1,4 @@
-type ComponentType =
-  | 'Maa Core'
-  | 'Maa App'
-  | 'Android Platform Tools'
+type ComponentType = 'Maa Core' | 'Maa App' | 'Android Platform Tools'
 
 type ComponentStatus =
   | 'not-installed'
@@ -10,6 +7,7 @@ type ComponentStatus =
   | 'installed'
   | 'upgradable'
   | 'upgrading'
+  | 'need-restart'
 
 interface Component {
   type: ComponentType

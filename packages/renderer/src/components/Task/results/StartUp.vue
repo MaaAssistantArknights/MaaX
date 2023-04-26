@@ -2,12 +2,9 @@
 import { NFormItem, NInput, NSelect, NSpace } from 'naive-ui'
 import _ from 'lodash'
 
-interface StartUpResultProps {
-
-}
+interface StartUpResultProps {}
 
 const props = defineProps<StartUpResultProps>()
-
 </script>
 <template>
   <Space class="progress-form" />

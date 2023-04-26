@@ -11,14 +11,14 @@ import Mall from './Mall.vue'
 import Shutdown from './Shutdown.vue'
 
 const components: Record<string, Component> = {
-  emulator: Emulator,
+  Emulator: Emulator,
   game: Game,
-  fight: Fighting,
-  recruit: Recruit,
-  infrast: Infrast,
-  rogue: Rogue,
-  mall: Mall,
-  shutdown: Shutdown
+  Fight: Fighting,
+  Recruit: Recruit,
+  Infrast: Infrast,
+  Roguelike: Rogue,
+  Mall: Mall,
+  Shutdown: Shutdown,
 }
 
 export default defineComponent({
@@ -26,14 +26,14 @@ export default defineComponent({
   props: {
     name: {
       type: String,
-      required: true
+      required: true,
     },
     results: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
-  render () {
+  render() {
     const component = components[this.name]
     const { results } = this
     if (component) {
@@ -42,7 +42,7 @@ export default defineComponent({
     } else {
       return h(NoProgress)
     }
-  }
+  },
 })
 </script>
 

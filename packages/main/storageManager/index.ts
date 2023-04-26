@@ -14,11 +14,12 @@ type StorageOption<T> = Partial<{
   deserialize: (raw: string) => T
 }>
 
-const convertExt = (str?: string): string | undefined => (/\.\w+/.test(str ?? '') ? str : undefined)
+const convertExt = (str?: string): string | undefined =>
+  /\.\w+/.test(str ?? '') ? str : undefined
 
 @Singleton
 class Storage<T extends Object> implements Module {
-  constructor (option?: StorageOption<T>) {
+  constructor(option?: StorageOption<T>) {
     this.m_storage = option?.defaults ?? Object.create({})
     this.m_cwd = option?.cwd ?? app.getPath('userData')
     this.m_ext = convertExt(option?.ext) ?? '.json'
@@ -38,35 +39,35 @@ class Storage<T extends Object> implements Module {
     }
   }
 
-  public get name (): string {
+  public get name(): string {
     return 'StorageManager'
   }
 
-  public get version (): string {
+  public get version(): string {
     return '1.0.0'
   }
 
-  get (key: string): any {
+  get(key: string): any {
     return _.get(this.m_storage, key)
   }
 
-  set (key: string, value: any): void {
+  set(key: string, value: any): void {
     _.set(this.m_storage, key, value)
     this.saveToFile()
   }
 
-  has (key: string): boolean {
+  has(key: string): boolean {
     return _.has(this.m_storage, key)
   }
 
-  public get filepath (): string {
+  public get filepath(): string {
     return path.join(this.m_cwd, this.m_name + this.m_ext)
   }
 
   private readonly saveToFile = _.debounce(() => {
     fs.writeFileSync(this.filepath, this.m_serialize(this.m_storage))
     logger.silly('configuration saved')
-  }, 50);
+  }, 50)
 
   private readonly readFromFile = () => {
     try {
@@ -75,13 +76,13 @@ class Storage<T extends Object> implements Module {
     } catch (error) {
       logger.error('error while read config file:', this.filepath, error)
     }
-  };
+  }
 
-  private readonly m_cwd: string;
-  private readonly m_name: string;
-  private readonly m_ext: string;
-  private readonly m_serialize;
-  private readonly m_deserialize;
+  private readonly m_cwd: string
+  private readonly m_name: string
+  private readonly m_ext: string
+  private readonly m_serialize
+  private readonly m_deserialize
   private m_storage: T
 }
 

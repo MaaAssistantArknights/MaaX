@@ -21,29 +21,35 @@ const backOffOptions: Partial<IBackOffOptions> = {
   jitter: 'full',
   maxDelay: 60 * 1000,
   startingDelay: 200,
-  retry (response: AxiosResponse /* Error Response */) {
-    if (response.status /* No Timeout */ &&
-      Math.floor(response.status / 100) === 4 /* Client Error */) {
+  retry(response: AxiosResponse /* Error Response */) {
+    if (
+      response.status /* No Timeout */ &&
+      Math.floor(response.status / 100) === 4 /* Client Error */
+    ) {
       return false
     }
     return true
-  }
+  },
 }
 
-export async function postDrop (report: DropReport): Promise<AxiosResponse> {
+export async function postDrop(report: DropReport): Promise<AxiosResponse> {
   const settingStore = useSettingStore()
   const reportId = settingStore.penguinReportId
   const _report = {
     ...report,
     source: 'MeoAssistant',
-    version: settingStore.version.core.current
+    version: settingStore.version.core.current,
   }
 
-  const headers: AxiosRequestHeaders =
-    reportId ? { Authorization: `PenguinID ${reportId}` } : {}
+  const headers: AxiosRequestHeaders = reportId
+    ? { Authorization: `PenguinID ${reportId}` }
+    : {}
 
   return await backOff(
-    () => service.post<AxiosResponse>('/PenguinStats/api/v2/report', _report, { headers }),
+    () =>
+      service.post<AxiosResponse>('/PenguinStats/api/v2/report', _report, {
+        headers,
+      }),
     backOffOptions
   )
 }

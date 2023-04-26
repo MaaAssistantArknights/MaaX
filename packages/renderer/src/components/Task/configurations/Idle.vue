@@ -6,24 +6,26 @@ import useDeviceStore from '@/store/devices'
 import useTaskStore from '@/store/tasks'
 import {
   secondsToFormattedDuration,
-  formattedDurationToSeconds
+  formattedDurationToSeconds,
 } from '@/utils/time_picker'
 import _ from 'lodash'
 import { showMessage } from '@/utils/message'
+import type { GetConfig } from './types'
 
 const deviceStore = useDeviceStore()
 const taskStore = useTaskStore()
 
-interface IdleConfiguration {
-  delay: number // 等多久进行下个任务
-}
+type IdleConfig = GetConfig<'Idle'>
 
 const props = defineProps<{
-  configurations: IdleConfiguration
+  configurations: IdleConfig
   taskIndex: number
 }>()
 
-const configurationDisabled = inject('configurationDisabled') as {re: boolean, nre: boolean}
+const configurationDisabled = inject('configurationDisabled') as {
+  re: boolean
+  nre: boolean
+}
 const routeUuid = router.currentRoute.value.params.uuid as string
 
 // function handleSkipSchedule () {
@@ -36,7 +38,6 @@ const routeUuid = router.currentRoute.value.params.uuid as string
 //     // TODO: skip schedule( set timeout to 0 )
 //   }
 // }
-
 </script>
 <template>
   <div class="configuration-form">
@@ -57,7 +58,7 @@ const routeUuid = router.currentRoute.value.params.uuid as string
           "
           :actions="['confirm']"
           @update:formatted-value="
-            (value) =>
+            value =>
               _.set(
                 props.configurations,
                 'delay',

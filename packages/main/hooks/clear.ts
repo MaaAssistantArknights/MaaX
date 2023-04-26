@@ -5,11 +5,11 @@ import { manager } from '@main/utils/logger'
 import { ipcMainHandle } from '@main/utils/ipc-main'
 import { getAppBaseDir } from '@main/utils/path'
 
-export default function useClearHooks (): void {
-  ipcMainHandle('main.Util:GetCacheInfo', async (event) => {
+export default function useClearHooks(): void {
+  ipcMainHandle('main.Util:GetCacheInfo', event => {
     const info = {
       log: 0,
-      download: 0
+      download: 0,
     }
     const logFileNames = fs.readdirSync(manager.logFileDir)
     for (const file of logFileNames) {
@@ -30,7 +30,7 @@ export default function useClearHooks (): void {
     return info
   })
 
-  ipcMainHandle('main.Util:CleanLogs', async (event) => {
+  ipcMainHandle('main.Util:CleanLogs', event => {
     const logFileNames = fs.readdirSync(manager.logFileDir)
     for (const file of logFileNames) {
       const filepath = path.join(manager.logFileDir, file)
@@ -44,7 +44,7 @@ export default function useClearHooks (): void {
     }
   })
 
-  ipcMainHandle('main.Util:CleanDownloadCache', async (event) => {
+  ipcMainHandle('main.Util:CleanDownloadCache', event => {
     const downloadDir = path.join(getAppBaseDir(), 'download')
     const downloadFileNames = fs.readdirSync(downloadDir)
 
@@ -57,7 +57,7 @@ export default function useClearHooks (): void {
     }
   })
 
-  ipcMainHandle('main.Util:RemoveAllConfig', async (event) => {
+  ipcMainHandle('main.Util:RemoveAllConfig', event => {
     fs.writeFileSync(path.join(app.getPath('temp'), 'clearConfigToken'), '1')
     app.quit()
   })

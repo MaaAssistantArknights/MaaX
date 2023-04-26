@@ -10,31 +10,43 @@ import {
   NIcon,
   NTooltip,
   NButton,
-  NText
+  NText,
 } from 'naive-ui'
 import { ref, nextTick, computed, provide } from 'vue'
 import DropdownMenu from './DropdownMenu.vue'
 import router from '@/router'
 import useThemeStore from '@/store/theme'
 import Timer from './Timer.vue'
+import IconEdit from '@/assets/icons/edit.svg?component'
 import IconAdd from '@/assets/icons/add.svg?component'
 import IconRemove from '@/assets/icons/remove.svg?component'
 import useDeviceStore from '@/store/devices'
 const themeVars = useThemeVars()
 const themeStore = useThemeStore()
 const props = defineProps<{
-  isCollapsed: boolean;
-  showResult?: Boolean;
-  taskInfo: Task;
+  isCollapsed: boolean
+  showResult?: Boolean
+  taskInfo: Task
 }>()
 
 const deviceStore = useDeviceStore()
 
-const emit = defineEmits(['update:enable', 'update:showResult', 'copy', 'delete'])
+const emit = defineEmits<{
+  (event: 'update:enable', value: boolean): void
+  (event: 'update:showResult', value: boolean): void
+  (event: 'copy'): void
+  (event: 'delete'): void
+}>()
+
+const innerCollapse = ref(true)
+
+const _isCollapsed = computed(() => {
+  return props.isCollapsed && innerCollapse.value
+})
 
 const dropdownPosition = ref({
   x: 0,
-  y: 0
+  y: 0,
 })
 
 const showDropdown = ref(false)
@@ -46,7 +58,7 @@ const handleShowDropdown = (e: MouseEvent) => {
     showDropdown.value = true
     dropdownPosition.value = {
       x: e.clientX,
-      y: e.clientY
+      y: e.clientY,
     }
   })
 }
@@ -86,17 +98,24 @@ const resetTaskProgress = (taskInfo: Task) => {
 }
 
 const uuid = router.currentRoute.value.params.uuid as string
-const deviceStatus = computed(() => deviceStore.getDevice(uuid)?.status ?? 'disconnected')
+const deviceStatus = computed(
+  () => deviceStore.getDevice(uuid)?.status ?? 'disconnected'
+)
 
 provide(
   'configurationDisabled',
   computed(() => {
-    const notEditableStatus: TaskStatus[] = ['exception', 'skipped', 'success', 'warning']
+    const notEditableStatus: TaskStatus[] = [
+      'exception',
+      'skipped',
+      'success',
+      'warning',
+    ]
     return {
       // 运行时可编辑任务用
       re: notEditableStatus.includes(props.taskInfo.status),
       // 运行时不可编辑任务用
-      nre: [...notEditableStatus, 'processing'].includes(props.taskInfo.status)
+      nre: [...notEditableStatus, 'processing'].includes(props.taskInfo.status),
     }
   })
 )
@@ -104,7 +123,7 @@ provide(
 
 <template>
   <NCollapse
-    :expanded-names="props.isCollapsed ? null : '1'"
+    :expanded-names="_isCollapsed ? null : '1'"
     class="task-card"
     :class="props.taskInfo.status === 'idle' ? '' : 'undraggable'"
   >
@@ -113,10 +132,12 @@ provide(
     </template>
     <NCollapseItem
       class="task-card-inner"
-      :class="[
-        props.isCollapsed ? 'collapsed' : '',
-        `task-card__status-${props.taskInfo.status}`
-      ].join(' ')"
+      :class="
+        [
+          _isCollapsed ? 'collapsed' : '',
+          `task-card__status-${props.taskInfo.status}`,
+        ].join(' ')
+      "
       name="1"
       display-directive="show"
       :style="{
@@ -124,16 +145,19 @@ provide(
           themeStore.currentTheme === 'maa-dark'
             ? `1px solid ${themeVars.primaryColor}`
             : '',
-        '--breathe-color': themeVars.primaryColor
+        '--breathe-color': themeVars.primaryColor,
       }"
     >
       <template #header>
         <div style="width: 100%">
           <div ref="cardHeaderRef" class="card-header">
             <NSpace>
-              <span class="card-title">{{ props.taskInfo.title || "" }}</span>
+              <span class="card-title">{{ props.taskInfo.title || '' }}</span>
               <div
-                v-if="deviceStatus === 'tasking' && !['idle', 'waiting'].includes(props.taskInfo.status)"
+                v-if="
+                  deviceStatus === 'tasking' &&
+                  !['idle', 'waiting'].includes(props.taskInfo.status)
+                "
                 justify="end"
               >
                 <NText type="primary">
@@ -145,12 +169,34 @@ provide(
               </div>
             </NSpace>
             <NSpace justify="end" align="center">
+              <NTooltip v-if="props.isCollapsed">
+                <template #trigger>
+                  <NButton
+                    text
+                    style="font-size: 25px"
+                    :disabled="!['idle'].includes(props.taskInfo.status)"
+                    @click="
+                      () => {
+                        innerCollapse = !innerCollapse
+                      }
+                    "
+                  >
+                    <NIcon>
+                      <IconEdit />
+                    </NIcon>
+                  </NButton>
+                </template>
+                {{ _isCollapsed ? '展开' : '折叠' }}当前任务
+              </NTooltip>
               <NTooltip>
                 <template #trigger>
                   <NButton
                     text
                     style="font-size: 25px"
-                    :disabled="deviceStatus === 'tasking' && !['idle'].includes(props.taskInfo.status)"
+                    :disabled="
+                      deviceStatus === 'tasking' &&
+                      !['idle'].includes(props.taskInfo.status)
+                    "
                     @click="() => $emit('copy')"
                   >
                     <NIcon>
@@ -165,7 +211,10 @@ provide(
                   <NButton
                     text
                     style="font-size: 25px"
-                    :disabled="deviceStatus === 'tasking' && !['idle'].includes(props.taskInfo.status)"
+                    :disabled="
+                      deviceStatus === 'tasking' &&
+                      !['idle'].includes(props.taskInfo.status)
+                    "
                     @click="() => $emit('delete')"
                   >
                     <NIcon>
@@ -176,29 +225,32 @@ provide(
                 删除当前任务
               </NTooltip>
               <span
-                v-if="deviceStatus === 'tasking' && !['idle', 'waiting'].includes(props.taskInfo.status)"
+                v-if="
+                  deviceStatus === 'tasking' &&
+                  !['idle', 'waiting'].includes(props.taskInfo.status)
+                "
                 class="card-progress-hint"
                 :style="{ color: themeVars.primaryColor }"
               >
                 {{
                   (() => {
                     switch (props.taskInfo.status) {
-                    case "idle":
-                      return ""
-                    case "waiting":
-                      return "等待中"
-                    case "processing":
-                      return '进行中'
-                    case "success":
-                      return "已完成"
-                    case "warning":
-                      return "警告"
-                    case "exception":
-                      return "任务出错"
-                    case "stopped":
-                      return "手动取消"
-                    case 'skipped':
-                      return '已跳过'
+                      case 'idle':
+                        return ''
+                      case 'waiting':
+                        return '等待中'
+                      case 'processing':
+                        return '进行中'
+                      case 'success':
+                        return '已完成'
+                      case 'warning':
+                        return '警告'
+                      case 'exception':
+                        return '任务出错'
+                      case 'stopped':
+                        return '手动取消'
+                      case 'skipped':
+                        return '已跳过'
                     }
                   })()
                 }}
@@ -206,10 +258,12 @@ provide(
               <NSwitch
                 v-else
                 :value="props.taskInfo.enable"
-                @update:value="enabled => {
-                  $emit('update:enable', enabled)
-                  resetTaskProgress(props.taskInfo)
-                }"
+                @update:value="
+                  enabled => {
+                    $emit('update:enable', enabled)
+                    resetTaskProgress(props.taskInfo)
+                  }
+                "
               />
             </NSpace>
           </div>
@@ -240,14 +294,12 @@ provide(
 <style lang="less" scoped>
 @keyframes breathe {
   from {
-    box-shadow: 0 2px 6px 0 rgb(0 0 0 / 0.1),
-     0 2px 4px -1px rgb(0 0 0 / 0.1),
-     0 0 5px 0 transparent;
+    box-shadow: 0 2px 6px 0 rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.1),
+      0 0 5px 0 transparent;
   }
   to {
-    box-shadow:  0 2px 6px 0 rgb(0 0 0 / 0.1),
-     0 2px 4px -1px rgb(0 0 0 / 0.1),
-     0 0 10px var(--breathe-color);
+    box-shadow: 0 2px 6px 0 rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.1),
+      0 0 10px var(--breathe-color);
   }
 }
 .task-card {

@@ -5,8 +5,9 @@ import useOsHooks from './os'
 import useShutdownHooks from './shutdown'
 import useClearHooks from './clear'
 import useTaskHooks from './task'
+import usePathHooks from './path'
 
-export default function useHooks (): void {
+export default function useHooks(): void {
   useVersionHooks()
   useAsstHooks()
   useStorageHooks()
@@ -14,4 +15,5 @@ export default function useHooks (): void {
   useShutdownHooks()
   useClearHooks()
   useTaskHooks()
+  usePathHooks()
 }

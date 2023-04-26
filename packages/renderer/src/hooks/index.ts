@@ -4,7 +4,7 @@ import useDeviceEvents from './events/devices'
 import useThemeEvents from './events/theme'
 import useUiHooks from './events/ui'
 
-export function initHook (): void {
+export function initHook(): void {
   useDeviceEvents()
   useThemeEvents()
   useCallbackEvents()

@@ -9,27 +9,39 @@ import {
   NScrollbar,
   NTabs,
   NTabPane,
-  NAvatar
+  NAvatar,
 } from 'naive-ui'
 import gamedataApi from '@/api/gamedata'
+import type {
+  Operator as _Operator,
+  OperatorProfession,
+} from '@/api/gamedata/types'
 import { getOperatorAvatar, getProfessionImage } from '@/utils/game_image'
 import useThemeStore from '@/store/theme'
+
+interface Operator extends _Operator {
+  image?: string
+}
 
 const themeStore = useThemeStore()
 
 const props = defineProps<{
-  show: boolean;
-  selectedOperators: any[];
+  show: boolean
+  selectedOperators: Operator[]
 }>()
 
-const emit = defineEmits(['update:show', 'remove:operator', 'add:operator'])
+const emit = defineEmits<{
+  (event: 'update:show', value: boolean): void
+  (event: 'remove:operator', operator: Operator): void
+  (event: 'add:operator', operator: Operator): void
+}>()
 
-const operators: Ref<any[]> = ref([])
+const operators: Ref<Operator[]> = ref([])
 const loading = ref(false)
 
 const counts = computed(() => _.countBy(props.selectedOperators, 'profession'))
 
-const professions = {
+const professions: Record<OperatorProfession, string> = {
   WARRIOR: '近卫',
   MEDIC: '医疗',
   SPECIAL: '特种',
@@ -37,33 +49,39 @@ const professions = {
   PIONEER: '先锋',
   TANK: '重装',
   CASTER: '术师',
-  SUPPORT: '辅助'
+  SUPPORT: '辅助',
 }
 
 onMounted(async () => {
   loading.value = true
-  operators.value = Object.values((await gamedataApi.getAllOperators()) as Object).filter(
-    (operator) => operator.nationId !== null
+  operators.value = Object.values(await gamedataApi.getAllOperators()).filter(
+    operator => operator.nationId !== null
   )
 
-  operators.value.forEach(async (operator) => {
+  operators.value.forEach(async operator => {
     operator.image = getOperatorAvatar(operator.name)
   })
 
   loading.value = false
 })
 
-const getProfessionTab = (professionCode: string, professionName: string): VNode => {
-  const imgUrl = getProfessionImage(professionName, themeStore.currentTheme === 'maa-light')
+const getProfessionTab = (
+  professionCode: string,
+  professionName: string
+): VNode => {
+  const imgUrl = getProfessionImage(
+    professionName,
+    themeStore.currentTheme === 'maa-light'
+  )
   const count = counts.value[professionCode]
   return h('div', { style: { display: 'flex', alignItems: 'center' } }, [
     h(NBadge, { value: count || 0 }, () => h(NAvatar, { src: imgUrl })),
-    h('span', { style: { marginLeft: '4px' } }, professionName)
+    h('span', { style: { marginLeft: '4px' } }, professionName),
   ])
 }
 
-const toggleSelected = (operator: any) => {
-  const find = _.find(props.selectedOperators, (op) => op.name === operator.name)
+const toggleSelected = (operator: Operator) => {
+  const find = _.find(props.selectedOperators, op => op.name === operator.name)
   if (find) {
     emit('remove:operator', operator)
   } else {
@@ -79,7 +97,7 @@ const toggleSelected = (operator: any) => {
     display-directive="show"
     role="dialog"
     aria-modal="true"
-    @update:show="(value) => $emit('update:show', value)"
+    @update:show="value => $emit('update:show', value)"
   >
     <NCard
       style="width: 600px"
@@ -87,10 +105,7 @@ const toggleSelected = (operator: any) => {
       aria-modal="true"
       title="选择干员"
     >
-      <NTabs
-        :bar-width="28"
-        type="line"
-      >
+      <NTabs :bar-width="28" type="line">
         <NTabPane
           v-for="[code, name] of Object.entries(professions)"
           :key="code"
@@ -106,13 +121,15 @@ const toggleSelected = (operator: any) => {
             />
             <div class="grid-wrapper">
               <NAvatar
-                v-for="operator of operators.filter((op) => op.profession === code)"
+                v-for="operator of operators.filter(
+                  op => op.profession === code
+                )"
                 :key="operator.name"
                 :src="operator.image"
                 :size="90"
                 class="operator-avatar"
                 :class="
-                  selectedOperators.find((op) => op.name === operator.name)
+                  selectedOperators.find(op => op.name === operator.name)
                     ? 'selected'
                     : ''
                 "
@@ -136,7 +153,7 @@ const toggleSelected = (operator: any) => {
 .operator-avatar {
   position: relative;
   &.selected::before {
-    content: "";
+    content: '';
     box-sizing: border-box;
     position: absolute;
     border: 4px solid rgb(234, 173, 61);

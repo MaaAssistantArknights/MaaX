@@ -11,22 +11,36 @@ import { computed, ref } from 'vue'
 import { onBeforeRouteUpdate } from 'vue-router'
 
 let deviceStore = useDeviceStore()
-let currentUuid = computed(() => router.currentRoute.value.params.uuid as string)
-let currentDevice = computed(() => deviceStore.devices.find(device => device.uuid === currentUuid.value))
-let otherDevices = deviceStore.devices.filter(device => device.uuid !== currentUuid.value)
+let currentUuid = computed(
+  () => router.currentRoute.value.params.uuid as string
+)
+let currentDevice = computed(() =>
+  deviceStore.devices.find(device => device.uuid === currentUuid.value)
+)
+let otherDevices = deviceStore.devices.filter(
+  device => device.uuid !== currentUuid.value
+)
 
 onBeforeRouteUpdate((to, from, next) => {
   deviceStore = useDeviceStore()
   currentUuid = computed(() => to.params.uuid as string)
-  currentDevice = computed(() => deviceStore.devices.find(device => device.uuid === currentUuid.value))
-  otherDevices = deviceStore.devices.filter(device => device.uuid !== currentUuid.value)
+  currentDevice = computed(() =>
+    deviceStore.devices.find(device => device.uuid === currentUuid.value)
+  )
+  otherDevices = deviceStore.devices.filter(
+    device => device.uuid !== currentUuid.value
+  )
   next()
 })
 </script>
 
 <template>
   <div>
-    <NButton text style="font-size: 24px" @click="$router.push({ path: '/settings' })">
+    <NButton
+      text
+      style="font-size: 24px"
+      @click="$router.push({ path: '/settings' })"
+    >
       <NIcon>
         <IconSettings />
       </NIcon>
@@ -54,7 +68,11 @@ onBeforeRouteUpdate((to, from, next) => {
         </NTooltip> -->
         <NTooltip>
           <template #trigger>
-            <NButton text style="font-size: 24px" @click="$router.push({ path: '/device' })">
+            <NButton
+              text
+              style="font-size: 24px"
+              @click="$router.push({ path: '/device' })"
+            >
               <NIcon>
                 <IconDevices />
               </NIcon>

@@ -1,6 +1,14 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { NIcon, NButton, NPopconfirm, NInput, NSpace, NText, useMessage } from 'naive-ui'
+import {
+  NIcon,
+  NButton,
+  NPopconfirm,
+  NInput,
+  NSpace,
+  NText,
+  useMessage,
+} from 'naive-ui'
 import { useI18n } from 'vue-i18n'
 import { TrashOutline } from '@vicons/ionicons5'
 
@@ -67,12 +75,7 @@ const handleDelete = () => {
     </NButton>
     <NPopconfirm @positive-click="handleDelete">
       <template #trigger>
-        <NButton
-          size="small"
-          quaternary
-          circle
-          type="error"
-        >
+        <NButton size="small" quaternary circle type="error">
           <template #icon>
             <NIcon>
               <TrashOutline />

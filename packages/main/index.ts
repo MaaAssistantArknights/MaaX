@@ -29,7 +29,7 @@ if (!app.requestSingleInstanceLock()) {
   process.exit(0)
 }
 
-async function createApp (): Promise<void> {
+async function createApp(): Promise<void> {
   const win = new WindowManager().getWindow()
   if (app.isPackaged || !isInDev()) {
     win.loadFile(join(__dirname, '../renderer/index.html'))
@@ -46,7 +46,7 @@ async function createApp (): Promise<void> {
     CoreLoader,
     DeviceDetector,
     DownloadManager,
-    ComponentManager
+    ComponentManager,
   ]
 
   for (const Ctor of modulesCtor) {

@@ -20,13 +20,13 @@ interface UnzipHandle {
 }
 
 abstract class ComponentInstaller {
-  public abstract install (): Promise<void>
+  public abstract install(): Promise<void>
 
-  public abstract checkUpdate (): Promise<Update | false | undefined>
-  protected abstract onStart (): void
-  protected abstract onProgress (progress: number): void
-  protected abstract onCompleted (): void
-  protected abstract onException (): void
+  public abstract checkUpdate(): Promise<Update | false | undefined>
+  protected abstract onStart(): void
+  protected abstract onProgress(progress: number): void
+  protected abstract onCompleted(): void
+  protected abstract onException(): void
 
   protected readonly maxRetryTimes = 3
 
@@ -37,7 +37,8 @@ abstract class ComponentInstaller {
       compressedSize: number
       extractedSize: number
     }> = []
-    fs.createReadStream(src).pipe(unzipper.Extract({ path: dist }))
+    fs.createReadStream(src)
+      .pipe(unzipper.Extract({ path: dist }))
       .on('entry', (entry: Entry) => {
         const filename = path.join(dist, entry.path)
         const { type } = entry
@@ -46,21 +47,30 @@ abstract class ComponentInstaller {
             filename,
             uncompressedSize: entry.extra.uncompressedSize,
             compressedSize: entry.extra.compressedSize,
-            extractedSize: 0
+            extractedSize: 0,
           })
           const writeStream = fs.createWriteStream(filename)
           writeStream.on('ready', () => {
-            entry.on('data', (data: Uint8Array) => {
-              writeStream.write(data, () => {
-                const file = files.find(f => f.filename === filename)
-                if (file) {
-                  file.extractedSize += data.length
-                  const extractedSize = files.reduce((acc, cur) => acc + cur.extractedSize, 0)
-                  const totalSize = files.reduce((acc, cur) => acc + cur.uncompressedSize, 0)
-                  this.unzipHandle.handleUnzipUpdate(extractedSize / totalSize)
-                }
+            entry
+              .on('data', (data: Uint8Array) => {
+                writeStream.write(data, () => {
+                  const file = files.find(f => f.filename === filename)
+                  if (file) {
+                    file.extractedSize += data.length
+                    const extractedSize = files.reduce(
+                      (acc, cur) => acc + cur.extractedSize,
+                      0
+                    )
+                    const totalSize = files.reduce(
+                      (acc, cur) => acc + cur.uncompressedSize,
+                      0
+                    )
+                    this.unzipHandle.handleUnzipUpdate(
+                      extractedSize / totalSize
+                    )
+                  }
+                })
               })
-            })
               .on('end', () => {
                 writeStream.close()
               })
@@ -70,7 +80,9 @@ abstract class ComponentInstaller {
               })
           })
         } else if (type === 'Directory') {
-          if (!fs.existsSync(filename)) { fs.mkdirSync(filename) }
+          if (!fs.existsSync(filename)) {
+            fs.mkdirSync(filename)
+          }
         }
         entry.autodrain()
       })
@@ -84,15 +96,19 @@ abstract class ComponentInstaller {
   }
 
   protected getRelease = async () => {
-    if (this.releaseTemp && Date.now() - this.releaseTemp.updated < 5 * 60 * 1000) {
+    if (
+      this.releaseTemp &&
+      Date.now() - this.releaseTemp.updated < 5 * 60 * 1000
+    ) {
       return this.releaseTemp.data
     }
     const proxy = await this.getProxy()
-    const url = 'https://api.github.com/repos/MaaAssistantArknights/MaaRelease/releases'
+    const url =
+      'https://api.github.com/repos/MaaAssistantArknights/MaaRelease/releases'
 
     const releaseResponse = await axios.get(url, {
       adapter: require('axios/lib/adapters/http.js'),
-      proxy
+      proxy,
     })
     this.releaseTemp = { data: releaseResponse.data[0], updated: Date.now() }
     return this.releaseTemp.data
@@ -109,27 +125,38 @@ abstract class ComponentInstaller {
         protocol,
         auth: {
           username,
-          password
-        }
+          password,
+        },
       }
     }
     return proxy
   }
 
-  protected tryRequest = async (url: string, retryCount = this.maxRetryTimes) => {
+  protected tryRequest = async (
+    url: string,
+    retryCount = this.maxRetryTimes
+  ) => {
     const proxy = await this.getProxy()
     for (let i = 0; i < retryCount; i++) {
       try {
         const response = await axios.get(url, {
           adapter: require('axios/lib/adapters/http.js'),
-          proxy
+          proxy,
         })
         return response
       } catch (error) {
         // eslint-disable-next-line vue/max-len
-        const errorText = `${error.code as string} | ${(error.response?.status) as string|undefined ?? ''} ${(error.response?.statusText) as string|undefined ?? ''}`
+        const errorText = `${error.code as string} | ${
+          (error.response?.status as string | undefined) ?? ''
+        } ${(error.response?.statusText as string | undefined) ?? ''}`
         // eslint-disable-next-line vue/max-len
-        logger.error(`[Component Installer | ${this.componentType}] Error request on URL: ${url}, attempts: ${i + 1}/${retryCount},  Error: ${errorText}`)
+        logger.error(
+          `[Component Installer | ${
+            this.componentType
+          }] Error request on URL: ${url}, attempts: ${
+            i + 1
+          }/${retryCount},  Error: ${errorText}`
+        )
         if (i === retryCount - 1) {
           return null
         }
@@ -137,7 +164,7 @@ abstract class ComponentInstaller {
     }
   }
 
-  protected releaseTemp: {data: any, updated: number} | null = null
+  protected releaseTemp: { data: any; updated: number } | null = null
 
   public abstract readonly downloadHandle: DownloadHandle
   public abstract readonly unzipHandle: UnzipHandle

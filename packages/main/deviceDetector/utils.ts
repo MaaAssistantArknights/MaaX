@@ -15,11 +15,14 @@ export const defaultAdbPath = path.join(
   `adb${executableSuffix}`
 )
 
-export function isDefaultAdbExists (): boolean {
+export function isDefaultAdbExists(): boolean {
   return fs.existsSync(defaultAdbPath)
 }
 
-export async function getDeviceUuid (address: string, adbPath = defaultAdbPath): Promise<string | false> {
+export async function getDeviceUuid(
+  address: string,
+  adbPath = defaultAdbPath
+): Promise<string | false> {
   if (!adbPath) {
     logger.error('adb_path is null')
     return false
@@ -30,7 +33,8 @@ export async function getDeviceUuid (address: string, adbPath = defaultAdbPath):
   }
   const connectResult = (await $$(adbPath, ['connect', address])).stdout
   if (connectResult.includes('connected')) {
-    const ret = await $`"${adbPath}" -s ${address} shell settings get secure android_id`
+    const ret =
+      await $`"${adbPath}" -s ${address} shell settings get secure android_id`
     if (ret) return _.trim(ret.stdout)
   }
   return false

@@ -40,39 +40,41 @@ export interface TaskAction {
   getTaskProcess: (uuid: string, taskId: string) => number | undefined
   stopAllTasks: (uuid: string) => void
   copyTask: (uuid: string, index: number) => boolean
-  copyTaskFromTemplate: (uuid: string, task_name: string) => boolean
+  copyTaskFromTemplate: (uuid: string, task_name: Task['name']) => boolean
   deleteTask: (uuid: string, index: number) => boolean
   fixTaskList: (uuid: string) => void
   resetToIdle: (uuid: string) => void
 }
 
-export const taskTemplate: Record<string, Task> = {
-  emulator: {
-    name: 'emulator',
+export const taskTemplate: {
+  [key in Exclude<Task['name'], 'CloseDown' | 'Copilot'>]: __GetTask<key>
+} = {
+  Emulator: {
+    name: 'Emulator',
     task_id: -1,
     title: '启动模拟器',
     status: 'idle',
     enable: false,
     configurations: {
       commandLine: '',
-      delay: 300 // 执行后续任务的等待延迟
+      delay: 300, // 执行后续任务的等待延迟
     },
-    results: {}
+    results: {},
   },
-  startup: {
-    name: 'startup',
+  StartUp: {
+    name: 'StartUp',
     task_id: -1,
     title: '开始唤醒',
     status: 'idle',
     enable: true,
     configurations: {
       client_type: 'Official', // 区服 Official | Bilibili
-      start_game_enabled: true // 模拟器启动游戏
+      start_game_enabled: true, // 模拟器启动游戏
     },
-    results: {}
+    results: {},
   },
-  fight: {
-    name: 'fight',
+  Fight: {
+    name: 'Fight',
     task_id: -1,
     title: '代理作战',
     status: 'idle',
@@ -86,12 +88,12 @@ export const taskTemplate: Record<string, Task> = {
       report_to_penguin: false,
       server: 'CN', // 影响掉落识别与上传
       client_type: 'Official', // 断线重连服务器
-      DrGrandet: false // 在碎石确认界面等待，直到当前的 1 点理智恢复完成后再立刻碎石
+      DrGrandet: false, // 在碎石确认界面等待，直到当前的 1 点理智恢复完成后再立刻碎石
     },
-    results: {}
+    results: {},
   },
-  recruit: {
-    name: 'recruit',
+  Recruit: {
+    name: 'Recruit',
     task_id: -1,
     title: '自动公招',
     status: 'idle',
@@ -108,15 +110,15 @@ export const taskTemplate: Record<string, Task> = {
       recruitment_time: {
         3: 540,
         4: 540,
-        5: 540
+        5: 540,
       },
       report_to_penguin: false,
-      report_to_yituliu: false
+      report_to_yituliu: false,
     },
-    results: {}
+    results: {},
   },
-  infrast: {
-    name: 'infrast',
+  Infrast: {
+    name: 'Infrast',
     task_id: -1,
     title: '基建换班',
     status: 'idle',
@@ -132,16 +134,16 @@ export const taskTemplate: Record<string, Task> = {
         'Control',
         'Reception',
         'Office',
-        'Dorm'
+        'Dorm',
       ],
       drones: '_NotUse', // 无人机用途
       threshold: 0.3,
-      replenish: false // 自动源石补货
+      replenish: false, // 自动源石补货
     },
-    results: {}
+    results: {},
   },
-  mall: {
-    name: 'mall',
+  Mall: {
+    name: 'Mall',
     task_id: -1,
     title: '收取信用及购物',
     status: 'idle',
@@ -149,21 +151,21 @@ export const taskTemplate: Record<string, Task> = {
     configurations: {
       shopping: true,
       buy_first: ['龙门币', '招聘许可', '赤金'],
-      blacklist: ['家具零件', '加急许可']
+      blacklist: ['家具零件', '加急许可'],
     },
-    results: {}
+    results: {},
   },
-  award: {
-    name: 'award',
+  Award: {
+    name: 'Award',
     task_id: -1,
     title: '领取日常奖励',
     status: 'idle',
     enable: true,
     configurations: {},
-    results: {}
+    results: {},
   },
-  rogue: {
-    name: 'rogue',
+  Roguelike: {
+    name: 'Roguelike',
     task_id: -1,
     title: '无限刷肉鸽',
     status: 'idle',
@@ -179,33 +181,33 @@ export const taskTemplate: Record<string, Task> = {
       roles: '取长补短',
       core_char: '',
       use_support: false,
-      use_nonfriend_support: false
+      use_nonfriend_support: false,
     },
-    results: {}
+    results: {},
   },
-  shutdown: {
-    name: 'shutdown',
+  Shutdown: {
+    name: 'Shutdown',
     task_id: -1,
     title: '关机/关闭模拟器',
     status: 'idle',
     enable: false,
     configurations: {
       option: 'shutdownComputer',
-      delay: 300
+      delay: 300,
     },
-    results: {}
+    results: {},
   },
-  idle: {
-    name: 'idle',
+  Idle: {
+    name: 'Idle',
     task_id: -1,
     title: '挂机',
     status: 'idle',
     enable: false,
     configurations: {
-      delay: 600
+      delay: 600,
     },
-    results: {}
-  }
+    results: {},
+  },
   // ReclamationAlgorithm: {
   //   name: 'ReclamationAlgorithm',
   //   task_id: -1,
@@ -218,19 +220,26 @@ export const taskTemplate: Record<string, Task> = {
   //   results: {}
   // }
 }
+
+function hasTemplate(
+  task_name: Task['name']
+): task_name is Exclude<Task['name'], 'CloseDown' | 'Copilot'> {
+  return task_name in taskTemplate
+}
+
 Object.freeze(taskTemplate)
 
-const defaultTaskConf: Record<string, Task> = {
-  emulator: _.cloneDeep(taskTemplate.emulator),
-  startup: _.cloneDeep(taskTemplate.startup),
-  fight: _.cloneDeep(taskTemplate.fight),
-  recruit: _.cloneDeep(taskTemplate.recruit),
-  infrast: _.cloneDeep(taskTemplate.infrast),
-  mall: _.cloneDeep(taskTemplate.mall),
-  award: _.cloneDeep(taskTemplate.award),
-  rogue: _.cloneDeep(taskTemplate.rogue),
-  shutdown: _.cloneDeep(taskTemplate.shutdown),
-  idle: _.cloneDeep(taskTemplate.idle)
+const defaultTaskConf: typeof taskTemplate = {
+  Emulator: _.cloneDeep(taskTemplate.Emulator),
+  StartUp: _.cloneDeep(taskTemplate.StartUp),
+  Fight: _.cloneDeep(taskTemplate.Fight),
+  Recruit: _.cloneDeep(taskTemplate.Recruit),
+  Infrast: _.cloneDeep(taskTemplate.Infrast),
+  Mall: _.cloneDeep(taskTemplate.Mall),
+  Award: _.cloneDeep(taskTemplate.Award),
+  Roguelike: _.cloneDeep(taskTemplate.Roguelike),
+  Shutdown: _.cloneDeep(taskTemplate.Shutdown),
+  Idle: _.cloneDeep(taskTemplate.Idle),
 }
 
 export const defaultTask = Object.values(defaultTaskConf)
@@ -238,11 +247,11 @@ export const defaultTask = Object.values(defaultTaskConf)
 const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
   state: () => {
     return {
-      deviceTasks: {}
+      deviceTasks: {},
     }
   },
   actions: {
-    updateTaskConfigurations (uuid, key, value, predicate) {
+    updateTaskConfigurations(uuid, key, value, predicate) {
       const tasks = this.getCurrentTaskGroup(uuid)?.tasks
       const task = tasks?.find(predicate)
       if (task) {
@@ -254,13 +263,13 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
           window.ipcRenderer.invoke('main.CoreLoader:setTaskParams', {
             uuid,
             task_id: task.task_id,
-            params: configurations
+            params: configurations,
           })
         }
       }
     },
-    updateTaskStatus (uuid, taskId, status, progress) {
-      const task = this.getTask(uuid, (task) => task.task_id === taskId)
+    updateTaskStatus(uuid, taskId, status, progress) {
+      const task = this.getTask(uuid, task => task.task_id === taskId)
       if (!task) {
         logger.warn(`Task ${uuid}|${taskId} not found`)
       }
@@ -289,8 +298,8 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
         task.progress = progress
       }
     },
-    mergeTaskResult (uuid, taskId, patch) {
-      const task = this.getTask(uuid, (task) => task.task_id === taskId)
+    mergeTaskResult(uuid, taskId, patch) {
+      const task = this.getTask(uuid, task => task.task_id === taskId)
       if (task) {
         _.mergeWith(task.results, patch, (objValue, srcValue) => {
           if (_.isArray(objValue)) {
@@ -299,38 +308,38 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
         })
       }
     },
-    changeTaskOrder (uuid, from, to) {
+    changeTaskOrder(uuid, from, to) {
       const taskGroup = this.getCurrentTaskGroup(uuid)
       if (taskGroup) {
         const item = taskGroup.tasks.splice(from, 1)
         taskGroup.tasks.splice(to, 0, item[0])
       }
     },
-    updateTask (uuid, tasks) {
+    updateTask(uuid, tasks) {
       const taskGroup = this.getCurrentTaskGroup(uuid)
       if (taskGroup) taskGroup.tasks = tasks
     },
-    newTask () {
+    newTask() {
       const tasks = []
       for (const [, v] of Object.entries(defaultTaskConf)) {
         tasks.push(_.cloneDeep(v))
       }
       return tasks
     },
-    getTask (uuid, predicate) {
+    getTask(uuid, predicate) {
       const tasks = this.getCurrentTaskGroup(uuid)?.tasks
       const task = tasks?.find(predicate)
       return task
     },
-    getTaskProcess (uuid, taskId) {
-      const task = this.getTask(uuid, (task) => task.name === taskId)
+    getTaskProcess(uuid, taskId) {
+      const task = this.getTask(uuid, task => task.name === taskId)
       return task != null ? task.progress : 0
     },
-    stopAllTasks (uuid) {
+    stopAllTasks(uuid) {
       const origin = this.getCurrentTaskGroup(uuid)?.tasks
 
       if (origin) {
-        origin.forEach((task) => {
+        origin.forEach(task => {
           if (task.status !== 'idle') {
             task.status = 'stopped'
           }
@@ -342,7 +351,7 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
       }
       this.resetToIdle(uuid)
     },
-    copyTask (uuid, index) {
+    copyTask(uuid, index) {
       const tasks = this.getCurrentTaskGroup(uuid)?.tasks
       const task = tasks?.at(index)
       if (tasks && task) {
@@ -354,14 +363,14 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
           startTime: undefined,
           endTime: undefined,
           progress: undefined,
-          results: {}
+          results: {},
         }
         tasks.splice(index, 0, newTask)
         return true
       }
       return false
     },
-    deleteTask (uuid, index) {
+    deleteTask(uuid, index) {
       const taskGroup = this.getCurrentTaskGroup(uuid)?.tasks
       const origin = taskGroup?.at(index)
       if (taskGroup && origin) {
@@ -377,12 +386,14 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
       }
       return false
     },
-    fixTaskList (uuid) {
+    fixTaskList(uuid) {
       const origin = this.getCurrentTaskGroup(uuid)?.tasks
       if (!origin) return
       // STEP 1. update task config.
-      origin.forEach((task) => {
-        if (!defaultTaskConf[task.name]) return
+      origin.forEach(task => {
+        if (!hasTemplate(task.name)) {
+          return
+        }
         task.title = defaultTaskConf[task.name].title
         if (
           !compareObjKey(
@@ -399,52 +410,52 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
           task.configurations = defaultTaskConf[task.name].configurations
         }
       })
+
       // STEP 2. add new tasks.
       for (const [, conf] of Object.entries(defaultTaskConf)) {
-        if (!origin?.some((t) => t.name === conf.name)) {
+        if (!origin?.some(t => t.name === conf.name)) {
           origin?.push(_.cloneDeep(conf))
         }
       }
     },
-    copyTaskFromTemplate (uuid, task_name) {
+    copyTaskFromTemplate(uuid, task_name) {
       const origin = this.getCurrentTaskGroup(uuid)?.tasks
-      const task = taskTemplate[task_name]
-      if (task) {
-        origin?.push(task)
+      if (hasTemplate(task_name)) {
+        origin?.push(taskTemplate[task_name])
         return true
+      } else {
+        return false
       }
-      return false
     },
-    newTaskGroup (uuid) {
+    newTaskGroup(uuid) {
       // 新建任务组
       const origin = this.deviceTasks[uuid]
       let group_id = 1
       if (origin) {
-        group_id =
-          Math.max(...origin.groups.map((group) => group.id), 1) + 1
+        group_id = Math.max(...origin.groups.map(group => group.id), 1) + 1
       }
       const newTaskGroup: TaskGroup = {
         id: group_id,
         name: `New Task Group #${group_id}`,
-        tasks: this.newTask()
+        tasks: this.newTask(),
       }
       return newTaskGroup
     },
-    initDeviceTask (uuid) {
+    initDeviceTask(uuid) {
       const newGroup = this.newTaskGroup(uuid)
       this.deviceTasks[uuid] = {
         currentId: 1,
-        groups: [newGroup]
+        groups: [newGroup],
       }
     },
-    getCurrentTaskGroup (uuid) {
+    getCurrentTaskGroup(uuid) {
       const origin = this.deviceTasks[uuid]
       const current = origin?.currentId
-      return origin?.groups.find((group) => group.id === current)
+      return origin?.groups.find(group => group.id === current)
     },
-    resetToIdle (uuid) {
-      this.deviceTasks[uuid].groups.forEach((group) => {
-        group.tasks.forEach((task) => {
+    resetToIdle(uuid) {
+      this.deviceTasks[uuid].groups.forEach(group => {
+        group.tasks.forEach(task => {
           task.status = 'idle'
           task.progress = 0
           task.startTime = undefined
@@ -452,30 +463,30 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
         })
       })
     },
-    changeTaskGroupName (uuid: string, task_group_id: number, name: string) {
+    changeTaskGroupName(uuid: string, task_group_id: number, name: string) {
       const origin = this.deviceTasks[uuid]
-      const group = origin?.groups.find((group) => group.id === task_group_id)
+      const group = origin?.groups.find(group => group.id === task_group_id)
       if (group) {
         group.name = name
       }
     },
-    deleteTaskGroup (uuid: string, task_group_id: number) {
+    deleteTaskGroup(uuid: string, task_group_id: number) {
       const origin = this.deviceTasks[uuid]
       if (origin.groups.length === 1) {
         throw new Error('taskGroupIsLast')
       }
-      const group = origin?.groups.find((group) => group.id === task_group_id)
+      const group = origin?.groups.find(group => group.id === task_group_id)
       if (group) {
-        if (group.tasks.some((task) => task.status !== 'idle')) {
+        if (group.tasks.some(task => task.status !== 'idle')) {
           throw new Error('taskIsRunning')
         }
         const index = origin.groups.indexOf(group)
         origin.groups.splice(index, 1)
         // 回到上一个任务组
-        origin.currentId = origin.groups[index - 1].id
+        origin.currentId = origin.groups[index > 0 ? index - 1 : 0].id
       }
-    }
-  }
+    },
+  },
 })
 
 export default useTaskStore

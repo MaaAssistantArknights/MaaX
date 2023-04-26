@@ -1,21 +1,16 @@
 <script setup lang="ts">
-import {
-  NFormItem,
-  NSelect,
-  NTimePicker,
-  NSpace,
-  NButton
-} from 'naive-ui'
+import { NFormItem, NSelect, NTimePicker, NSpace, NButton } from 'naive-ui'
 import _ from 'lodash'
 import {
   secondsToFormattedDuration,
-  formattedDurationToSeconds
+  formattedDurationToSeconds,
 } from '@/utils/time_picker'
 // import useTaskIdStore from '@/store/taskId'
 import router from '@/router'
 import { showMessage } from '@/utils/message'
 import logger from '@/hooks/caller/logger'
 import { inject } from 'vue'
+import type { GetConfig } from './types'
 
 /**
  * 关机策略处理流程:
@@ -25,11 +20,7 @@ import { inject } from 'vue'
  *   当全部任务完成时，触发回调并检测enable是否为true, 如果开启则进行关闭操作
  */
 
-interface ShutdownConfiguration {
-  option: string;
-  delay: number; // 关闭延迟
-  enable: boolean // 是否启用关闭策略，这个配置在UI上不展示，当启用关机任务时标记为true，点击取消关机后标记为false
-}
+type ShutdownConfig = GetConfig<'Shutdown'>
 
 const routeUuid = router.currentRoute.value.params.uuid as string
 // const taskIdStore = useTaskIdStore()
@@ -37,19 +28,19 @@ const routeUuid = router.currentRoute.value.params.uuid as string
 const shutdownOptions = [
   {
     value: 'shutdownEmulator',
-    label: '关闭模拟器'
+    label: '关闭模拟器',
   },
   {
     value: 'shutdownAll',
-    label: '关闭模拟器和MAA'
+    label: '关闭模拟器和MAA',
   },
   {
     value: 'shutdownComputer',
-    label: '关闭计算机'
-  }
+    label: '关闭计算机',
+  },
 ]
 
-function handleCancelShutdown () {
+function handleCancelShutdown() {
   // const taskId = taskIdStore.getTaskId(routeUuid, 'shutdown')
   logger.debug('cancel shutdown task on uuid', routeUuid)
   // logger.debug('cancel task_id', taskId?.[0])
@@ -60,22 +51,26 @@ function handleCancelShutdown () {
 }
 
 const props = defineProps<{
-  configurations: ShutdownConfiguration;
+  configurations: ShutdownConfig
   taskIndex: number
 }>()
 
-const updateTaskConfigurations = inject('update:configuration') as
-  (key: string, value: any, index: number) => void
-const configurationDisabled = inject('configurationDisabled') as {re: boolean, nre: boolean}
+const updateTaskConfigurations = inject('update:configuration') as (
+  key: string,
+  value: any,
+  index: number
+) => void
+const configurationDisabled = inject('configurationDisabled') as {
+  re: boolean
+  nre: boolean
+}
 
-function handleUpdateConfiguration (key: string, value: any) {
+function handleUpdateConfiguration(key: string, value: any) {
   updateTaskConfigurations(key, value, props.taskIndex)
 }
 </script>
 <template>
-  <div
-    class="configuration-form"
-  >
+  <div class="configuration-form">
     <NSpace vertical>
       <NFormItem
         label="关闭策略"
@@ -88,9 +83,7 @@ function handleUpdateConfiguration (key: string, value: any) {
         <NSelect
           :value="props.configurations.option"
           :options="shutdownOptions"
-          @update:value="
-            (value) => handleUpdateConfiguration('option', value)
-          "
+          @update:value="value => handleUpdateConfiguration('option', value)"
         />
       </NFormItem>
 
@@ -110,7 +103,7 @@ function handleUpdateConfiguration (key: string, value: any) {
           "
           :actions="['confirm']"
           @update:formatted-value="
-            (value) =>
+            value =>
               _.set(
                 props.configurations,
                 'delay',

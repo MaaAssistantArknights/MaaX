@@ -12,15 +12,15 @@ import Shutdown from './Shutdown.vue'
 import Idle from './Idle.vue'
 
 const components: Record<string, Component> = {
-  emulator: Emulator,
-  startup: StartUp,
-  fight: Fighting,
-  recruit: Recruit,
-  infrast: Infrast,
-  rogue: Rogue,
-  mall: Mall,
-  shutdown: Shutdown,
-  idle: Idle
+  Emulator: Emulator,
+  StartUp: StartUp,
+  Fight: Fighting,
+  Recruit: Recruit,
+  Infrast: Infrast,
+  Roguelike: Rogue,
+  Mall: Mall,
+  Shutdown: Shutdown,
+  Idle: Idle,
 }
 
 export default defineComponent({
@@ -28,10 +28,10 @@ export default defineComponent({
   props: {
     name: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
-  render () {
+  render() {
     const component = components[this.name]
     if (component) {
       // @ts-ignore
@@ -39,7 +39,7 @@ export default defineComponent({
     } else {
       return h(NoConfiguration)
     }
-  }
+  },
 })
 </script>
 

@@ -1,6 +1,14 @@
 <script setup lang="ts">
-import { computed, ref, provide, watch, Vue } from 'vue'
-import { NSpace, NButton, NSwitch, NIcon, NTooltip, NSelect, SelectOption } from 'naive-ui'
+import { computed, ref, provide, watch } from 'vue'
+import {
+  NSpace,
+  NButton,
+  NSwitch,
+  NIcon,
+  NTooltip,
+  NSelect,
+  SelectOption,
+} from 'naive-ui'
 import _ from 'lodash'
 import Draggable from 'vuedraggable'
 import TaskCard from '@/components/Task/TaskCard.vue'
@@ -31,7 +39,7 @@ const actionLoading = ref(false)
 
 let uuid = computed(() => router.currentRoute.value.params.uuid as string)
 let device = computed(() =>
-  deviceStore.devices.find((device) => device.uuid === uuid.value)
+  deviceStore.devices.find(device => device.uuid === uuid.value)
 )
 let tasks = computed(() => {
   if (!taskStore.deviceTasks[uuid.value]) {
@@ -52,14 +60,17 @@ let deviceStatus = computed(() => {
   return device.status
 })
 
-watch(() => device.value?.status, async (newStatus) => {
-  switch (newStatus) {
-    case 'waitingTaskEnd':
-      deviceStore.updateDeviceStatus(uuid.value, 'tasking')
-      await handleSubStart()
-      break
+watch(
+  () => device.value?.status,
+  async newStatus => {
+    switch (newStatus) {
+      case 'waitingTaskEnd':
+        deviceStore.updateDeviceStatus(uuid.value, 'tasking')
+        await handleSubStart()
+        break
+    }
   }
-})
+)
 
 async function handleStartUnconnected(task: Task) {
   deviceStore.updateDeviceStatus(uuid.value, 'tasking')
@@ -68,17 +79,20 @@ async function handleStartUnconnected(task: Task) {
     const devices: any[] = await window.ipcRenderer.invoke(
       'main.DeviceDetector:getEmulators'
     ) // 等待时间结束后进行一次设备搜索，但不合并结果
-    const device = devices.find((device) => device.uuid === uuid.value) // 检查指定uuid的设备是否存在
+    const device = devices.find(device => device.uuid === uuid.value) // 检查指定uuid的设备是否存在
     if (device) {
       // 设备活了
       logger.debug(device)
-      const status = await window.ipcRenderer.invoke('main.CoreLoader:initCore', {
-        // 创建连接
-        address: device.address,
-        uuid: device.uuid,
-        adb_path: device.adbPath,
-        config: device.config
-      })
+      const status = await window.ipcRenderer.invoke(
+        'main.CoreLoader:initCore',
+        {
+          // 创建连接
+          address: device.address,
+          uuid: device.uuid,
+          adb_path: device.adbPath,
+          config: device.config,
+        } as InitCoreParam
+      ) // ERROR!
       if (status) {
         taskStore.updateTaskStatus(uuid.value, task.task_id, 'success', 0)
         logger.silly('自动启动模拟器成功')
@@ -89,7 +103,7 @@ async function handleStartUnconnected(task: Task) {
       showMessage('启动设备失败', {
         type: 'error',
         duration: 0,
-        closable: true
+        closable: true,
       })
     }
   }, 10000)
@@ -97,7 +111,7 @@ async function handleStartUnconnected(task: Task) {
 }
 
 async function handleSubStart() {
-  if (_.findIndex(tasks.value, (task) => task.enable === true) === -1) {
+  if (_.findIndex(tasks.value, task => task.enable === true) === -1) {
     showMessage('请至少选择一个任务', { type: 'warning', duration: 5000 })
     return
   }
@@ -105,14 +119,14 @@ async function handleSubStart() {
   await runTasks(uuid.value)
 
   await window.ipcRenderer.invoke('main.CoreLoader:start', {
-    uuid: uuid.value
+    uuid: uuid.value,
   })
 }
 
 async function handleSubStop() {
   actionLoading.value = true
   const status = await window.ipcRenderer.invoke('main.CoreLoader:stop', {
-    uuid: uuid.value
+    uuid: uuid.value,
   }) // 等待core停止任务
   actionLoading.value = false
   if (!status) {
@@ -140,25 +154,34 @@ async function handleStart() {
       uuid: device.uuid,
       adb_path: device.adbPath,
       config: device.config,
-      touch_mode: touchMode.value
-    } as InitCoreParam)
+      touch_mode: touchMode.value,
+    })
   } else {
     // 设备状态为 unknown 或 disconnect , 检查是否有启动模拟器的参数, 如果有则尝试自启动, 没有则提示
-    if (device?.commandLine && device.commandLine?.length > 0) { // 有启动参数
-      if (await deviceStore.wakeUpDevice(uuid.value)) { // 有启动参数, 且自启成功
+    if (device?.commandLine && device.commandLine?.length > 0) {
+      // 有启动参数
+      if (await deviceStore.wakeUpDevice(uuid.value)) {
+        // 有启动参数, 且自启成功
         deviceStore.updateDeviceStatus(device.uuid as string, 'waitingTask')
         await window.ipcRenderer.invoke('main.CoreLoader:initCore', {
           address: device.address,
           uuid: device.uuid,
           adb_path: device.adbPath,
           config: device.config,
-          touch_mode: touchMode.value
-        } as InitCoreParam)
+          touch_mode: touchMode.value,
+        })
       } else {
-        showMessage('设备自启失败, 请尝试手动启动设备', { type: 'warning', duration: 2000 })
+        showMessage('设备自启失败, 请尝试手动启动设备', {
+          type: 'warning',
+          duration: 2000,
+        })
       }
-    } else { // 无启动参数
-      showMessage('设备启动参数未知, 请先刷新设备列表或尝试手动连接', { type: 'warning', duration: 2000 })
+    } else {
+      // 无启动参数
+      showMessage('设备启动参数未知, 请先刷新设备列表或尝试手动连接', {
+        type: 'warning',
+        duration: 2000,
+      })
     }
   }
 }
@@ -195,7 +218,7 @@ function handleChangeTaskGroupIndex(value: number) {
 
 let taskGroupOptions = computed(() => {
   const options: SelectOption[] = []
-  taskStore.deviceTasks[uuid.value]?.groups.forEach((v) => {
+  taskStore.deviceTasks[uuid.value]?.groups.forEach(v => {
     options.push({ label: v.name, value: v.id })
   })
   return options
@@ -208,7 +231,7 @@ let currentTaskGroupIndexValue = computed({
   },
   set(value) {
     taskStore.deviceTasks[uuid.value].currentId = value
-  }
+  },
 })
 let currentTaskGroup = computed(() => taskStore.getCurrentTaskGroup(uuid.value))
 
@@ -217,7 +240,7 @@ const key = ref(0)
 onBeforeRouteUpdate((to, from, next) => {
   uuid = computed(() => to.params.uuid as string)
   device = computed(() =>
-    deviceStore.devices.find((device) => device.uuid === uuid.value)
+    deviceStore.devices.find(device => device.uuid === uuid.value)
   )
   tasks = computed(() => {
     if (!taskStore.deviceTasks[uuid.value]) {
@@ -236,11 +259,11 @@ onBeforeRouteUpdate((to, from, next) => {
     },
     set(value) {
       taskStore.deviceTasks[uuid.value].currentId = value
-    }
+    },
   })
   taskGroupOptions = computed(() => {
     const options: SelectOption[] = []
-    taskStore.deviceTasks[uuid.value]?.groups.forEach((v) => {
+    taskStore.deviceTasks[uuid.value]?.groups.forEach(v => {
       options.push({ label: v.name, value: v.id })
     })
     return options
@@ -257,10 +280,7 @@ onBeforeRouteUpdate((to, from, next) => {
     <NSpace justify="space-between" align="center">
       <h2>任务</h2>
       <NSpace align="center">
-        <TaskGroupActions
-          :device-uuid="uuid"
-          :task-group="currentTaskGroup"
-        />
+        <TaskGroupActions :device-uuid="uuid" :task-group="currentTaskGroup" />
         <NSelect
           :key="key"
           v-model:value="currentTaskGroupIndexValue"
@@ -290,7 +310,7 @@ onBeforeRouteUpdate((to, from, next) => {
               </template>
             </NSwitch>
           </template>
-          <span>切换到{{ isGrid ? "简单" : "详细" }}信息</span>
+          <span>切换到{{ isGrid ? '简单' : '详细' }}信息</span>
         </NTooltip>
 
         <NButton
@@ -299,7 +319,7 @@ onBeforeRouteUpdate((to, from, next) => {
           :loading="actionLoading"
           @click="handleStart"
         >
-          <span>{{ deviceStatus === "tasking" ? "停止" : "开始" }}</span>
+          <span>{{ deviceStatus === 'tasking' ? '停止' : '开始' }}</span>
         </NButton>
       </NSpace>
     </NSpace>
@@ -318,11 +338,15 @@ onBeforeRouteUpdate((to, from, next) => {
           v-model:showResult="task.showResult"
           :is-collapsed="!isGrid"
           :task-info="task"
-          @update:enable="(enabled) => (task.enable = enabled)"
+          @update:enable="enabled => (task.enable = enabled)"
           @copy="() => handleTaskCopy(index)"
           @delete="() => handleTaskDelete(index)"
         >
-          <Result v-if="task.showResult" :name="task.name" :results="task.results" />
+          <Result
+            v-if="task.showResult"
+            :name="task.name"
+            :results="task.results"
+          />
           <Configuration
             v-else
             :name="task.name"

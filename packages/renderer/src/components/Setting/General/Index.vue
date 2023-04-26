@@ -1,9 +1,5 @@
 <script lang="ts" setup>
-import {
-  NSelect,
-  NFormItem,
-  NSpace
-} from 'naive-ui'
+import { NSelect, NFormItem, NSpace } from 'naive-ui'
 import useSettingStore, { Locale } from '@/store/settings'
 import { ref } from 'vue'
 
@@ -12,18 +8,18 @@ const settingStore = useSettingStore()
 const localeOptions = [
   {
     label: '简体中文',
-    value: Locale.zhCN
+    value: Locale.zhCN,
   },
   {
     label: 'English',
-    value: Locale.enUS
-  }
+    value: Locale.enUS,
+  },
 ]
 
 const dropdownCount = ref(0)
 let timer = 0
 
-function handleLanguageSelectClick () {
+function handleLanguageSelectClick() {
   if (timer) {
     clearTimeout(timer)
   }
@@ -36,21 +32,16 @@ function handleLanguageSelectClick () {
   }, 1000)
 }
 
-function handleChangeLocale (locale: Locale) {
+function handleChangeLocale(locale: Locale) {
   settingStore.changeLocale(locale)
 }
-
 </script>
 
 <template>
   <div id="general">
-    <h2 class="title">
-      通用
-    </h2>
+    <h2 class="title">通用</h2>
     <NSpace vertical>
-      <NFormItem
-        label="界面语言"
-      >
+      <NFormItem label="界面语言">
         <NSelect
           :value="settingStore.locale"
           :options="localeOptions"

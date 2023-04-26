@@ -7,7 +7,7 @@ import _ from 'lodash'
  * @param newTask 新任务配置
  * @returns 是否兼容
  */
-export function compareObjKey (oldTask: object, newTask: object): boolean {
+export function compareObjKey(oldTask: object, newTask: object): boolean {
   for (const key in newTask) {
     if (!Object.prototype.hasOwnProperty.call(oldTask, key)) {
       return false
@@ -16,63 +16,25 @@ export function compareObjKey (oldTask: object, newTask: object): boolean {
   return true
 }
 
-export function convertToCoreTaskConfiguration (task: Task): any {
+export function convertToCoreTaskConfiguration<
+  K extends CoreTaskName,
+  T extends CoreTaskTemplate<K>
+>(_name: K, task: T) {
   switch (task.name) {
-    case 'startup': {
-      return {
-        enable: task.enable,
-        ..._.cloneDeep(task.configurations)
-      }
-    }
-    case 'fight': {
+    case 'Fight': {
       const settingStore = useSettingStore()
       return {
         enable: task.enable,
         penguin_id: settingStore.penguinReportId,
         yituliu_id: settingStore.yituliuReportId,
         ..._.cloneDeep(task.configurations),
-        report_to_penguin: false
+        report_to_penguin: false,
       }
     }
-    case 'recruit': {
+    default:
       return {
         enable: task.enable,
-        ..._.cloneDeep(task.configurations)
+        ..._.cloneDeep(task.configurations),
       }
-    }
-    case 'infrast': {
-      return {
-        enable: task.enable,
-        ..._.cloneDeep(task.configurations)
-      }
-    }
-    case 'visit': {
-      return {
-        enable: task.enable
-      }
-    }
-    case 'mall': {
-      return {
-        enable: task.enable,
-        ..._.cloneDeep(task.configurations)
-      }
-    }
-    case 'award': {
-      return {
-        enable: task.enable
-      }
-    }
-    case 'rogue': {
-      return {
-        enable: task.enable,
-        ..._.cloneDeep(task.configurations)
-      }
-    }
-    case 'copilot': {
-      return {}
-    }
-    default: {
-      return {}
-    }
   }
 }

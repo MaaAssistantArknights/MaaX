@@ -2,53 +2,56 @@
 import { NInputNumber, NCheckbox, NFormItem } from 'naive-ui'
 import _ from 'lodash'
 import { inject } from 'vue'
+import type { GetConfig } from './types'
 
-interface RecruitConfiguration {
-  refresh: boolean, // 自动刷新三星词条
-  select: number[],
-  confirm: number[],
-  times: number,
-  set_time: boolean,
-  expedite: boolean,
-  expedite_times: number,
-  skip_robot: boolean
-}
+type RecruitConfig = GetConfig<'Recruit'>
 
 const props = defineProps<{
-  configurations: RecruitConfiguration;
+  configurations: RecruitConfig
   taskIndex: number
 }>()
 
-const updateTaskConfigurations = inject('update:configuration') as
-  (key: string, value: any, index: number) => void
-const configurationDisabled = inject('configurationDisabled') as {re: boolean, nre: boolean}
+const updateTaskConfigurations = inject('update:configuration') as (
+  key: string,
+  value: any,
+  index: number
+) => void
+const configurationDisabled = inject('configurationDisabled') as {
+  re: boolean
+  nre: boolean
+}
 
-function handleUpdateConfiguration (key: string, value: any) {
+function handleUpdateConfiguration(key: string, value: any) {
   updateTaskConfigurations(key, value, props.taskIndex)
 }
 
-function handleConfirmUpdate (checked: boolean, value: number) {
+function handleConfirmUpdate(checked: boolean, value: number) {
   if (checked) {
-    handleUpdateConfiguration('confirm', _.uniq([...props.configurations.confirm, value]))
+    handleUpdateConfiguration(
+      'confirm',
+      _.uniq([...props.configurations.confirm, value])
+    )
   } else {
-    handleUpdateConfiguration('confirm', _.uniq(props.configurations.confirm.filter(v => v !== value)))
+    handleUpdateConfiguration(
+      'confirm',
+      _.uniq(props.configurations.confirm.filter(v => v !== value))
+    )
   }
 }
 
-function handleRecruitTimesUpdate (value: number | null) {
+function handleRecruitTimesUpdate(value: number | null) {
   if (value === null) value = 6
   if (value < 0) value = 999
   if (value > 999) value = 0
   handleUpdateConfiguration('times', value)
 }
 
-function handleExpediteUpdate (value: number | null) {
+function handleExpediteUpdate(value: number | null) {
   if (value === null) value = 6
   if (value < 0) value = 999
   if (value > 999) value = 0
   handleUpdateConfiguration('expedite_times', value)
 }
-
 </script>
 
 <template>
@@ -80,8 +83,7 @@ function handleExpediteUpdate (value: number | null) {
         :disabled="configurationDisabled.re"
         :checked="configurations.expedite"
         @update:checked="
-          (checked) =>
-            handleUpdateConfiguration('expedite', checked)
+          checked => handleUpdateConfiguration('expedite', checked)
         "
       />
     </NFormItem>
@@ -118,7 +120,7 @@ function handleExpediteUpdate (value: number | null) {
         :disabled="configurationDisabled.re"
         :checked="configurations.refresh"
         @update:checked="
-          (checked) => {
+          checked => {
             handleUpdateConfiguration('refresh', checked)
           }
         "
@@ -136,7 +138,7 @@ function handleExpediteUpdate (value: number | null) {
         :disabled="configurationDisabled.re"
         :checked="configurations.skip_robot"
         @update:checked="
-          (checked) => {
+          checked => {
             handleUpdateConfiguration('skip_robot', checked)
           }
         "
@@ -154,7 +156,7 @@ function handleExpediteUpdate (value: number | null) {
         :disabled="configurationDisabled.re"
         :checked="configurations.confirm.includes(3)"
         @update:checked="
-          (checked) => {
+          checked => {
             handleConfirmUpdate(checked, 3)
           }
         "
@@ -172,7 +174,7 @@ function handleExpediteUpdate (value: number | null) {
         :disabled="configurationDisabled.re"
         :checked="configurations.confirm.includes(4)"
         @update:checked="
-          (checked) => {
+          checked => {
             handleConfirmUpdate(checked, 4)
           }
         "
@@ -190,7 +192,7 @@ function handleExpediteUpdate (value: number | null) {
         :disabled="configurationDisabled.re"
         :checked="configurations.confirm.includes(5)"
         @update:checked="
-          (checked) => {
+          checked => {
             handleConfirmUpdate(checked, 5)
           }
         "

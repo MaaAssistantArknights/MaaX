@@ -9,7 +9,7 @@ import {
   NIcon,
   NSpace,
   NPopconfirm,
-  useThemeVars
+  useThemeVars,
 } from 'naive-ui'
 
 import useDeviceStore from '@/store/devices'
@@ -21,7 +21,7 @@ import { showMessage } from '@/utils/message'
 import { onBeforeRouteUpdate } from 'vue-router'
 
 const props = defineProps<{
-  device: Device;
+  device: Device
 }>()
 
 const themeVars = useThemeVars()
@@ -45,7 +45,7 @@ const disconnectedStatus: Set<DeviceStatus> = new Set([
   'available',
   'disconnected',
   'connecting',
-  'unknown'
+  'unknown',
 ])
 
 onBeforeRouteUpdate((to, from, next) => {
@@ -82,7 +82,9 @@ function handleJumpToTask() {
 
 function handleDeviceDisconnect() {
   // task stop
-  window.ipcRenderer.send('main.CoreLoader:disconnectAndDestroy', { uuid: props.device.uuid })
+  window.ipcRenderer.invoke('main.CoreLoader:disconnectAndDestroy', {
+    uuid: props.device.uuid,
+  })
   taskStore.stopAllTasks(props.device.uuid as string)
   deviceStore.updateDeviceStatus(props.device.uuid as string, 'disconnected')
   router.push('/device')
@@ -95,14 +97,14 @@ async function handleDeviceConnect() {
   if (!props.device.uuid) {
     showMessage('设备uuid不存在', {
       type: 'error',
-      duration: 3000
+      duration: 3000,
     })
     return
   }
 
   // 无地址, 尝试唤醒模拟器
   if (!props.device.address || props.device.address.length === 0) {
-    if (!await deviceStore.wakeUpDevice(props.device.uuid)) {
+    if (!(await deviceStore.wakeUpDevice(props.device.uuid))) {
       return
     }
   }
@@ -113,7 +115,7 @@ async function handleDeviceConnect() {
     uuid: props.device.uuid,
     adb_path: props.device.adbPath,
     config: props.device.config,
-    touch_mode: touchMode.value
+    touch_mode: touchMode.value,
   } as InitCoreParam)
 }
 </script>
@@ -141,18 +143,18 @@ async function handleDeviceConnect() {
         {{
           (() => {
             switch (device?.status) {
-            case "available":
-              return "点击右边按钮连接设备";
-            case "connected":
-              return "设备已连接";
-            case "connecting":
-              return "设备正在连接中...";
-            case "disconnected":
-              return "设备已断开连接";
-            case "tasking":
-              return "任务进行中...";
-            default:
-              return "设备状态未知";
+              case 'available':
+                return '点击右边按钮连接设备'
+              case 'connected':
+                return '设备已连接'
+              case 'connecting':
+                return '设备正在连接中...'
+              case 'disconnected':
+                return '设备已断开连接'
+              case 'tasking':
+                return '任务进行中...'
+              default:
+                return '设备状态未知'
             }
           })()
         }}
@@ -183,8 +185,8 @@ async function handleDeviceConnect() {
           </NButton>
         </template>
         {{
-          (device?.status === "tasking" ? "当前设备正在进行任务，" : "") +
-            "确定断开连接？"
+          (device?.status === 'tasking' ? '当前设备正在进行任务，' : '') +
+          '确定断开连接？'
         }}
       </NPopconfirm>
       <NButton
@@ -240,7 +242,7 @@ async function handleDeviceConnect() {
   overflow: visible;
 
   &::before {
-    content: "";
+    content: '';
     position: absolute;
     border-radius: 100%;
     background-color: gray;
@@ -251,29 +253,31 @@ async function handleDeviceConnect() {
     transition: background-color 0.3s var(--n-bezier);
   }
 
-  &[data-status="available"]::before {
+  &[data-status='available']::before {
     background-color: #a8aaaf;
   }
 
-  &[data-status="connecting"]::before {
+  &[data-status='connecting']::before {
     background-color: #28cd41;
-    animation: connecting 1s cubic-bezier(0.46, 1, 0.76, 0.94) alternate infinite;
+    animation: connecting 1s cubic-bezier(0.46, 1, 0.76, 0.94) alternate
+      infinite;
   }
 
-  &[data-status="waitingTask"]::before {
+  &[data-status='waitingTask']::before {
     background-color: #28cd41;
-    animation: connecting 1s cubic-bezier(0.46, 1, 0.76, 0.94) alternate infinite;
+    animation: connecting 1s cubic-bezier(0.46, 1, 0.76, 0.94) alternate
+      infinite;
   }
 
-  &[data-status="connected"]::before {
+  &[data-status='connected']::before {
     background-color: #28cd41;
   }
 
-  &[data-status="tasking"]::before {
+  &[data-status='tasking']::before {
     background-color: #66c7ff;
   }
 
-  &[data-status="disconnected"]::before {
+  &[data-status='disconnected']::before {
     background-color: #ff6b6b;
   }
 }

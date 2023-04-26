@@ -1,24 +1,24 @@
-const info = require('./package.json');
+const info = require('./package.json')
 
 module.exports = {
   packagerConfig: {
     icon: 'packages/common/resources/icon',
     appBundleId: 'com.maa.maa-x',
     productName: 'MaaX',
-    ignore: (filepath) => {
+    ignore: filepath => {
       if (filepath.length === 0) {
-        return false;
+        return false
       }
       if (/^\/dist/.test(filepath)) {
-        return false;
+        return false
       }
       if (/^\/package.json/.test(filepath)) {
-        return false;
+        return false
       }
       if (/^\/node_modules/.test(filepath)) {
-        return false;
+        return false
       }
-      return true;
+      return true
     },
     // asar: true,
   },
@@ -64,9 +64,9 @@ module.exports = {
       config: {
         repository: {
           owner: 'MaaAssistantArknights',
-          name: 'MaaX'
+          name: 'MaaX',
         },
-      }
-    }
-  ]
-};
+      },
+    },
+  ],
+}

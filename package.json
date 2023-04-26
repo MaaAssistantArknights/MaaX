@@ -1,6 +1,6 @@
 {
   "name": "maa-x",
-  "version": "2.0.0-beta.4",
+  "version": "2.0.0-beta.5",
   "main": "dist/main/index.cjs",
   "author": "_ChingC <chingc.ccmail@gmail.com>",
   "templateBy": "草鞋没号 <308487730@qq.com>",
@@ -13,7 +13,8 @@
     "make": "electron-forge make",
     "start": "electron-forge start",
     "package": "electron-forge package",
-    "publish": "electron-forge publish"
+    "publish": "electron-forge publish",
+    "format": "npx prettier -w ."
   },
   "engines": {
     "node": ">=18.12.0"
@@ -96,6 +97,7 @@
     "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^8.1.0",
     "execa": "^5.1.1",
+    "extract-zip": "^2.0.1",
     "iconv-lite": "^0.6.3",
     "ps-list": "^7.2.0",
     "semver": "^7.3.8",

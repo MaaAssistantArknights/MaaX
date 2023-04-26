@@ -17,16 +17,14 @@ interface ComponentInfo {
 }
 
 export default {
-  async getAll () {
+  async getAll() {
     return await service.get<ComponentInfo[]>('/component/getAll')
   },
-  async getInfo (
-    component: Api.Maa.Component
-  ) {
+  async getInfo(component: Api.Maa.Component) {
     return await service.get<ComponentInfo>('/component/getInfo', {
       params: {
-        component
-      }
+        component,
+      },
     })
-  }
+  },
 }

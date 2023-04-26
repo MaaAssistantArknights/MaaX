@@ -1,5 +1,15 @@
 <script lang="ts" setup>
-import { NPopover, NImage, NInput, NIcon, NDescriptions, NDescriptionsItem, NDivider, NEllipsis, NText } from 'naive-ui'
+import {
+  NPopover,
+  NImage,
+  NInput,
+  NIcon,
+  NDescriptions,
+  NDescriptionsItem,
+  NDivider,
+  NTooltip,
+  NText,
+} from 'naive-ui'
 import useDeviceStore from '@/store/devices'
 import { computed, ref, watch } from 'vue'
 import logger from '@/hooks/caller/logger'
@@ -9,7 +19,7 @@ import { onBeforeRouteUpdate } from 'vue-router'
 const deviceStore = useDeviceStore()
 
 const props = defineProps<{
-  uuid: string;
+  uuid: string
 }>()
 
 // const emit = defineEmits(['update:show'])
@@ -17,21 +27,30 @@ const show = ref(false)
 
 const device = computed(() => deviceStore.getDevice(props.uuid) as Device)
 const screenshot = ref('')
-let timer: NodeJS.Timer|null = null
+
+let timer: NodeJS.Timer | null = null
 const tempName = ref('')
 
 const startGetScreenshot = async () => {
   logger.info('send get')
-  window.ipcRenderer.on('renderer.Device:getScreenshot', async (event, data) => {
-    if (data.uuid === props.uuid) {
-      const imageData = await window.ipcRenderer.invoke('main.CoreLoader:getScreencap', { uuid: props.uuid })
-      screenshot.value = imageData.screenshot
+  window.ipcRenderer.on(
+    'renderer.Device:getScreenshot',
+    async (event, data) => {
+      if (data.uuid === props.uuid) {
+        const imageData = await window.ipcRenderer.invoke(
+          'main.CoreLoader:getScreencap',
+          { uuid: props.uuid }
+        )
+        screenshot.value = imageData.screenshot
+      }
     }
-  })
+  )
   if (timer) clearInterval(timer)
   timer = setInterval(async () => {
     logger.info('send asyncScreencap')
-    await window.ipcRenderer.invoke('main.CoreLoader:asyncScreencap', { uuid: props.uuid })
+    await window.ipcRenderer.invoke('main.CoreLoader:asyncScreencap', {
+      uuid: props.uuid,
+    })
   }, 3000)
 }
 
@@ -41,8 +60,9 @@ const stopGetScreenshot = () => {
   window.ipcRenderer.off('renderer.Device:getScreenshot', () => {})
 }
 
-watch(show, (newShowValue) => {
-  if (device.value.displayName !== undefined) tempName.value = device.value.displayName
+watch(show, newShowValue => {
+  if (device.value.displayName !== undefined)
+    tempName.value = device.value.displayName
   // if (newShowValue) {
   //   startGetScreenshot()
   // } else {
@@ -50,17 +70,17 @@ watch(show, (newShowValue) => {
   // }
 })
 
-const updateDisplayName = (event) => {
+const updateDisplayName = event => {
   console.log(tempName.value)
   console.log(device.value.displayName)
   if (tempName.value === '') {
-    if (device.value.displayName !== undefined) tempName.value = device.value.displayName
+    if (device.value.displayName !== undefined)
+      tempName.value = device.value.displayName
     else tempName.value = device.value.uuid
   }
 
   deviceStore.updateDeviceDisplayName(props.uuid, tempName.value)
 }
-
 </script>
 
 <template>
@@ -74,13 +94,11 @@ const updateDisplayName = (event) => {
         label-align="left"
         :column="0"
         :bordered="false"
-        style="max-width: fit-content;"
+        style="max-width: fit-content"
       >
         <NDescriptionsItem>
           <template #label>
-            <NText type="info">
-              备注:
-            </NText>
+            <NText type="info"> 备注: </NText>
           </template>
           <NInput
             v-model:value="tempName"
@@ -94,38 +112,42 @@ const updateDisplayName = (event) => {
         </NDescriptionsItem>
         <NDescriptionsItem>
           <template #label>
-            <NText type="info">
-              设备标识符:
-            </NText>
+            <NText type="info"> 设备标识符: </NText>
           </template>
           {{ device.uuid }}
         </NDescriptionsItem>
         <NDescriptionsItem>
           <template #label>
-            <NText type="info">
-              连接地址:
-            </NText>
+            <NText type="info"> 连接地址: </NText>
           </template>
           {{ device.address.length > 0 ? device.address : '刷新以查看' }}
         </NDescriptionsItem>
         <NDescriptionsItem>
           <template #label>
-            <NText type="info">
-              启动命令:
-            </NText>
+            <NText type="info"> 启动命令: </NText>
           </template>
-          <NEllipsis style="max-width: 300px">
-            {{ device.commandLine }}
-          </NEllipsis>
+          <NTooltip trigger="hover">
+            <template #trigger>
+              <NInput
+                v-model:value="device.commandLine"
+                type="textarea"
+                placeholder="启动命令"
+                :autosize="{ minRows: 3 }"
+                style="min-width: 100%"
+              >
+                <template #prefix>
+                  <NIcon :component="IconPencilAlt" />
+                </template>
+              </NInput>
+            </template>
+            模拟器自动启动命令, 非必要请不要修改这里的内容,
+            留空将会在下一次链接时尝试自动获取
+          </NTooltip>
         </NDescriptionsItem>
       </NDescriptions>
 
       <NDivider />
-      <NImage
-        width="320"
-        height="180"
-        src="screenshot"
-      />
+      <NImage width="320" height="180" src="screenshot" />
     </template>
   </NPopover>
 </template>
@@ -135,15 +157,15 @@ const updateDisplayName = (event) => {
   padding-top: 0 !important;
   padding-bottom: 0 !important;
   padding-left: 5px !important;
-  height:15px !important;
+  height: 15px !important;
 }
 
-:deep(.n-input){
+:deep(.n-input) {
   --n-color: rgba(255, 255, 255, 0) !important;
 }
 
 :deep(.n-input__border) {
-  border:none !important;
+  border: none !important;
 }
 
 :deep(.n-input-wrapper) {

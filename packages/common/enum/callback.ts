@@ -15,35 +15,3 @@ export enum AsstMsg {
   SubTaskCompleted, // 原子任务完成
   SubTaskExtraInfo, // 原子任务额外信息
 }
-
-export enum TaskChainMap {
-  Emulator = 'emulator',
-  StartUp = 'startup',
-  Fight = 'fight',
-  Mall = 'mall',
-  Recruit = 'recruit',
-  RecruitCalc = 'recruit_calc',
-  Infrast = 'infrast',
-  Visit = 'visit',
-  Roguelike = 'rogue',
-  Copilot = 'copilot',
-  Shutdown = 'shutdown',
-  Award = 'award',
-  Idle = 'idle',
-  Debug = 'debug',
-
-  emulator = 'Emulator',
-  startup = 'StartUp',
-  fight = 'Fight',
-  mall = 'Mall',
-  recruit = 'Recruit',
-  recruit_calc = 'RecruitCalc',
-  infrast = 'Infrast',
-  visit = 'Visit',
-  rogue = 'Roguelike',
-  copilot = 'Copilot',
-  shutdown = 'Shutdown',
-  award = 'Award',
-  idle = 'Idle',
-  debug = 'Debug',
-}

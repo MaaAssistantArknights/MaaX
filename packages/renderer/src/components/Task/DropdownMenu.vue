@@ -10,19 +10,22 @@ const props = defineProps<{
   show: boolean
 }>()
 
-const emit = defineEmits(['select', 'update:show'])
+const emit = defineEmits<{
+  (event: 'select', key: string): void
+  (event: 'update:show', value: boolean): void
+}>()
 
 const options = [
   {
     label: '配置面板',
     key: 'configuration-panel',
-    icon: () => h(NIcon, null, { default: () => h(SettingsIcon) })
+    icon: () => h(NIcon, null, { default: () => h(SettingsIcon) }),
   },
   {
     label: '进度面板',
     key: 'result-panel',
-    icon: () => h(NIcon, null, { default: () => h(InProgressIcon) })
-  }
+    icon: () => h(NIcon, null, { default: () => h(InProgressIcon) }),
+  },
   // {
   //   type: 'divider',
   //   key: 'divider1'
@@ -52,5 +55,4 @@ const handleSelect = (key: string) => {
   />
 </template>
 
-<style lang="less" scoped>
-</style>
+<style lang="less" scoped></style>
