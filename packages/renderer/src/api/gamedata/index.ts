@@ -1,3 +1,5 @@
+import type { Operator } from './types'
+
 export default {
   async getAllStages () {
     return (await import('@common/ArknightsGameData/zh_CN/gamedata/excel/stage_table.json')).default
@@ -9,7 +11,7 @@ export default {
     return (await import('@common/ArknightsGameData/zh_CN/gamedata/excel/item_table.json')).default
   },
   async getAllOperators () {
-    return (await import('@common/ArknightsGameData/zh_CN/gamedata/excel/character_table.json')).default
+    return (await import('@common/ArknightsGameData/zh_CN/gamedata/excel/character_table.json')).default as Promise<Record<string, Operator>>
   },
   async getAllSkills () {
     return (await import('@common/ArknightsGameData/zh_CN/gamedata/excel/skill_table.json')).default

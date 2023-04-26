@@ -30,7 +30,12 @@ const props = defineProps<{
 
 const deviceStore = useDeviceStore()
 
-const emit = defineEmits(['update:enable', 'update:showResult', 'copy', 'delete'])
+const emit = defineEmits<{
+  (event: 'update:enable', value: boolean): void
+  (event: 'update:showResult', value: boolean): void
+  (event: 'copy'): void
+  (event: 'delete'): void
+}>()
 
 const dropdownPosition = ref({
   x: 0,

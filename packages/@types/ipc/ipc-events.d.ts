@@ -97,6 +97,7 @@ type IpcRendererOnEventType = {
   'renderer.ComponentManager:updateStatus': (arg: { type: ComponentType, status: InstallerStatus, progress: number }) => void
   'renderer.ComponentManager:installInterrupted': (arg: { type: ComponentType, status: 'exception', progress: 0 }) => void
   'renderer.ComponentManager:installDone': (arg: { type: ComponentType, status: InstallerStatus, progress: 0 }) => void
+  'renderer.ComponentManager:downloadUpgradeDone': (arg: { type: ComponentType, status: InstallerStatus, progress: 0 }) => void
   'renderer.Device:getScreenshot': (arg: { uuid: string }) => void
 }
 

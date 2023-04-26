@@ -14,7 +14,9 @@ const props = defineProps<{
   items: string[]
 }>()
 
-defineEmits(['updated'])
+defineEmits<{
+  (event: 'updated'): void
+}>()
 
 </script>
 

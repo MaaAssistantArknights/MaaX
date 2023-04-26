@@ -13,7 +13,8 @@
     "make": "electron-forge make",
     "start": "electron-forge start",
     "package": "electron-forge package",
-    "publish": "electron-forge publish"
+    "publish": "electron-forge publish",
+    "format": "npx prettier -w ."
   },
   "engines": {
     "node": ">=18.12.0"
