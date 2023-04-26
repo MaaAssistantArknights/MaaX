@@ -1,0 +1,6 @@
+packages/common/ArknightsGameData/**
+*.md
+*.yml
+*.yaml
+*.json
+*.html
