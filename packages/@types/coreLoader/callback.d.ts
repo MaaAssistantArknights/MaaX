@@ -132,5 +132,5 @@ type CallbackData =
 interface Callback {
   code: import('@common/enum/callback').AsstMsg
   data: CallbackData
-  customArgs: string | number | object
+  // customArgs: string | number | object
 }
