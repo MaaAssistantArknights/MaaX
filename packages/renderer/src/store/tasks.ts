@@ -483,7 +483,7 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
         const index = origin.groups.indexOf(group)
         origin.groups.splice(index, 1)
         // 回到上一个任务组
-        origin.currentId = origin.groups[index - 1].id
+        origin.currentId = origin.groups[index > 0 ? index - 1 : 0].id
       }
     },
   },
