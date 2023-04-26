@@ -13,7 +13,7 @@ const callbackHandle = ffi.Callback(
     ipcMainSend('renderer.CoreLoader:callback', {
       code,
       data: JSON.parse(data),
-      // customArgs
+      customArgs,
     })
   }
 )

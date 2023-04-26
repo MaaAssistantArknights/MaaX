@@ -3,13 +3,11 @@ import { inject } from 'vue'
 import { NFormItem, NInput, NSelect, NSpace } from 'naive-ui'
 import router from '@/router'
 import useDeviceStore from '@/store/devices'
+import type { GetConfig } from './types'
 
 const deviceStore = useDeviceStore()
 
-interface EmulatorConfiguration {
-  commandLine: string // 启动参数，用于从命令行启动指定模拟器
-  delay: 30 | 60 | 120 | 300 | 600 // 等待模拟器启动完成的延迟
-}
+type EmulatorConfig = GetConfig<'Emulator'>
 
 const delayOptions = [
   {
@@ -35,7 +33,7 @@ const delayOptions = [
 ]
 
 const props = defineProps<{
-  configurations: EmulatorConfiguration
+  configurations: EmulatorConfig
   taskIndex: number
 }>()
 

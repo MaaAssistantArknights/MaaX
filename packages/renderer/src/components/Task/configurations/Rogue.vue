@@ -13,50 +13,15 @@ import {
   NTooltip,
 } from 'naive-ui'
 import { showMessage } from '@/utils/message'
+import type { GetConfig } from './types'
 
 // import logger from '@/hooks/caller/logger'
 
-type phantomSquadType =
-  | '指挥分队'
-  | '集群分队'
-  | '后勤分队'
-  | '矛头分队'
-  | '突击战术分队'
-  | '堡垒战术分队'
-  | '远程战术分队'
-  | '破坏战术分队'
-  | '研究分队'
-  | '高规格分队'
-type mizukiSquadType =
-  | '心胜于物分队'
-  | '物尽其用分队'
-  | '以人为本分队'
-  | '指挥分队'
-  | '集群分队'
-  | '后勤分队'
-  | '矛头分队'
-  | '突击战术分队'
-  | '堡垒战术分队'
-  | '远程战术分队'
-  | '破坏战术分队'
-  | '研究分队'
-  | '高规格分队'
+type RogueConfig = GetConfig<'Roguelike'>
 
-type rolesType = '稳扎稳打' | '取长补短' | '随心所欲' | '先手必胜'
-
-interface RogueConfiguration {
-  theme: RogueTheme.Phantom | RogueTheme.Mizuki
-  mode: number
-  starts_count: number
-  investment_enabled: boolean
-  investments_count: number
-  stop_when_investment_full: boolean
-  squad: string
-  roles: string
-  core_char: ''
-  use_support: boolean
-  use_nonfriend_support: boolean
-}
+type phantomSquadType = __TASKOBJ_PhantomSquadType
+type mizukiSquadType = __TASKOBJ_MizukiSquadType
+type rolesType = __TASKOBJ_RolesType
 
 const phantomSquadOptions: {
   label: string
@@ -213,7 +178,7 @@ const themeOptions: {
 ]
 
 const props = defineProps<{
-  configurations: RogueConfiguration
+  configurations: RogueConfig
   taskIndex: number
 }>()
 

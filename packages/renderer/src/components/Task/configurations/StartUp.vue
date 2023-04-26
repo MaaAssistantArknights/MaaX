@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { NCheckbox, NFormItem, NSelect } from 'naive-ui'
 import { inject } from 'vue'
+import type { GetConfig } from './types'
 
-interface StartUpConfiguration {
-  client_type: string // 服务器
-  start_game_enabled: boolean // 是否自动启动客户端
-}
+type StartUpConfig = GetConfig<'StartUp'>
 
 const serverOptions = [
   {
@@ -19,7 +17,7 @@ const serverOptions = [
 ]
 
 const props = defineProps<{
-  configurations: StartUpConfiguration
+  configurations: StartUpConfig
   taskIndex: number
 }>()
 

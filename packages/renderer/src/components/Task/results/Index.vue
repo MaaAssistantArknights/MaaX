@@ -11,14 +11,14 @@ import Mall from './Mall.vue'
 import Shutdown from './Shutdown.vue'
 
 const components: Record<string, Component> = {
-  emulator: Emulator,
+  Emulator: Emulator,
   game: Game,
-  fight: Fighting,
-  recruit: Recruit,
-  infrast: Infrast,
-  rogue: Rogue,
-  mall: Mall,
-  shutdown: Shutdown,
+  Fight: Fighting,
+  Recruit: Recruit,
+  Infrast: Infrast,
+  Roguelike: Rogue,
+  Mall: Mall,
+  Shutdown: Shutdown,
 }
 
 export default defineComponent({

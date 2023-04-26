@@ -40,15 +40,17 @@ export interface TaskAction {
   getTaskProcess: (uuid: string, taskId: string) => number | undefined
   stopAllTasks: (uuid: string) => void
   copyTask: (uuid: string, index: number) => boolean
-  copyTaskFromTemplate: (uuid: string, task_name: string) => boolean
+  copyTaskFromTemplate: (uuid: string, task_name: Task['name']) => boolean
   deleteTask: (uuid: string, index: number) => boolean
   fixTaskList: (uuid: string) => void
   resetToIdle: (uuid: string) => void
 }
 
-export const taskTemplate: Record<string, Task> = {
-  emulator: {
-    name: 'emulator',
+export const taskTemplate: {
+  [key in Exclude<Task['name'], 'CloseDown' | 'Copilot'>]: __GetTask<key>
+} = {
+  Emulator: {
+    name: 'Emulator',
     task_id: -1,
     title: '启动模拟器',
     status: 'idle',
@@ -59,8 +61,8 @@ export const taskTemplate: Record<string, Task> = {
     },
     results: {},
   },
-  startup: {
-    name: 'startup',
+  StartUp: {
+    name: 'StartUp',
     task_id: -1,
     title: '开始唤醒',
     status: 'idle',
@@ -71,8 +73,8 @@ export const taskTemplate: Record<string, Task> = {
     },
     results: {},
   },
-  fight: {
-    name: 'fight',
+  Fight: {
+    name: 'Fight',
     task_id: -1,
     title: '代理作战',
     status: 'idle',
@@ -90,8 +92,8 @@ export const taskTemplate: Record<string, Task> = {
     },
     results: {},
   },
-  recruit: {
-    name: 'recruit',
+  Recruit: {
+    name: 'Recruit',
     task_id: -1,
     title: '自动公招',
     status: 'idle',
@@ -115,8 +117,8 @@ export const taskTemplate: Record<string, Task> = {
     },
     results: {},
   },
-  infrast: {
-    name: 'infrast',
+  Infrast: {
+    name: 'Infrast',
     task_id: -1,
     title: '基建换班',
     status: 'idle',
@@ -140,8 +142,8 @@ export const taskTemplate: Record<string, Task> = {
     },
     results: {},
   },
-  mall: {
-    name: 'mall',
+  Mall: {
+    name: 'Mall',
     task_id: -1,
     title: '收取信用及购物',
     status: 'idle',
@@ -153,8 +155,8 @@ export const taskTemplate: Record<string, Task> = {
     },
     results: {},
   },
-  award: {
-    name: 'award',
+  Award: {
+    name: 'Award',
     task_id: -1,
     title: '领取日常奖励',
     status: 'idle',
@@ -162,8 +164,8 @@ export const taskTemplate: Record<string, Task> = {
     configurations: {},
     results: {},
   },
-  rogue: {
-    name: 'rogue',
+  Roguelike: {
+    name: 'Roguelike',
     task_id: -1,
     title: '无限刷肉鸽',
     status: 'idle',
@@ -183,8 +185,8 @@ export const taskTemplate: Record<string, Task> = {
     },
     results: {},
   },
-  shutdown: {
-    name: 'shutdown',
+  Shutdown: {
+    name: 'Shutdown',
     task_id: -1,
     title: '关机/关闭模拟器',
     status: 'idle',
@@ -195,8 +197,8 @@ export const taskTemplate: Record<string, Task> = {
     },
     results: {},
   },
-  idle: {
-    name: 'idle',
+  Idle: {
+    name: 'Idle',
     task_id: -1,
     title: '挂机',
     status: 'idle',
@@ -218,19 +220,26 @@ export const taskTemplate: Record<string, Task> = {
   //   results: {}
   // }
 }
+
+function hasTemplate(
+  task_name: Task['name']
+): task_name is Exclude<Task['name'], 'CloseDown' | 'Copilot'> {
+  return task_name in taskTemplate
+}
+
 Object.freeze(taskTemplate)
 
-const defaultTaskConf: Record<string, Task> = {
-  emulator: _.cloneDeep(taskTemplate.emulator),
-  startup: _.cloneDeep(taskTemplate.startup),
-  fight: _.cloneDeep(taskTemplate.fight),
-  recruit: _.cloneDeep(taskTemplate.recruit),
-  infrast: _.cloneDeep(taskTemplate.infrast),
-  mall: _.cloneDeep(taskTemplate.mall),
-  award: _.cloneDeep(taskTemplate.award),
-  rogue: _.cloneDeep(taskTemplate.rogue),
-  shutdown: _.cloneDeep(taskTemplate.shutdown),
-  idle: _.cloneDeep(taskTemplate.idle),
+const defaultTaskConf: typeof taskTemplate = {
+  Emulator: _.cloneDeep(taskTemplate.Emulator),
+  StartUp: _.cloneDeep(taskTemplate.StartUp),
+  Fight: _.cloneDeep(taskTemplate.Fight),
+  Recruit: _.cloneDeep(taskTemplate.Recruit),
+  Infrast: _.cloneDeep(taskTemplate.Infrast),
+  Mall: _.cloneDeep(taskTemplate.Mall),
+  Award: _.cloneDeep(taskTemplate.Award),
+  Roguelike: _.cloneDeep(taskTemplate.Roguelike),
+  Shutdown: _.cloneDeep(taskTemplate.Shutdown),
+  Idle: _.cloneDeep(taskTemplate.Idle),
 }
 
 export const defaultTask = Object.values(defaultTaskConf)
@@ -382,7 +391,9 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
       if (!origin) return
       // STEP 1. update task config.
       origin.forEach(task => {
-        if (!defaultTaskConf[task.name]) return
+        if (!hasTemplate(task.name)) {
+          return
+        }
         task.title = defaultTaskConf[task.name].title
         if (
           !compareObjKey(
@@ -399,6 +410,7 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
           task.configurations = defaultTaskConf[task.name].configurations
         }
       })
+
       // STEP 2. add new tasks.
       for (const [, conf] of Object.entries(defaultTaskConf)) {
         if (!origin?.some(t => t.name === conf.name)) {
@@ -408,12 +420,12 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
     },
     copyTaskFromTemplate(uuid, task_name) {
       const origin = this.getCurrentTaskGroup(uuid)?.tasks
-      const task = taskTemplate[task_name]
-      if (task) {
-        origin?.push(task)
+      if (hasTemplate(task_name)) {
+        origin?.push(taskTemplate[task_name])
         return true
+      } else {
+        return false
       }
-      return false
     },
     newTaskGroup(uuid) {
       // 新建任务组

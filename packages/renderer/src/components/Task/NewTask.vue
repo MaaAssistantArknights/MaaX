@@ -23,7 +23,7 @@ const props = defineProps<{
   isCollapsed: boolean
 }>()
 
-function handleSelectNewTask(key: string): void {
+function handleSelectNewTask(key: Task['name']): void {
   if (taskStore.copyTaskFromTemplate(uuid, key)) {
     logger.info('copy task from template', key)
   }
@@ -36,11 +36,11 @@ const options: DropdownMixedOption[] = [
     children: [
       {
         label: '启动模拟器',
-        key: 'emulator',
+        key: 'Emulator',
       },
       {
         label: '关机/关闭模拟器',
-        key: 'shutdown',
+        key: 'Shutdown',
       },
     ],
   },
@@ -50,31 +50,31 @@ const options: DropdownMixedOption[] = [
     children: [
       {
         label: '开始唤醒',
-        key: 'startup',
+        key: 'StartUp',
       },
       {
         label: '代理作战',
-        key: 'fight',
+        key: 'Fight',
       },
       {
         label: '基建换班',
-        key: 'infrast',
+        key: 'Infrast',
       },
       {
         label: '自动公招',
-        key: 'recruit',
+        key: 'Recruit',
       },
       {
         label: '信用购物',
-        key: 'mall',
+        key: 'Mall',
       },
       {
         label: '领取日常',
-        key: 'award',
+        key: 'Award',
       },
       {
         label: '无限肉鸽',
-        key: 'rogue',
+        key: 'Roguelike',
       },
       // {
       //   label: '生息演算',
@@ -88,7 +88,7 @@ const options: DropdownMixedOption[] = [
     children: [
       {
         label: '挂机',
-        key: 'idle',
+        key: 'Idle',
       },
       {
         label: '每日一抽',

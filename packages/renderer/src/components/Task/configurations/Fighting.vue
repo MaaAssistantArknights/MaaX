@@ -2,20 +2,11 @@
 import { ref, onMounted, computed, Ref, inject } from 'vue'
 import { NFormItem, NInputNumber, NSpace, NSelect, NInputGroup } from 'naive-ui'
 import { gamedata } from '@/api'
+import type { GetConfig } from './types'
+
+type FightConfig = GetConfig<'Fight'>
 
 type DropConfiguration = Record<string, number>
-
-interface FightingConfiguration {
-  stage: string
-  medicine: number
-  stone: number
-  times: number
-  drops: DropConfiguration
-  report_to_penguin: boolean
-  penguin_id: string
-  server: string
-  client_type: string
-}
 
 const { getAllItems } = gamedata
 
@@ -34,7 +25,7 @@ const supportStages = [
 ]
 
 const props = defineProps<{
-  configurations: FightingConfiguration
+  configurations: FightConfig
   taskIndex: number
 }>()
 

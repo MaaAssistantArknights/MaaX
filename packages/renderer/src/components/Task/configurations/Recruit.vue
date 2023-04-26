@@ -2,20 +2,12 @@
 import { NInputNumber, NCheckbox, NFormItem } from 'naive-ui'
 import _ from 'lodash'
 import { inject } from 'vue'
+import type { GetConfig } from './types'
 
-interface RecruitConfiguration {
-  refresh: boolean // 自动刷新三星词条
-  select: number[]
-  confirm: number[]
-  times: number
-  set_time: boolean
-  expedite: boolean
-  expedite_times: number
-  skip_robot: boolean
-}
+type RecruitConfig = GetConfig<'Recruit'>
 
 const props = defineProps<{
-  configurations: RecruitConfiguration
+  configurations: RecruitConfig
   taskIndex: number
 }>()
 

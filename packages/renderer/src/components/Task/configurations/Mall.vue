@@ -3,17 +3,14 @@ import { ref, inject } from 'vue'
 import { NButton, NFormItem, NCheckbox } from 'naive-ui'
 
 import MallSelect from '../MallSelect.vue'
+import type { GetConfig } from './types'
 
 const showModal = ref(false)
 
-interface MallConfiguration {
-  blacklist: string[]
-  buy_first: string[]
-  shopping: boolean
-}
+type MallConfig = GetConfig<'Mall'>
 
 const props = defineProps<{
-  configurations: MallConfiguration
+  configurations: MallConfig
   taskIndex: number
 }>()
 

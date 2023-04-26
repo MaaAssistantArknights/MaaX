@@ -24,13 +24,16 @@ export async function runStartEmulator(
   )
 }
 
-async function runTaskEmulator(uuid: string, task: Task): Promise<void> {
+async function runTaskEmulator(
+  uuid: string,
+  task: FrontTaskTemplate<'Emulator'>
+): Promise<void> {
   const taskStore = useTaskStore()
   task.task_id = genUiTaskId()
   taskStore.updateTaskStatus(uuid, task.task_id, 'processing', 0)
   window.ipcRenderer.invoke(
     'main.DeviceDetector:startEmulator',
-    task.configurations.commandLine as string
+    task.configurations.commandLine
   )
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   task.schedule_id = setTimeout(async () => {
@@ -82,7 +85,10 @@ async function runTaskShutdown(uuid: string, task: Task): Promise<void> {
   // TODO
 }
 
-async function runTaskIdle(uuid: string, task: Task): Promise<void> {
+async function runTaskIdle(
+  uuid: string,
+  task: FrontTaskTemplate<'Idle'>
+): Promise<void> {
   const taskStore = useTaskStore()
   task.task_id = genUiTaskId()
   taskStore.updateTaskStatus(uuid, task.task_id, 'processing', 0)
@@ -90,7 +96,7 @@ async function runTaskIdle(uuid: string, task: Task): Promise<void> {
   task.schedule_id = setTimeout(async () => {
     taskStore.updateTaskStatus(uuid, task.task_id, 'success', 0)
     await runTasks(uuid)
-  }, (task.configurations.delay as number) * 1000)
+  }, task.configurations.delay * 1000)
 }
 
 export async function runTasks(uuid: string): Promise<void> {
@@ -100,14 +106,14 @@ export async function runTasks(uuid: string): Promise<void> {
   const task = tasks?.find(task => task.enable && task.status === 'idle')
   if (task) {
     switch (task.name) {
-      case 'emulator': {
+      case 'Emulator': {
         runTaskEmulator(uuid, task)
         break
       }
-      case 'shutdown': {
+      case 'Shutdown': {
         break
       }
-      case 'idle': {
+      case 'Idle': {
         await runTaskIdle(uuid, task)
         break
       }
@@ -118,8 +124,8 @@ export async function runTasks(uuid: string): Promise<void> {
           'main.CoreLoader:appendTask',
           {
             uuid: uuid,
-            type: TaskChainMap[task.name],
-            params: convertToCoreTaskConfiguration(task),
+            type: task.name,
+            params: convertToCoreTaskConfiguration(task.name, task),
           }
         )
         if (taskId !== 0) {

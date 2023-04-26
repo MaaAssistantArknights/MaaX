@@ -14,38 +14,15 @@ import {
 import Draggable from 'vuedraggable'
 import _ from 'lodash'
 import { showMessage } from '@/utils/message'
+import type { GetConfig } from './types'
 
-type FacilityType =
-  | 'Mfg'
-  | 'Trade'
-  | 'Control'
-  | 'Power'
-  | 'Reception'
-  | 'Office'
-  | 'Dorm'
+type InfrastConfig = GetConfig<'Infrast'>
 
-type droneUsageType =
-  | '_NotUse'
-  | 'Money'
-  | 'SyntheticJade'
-  | 'CombatRecord'
-  | 'PureGold'
-  | 'OriginStone'
-  | 'Chip'
+type FacilityType = InfrastConfig['facility'][number]
 
-type infrastPlan = 0 | 10000
+type droneUsageType = InfrastConfig['drones']
 
-interface InfrastConfiguration {
-  mode: number // 保留模式, 暂无意义
-  facility: FacilityType[] // 换班基建
-  drones: droneUsageType // 无人机用途
-  threshold: number // 换班阈值
-  replenish: boolean // 自动源石补货
-  dorm_notstationed_enabled: boolean // 不将已入驻的干员放入宿舍
-  drom_trust_enabled: boolean // 宿舍剩余位置蹭信赖
-  filename: string // 换班基建配置文件名
-  plan_index: number // 换班基建配置方案
-}
+type infrastPlan = InfrastConfig['mode']
 
 const infrastConfig = {
   path: ref(''),
@@ -113,7 +90,7 @@ const allFacilities: FacilityType[] = [
 ]
 
 const props = defineProps<{
-  configurations: InfrastConfiguration
+  configurations: InfrastConfig
   taskIndex: number
 }>()
 
@@ -299,9 +276,9 @@ onMounted(() => {
       <NFormItem :show-label="false" size="small" :show-feedback="false">
         <NCheckbox
           :disabled="configurationDisabled.re"
-          :checked="props.configurations.drom_trust_enabled"
+          :checked="props.configurations.dorm_trust_enabled"
           @update:checked="
-            checked => handleUpdateConfiguration('drom_trust_enabled', checked)
+            checked => handleUpdateConfiguration('dorm_trust_enabled', checked)
           "
         >
           宿舍空余位置蹭信赖

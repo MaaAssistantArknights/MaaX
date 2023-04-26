@@ -10,16 +10,15 @@ import {
 } from '@/utils/time_picker'
 import _ from 'lodash'
 import { showMessage } from '@/utils/message'
+import type { GetConfig } from './types'
 
 const deviceStore = useDeviceStore()
 const taskStore = useTaskStore()
 
-interface IdleConfiguration {
-  delay: number // 等多久进行下个任务
-}
+type IdleConfig = GetConfig<'Idle'>
 
 const props = defineProps<{
-  configurations: IdleConfiguration
+  configurations: IdleConfig
   taskIndex: number
 }>()
 
