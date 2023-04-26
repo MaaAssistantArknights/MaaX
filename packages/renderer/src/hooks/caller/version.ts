@@ -4,5 +4,6 @@ export const core = async (): Promise<string | null> =>
   await window.ipcRenderer.invoke('main.CoreLoader:getCoreVersion')
 
 export default {
-  ui, core
+  ui,
+  core,
 }

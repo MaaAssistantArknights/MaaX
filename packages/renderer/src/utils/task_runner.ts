@@ -5,38 +5,53 @@ import { showMessage } from './message'
 import { convertToCoreTaskConfiguration } from './task_helper'
 
 let selfIncreasedId = 1000000
-const genUiTaskId = (): number => { selfIncreasedId += 1; return selfIncreasedId }
+const genUiTaskId = (): number => {
+  selfIncreasedId += 1
+  return selfIncreasedId
+}
 
-export async function runStartEmulator (uuid: string, task: Task): Promise<void> {
+export async function runStartEmulator(
+  uuid: string,
+  task: Task
+): Promise<void> {
   const taskStore = useTaskStore()
   task.task_id = genUiTaskId()
   // 不await
   taskStore.updateTaskStatus(uuid, task.task_id, 'processing', 0)
-  window.ipcRenderer.invoke('main.DeviceDetector:startEmulator', task.configurations.commandLine as string)
+  window.ipcRenderer.invoke(
+    'main.DeviceDetector:startEmulator',
+    task.configurations.commandLine as string
+  )
 }
 
-async function runTaskEmulator (uuid: string, task: Task): Promise<void> {
+async function runTaskEmulator(uuid: string, task: Task): Promise<void> {
   const taskStore = useTaskStore()
   task.task_id = genUiTaskId()
   taskStore.updateTaskStatus(uuid, task.task_id, 'processing', 0)
-  window.ipcRenderer.invoke('main.DeviceDetector:startEmulator', task.configurations.commandLine as string)
+  window.ipcRenderer.invoke(
+    'main.DeviceDetector:startEmulator',
+    task.configurations.commandLine as string
+  )
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   task.schedule_id = setTimeout(async () => {
     // FIXME: Emulator无法转换为Device
     const devices: Device[] = await window.ipcRenderer.invoke(
       'main.DeviceDetector:getEmulators'
     ) // 等待时间结束后进行一次设备搜索，但不合并结果
-    const device = devices.find((device) => device.uuid === uuid) // 检查指定uuid的设备是否存在
+    const device = devices.find(device => device.uuid === uuid) // 检查指定uuid的设备是否存在
     if (device) {
       // 设备活了
       logger.silly('Emulator is alive', uuid)
-      const status = await window.ipcRenderer.invoke('main.CoreLoader:initCore', {
-        // 创建连接
-        address: device.address,
-        uuid: device.uuid,
-        adb_path: device.adbPath,
-        config: device.config
-      })
+      const status = await window.ipcRenderer.invoke(
+        'main.CoreLoader:initCore',
+        {
+          // 创建连接
+          address: device.address,
+          uuid: device.uuid,
+          adb_path: device.adbPath,
+          config: device.config,
+        }
+      )
       if (status) {
         taskStore.updateTaskStatus(uuid, task.task_id, 'success', 0)
         logger.silly('Emulator is alive and connected', uuid)
@@ -47,7 +62,7 @@ async function runTaskEmulator (uuid: string, task: Task): Promise<void> {
         showMessage('检测到设备, 但连接失败', {
           type: 'error',
           duration: 0,
-          closable: true
+          closable: true,
         })
       }
     } else {
@@ -56,18 +71,18 @@ async function runTaskEmulator (uuid: string, task: Task): Promise<void> {
       showMessage('启动设备失败', {
         type: 'error',
         duration: 0,
-        closable: true
+        closable: true,
       })
     }
   }, 10000)
 }
 
-async function runTaskShutdown (uuid: string, task: Task): Promise<void> {
+async function runTaskShutdown(uuid: string, task: Task): Promise<void> {
   const taskStore = useTaskStore()
   // TODO
 }
 
-async function runTaskIdle (uuid: string, task: Task): Promise<void> {
+async function runTaskIdle(uuid: string, task: Task): Promise<void> {
   const taskStore = useTaskStore()
   task.task_id = genUiTaskId()
   taskStore.updateTaskStatus(uuid, task.task_id, 'processing', 0)
@@ -75,14 +90,14 @@ async function runTaskIdle (uuid: string, task: Task): Promise<void> {
   task.schedule_id = setTimeout(async () => {
     taskStore.updateTaskStatus(uuid, task.task_id, 'success', 0)
     await runTasks(uuid)
-  }, task.configurations.delay as number * 1000)
+  }, (task.configurations.delay as number) * 1000)
 }
 
-export async function runTasks (uuid: string): Promise<void> {
+export async function runTasks(uuid: string): Promise<void> {
   const taskStore = useTaskStore()
   const tasks = taskStore.getCurrentTaskGroup(uuid)?.tasks
   // 寻找第一个可用的任务
-  const task = tasks?.find((task) => task.enable && task.status === 'idle')
+  const task = tasks?.find(task => task.enable && task.status === 'idle')
   if (task) {
     switch (task.name) {
       case 'emulator': {
@@ -96,14 +111,15 @@ export async function runTasks (uuid: string): Promise<void> {
         await runTaskIdle(uuid, task)
         break
       }
-      default: { // default -> core tasks
+      default: {
+        // default -> core tasks
         task.status = 'waiting'
         const taskId = await window.ipcRenderer.invoke(
           'main.CoreLoader:appendTask',
           {
             uuid: uuid,
             type: TaskChainMap[task.name],
-            params: convertToCoreTaskConfiguration(task)
+            params: convertToCoreTaskConfiguration(task),
           }
         )
         if (taskId !== 0) {

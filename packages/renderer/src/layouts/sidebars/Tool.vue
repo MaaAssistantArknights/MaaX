@@ -10,46 +10,51 @@ import IconChevronLeft from '@/assets/icons/chevron-left.svg?component'
 const deviceStore = useDeviceStore()
 
 const currentUuid = router.currentRoute.value.params.uuid as string
-const currentDevice = computed(() => deviceStore.devices.find(device => device.uuid !== currentUuid))
+const currentDevice = computed(() =>
+  deviceStore.devices.find(device => device.uuid !== currentUuid)
+)
 
 const menuActiveKey: Ref<string | null> = ref(null)
 const menuOptions: MenuOption[] = [
   {
-    label: () => h(
-      RouterLink,
-      {
-        to: `/tool/${currentUuid}/copilot`
-      },
-      {
-        default: () => 'MAA Copilot'
-      }
-    ),
-    key: 'copilot'
+    label: () =>
+      h(
+        RouterLink,
+        {
+          to: `/tool/${currentUuid}/copilot`,
+        },
+        {
+          default: () => 'MAA Copilot',
+        }
+      ),
+    key: 'copilot',
   },
   {
-    label: () => h(
-      RouterLink,
-      {
-        to: `/tool/${currentUuid}/item`
-      },
-      {
-        default: () => '仓库识别'
-      }
-    ),
-    key: 'item'
+    label: () =>
+      h(
+        RouterLink,
+        {
+          to: `/tool/${currentUuid}/item`,
+        },
+        {
+          default: () => '仓库识别',
+        }
+      ),
+    key: 'item',
   },
   {
-    label: () => h(
-      RouterLink,
-      {
-        to: `/tool/${currentUuid}/recruit`
-      },
-      {
-        default: () => '公招识别'
-      }
-    ),
-    key: 'recruit'
-  }
+    label: () =>
+      h(
+        RouterLink,
+        {
+          to: `/tool/${currentUuid}/recruit`,
+        },
+        {
+          default: () => '公招识别',
+        }
+      ),
+    key: 'recruit',
+  },
 ]
 </script>
 

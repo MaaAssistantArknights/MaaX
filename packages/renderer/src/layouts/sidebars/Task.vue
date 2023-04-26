@@ -10,14 +10,24 @@ import useDeviceStore from '@/store/devices'
 import { computed } from 'vue'
 
 const deviceStore = useDeviceStore()
-const currentUuid = computed(() => router.currentRoute.value.params.uuid as string)
-const currentDevice = computed(() => deviceStore.devices.find(device => device.uuid === currentUuid.value))
-const otherDevices = deviceStore.devices.filter(device => device.uuid !== currentUuid.value)
+const currentUuid = computed(
+  () => router.currentRoute.value.params.uuid as string
+)
+const currentDevice = computed(() =>
+  deviceStore.devices.find(device => device.uuid === currentUuid.value)
+)
+const otherDevices = deviceStore.devices.filter(
+  device => device.uuid !== currentUuid.value
+)
 </script>
 
 <template>
   <div>
-    <NButton text style="font-size: 24px" @click="$router.push({ path: '/settings' })">
+    <NButton
+      text
+      style="font-size: 24px"
+      @click="$router.push({ path: '/settings' })"
+    >
       <NIcon>
         <IconSettings />
       </NIcon>
@@ -45,7 +55,11 @@ const otherDevices = deviceStore.devices.filter(device => device.uuid !== curren
         </NTooltip> -->
         <NTooltip>
           <template #trigger>
-            <NButton text style="font-size: 24px" @click="$router.push({ path: '/device' })">
+            <NButton
+              text
+              style="font-size: 24px"
+              @click="$router.push({ path: '/device' })"
+            >
               <NIcon>
                 <IconDevices />
               </NIcon>

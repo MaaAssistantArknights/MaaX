@@ -10,7 +10,7 @@ interface DropItem {
   quantity: number
 }
 interface FightInfo {
-  drops: (DropItem & {dropType: string})[] // 本次掉落
+  drops: (DropItem & { dropType: string })[] // 本次掉落
   stage: {
     stageId: string
     stageCode: string
@@ -24,11 +24,10 @@ interface FightingResult {
 }
 
 const props = defineProps<{
-  results: FightingResult;
+  results: FightingResult
 }>()
 
 const totalDrops = computed(() => _.last(props.results.fightInfo)?.stats)
-
 </script>
 
 <template>
@@ -50,11 +49,7 @@ const totalDrops = computed(() => _.last(props.results.fightInfo)?.stats)
         :width="50"
       />
     </NSpace>
-    <NSpace
-      v-if="totalDrops"
-      align="center"
-      justify="center"
-    >
+    <NSpace v-if="totalDrops" align="center" justify="center">
       <span>总计掉落</span>
       <ItemCircle
         v-for="(item, iindex) of totalDrops"

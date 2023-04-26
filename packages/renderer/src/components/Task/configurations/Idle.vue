@@ -6,7 +6,7 @@ import useDeviceStore from '@/store/devices'
 import useTaskStore from '@/store/tasks'
 import {
   secondsToFormattedDuration,
-  formattedDurationToSeconds
+  formattedDurationToSeconds,
 } from '@/utils/time_picker'
 import _ from 'lodash'
 import { showMessage } from '@/utils/message'
@@ -23,7 +23,10 @@ const props = defineProps<{
   taskIndex: number
 }>()
 
-const configurationDisabled = inject('configurationDisabled') as {re: boolean, nre: boolean}
+const configurationDisabled = inject('configurationDisabled') as {
+  re: boolean
+  nre: boolean
+}
 const routeUuid = router.currentRoute.value.params.uuid as string
 
 // function handleSkipSchedule () {
@@ -36,7 +39,6 @@ const routeUuid = router.currentRoute.value.params.uuid as string
 //     // TODO: skip schedule( set timeout to 0 )
 //   }
 // }
-
 </script>
 <template>
   <div class="configuration-form">
@@ -57,7 +59,7 @@ const routeUuid = router.currentRoute.value.params.uuid as string
           "
           :actions="['confirm']"
           @update:formatted-value="
-            (value) =>
+            value =>
               _.set(
                 props.configurations,
                 'delay',

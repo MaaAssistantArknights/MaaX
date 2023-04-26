@@ -1,17 +1,16 @@
 <script setup lang="ts">
 import { NSpace, NButton } from 'naive-ui'
 
-async function onClickOpenFolder(type: 'core'|'core-log'|'ui-log'): Promise<void> {
+async function onClickOpenFolder(
+  type: 'core' | 'core-log' | 'ui-log'
+): Promise<void> {
   await window.ipcRenderer.invoke('main.Util:openFolder', type)
 }
-
 </script>
 
 <template>
-  <div id="other" :style="{textAlign: 'left'}">
-    <h2 class="title">
-      其他
-    </h2>
+  <div id="other" :style="{ textAlign: 'left' }">
+    <h2 class="title">其他</h2>
     <NSpace justify="start" align="center">
       <NButton
         type="primary"

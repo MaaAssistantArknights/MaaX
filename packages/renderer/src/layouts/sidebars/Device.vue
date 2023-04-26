@@ -7,7 +7,7 @@ import {
   NTooltip,
   NText,
   NTime,
-  useDialog
+  useDialog,
 } from 'naive-ui'
 import { useI18n } from 'vue-i18n'
 import IconRefresh from '@/assets/icons/refresh.svg?component'
@@ -38,16 +38,13 @@ const disconnectedDevices = computed(() =>
  */
 function deviceInfoParser(devices: Device[]): any[] {
   const ret: any[] = []
-  devices.forEach((info) => {
+  devices.forEach(info => {
     if (!info.uuid) {
-      showMessage(
-        t('device.connectionError', { address: info.address }),
-        {
-          type: 'error',
-          duration: 0,
-          closable: true
-        }
-      )
+      showMessage(t('device.connectionError', { address: info.address }), {
+        type: 'error',
+        duration: 0,
+        closable: true,
+      })
     } else {
       ret.push({
         status: 'available',
@@ -57,7 +54,7 @@ function deviceInfoParser(devices: Device[]): any[] {
         commandLine: info.commandLine,
         adbPath: info.adbPath,
         pid: info.pid,
-        displayName: info.displayName
+        displayName: info.displayName,
       })
     }
   })
@@ -67,7 +64,7 @@ function deviceInfoParser(devices: Device[]): any[] {
       {
         type: 'info',
         duration: 0,
-        closable: true
+        closable: true,
       },
       true
     )
@@ -75,7 +72,7 @@ function deviceInfoParser(devices: Device[]): any[] {
     showMessage(
       t('device.availableDeviceFound', { count: ret.length }),
       {
-        type: 'info'
+        type: 'info',
       },
       true
     )
@@ -84,31 +81,37 @@ function deviceInfoParser(devices: Device[]): any[] {
 }
 
 async function handleRefreshDevices() {
-  const is_exist = await window.ipcRenderer.invoke('main.DeviceDetector:isDefaultAdbExists')
+  const is_exist = await window.ipcRenderer.invoke(
+    'main.DeviceDetector:isDefaultAdbExists'
+  )
   if (!is_exist) {
     showMessage(t('device.adbNotAvailable'), {
       type: 'error',
       duration: 0,
-      closable: true
+      closable: true,
     })
     return
   }
 
-  const refreshingMessage = showMessage(t('device.refreshingDevices'), { type: 'loading', duration: 0 })
+  const refreshingMessage = showMessage(t('device.refreshingDevices'), {
+    type: 'loading',
+    duration: 0,
+  })
 
-  window.ipcRenderer.invoke('main.DeviceDetector:getEmulators').then(
-    ret => {
+  window.ipcRenderer
+    .invoke('main.DeviceDetector:getEmulators')
+    .then(ret => {
       // FIXME: Emulator无法转换为Device
       const devices = deviceInfoParser(ret)
       deviceStore.mergeSearchResult(devices)
-    }
-  ).catch(() => {
-    refreshingMessage.destroy()
-    dialog.error({
-      title: t('Common.error'),
-      content: t('device.refreshingError')
     })
-  })
+    .catch(() => {
+      refreshingMessage.destroy()
+      dialog.error({
+        title: t('Common.error'),
+        content: t('device.refreshingError'),
+      })
+    })
 }
 
 const now = ref(Date.now())
@@ -120,14 +123,22 @@ setInterval(() => {
 
 <template>
   <div>
-    <NButton text style="font-size: 24px" @click="$router.push({ path: '/settings' })">
+    <NButton
+      text
+      style="font-size: 24px"
+      @click="$router.push({ path: '/settings' })"
+    >
       <NIcon>
         <IconSettings />
       </NIcon>
     </NButton>
     <h2>已连接的设备</h2>
     <div class="connected-devices">
-      <DeviceCard v-for="device in connectedDevices" :key="device.uuid" :device="device" />
+      <DeviceCard
+        v-for="device in connectedDevices"
+        :key="device.uuid"
+        :device="device"
+      />
     </div>
     <NSpace :justify="'space-between'" :align="'center'">
       <h2>其他设备</h2>
@@ -148,7 +159,11 @@ setInterval(() => {
       </NTooltip>
     </NSpace>
     <div class="disconnected-devices">
-      <DeviceCard v-for="device in disconnectedDevices" :key="device.uuid" :device="device" />
+      <DeviceCard
+        v-for="device in disconnectedDevices"
+        :key="device.uuid"
+        :device="device"
+      />
     </div>
     <!-- <div class="unknown-devices">
                   <DeviceCard
@@ -159,7 +174,7 @@ setInterval(() => {
                 </div> -->
     <div :style="{ textAlign: 'center' }">
       <NText depth="2">
-        {{ $t("Common.lastUpdate") }}:&nbsp;
+        {{ $t('Common.lastUpdate') }}:&nbsp;
         <span v-if="deviceStore.lastUpdate === null">从不</span>
         <NTime
           v-else

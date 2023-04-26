@@ -15,7 +15,7 @@ const asstHooks: {
   'main.CoreLoader:loadResource': (_event, arg) => {
     return !!core.LoadResource(arg.path) ?? false
   },
-  'main.CoreLoader:create': (_event) => {
+  'main.CoreLoader:create': _event => {
     return core.Create() ?? false
   },
   'main.CoreLoader:createEx': (_event, arg) => {
@@ -26,35 +26,22 @@ const asstHooks: {
     return true
   },
   'main.CoreLoader:connect': (_event, arg) => {
-    return core.Connect(
-      arg.address,
-      arg.uuid,
-      arg.adb_path,
-      arg.config
-    )
+    return core.Connect(arg.address, arg.uuid, arg.adb_path, arg.config)
   },
   /** @Deprecated */
   'main.CoreLoader:initCore': (_event, arg) => {
     const createStatus = core.CreateEx(arg.uuid) ?? false
     if (!createStatus) logger.warn(`重复创建 ${JSON.stringify(arg)}`)
-    if (!core.SetTouchMode(arg.uuid, arg.touch_mode)) logger.warn('Set touch mode failed', arg.touch_mode)
-    return core.Connect(
-      arg.address,
-      arg.uuid,
-      arg.adb_path,
-      arg.config
-    )
+    if (!core.SetTouchMode(arg.uuid, arg.touch_mode))
+      logger.warn('Set touch mode failed', arg.touch_mode)
+    return core.Connect(arg.address, arg.uuid, arg.adb_path, arg.config)
   },
   'main.CoreLoader:initCoreAsync': (_event, arg) => {
     const createStatus = core.CreateEx(arg.uuid) ?? false
     if (!createStatus) logger.warn(`重复创建 ${JSON.stringify(arg)}`)
-    if (!core.SetTouchMode(arg.uuid, arg.touch_mode)) logger.warn('Set touch mode failed', arg.touch_mode)
-    return core.AsyncConnect(
-      arg.address,
-      arg.uuid,
-      arg.adb_path,
-      arg.config
-    )
+    if (!core.SetTouchMode(arg.uuid, arg.touch_mode))
+      logger.warn('Set touch mode failed', arg.touch_mode)
+    return core.AsyncConnect(arg.address, arg.uuid, arg.adb_path, arg.config)
   },
   'main.CoreLoader:disconnectAndDestroy': (_event, arg) => {
     core.Stop(arg.uuid)
@@ -63,11 +50,7 @@ const asstHooks: {
   },
 
   'main.CoreLoader:appendTask': (_event, arg) => {
-    return core.AppendTask(
-      arg.uuid,
-      arg.type,
-      JSON.stringify(arg.params)
-    )
+    return core.AppendTask(arg.uuid, arg.type, JSON.stringify(arg.params))
   },
   'main.CoreLoader:setTaskParams': (_event, arg) => {
     return core.SetTaskParams(arg.uuid, arg.task_id, JSON.stringify(arg.params))
@@ -78,14 +61,14 @@ const asstHooks: {
   'main.CoreLoader:stop': (_event, arg) => {
     return core.Stop(arg.uuid)
   },
-  'main.CoreLoader:supportedStages': (_event) => {
+  'main.CoreLoader:supportedStages': _event => {
     if (!core.loadStatus) {
       logger.silly('core unloaded, return empty supported stages')
       return []
     }
     const jsonPath = path.join(core.libPath, 'resource/tasks.json')
     const tasks = JSON.parse(String(fs.readFileSync(jsonPath)))
-    const stages = Object.keys(tasks).filter((s) =>
+    const stages = Object.keys(tasks).filter(s =>
       /[A-Z0-9]+-([A-Z0-9]+-?)?[0-9]/.test(s)
     )
     return stages
@@ -93,7 +76,7 @@ const asstHooks: {
   'main.CoreLoader:getImage': (_event, arg) => {
     return core.GetImage(arg.uuid)
   },
-  'main.CoreLoader:getLibPath': (_event) => {
+  'main.CoreLoader:getLibPath': _event => {
     return core.libPath
   },
   'main.CoreLoader:changeTouchMode': (_event, arg) => {
@@ -101,15 +84,15 @@ const asstHooks: {
   },
   'main.CoreLoader:asyncScreencap': (_event, arg) => {
     return core.AsyncScreencap(arg.uuid)
-  }
+  },
 }
 
-export default function useAsstHooks (): void {
-  ipcMainHandle('main.CoreLoader:upgrade', async (_event) => {
+export default function useAsstHooks(): void {
+  ipcMainHandle('main.CoreLoader:upgrade', async _event => {
     return await core.Upgrade()
   })
 
-  ipcMainHandle('main.CoreLoader:load', (_event) => {
+  ipcMainHandle('main.CoreLoader:load', _event => {
     core.load()
     if (!core.loadStatus) {
       return false
@@ -127,7 +110,7 @@ export default function useAsstHooks (): void {
     return true
   })
 
-  ipcMainHandle('main.CoreLoader:dispose', (_event) => {
+  ipcMainHandle('main.CoreLoader:dispose', _event => {
     for (const eventName of Object.keys(asstHooks)) {
       ipcMainRemove(eventName as IpcMainHandleEvent)
     }

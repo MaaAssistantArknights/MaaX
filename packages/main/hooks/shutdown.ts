@@ -4,7 +4,7 @@ import WindowManager from '@main/windowManager'
 import logger from '@main/utils/logger'
 import { ipcMainHandle } from '@main/utils/ipc-main'
 
-async function shutdownEmulator (pid: string): Promise<void> {
+async function shutdownEmulator(pid: string): Promise<void> {
   logger.silly('Shutdown Emulator')
   const platform = getPlatform()
 
@@ -17,14 +17,14 @@ async function shutdownEmulator (pid: string): Promise<void> {
   }
 }
 
-async function shutdownMAA (): Promise<void> {
+async function shutdownMAA(): Promise<void> {
   logger.silly('Shutdown MAA')
 
   const win = new WindowManager().getWindow()
   win.close()
 }
 
-async function shutdownComputer (): Promise<void> {
+async function shutdownComputer(): Promise<void> {
   logger.silly('Shutdown MAA')
   const platform = getPlatform()
 
@@ -37,7 +37,7 @@ async function shutdownComputer (): Promise<void> {
   }
 }
 
-export default function useShutdownHooks (): void {
+export default function useShutdownHooks(): void {
   ipcMainHandle('main.ScheduleRunner:shutdown', async (event, arg) => {
     if (arg.option === 'shutdownEmulator') {
       await shutdownEmulator(arg.pid)

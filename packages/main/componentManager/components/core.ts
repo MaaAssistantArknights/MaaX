@@ -10,7 +10,7 @@ export const getComponentCore = async (): Promise<Component> => {
   const componentCore: Component = {
     type: 'Maa Core',
     status: 'not-installed',
-    installer: new CoreInstaller()
+    installer: new CoreInstaller(),
   }
 
   const installed = fs.existsSync(path.join(coreLoader.libPath, 'core_version'))

@@ -22,12 +22,12 @@ type TaskName =
   | 'copilot'
   | 'idle'
 
-  type CoreTaskName =
+type CoreTaskName =
   | 'Emulator'
   | 'StartUp'
   | 'Fight'
   | 'Recruit'
-  |'Infrast'
+  | 'Infrast'
   | 'Visit'
   | 'Mall'
   | 'Award'
@@ -110,7 +110,7 @@ interface TaskGroup {
   id: number
   /**
    * @props 任务组内的任务列表
-  */
+   */
   tasks: Task[]
 }
 

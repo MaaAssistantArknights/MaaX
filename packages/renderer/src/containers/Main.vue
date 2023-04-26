@@ -10,7 +10,6 @@ onMounted(async () => {
   await asst.upgradeCore()
   await asst.load()
 })
-
 </script>
 
 <template>

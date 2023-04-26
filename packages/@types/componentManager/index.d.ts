@@ -1,7 +1,4 @@
-type ComponentType =
-  | 'Maa Core'
-  | 'Maa App'
-  | 'Android Platform Tools'
+type ComponentType = 'Maa Core' | 'Maa App' | 'Android Platform Tools'
 
 type ComponentStatus =
   | 'not-installed'

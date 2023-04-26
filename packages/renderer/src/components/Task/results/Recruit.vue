@@ -6,7 +6,7 @@ import {
   NGridItem,
   NButton,
   NList,
-  NListItem
+  NListItem,
 } from 'naive-ui'
 
 interface RecruitResult {
@@ -34,7 +34,7 @@ console.log(props)
       >
         <NSpace align="center" justify="space-around">
           <NText :type="recruit.refreshed ? 'info' : 'default'">
-            {{ recruit.refreshed ? "已刷新" : `${recruit.level}星干员` }}
+            {{ recruit.refreshed ? '已刷新' : `${recruit.level}星干员` }}
           </NText>
           <NGrid x-gap="6" y-gap="8" :cols="3">
             <NGridItem v-for="tag of recruit.tags" :key="tag">

@@ -18,7 +18,7 @@ const components: Record<string, Component> = {
   infrast: Infrast,
   rogue: Rogue,
   mall: Mall,
-  shutdown: Shutdown
+  shutdown: Shutdown,
 }
 
 export default defineComponent({
@@ -26,14 +26,14 @@ export default defineComponent({
   props: {
     name: {
       type: String,
-      required: true
+      required: true,
     },
     results: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
-  render () {
+  render() {
     const component = components[this.name]
     const { results } = this
     if (component) {
@@ -42,7 +42,7 @@ export default defineComponent({
     } else {
       return h(NoProgress)
     }
-  }
+  },
 })
 </script>
 

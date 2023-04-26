@@ -1,11 +1,14 @@
 import useDeviceStore from '@/store/devices'
 
-export default function useDeviceEvents (): void {
+export default function useDeviceEvents(): void {
   const deviceStore = useDeviceStore()
 
-  window.ipcRenderer.on('renderer.DeviceDetector:searched', (event, devices: NativeDevice[]) => {
-    deviceStore.mergeSearchResult(devices)
-  })
+  window.ipcRenderer.on(
+    'renderer.DeviceDetector:searched',
+    (event, devices: NativeDevice[]) => {
+      deviceStore.mergeSearchResult(devices)
+    }
+  )
 
   window.ipcRenderer.on(
     'renderer.DeviceDetector:changeStatus',

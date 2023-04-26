@@ -17,13 +17,14 @@ const emulatorList = [
   'NemuHeadless.exe', // mumu模拟器
   'MEmuHeadless.exe', // 逍遥模拟器
   'Ld9BoxHeadless.exe', // 雷电9
-  'MuMuVMMHeadless.exe' // mumu12
+  'MuMuVMMHeadless.exe', // mumu12
 ]
 const regPNamePid = /(.{3,25}[^\s*])\s*([0-9]*)\s.*\s*/g
 // get "HD-Player.exe  3396 Console    1  79,692 K"
 
 const getPnamePath = async (pname: string): Promise<string> => {
-  const result = await $`Get-WmiObject -Query "select ExecutablePath FROM Win32_Process where Name='${pname}'" | Select-Object -Property ExecutablePath | ConvertTo-Json`
+  const result =
+    await $`Get-WmiObject -Query "select ExecutablePath FROM Win32_Process where Name='${pname}'" | Select-Object -Property ExecutablePath | ConvertTo-Json`
   const path = JSON.parse(result.stdout)
   return path.length > 1 ? path[0].ExecutablePath : path.ExecutablePath
 }
@@ -34,15 +35,17 @@ const getPnamePath = async (pname: string): Promise<string> => {
 //   return path.ExecutablePath
 // }
 
-async function getCommandLine (pid: string | number): Promise<string> {
+async function getCommandLine(pid: string | number): Promise<string> {
   // 获取进程启动参数
   const commandLineExp = `Get-WmiObject -Query "select CommandLine FROM Win32_Process where ProcessID='${pid}'" | Select-Object -Property CommandLine | ConvertTo-Json`
-  const ret: string = JSON.parse((await $`${commandLineExp}`).stdout).CommandLine
+  const ret: string = JSON.parse(
+    (await $`${commandLineExp}`).stdout
+  ).CommandLine
   logger.silly(`getCommandLine: ${ret}`)
   return ret
 }
 
-async function testPort (
+async function testPort(
   hostname: string,
   port: number | string,
   timeout: number = 100
@@ -59,9 +62,9 @@ async function testPort (
   return _.trim((await $`${exp}`).stdout).includes('True')
 }
 
-function getBluestackInstanceName (cmd: string): string {
+function getBluestackInstanceName(cmd: string): string {
   const instanceExp = /".*"\s"?--instance"?\s"?([^"\s]*)"?/g
-  const res = [...cmd.matchAll(instanceExp)].map((v) => v[1])
+  const res = [...cmd.matchAll(instanceExp)].map(v => v[1])
   const name = res ? res[0] : 'unknown'
   logger.info('[winAdapter] Get bluestack instance name: ', name)
   return name
@@ -69,21 +72,27 @@ function getBluestackInstanceName (cmd: string): string {
 
 @Singleton
 class WindowsAdapter implements EmulatorAdapter {
-  protected async getBluestack (e: Emulator): Promise<void> {
+  protected async getBluestack(e: Emulator): Promise<void> {
     // const confPortExp = /bst.instance.Nougat64_?\d?.status.adb_port="(\d{4,6})"/g
     // const e: Emulator = { pname, pid }
     e.config = 'BlueStacks'
     const exePath = JSON.parse(
-      (await $`Get-WmiObject -Query "select ExecutablePath FROM Win32_Process where ProcessID=${e.pid}" | Select-Object -Property ExecutablePath | ConvertTo-Json`).stdout
+      (
+        await $`Get-WmiObject -Query "select ExecutablePath FROM Win32_Process where ProcessID=${e.pid}" | Select-Object -Property ExecutablePath | ConvertTo-Json`
+      ).stdout
     ).ExecutablePath
     e.adbPath = path.join(path.dirname(exePath), 'HD-Adb.exe')
     const cmd = await getCommandLine(e.pid)
     e.commandLine = cmd // 从命令行启动的指令
     const arg = getBluestackInstanceName(cmd)
     const confPath = path.join(
-      path.normalize(JSON.parse(
-        (await $`Get-ItemProperty -Path Registry::HKEY_LOCAL_MACHINE\\SOFTWARE\\BlueStacks_nxt | Select-Object -Property UserDefinedDir | ConvertTo-Json`).stdout
-      ).UserDefinedDir),
+      path.normalize(
+        JSON.parse(
+          (
+            await $`Get-ItemProperty -Path Registry::HKEY_LOCAL_MACHINE\\SOFTWARE\\BlueStacks_nxt | Select-Object -Property UserDefinedDir | ConvertTo-Json`
+          ).stdout
+        ).UserDefinedDir
+      ),
       'bluestacks.conf'
     )
     if (e.adbPath.includes('BluestacksCN')) {
@@ -91,20 +100,26 @@ class WindowsAdapter implements EmulatorAdapter {
       // 搞两套方案，先读注册表拿adb端口, 如果读失败了可能是打包复制导致，再使用 netstat 尝试
       let success: boolean = false
       try {
-        const emulatorName: string[] = [...JSON.parse((
-          (await $`Get-ChildItem -Path Registry::HKEY_LOCAL_MACHINE\\SOFTWARE\\BlueStacks_china_gmgr\\Guests | ConvertTo-Json`).stdout
-        ))].map(
-          (v) => v.PSChildName
-        ) // 蓝叠CN注册表中的模拟器id
+        const emulatorName: string[] = [
+          ...JSON.parse(
+            (
+              await $`Get-ChildItem -Path Registry::HKEY_LOCAL_MACHINE\\SOFTWARE\\BlueStacks_china_gmgr\\Guests | ConvertTo-Json`
+            ).stdout
+          ),
+        ].map(v => v.PSChildName) // 蓝叠CN注册表中的模拟器id
         if (emulatorName.length === 0) success = false
         else {
           for await (const v of emulatorName) {
             const port: string = JSON.parse(
-              (await $`Get-ItemProperty -Path Registry::HKEY_LOCAL_MACHINE\\SOFTWARE\\BlueStacks_china_gmgr\\Guests\\${v}\\Network\\0 | Select-Object -Property InboundRules | ConvertTo-Json`).stdout
-            ).InboundRules[0].split(':').pop()
+              (
+                await $`Get-ItemProperty -Path Registry::HKEY_LOCAL_MACHINE\\SOFTWARE\\BlueStacks_china_gmgr\\Guests\\${v}\\Network\\0 | Select-Object -Property InboundRules | ConvertTo-Json`
+              ).stdout
+            )
+              .InboundRules[0].split(':')
+              .pop()
             if (
               !inUsePorts.includes(port) &&
-              await testPort('127.0.0.1', port) &&
+              (await testPort('127.0.0.1', port)) &&
               !success
             ) {
               // 端口没有被占用, 测试端口成功, 本次循环未使用这个端口
@@ -122,7 +137,9 @@ class WindowsAdapter implements EmulatorAdapter {
       if (!success) {
         // 通过读注册表失败, 使用 netstat 抓一个5开头的端口充数
         const regExp = '\\s*TCP\\s*127.0.0.1:(5\\d{3,4})\\s*' // 提取端口
-        const port = (await $`netstat -ano | findstr ${e.pid}`).stdout.match(regExp)
+        const port = (await $`netstat -ano | findstr ${e.pid}`).stdout.match(
+          regExp
+        )
         e.address = port != null ? `127.0.0.1:${port[1]}` : '127.0.0.1:5555'
         e.displayName = 'BlueStack CN [no regedit]'
       }
@@ -132,11 +149,15 @@ class WindowsAdapter implements EmulatorAdapter {
         `bluestacks.conf not exist! path: ${confPath}`
       )
       const conf = readFileSync(confPath, 'utf-8') // 读bluestacks.conf文件
-      const confPortInstanceExp = arg ? RegExp(`bst.instance.${arg}.status.adb_port="(\\d{4,6})"`) : /bst.instance.(?:.*).status.adb_port="(\d{4,6})"/
+      const confPortInstanceExp = arg
+        ? RegExp(`bst.instance.${arg}.status.adb_port="(\\d{4,6})"`)
+        : /bst.instance.(?:.*).status.adb_port="(\d{4,6})"/
       const confPort = conf.match(confPortInstanceExp)
       console.log('confport:')
       e.displayName = 'BlueStack Global'
-      if (confPort) { e.address = `127.0.0.1:${confPort[1]}` }
+      if (confPort) {
+        e.address = `127.0.0.1:${confPort[1]}`
+      }
       /**
       e.tag = 'BlueStack Global';
       [...conf.matchAll(confPortExp)]
@@ -159,7 +180,7 @@ class WindowsAdapter implements EmulatorAdapter {
     // return e
   }
 
-  protected async getXY (e: Emulator): Promise<void> {
+  protected async getXY(e: Emulator): Promise<void> {
     /**
      * 逍遥模拟器获取流程：
      *  1. 根据"MEmuHeadless.exe"获取pid
@@ -178,14 +199,18 @@ class WindowsAdapter implements EmulatorAdapter {
     e.commandLine = await getCommandLine(e.pid)
     const confName = e.commandLine.match(/--comment ([^\s]+)/)
     if (confName) {
-      const confPath = path.resolve(path.dirname(await getPnamePath('Memu.exe')), 'MemuHyperv VMs', confName[1], `${confName[1]}.memu`)
-      logger.silly(`XY conf_path: ${confPath}`)
-      assert(
-        existsSync(confPath),
-        `Memu.memu not exist! path: ${confPath}`
+      const confPath = path.resolve(
+        path.dirname(await getPnamePath('Memu.exe')),
+        'MemuHyperv VMs',
+        confName[1],
+        `${confName[1]}.memu`
       )
+      logger.silly(`XY conf_path: ${confPath}`)
+      assert(existsSync(confPath), `Memu.memu not exist! path: ${confPath}`)
       const confDetail = readFileSync(confPath, 'utf-8') // 读Memu.memu文件
-      const confPortExp = confDetail.match(/<Forwarding name="ADB" proto="1" hostip="127.0.0.1" hostport="(\d+)"/)
+      const confPortExp = confDetail.match(
+        /<Forwarding name="ADB" proto="1" hostip="127.0.0.1" hostport="(\d+)"/
+      )
       if (confPortExp) {
         e.address = `127.0.0.1:${confPortExp[1]}`
       }
@@ -194,7 +219,7 @@ class WindowsAdapter implements EmulatorAdapter {
     e.displayName = '逍遥模拟器'
   }
 
-  protected async getNox (e: Emulator): Promise<void> {
+  protected async getNox(e: Emulator): Promise<void> {
     e.config = 'Nox'
     e.displayName = '夜神模拟器'
     const noxPath = path.dirname(await getPnamePath('Nox.exe'))
@@ -204,16 +229,25 @@ class WindowsAdapter implements EmulatorAdapter {
     const noxConsoleListArr = noxConsoleList.split('\r\n')
     for (const line of noxConsoleListArr) {
       const arr = line.split(',')
-      if (arr.length > 1 && (arr.pop() as string).toString() === e.pid.toString()) {
+      if (
+        arr.length > 1 &&
+        (arr.pop() as string).toString() === e.pid.toString()
+      ) {
         e.commandLine = `"${noxConsole}"` + ` launch -name:${arr[2]}`
         const vmName = arr[1]
-        const configPath = path.resolve(noxPath, 'BignoxVMS', vmName, `${vmName}.vbox`)
+        const configPath = path.resolve(
+          noxPath,
+          'BignoxVMS',
+          vmName,
+          `${vmName}.vbox`
+        )
         if (!configPath) {
           logger.error('Nox config file not exist!', configPath)
           return
         }
         const conf = readFileSync(configPath, 'utf-8')
-        const confPortInstanceExp = /<Forwarding name="port2" proto="1" hostip="127.0.0.1" hostport="(\d{4,6})" guestport="5555"\/>/
+        const confPortInstanceExp =
+          /<Forwarding name="port2" proto="1" hostip="127.0.0.1" hostport="(\d{4,6})" guestport="5555"\/>/
         const confPort = conf.match(confPortInstanceExp)
         if (confPort) {
           e.address = `127.0.0.1:${confPort[1]}`
@@ -227,7 +261,7 @@ class WindowsAdapter implements EmulatorAdapter {
   }
 
   // TODO: 适配新版 mumu, 似乎支持 hyperv 了？
-  protected async getMumu (e: Emulator): Promise<void> {
+  protected async getMumu(e: Emulator): Promise<void> {
     // MuMu的adb端口仅限7555, 所以, 请不要使用MuMu多开!
     // 流程: 有"NemuHeadless.exe"进程后，就去抓'NemuPlayer.exe'的路径.
     const emuPathExp = await getPnamePath('NemuPlayer.exe') // 模拟器启动器路径
@@ -242,7 +276,7 @@ class WindowsAdapter implements EmulatorAdapter {
     e.config = 'MuMuEmulator'
   }
 
-  protected async getMumu12 (e: Emulator): Promise<void> {
+  protected async getMumu12(e: Emulator): Promise<void> {
     e.config = 'MuMuEmulator'
     e.displayName = 'MuMu模拟器12'
     const emuPath = await getPnamePath('MuMuPlayer.exe') // 模拟器启动器路径
@@ -254,14 +288,17 @@ class WindowsAdapter implements EmulatorAdapter {
       return
     }
     logger.info('Found mumu12, vmName:', vmName[1]) // 寻找模拟器名, 配置在mumu根目录的vms里
-    const configPath = path.resolve(emuPath, `../../vms/${vmName[1]}/configs`) + '\\vm_config.json'
+    const configPath =
+      path.resolve(emuPath, `../../vms/${vmName[1]}/configs`) +
+      '\\vm_config.json'
     if (!existsSync(configPath)) {
       logger.error('MuMu config file not exist!', configPath)
       return
     }
     const conf = readFileSync(configPath, 'utf-8')
     try {
-      const confPort = JSON.parse(conf).vm.nat.port_forward.adb.host_port as string
+      const confPort = JSON.parse(conf).vm.nat.port_forward.adb
+        .host_port as string
       e.address = `127.0.0.1:${confPort}`
     } catch (e) {
       logger.error(e)
@@ -276,87 +313,126 @@ class WindowsAdapter implements EmulatorAdapter {
     }
   }
 
-  protected async getLd (e: Emulator): Promise<void> {
+  protected async getLd(e: Emulator): Promise<void> {
     // 雷电模拟器识别
     e.config = 'LDPlayer'
     e.displayName = '雷电模拟器'
     const emulatorPath = await getPnamePath('dnplayer.exe') // dnplayer.exe路径, 和模拟器配置信息等在一起
-    const consolePath = path.resolve(path.dirname(emulatorPath), 'dnconsole.exe') // dnconsole.exe路径, 用于启动模拟器
+    const consolePath = path.resolve(
+      path.dirname(emulatorPath),
+      'dnconsole.exe'
+    ) // dnconsole.exe路径, 用于启动模拟器
     e.adbPath = path.resolve(path.dirname(emulatorPath), 'adb.exe') // adb路径
     const cmd = await getCommandLine(e.pid) // headless.exe的启动参数, 实际上是不可用的, 提取其中的comment为模拟器真实名称, statvm为模拟器uuid
     const statvm = cmd.match(/--startvm (\w*-\w*-\w*-\w*-\w*)/) // 获取模拟器uuid, statvm
     const realName = cmd.match(/--comment ([\d+\w]*) /) // 获取真实名称, realName
     if (!realName || !statvm) return
-    const confPath = path.resolve(path.dirname(emulatorPath), 'vms', 'config', `${realName[1]}.config`) // 模拟器配置文件路径
+    const confPath = path.resolve(
+      path.dirname(emulatorPath),
+      'vms',
+      'config',
+      `${realName[1]}.config`
+    ) // 模拟器配置文件路径
     assert(
       existsSync(confPath),
       `${realName[1]}.config not exist! path: ${confPath}`
     )
     const confDetail = readFileSync(confPath, 'utf-8') // 读config
     logger.silly(confDetail)
-    const displayName = confDetail.match(/"statusSettings.playerName":\s*"([^"]+)"/) // 读配置文件, 获取模拟器显示名称 displayName
-    if (displayName) { // 当新建模拟器时, 不一定会有此选项, 如果没有, 则取realName最后一个数字, 手动拼接
+    const displayName = confDetail.match(
+      /"statusSettings.playerName":\s*"([^"]+)"/
+    ) // 读配置文件, 获取模拟器显示名称 displayName
+    if (displayName) {
+      // 当新建模拟器时, 不一定会有此选项, 如果没有, 则取realName最后一个数字, 手动拼接
       e.commandLine = '"' + consolePath + '" launch --name ' + displayName[1] // 真实命令行启动指令
     } else {
-      e.commandLine = '"' + consolePath + '" launch --name 雷电模拟器-' + realName[1].slice(-1) // 真实命令行启动指令
+      e.commandLine =
+        '"' +
+        consolePath +
+        '" launch --name 雷电模拟器-' +
+        realName[1].slice(-1) // 真实命令行启动指令
     }
     const LdVBoxHeadlessPath = await getPnamePath('LdVBoxHeadless.exe') // LdVBoxHeadless.exe路径
-    const VBoxManagePath = path.resolve(path.dirname(LdVBoxHeadlessPath), 'VBoxManage.exe') // VBoxManage.exe路径
-    const port = (await $`"${VBoxManagePath}" showvminfo ${statvm[1]} --machinereadable`).stdout.match(/Forwarding\(1\)="tcp_5\d\d\d_5\d\d\d,tcp,,(\d*),,/)
+    const VBoxManagePath = path.resolve(
+      path.dirname(LdVBoxHeadlessPath),
+      'VBoxManage.exe'
+    ) // VBoxManage.exe路径
+    const port = (
+      await $`"${VBoxManagePath}" showvminfo ${statvm[1]} --machinereadable`
+    ).stdout.match(/Forwarding\(1\)="tcp_5\d\d\d_5\d\d\d,tcp,,(\d*),,/)
     if (port) {
       e.address = `127.0.0.1:${port[1]}`
     }
   }
 
-  protected async getLd9 (e: Emulator): Promise<void> {
+  protected async getLd9(e: Emulator): Promise<void> {
     // 雷电9模拟器识别
     e.config = 'LDPlayer'
     e.displayName = '雷电模拟器9'
     const emulatorPath = await getPnamePath('dnplayer.exe') // dnplayer.exe路径, 和模拟器配置信息等在一起
-    const consolePath = path.resolve(path.dirname(emulatorPath), 'ldconsole.exe') // dnconsole.exe路径, 用于启动模拟器
+    const consolePath = path.resolve(
+      path.dirname(emulatorPath),
+      'ldconsole.exe'
+    ) // dnconsole.exe路径, 用于启动模拟器
     e.adbPath = path.resolve(path.dirname(emulatorPath), 'adb.exe') // adb路径
     const cmd = await getCommandLine(e.pid) // headless.exe的启动参数, 实际上是不可用的, 提取其中的comment为模拟器真实名称, statvm为模拟器uuid
     const statvm = cmd.match(/--startvm (\w*-\w*-\w*-\w*-\w*)/) // 获取模拟器uuid, statvm
     const realName = cmd.match(/--comment ([\d+\w]*) /) // 获取真实名称, realName
     if (!realName || !statvm) return
-    const confPath = path.resolve(path.dirname(emulatorPath), 'vms', 'config', `${realName[1]}.config`) // 模拟器配置文件路径
+    const confPath = path.resolve(
+      path.dirname(emulatorPath),
+      'vms',
+      'config',
+      `${realName[1]}.config`
+    ) // 模拟器配置文件路径
     assert(
       existsSync(confPath),
-          `${realName[1]}.config not exist! path: ${confPath}`
+      `${realName[1]}.config not exist! path: ${confPath}`
     )
     const confDetail = readFileSync(confPath, 'utf-8') // 读config
-    const displayName = confDetail.match(/"statusSettings.playerName":\s*"([^"]+)"/) // 读配置文件, 获取模拟器显示名称 displayName
-    if (displayName) { // 当新建模拟器时, 不一定会有此选项, 如果没有, 则取realName最后一个数字, 手动拼接
+    const displayName = confDetail.match(
+      /"statusSettings.playerName":\s*"([^"]+)"/
+    ) // 读配置文件, 获取模拟器显示名称 displayName
+    if (displayName) {
+      // 当新建模拟器时, 不一定会有此选项, 如果没有, 则取realName最后一个数字, 手动拼接
       e.commandLine = '"' + consolePath + '" launch --name ' + displayName[1] // 真实命令行启动指令
     } else {
       const launchIndexReg = RegExp(`(\\d+),.*,\\d+,\\d+,\\d+,\\d+,${e.pid},.*`)
-      const emulatorIndex = (await $`${consolePath} list2`).stdout.match(launchIndexReg) // 匹配当前正在运行的模拟器列表, 寻找索引
+      const emulatorIndex = (await $`${consolePath} list2`).stdout.match(
+        launchIndexReg
+      ) // 匹配当前正在运行的模拟器列表, 寻找索引
       if (emulatorIndex) {
         logger.info('Get LD9 Emulator Index: ', emulatorIndex[1])
-        e.commandLine = '"' + consolePath + '" launch --index ' + emulatorIndex[1] // 真实命令行启动指令
+        e.commandLine =
+          '"' + consolePath + '" launch --index ' + emulatorIndex[1] // 真实命令行启动指令
       }
     }
     const Ld9VBoxHeadlessPath = await getPnamePath('Ld9BoxHeadless.exe') // LdVBoxHeadless.exe路径
-    const VBoxManagePath = path.resolve(path.dirname(Ld9VBoxHeadlessPath), 'VBoxManage.exe') // VBoxManage.exe路径
-    const port = (await $`"${VBoxManagePath}" showvminfo ${statvm[1]} --machinereadable`).stdout.match(/Forwarding\(1\)="tcp_5\d\d\d_5\d\d\d,tcp,,(\d*),,/)
+    const VBoxManagePath = path.resolve(
+      path.dirname(Ld9VBoxHeadlessPath),
+      'VBoxManage.exe'
+    ) // VBoxManage.exe路径
+    const port = (
+      await $`"${VBoxManagePath}" showvminfo ${statvm[1]} --machinereadable`
+    ).stdout.match(/Forwarding\(1\)="tcp_5\d\d\d_5\d\d\d,tcp,,(\d*),,/)
     if (port) {
       e.address = `127.0.0.1:${port[1]}`
     }
   }
 
-  async getAdbDevices (): Promise<Device[]> {
+  async getAdbDevices(): Promise<Device[]> {
     const emulators: Device[] = []
     return emulators
   }
 
-  async getEmulators (): Promise<Emulator[]> {
+  async getEmulators(): Promise<Emulator[]> {
     inUsePorts.splice(0, inUsePorts.length)
     const emulators: Emulator[] = []
     const { stdout: tasklist } = await $`tasklist`
     tasklist
       .toString()
       .split('\n')
-      .forEach((line) => {
+      .forEach(line => {
         const res = line.matchAll(regPNamePid)
         for (const match of res) {
           if (emulatorList.includes(match[1])) {
@@ -392,8 +468,16 @@ class WindowsAdapter implements EmulatorAdapter {
       }
       logger.silly(`emulator: ${JSON.stringify(e)}`)
     }
-    emulators.forEach((e) => {
-      if (e.address && e.uuid && e.adbPath && e.config && e.commandLine && e.displayName) availableEmulators.push(e)
+    emulators.forEach(e => {
+      if (
+        e.address &&
+        e.uuid &&
+        e.adbPath &&
+        e.config &&
+        e.commandLine &&
+        e.displayName
+      )
+        availableEmulators.push(e)
     })
     return availableEmulators
   }

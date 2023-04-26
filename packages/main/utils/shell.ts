@@ -8,14 +8,18 @@ interface ProcessOutput {
   stderr: string
 }
 
-const textDecoder = (buf: Buffer): string => iconv.decode(buf, getPlatform() === 'windows' ? 'gb2312' : 'utf8')
+const textDecoder = (buf: Buffer): string =>
+  iconv.decode(buf, getPlatform() === 'windows' ? 'gb2312' : 'utf8')
 
 /**
  * 异步执行shell命令,
  * 示例: $\`tasklist | findstr ${name}\`
  * @returns Promise<{stdout:string, stderr:string}>
  */
-export async function $ (pieces: TemplateStringsArray, ...args: string[]): Promise<ProcessOutput> {
+export async function $(
+  pieces: TemplateStringsArray,
+  ...args: string[]
+): Promise<ProcessOutput> {
   const ret = { stderr: '', stdout: '' }
 
   let cmd = pieces[0]
@@ -28,10 +32,10 @@ export async function $ (pieces: TemplateStringsArray, ...args: string[]): Promi
   logger.info(`exec: ${cmd}`)
 
   try {
-    const { stdout, stderr } = (await execa(cmd, {
+    const { stdout, stderr } = await execa(cmd, {
       shell: getPlatform() === 'windows' ? 'powershell' : 'bash',
-      encoding: null
-    }))
+      encoding: null,
+    })
     ret.stdout = textDecoder(stdout)
     ret.stderr = textDecoder(stderr)
   } catch (err: any) {
@@ -50,13 +54,17 @@ export async function $ (pieces: TemplateStringsArray, ...args: string[]): Promi
  * @param args 参数
  * @returns Promise<{stdout:string, stderr:string}>
  */
-export async function $$ (file: string, args?: string[]): Promise<ProcessOutput> {
+export async function $$(
+  file: string,
+  args?: string[]
+): Promise<ProcessOutput> {
   const ret = { stderr: '', stdout: '' }
   logger.info(`exec: ${file} ${args ? args.join(' ') : ''}`)
   try {
-    const { stdout, stderr } = (await execa(file, args, {
-      encoding: null, detached: true
-    }))
+    const { stdout, stderr } = await execa(file, args, {
+      encoding: null,
+      detached: true,
+    })
     ret.stdout = textDecoder(stdout)
     ret.stderr = textDecoder(stderr)
   } catch (err: any) {

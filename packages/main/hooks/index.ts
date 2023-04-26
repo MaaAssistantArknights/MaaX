@@ -7,7 +7,7 @@ import useClearHooks from './clear'
 import useTaskHooks from './task'
 import usePathHooks from './path'
 
-export default function useHooks (): void {
+export default function useHooks(): void {
   useVersionHooks()
   useAsstHooks()
   useStorageHooks()

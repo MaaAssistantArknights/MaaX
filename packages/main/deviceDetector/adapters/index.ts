@@ -11,4 +11,6 @@ const getAdapter = async (): Promise<EmulatorAdapter> => {
   }
 }
 
-export default (async () => { return await getAdapter() })()
+export default (async () => {
+  return await getAdapter()
+})()

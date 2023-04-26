@@ -15,13 +15,7 @@ const taskStore = useTaskStore()
 
 const connectMessage: Ref<MessageReactive | undefined> = ref()
 
-deviceStore.$onAction(({
-  name,
-  store,
-  args,
-  after,
-  onError
-}) => {
+deviceStore.$onAction(({ name, store, args, after, onError }) => {
   if (name === 'updateDeviceStatus') {
     const [uuid, status] = args
     const device = store.devices.find(device => device.uuid === uuid)
@@ -47,35 +41,20 @@ deviceStore.$onAction(({
   }
 })
 
-componentStore.$onAction(({
-  name,
-  store,
-  args,
-  after,
-  onError
-}) => {
+componentStore.$onAction(({ name, store, args, after, onError }) => {
   if (name === 'updateComponentStatus') {
     const [componentType, status] = args
     if (status.installerStatus === 'exception') {
       message.error(
-        t(
-          'download.installFailed',
-          { componentType: t(`download["${componentType}"]`) }
-        )
+        t('download.installFailed', {
+          componentType: t(`download["${componentType}"]`),
+        })
       )
     }
   }
 })
 
-taskStore.$onAction(({
-  name,
-  store,
-  args,
-  after,
-  onError
-}) => {
-
-})
+taskStore.$onAction(({ name, store, args, after, onError }) => {})
 </script>
 
 <template>

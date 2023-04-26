@@ -8,7 +8,7 @@ import {
   NProgress,
   NAlert,
   NTooltip,
-  NPopconfirm
+  NPopconfirm,
 } from 'naive-ui'
 import useComponentStore from '@/store/components'
 import useDeviceStore from '@/store/devices'
@@ -21,7 +21,7 @@ const isTasking = computed(() =>
 )
 
 const props = defineProps<{
-  show: boolean;
+  show: boolean
 }>()
 
 defineEmits<{
@@ -34,11 +34,11 @@ const showTooltip: Ref<ComponentType | undefined> = ref()
 const tooltipPosition = ref({
   x: 0,
   y: 0,
-  width: 0
+  width: 0,
 })
 
 const getInstallProgress = (component?: ComponentType) =>
-  (component ? componentStore[component].installerProgress : 0)
+  component ? componentStore[component].installerProgress : 0
 
 // TODO: replace with i18n function
 const installButtonText = (status: ComponentStatus) => {
@@ -96,11 +96,11 @@ const handleInstall = (component: ComponentType) => {
   }
   if (componentStore[component].componentStatus === 'upgradable') {
     componentStore.updateComponentStatus(component, {
-      componentStatus: 'upgrading'
+      componentStatus: 'upgrading',
     })
   } else {
     componentStore.updateComponentStatus(component, {
-      componentStatus: 'installing'
+      componentStatus: 'installing',
     })
   }
 }
@@ -118,7 +118,7 @@ const handleMouseEnter = (event: MouseEvent, component: ComponentType) => {
   tooltipPosition.value = {
     x: rect.x,
     y: rect.y,
-    width: rect.width
+    width: rect.width,
   }
 }
 
@@ -129,17 +129,20 @@ const handleMouseLeave = () => {
 const components: ComponentType[] = [
   'Maa App',
   'Maa Core',
-  'Android Platform Tools'
+  'Android Platform Tools',
 ]
 
 onMounted(() => {
   Promise.all(
     components.map(component => {
       return new Promise<void>(resolve => {
-        window.ipcRenderer.invoke('main.ComponentManager:getStatus', component)
+        window.ipcRenderer
+          .invoke('main.ComponentManager:getStatus', component)
           .then((status: ComponentStatus | undefined) => {
             if (status) {
-              componentStore.updateComponentStatus(component, { componentStatus: status })
+              componentStore.updateComponentStatus(component, {
+                componentStatus: status,
+              })
             }
             resolve()
           })
@@ -155,7 +158,7 @@ onMounted(() => {
     :show="props.show"
     :closable="false"
     :style="{ width: '600px' }"
-    @update:show="(value) => $emit('update:show', value)"
+    @update:show="value => $emit('update:show', value)"
   >
     <NCard title="组件安装">
       <NSpace vertical>
@@ -166,7 +169,7 @@ onMounted(() => {
           v-for="component of components"
           :key="component"
           class="download-card"
-          @mouseenter="(event) => handleMouseEnter(event, component)"
+          @mouseenter="event => handleMouseEnter(event, component)"
           @mouseleave="handleMouseLeave"
         >
           <NProgress
@@ -194,18 +197,28 @@ onMounted(() => {
                   installerStatusText(
                     componentStore[component].installerStatus
                   ),
-                ].filter(text => !!text).join(' - ')
+                ]
+                  .filter(text => !!text)
+                  .join(' - ')
               }}
             </div>
-            <NPopconfirm v-else :disabled="!isTasking" @positive-click="() => handleInstall(component)">
+            <NPopconfirm
+              v-else
+              :disabled="!isTasking"
+              @positive-click="() => handleInstall(component)"
+            >
               <template #trigger>
                 <NButton
                   type="primary"
-                  :secondary="componentStore[component].componentStatus === 'installed'"
+                  :secondary="
+                    componentStore[component].componentStatus === 'installed'
+                  "
                   size="small"
                   @click="() => handleInstallButtonClick(component)"
                 >
-                  {{ installButtonText(componentStore[component].componentStatus) }}
+                  {{
+                    installButtonText(componentStore[component].componentStatus)
+                  }}
                 </NButton>
               </template>
             </NPopconfirm>
@@ -214,9 +227,17 @@ onMounted(() => {
       </NSpace>
       <NTooltip
         trigger="manual"
-        :x="tooltipPosition.x + getInstallProgress(showTooltip) * tooltipPosition.width"
+        :x="
+          tooltipPosition.x +
+          getInstallProgress(showTooltip) * tooltipPosition.width
+        "
         :y="tooltipPosition.y"
-        :show="!!showTooltip && ['installing', 'upgrading'].includes(componentStore[showTooltip].componentStatus)"
+        :show="
+          !!showTooltip &&
+          ['installing', 'upgrading'].includes(
+            componentStore[showTooltip].componentStatus
+          )
+        "
       >
         {{ Math.ceil(getInstallProgress(showTooltip) * 100) }}%
       </NTooltip>

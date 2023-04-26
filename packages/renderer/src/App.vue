@@ -11,7 +11,7 @@ import {
   NDialogProvider,
   GlobalThemeOverrides,
   darkTheme,
-  ThemeCommonVars
+  ThemeCommonVars,
 } from 'naive-ui'
 import { naiveUiLocale } from '@/i18n'
 import useThemeStore from '@/store/theme'
@@ -44,7 +44,7 @@ const commonThemeOverrides: Partial<ThemeCommonVars> = {
   errorColor: '#ff6b6b',
   errorColorHover: '#ff8f8f',
   errorColorPressed: '#ff4747',
-  errorColorSuppl: '#ff8f8f'
+  errorColorSuppl: '#ff8f8f',
 }
 
 const lightThemeOverrides: GlobalThemeOverrides = {
@@ -55,8 +55,8 @@ const lightThemeOverrides: GlobalThemeOverrides = {
     primaryColorHover: '#8380b0',
     primaryColorPressed: '#5a578b',
     primaryColorSuppl: '#8380b0',
-    ...commonThemeOverrides
-  }
+    ...commonThemeOverrides,
+  },
 }
 
 const darkThemeOverrides: GlobalThemeOverrides = {
@@ -66,8 +66,8 @@ const darkThemeOverrides: GlobalThemeOverrides = {
     primaryColorHover: '#b9e4c6',
     primaryColorPressed: '#80cf98',
     primaryColorSuppl: '#b9e4c6',
-    ...commonThemeOverrides
-  }
+    ...commonThemeOverrides,
+  },
 }
 
 const style = computed(() => {
@@ -75,11 +75,12 @@ const style = computed(() => {
     themeStore.bgFollowTheme && themeStore.currentTheme === 'maa-dark'
       ? themeStore.bgDark
       : themeStore.bgLight
-  const bodyColor = themeStore.currentTheme === 'maa-dark' ? '#0f0f0f' : '#f0f0f0'
+  const bodyColor =
+    themeStore.currentTheme === 'maa-dark' ? '#0f0f0f' : '#f0f0f0'
   return {
     '--inner-bg': `url(${bg.url})`,
     '--inner-opacity': bg.opacity,
-    background: transparentize(bodyColor, 1 - themeStore.themeColorOpacity)
+    background: transparentize(bodyColor, 1 - themeStore.themeColorOpacity),
   }
 })
 

@@ -9,10 +9,13 @@ import {
   NScrollbar,
   NTabs,
   NTabPane,
-  NAvatar
+  NAvatar,
 } from 'naive-ui'
 import gamedataApi from '@/api/gamedata'
-import type { Operator as _Operator, OperatorProfession } from '@/api/gamedata/types'
+import type {
+  Operator as _Operator,
+  OperatorProfession,
+} from '@/api/gamedata/types'
 import { getOperatorAvatar, getProfessionImage } from '@/utils/game_image'
 import useThemeStore from '@/store/theme'
 
@@ -23,8 +26,8 @@ interface Operator extends _Operator {
 const themeStore = useThemeStore()
 
 const props = defineProps<{
-  show: boolean;
-  selectedOperators: Operator[];
+  show: boolean
+  selectedOperators: Operator[]
 }>()
 
 const emit = defineEmits<{
@@ -46,33 +49,39 @@ const professions: Record<OperatorProfession, string> = {
   PIONEER: '先锋',
   TANK: '重装',
   CASTER: '术师',
-  SUPPORT: '辅助'
+  SUPPORT: '辅助',
 }
 
 onMounted(async () => {
   loading.value = true
-  operators.value = Object.values((await gamedataApi.getAllOperators())).filter(
-    (operator) => operator.nationId !== null
+  operators.value = Object.values(await gamedataApi.getAllOperators()).filter(
+    operator => operator.nationId !== null
   )
 
-  operators.value.forEach(async (operator) => {
+  operators.value.forEach(async operator => {
     operator.image = getOperatorAvatar(operator.name)
   })
 
   loading.value = false
 })
 
-const getProfessionTab = (professionCode: string, professionName: string): VNode => {
-  const imgUrl = getProfessionImage(professionName, themeStore.currentTheme === 'maa-light')
+const getProfessionTab = (
+  professionCode: string,
+  professionName: string
+): VNode => {
+  const imgUrl = getProfessionImage(
+    professionName,
+    themeStore.currentTheme === 'maa-light'
+  )
   const count = counts.value[professionCode]
   return h('div', { style: { display: 'flex', alignItems: 'center' } }, [
     h(NBadge, { value: count || 0 }, () => h(NAvatar, { src: imgUrl })),
-    h('span', { style: { marginLeft: '4px' } }, professionName)
+    h('span', { style: { marginLeft: '4px' } }, professionName),
   ])
 }
 
 const toggleSelected = (operator: Operator) => {
-  const find = _.find(props.selectedOperators, (op) => op.name === operator.name)
+  const find = _.find(props.selectedOperators, op => op.name === operator.name)
   if (find) {
     emit('remove:operator', operator)
   } else {
@@ -88,7 +97,7 @@ const toggleSelected = (operator: Operator) => {
     display-directive="show"
     role="dialog"
     aria-modal="true"
-    @update:show="(value) => $emit('update:show', value)"
+    @update:show="value => $emit('update:show', value)"
   >
     <NCard
       style="width: 600px"
@@ -96,10 +105,7 @@ const toggleSelected = (operator: Operator) => {
       aria-modal="true"
       title="选择干员"
     >
-      <NTabs
-        :bar-width="28"
-        type="line"
-      >
+      <NTabs :bar-width="28" type="line">
         <NTabPane
           v-for="[code, name] of Object.entries(professions)"
           :key="code"
@@ -115,13 +121,15 @@ const toggleSelected = (operator: Operator) => {
             />
             <div class="grid-wrapper">
               <NAvatar
-                v-for="operator of operators.filter((op) => op.profession === code)"
+                v-for="operator of operators.filter(
+                  op => op.profession === code
+                )"
                 :key="operator.name"
                 :src="operator.image"
                 :size="90"
                 class="operator-avatar"
                 :class="
-                  selectedOperators.find((op) => op.name === operator.name)
+                  selectedOperators.find(op => op.name === operator.name)
                     ? 'selected'
                     : ''
                 "
@@ -145,7 +153,7 @@ const toggleSelected = (operator: Operator) => {
 .operator-avatar {
   position: relative;
   &.selected::before {
-    content: "";
+    content: '';
     box-sizing: border-box;
     position: absolute;
     border: 4px solid rgb(234, 173, 61);

@@ -7,35 +7,37 @@ const getUA = (): string => {
   const settingStore = useSettingStore()
   const coreVersion = settingStore.version.core.current
   const uiVersion = `v${settingStore.version.ui.current ?? ''}`
-  const versionString = coreVersion ? `(core v${coreVersion})` : '(without core)'
+  const versionString = coreVersion
+    ? `(core v${coreVersion})`
+    : '(without core)'
   return `MeoAssistantArknights ${uiVersion} ${versionString}`
 }
 
 class ApiService {
-  constructor (baseUrl: string) {
+  constructor(baseUrl: string) {
     this._instance = axios.create({
       baseURL: baseUrl,
-      timeout: 5000
+      timeout: 5000,
     })
 
     this._instance.interceptors.request.use(
-      (request) => {
+      request => {
         request.headers = {
           ...request.headers,
-          'User-Agent': getUA()
+          'User-Agent': getUA(),
         }
         return request
       },
-      async (error) => {
+      async error => {
         return await Promise.resolve(new Error(error))
       }
     )
 
     this._instance.interceptors.response.use(
-      (response) => {
+      response => {
         return response
       },
-      async (error) => {
+      async error => {
         return await Promise.resolve(new Error(error))
       }
     )
@@ -49,7 +51,11 @@ class ApiService {
     return response.data
   }
 
-  async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+  async post<T>(
+    url: string,
+    data?: any,
+    config?: AxiosRequestConfig
+  ): Promise<T> {
     const response = await this._instance.post(url, data, config)
     if (_.isError(response)) {
       throw response
@@ -57,11 +63,11 @@ class ApiService {
     return response.data
   }
 
-  get baseUrl (): string | undefined {
+  get baseUrl(): string | undefined {
     return this._instance.defaults.baseURL
   }
 
-  private readonly _instance: AxiosInstance;
+  private readonly _instance: AxiosInstance
 }
 
 export default ApiService

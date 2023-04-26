@@ -3,7 +3,7 @@ import { ipcMainHandle } from '@main/utils/ipc-main'
 
 const storage = new Storage()
 
-export default function useStorageHooks (): void {
+export default function useStorageHooks(): void {
   ipcMainHandle('main.StorageManager:get', (event, key: string) => {
     return storage.get(key)
   })

@@ -1,7 +1,8 @@
 import { app, shell } from 'electron'
 import path from 'path'
 
-export const getAppBaseDir = (): string => path.join(app.getPath('appData'), app.getName())
+export const getAppBaseDir = (): string =>
+  path.join(app.getPath('appData'), app.getName())
 
 export const openFolder = (type: 'core' | 'ui-log' | 'core-log'): void => {
   const baseAppDir = getAppBaseDir()

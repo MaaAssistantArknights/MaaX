@@ -10,219 +10,263 @@ import {
   NInputNumber,
   NCheckbox,
   NInput,
-  NTooltip
+  NTooltip,
 } from 'naive-ui'
 import { showMessage } from '@/utils/message'
 
 // import logger from '@/hooks/caller/logger'
 
-type phantomSquadType = '指挥分队' | '集群分队'| '后勤分队'| '矛头分队'| '突击战术分队'| '堡垒战术分队'| '远程战术分队' |'破坏战术分队'| '研究分队'| '高规格分队'
-type mizukiSquadType = '心胜于物分队' | '物尽其用分队' | '以人为本分队' | '指挥分队' | '集群分队'| '后勤分队'| '矛头分队'| '突击战术分队'| '堡垒战术分队'| '远程战术分队' |'破坏战术分队'| '研究分队'| '高规格分队'
+type phantomSquadType =
+  | '指挥分队'
+  | '集群分队'
+  | '后勤分队'
+  | '矛头分队'
+  | '突击战术分队'
+  | '堡垒战术分队'
+  | '远程战术分队'
+  | '破坏战术分队'
+  | '研究分队'
+  | '高规格分队'
+type mizukiSquadType =
+  | '心胜于物分队'
+  | '物尽其用分队'
+  | '以人为本分队'
+  | '指挥分队'
+  | '集群分队'
+  | '后勤分队'
+  | '矛头分队'
+  | '突击战术分队'
+  | '堡垒战术分队'
+  | '远程战术分队'
+  | '破坏战术分队'
+  | '研究分队'
+  | '高规格分队'
 
-type rolesType = | '稳扎稳打' | '取长补短' | '随心所欲' | '先手必胜'
+type rolesType = '稳扎稳打' | '取长补短' | '随心所欲' | '先手必胜'
 
 interface RogueConfiguration {
-  theme: RogueTheme.Phantom | RogueTheme.Mizuki;
-  mode: number;
-  starts_count: number,
-  investment_enabled: boolean,
-  investments_count: number,
-  stop_when_investment_full: boolean,
-  squad: string,
-  roles: string,
-  core_char: '',
-  use_support: boolean,
+  theme: RogueTheme.Phantom | RogueTheme.Mizuki
+  mode: number
+  starts_count: number
+  investment_enabled: boolean
+  investments_count: number
+  stop_when_investment_full: boolean
+  squad: string
+  roles: string
+  core_char: ''
+  use_support: boolean
   use_nonfriend_support: boolean
 }
 
 const phantomSquadOptions: {
-  label: string;
-  value: phantomSquadType;
+  label: string
+  value: phantomSquadType
 }[] = [
   {
     label: '指挥分队',
-    value: '指挥分队'
+    value: '指挥分队',
   },
   {
     label: '集群分队',
-    value: '集群分队'
+    value: '集群分队',
   },
   {
     label: '后勤分队',
-    value: '后勤分队'
+    value: '后勤分队',
   },
   {
     label: '矛头分队',
-    value: '矛头分队'
+    value: '矛头分队',
   },
   {
     label: '突击战术分队',
-    value: '突击战术分队'
+    value: '突击战术分队',
   },
   {
     label: '堡垒战术分队',
-    value: '堡垒战术分队'
+    value: '堡垒战术分队',
   },
   {
     label: '远程战术分队',
-    value: '远程战术分队'
+    value: '远程战术分队',
   },
   {
     label: '破坏战术分队',
-    value: '破坏战术分队'
+    value: '破坏战术分队',
   },
   {
     label: '研究分队',
-    value: '研究分队'
+    value: '研究分队',
   },
   {
     label: '高规格分队',
-    value: '高规格分队'
-  }
+    value: '高规格分队',
+  },
 ]
 
 const mizukiSquadOptions: {
-  label: string;
-  value: mizukiSquadType;
+  label: string
+  value: mizukiSquadType
 }[] = [
   {
     label: '心胜于物分队',
-    value: '心胜于物分队'
+    value: '心胜于物分队',
   },
   {
     label: '物尽其用分队',
-    value: '物尽其用分队'
+    value: '物尽其用分队',
   },
   {
     label: '以人为本分队',
-    value: '以人为本分队'
+    value: '以人为本分队',
   },
   {
     label: '指挥分队',
-    value: '指挥分队'
+    value: '指挥分队',
   },
   {
     label: '集群分队',
-    value: '集群分队'
+    value: '集群分队',
   },
   {
     label: '后勤分队',
-    value: '后勤分队'
+    value: '后勤分队',
   },
   {
     label: '矛头分队',
-    value: '矛头分队'
+    value: '矛头分队',
   },
   {
     label: '突击战术分队',
-    value: '突击战术分队'
+    value: '突击战术分队',
   },
   {
     label: '堡垒战术分队',
-    value: '堡垒战术分队'
+    value: '堡垒战术分队',
   },
   {
     label: '远程战术分队',
-    value: '远程战术分队'
+    value: '远程战术分队',
   },
   {
     label: '破坏战术分队',
-    value: '破坏战术分队'
+    value: '破坏战术分队',
   },
   {
     label: '研究分队',
-    value: '研究分队'
+    value: '研究分队',
   },
   {
     label: '高规格分队',
-    value: '高规格分队'
-  }
+    value: '高规格分队',
+  },
 ]
 
 const rolesOptions: {
-  label: string;
-  value: rolesType;
+  label: string
+  value: rolesType
 }[] = [
   {
     label: '随心所欲(三张随机)',
-    value: '随心所欲'
+    value: '随心所欲',
   },
   {
     label: '稳扎稳打(重装术士狙击)',
-    value: '稳扎稳打'
+    value: '稳扎稳打',
   },
   {
     label: '取长补短(近卫辅助医疗)',
-    value: '取长补短'
+    value: '取长补短',
   },
   {
     label: '先手必胜(先锋狙击特种)',
-    value: '先手必胜'
-  }
+    value: '先手必胜',
+  },
 ]
 
 const strategyOptions: Array<{
-  label: string;
-  value: number;
+  label: string
+  value: number
 }> = [
   {
     label: '刷蜡烛, 尽可能往后打',
-    value: 0
+    value: 0,
   },
   {
     label: '刷源石锭投资，第一层商店后退出',
-    value: 1
-  }
+    value: 1,
+  },
 ]
 
 const themeOptions: {
-  label: string;
-  value: string;
+  label: string
+  value: string
 }[] = [
   {
     label: '傀影',
-    value: 'Phantom'
+    value: 'Phantom',
   },
   {
     label: '水月',
-    value: 'Mizuki'
-  }
+    value: 'Mizuki',
+  },
 ]
 
 const props = defineProps<{
-  configurations: RogueConfiguration;
+  configurations: RogueConfiguration
   taskIndex: number
 }>()
 
-const updateTaskConfigurations = inject('update:configuration') as
-  (key: string, value: any, index: number) => void
-const configurationDisabled = inject('configurationDisabled') as {re: boolean, nre: boolean}
+const updateTaskConfigurations = inject('update:configuration') as (
+  key: string,
+  value: any,
+  index: number
+) => void
+const configurationDisabled = inject('configurationDisabled') as {
+  re: boolean
+  nre: boolean
+}
 
-function handleUpdateConfiguration (key: string, value: any) {
+function handleUpdateConfiguration(key: string, value: any) {
   updateTaskConfigurations(key, value, props.taskIndex)
 }
 
-function handleUpdateRogueTheme(value:string) {
+function handleUpdateRogueTheme(value: string) {
   updateTaskConfigurations('theme', value, props.taskIndex)
   // 切主题, 检查一下分队
   if (value === RogueTheme.Phantom) {
-    if (!phantomSquadOptions.find((item) => item.value === props.configurations.squad)) {
-      showMessage('当前分队不支持傀影主题, 已自动切换到指挥分队', { type: 'info', duration: 5000, closable: true })
+    if (
+      !phantomSquadOptions.find(
+        item => item.value === props.configurations.squad
+      )
+    ) {
+      showMessage('当前分队不支持傀影主题, 已自动切换到指挥分队', {
+        type: 'info',
+        duration: 5000,
+        closable: true,
+      })
       handleUpdateConfiguration('squad', '指挥分队')
     }
   } else {
-    if (!mizukiSquadOptions.find((item) => item.value === props.configurations.squad)) {
-      showMessage('当前分队不支持水月主题, 已自动切换到指挥分队', { type: 'info', duration: 5000, closable: true })
+    if (
+      !mizukiSquadOptions.find(
+        item => item.value === props.configurations.squad
+      )
+    ) {
+      showMessage('当前分队不支持水月主题, 已自动切换到指挥分队', {
+        type: 'info',
+        duration: 5000,
+        closable: true,
+      })
       handleUpdateConfiguration('squad', '指挥分队')
     }
   }
 }
 
-function handleUpdateStartsCount (value: number | null) {
+function handleUpdateStartsCount(value: number | null) {
   if (value === null) value = 999
   handleUpdateConfiguration('starts_count', value)
 }
-
 </script>
 
 <template>
@@ -234,55 +278,51 @@ function handleUpdateStartsCount (value: number | null) {
     :show-feedback="false"
   >
     <NSpace vertical>
-      <NFormItem
-        label="主题"
-      >
+      <NFormItem label="主题">
         <NSelect
           :disabled="configurationDisabled.re"
           :value="props.configurations.theme"
           :options="themeOptions"
-          @update:value="(value) => handleUpdateRogueTheme(value)"
+          @update:value="value => handleUpdateRogueTheme(value)"
         />
       </NFormItem>
-      <NFormItem
-        label="作战策略"
-      >
+      <NFormItem label="作战策略">
         <NSelect
           :disabled="configurationDisabled.re"
           :value="props.configurations.mode"
           :options="strategyOptions"
-          @update:value="(value) => handleUpdateConfiguration('mode', value)"
+          @update:value="value => handleUpdateConfiguration('mode', value)"
         />
       </NFormItem>
-      <NFormItem
-        label="开局分队"
-      >
+      <NFormItem label="开局分队">
         <NSelect
           :disabled="configurationDisabled.re"
           :value="props.configurations.squad"
-          :options="props.configurations.theme === RogueTheme.Phantom ? phantomSquadOptions : mizukiSquadOptions"
-          @update:value="(value) => handleUpdateConfiguration('squad', value)"
+          :options="
+            props.configurations.theme === RogueTheme.Phantom
+              ? phantomSquadOptions
+              : mizukiSquadOptions
+          "
+          @update:value="value => handleUpdateConfiguration('squad', value)"
         />
       </NFormItem>
-      <NFormItem
-        label="开局职业"
-      >
+      <NFormItem label="开局职业">
         <NSelect
           :disabled="configurationDisabled.re"
           :value="props.configurations.roles"
           :options="rolesOptions"
-          @update:value="(value) => handleUpdateConfiguration('roles', value)"
+          @update:value="value => handleUpdateConfiguration('roles', value)"
         />
       </NFormItem>
-      <NFormItem
-        label="开局干员"
-      >
+      <NFormItem label="开局干员">
         <NTooltip trigger="hover">
           <template #trigger>
             <NInput
               :disabled="configurationDisabled.re"
               :value="props.configurations.core_char"
-              @update:value="(value) => handleUpdateConfiguration('core_char', value)"
+              @update:value="
+                value => handleUpdateConfiguration('core_char', value)
+              "
             />
           </template>
           仅支持单个干员中！文！名！。默认识别练度自动选择
@@ -302,7 +342,9 @@ function handleUpdateStartsCount (value: number | null) {
         <NCheckbox
           :disabled="configurationDisabled.re"
           :checked="props.configurations.use_support"
-          @update:checked="(value) => handleUpdateConfiguration('use_support', value)"
+          @update:checked="
+            value => handleUpdateConfiguration('use_support', value)
+          "
         >
           开局干员使用助战
         </NCheckbox>
@@ -313,7 +355,10 @@ function handleUpdateStartsCount (value: number | null) {
             <NCheckbox
               :disabled="configurationDisabled.re"
               :checked="props.configurations.use_nonfriend_support"
-              @update:checked="(value) => handleUpdateConfiguration('use_nonfriend_support', value)"
+              @update:checked="
+                value =>
+                  handleUpdateConfiguration('use_nonfriend_support', value)
+              "
             >
               允许使用非好友助战
             </NCheckbox>

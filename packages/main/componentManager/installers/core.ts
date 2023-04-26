@@ -11,11 +11,11 @@ import CoreLoader from '@main/coreLoader'
 
 @Singleton
 class CoreInstaller extends ComponentInstaller {
-  public constructor () {
+  public constructor() {
     super()
   }
 
-  public async install (): Promise<void> {
+  public async install(): Promise<void> {
     try {
       if (this.downloader_) {
         const update = await this.checkUpdate()
@@ -36,7 +36,7 @@ class CoreInstaller extends ComponentInstaller {
     }
   }
 
-  public async upgrade (): Promise<void> {
+  public async upgrade(): Promise<void> {
     try {
       if (this.downloader_) {
         const update = await this.checkUpdate()
@@ -57,21 +57,21 @@ class CoreInstaller extends ComponentInstaller {
     }
   }
 
-  public get status (): InstallerStatus {
+  public get status(): InstallerStatus {
     return this.status_
   }
 
-  protected onStart (): void {}
+  protected onStart(): void {}
 
-  protected onProgress (progress: number): void {
+  protected onProgress(progress: number): void {
     ipcMainSend('renderer.ComponentManager:updateStatus', {
       type: this.componentType,
       status: this.status_,
-      progress
+      progress,
     })
   }
 
-  protected onCompleted (): void {
+  protected onCompleted(): void {
     this.status_ = 'done'
     if (fs.existsSync(this.versionFile)) {
       fs.rmSync(this.versionFile)
@@ -80,24 +80,24 @@ class CoreInstaller extends ComponentInstaller {
     ipcMainSend('renderer.ComponentManager:installDone', {
       type: this.componentType,
       status: this.status_,
-      progress: 0 // 不显示进度条
+      progress: 0, // 不显示进度条
     })
   }
 
-  protected onException (): void {
+  protected onException(): void {
     this.status_ = 'exception'
     ipcMainSend('renderer.ComponentManager:installInterrupted', {
       type: this.componentType,
       status: this.status_,
-      progress: 0
+      progress: 0,
     })
   }
 
-  protected onDownloadedUpgrade (): void {
+  protected onDownloadedUpgrade(): void {
     ipcMainSend('renderer.ComponentManager:downloadUpgradeDone', {
       type: this.componentType,
       status: this.status_,
-      progress: 0
+      progress: 0,
     })
   }
 
@@ -106,9 +106,10 @@ class CoreInstaller extends ComponentInstaller {
       this.onProgress(0.8 * (task.progress.precent ?? 0))
     },
     handleDownloadCompleted: (task: DownloadTask) => {
-      const coreVersion = (new CoreLoader()).GetCoreVersion()
+      const coreVersion = new CoreLoader().GetCoreVersion()
 
-      if (coreVersion) { // 存在core, 需要更新
+      if (coreVersion) {
+        // 存在core, 需要更新
         this.status_ = 'restart'
         this.onDownloadedUpgrade()
       } else {
@@ -123,8 +124,8 @@ class CoreInstaller extends ComponentInstaller {
     handleDownloadInterrupted: () => {
       this.status_ = 'exception'
       this.onException()
-    }
-  };
+    },
+  }
 
   public readonly unzipHandle = {
     handleUnzipUpdate: (percent: number) => {
@@ -137,28 +138,28 @@ class CoreInstaller extends ComponentInstaller {
     handleUnzipInterrupted: () => {
       this.status_ = 'exception'
       this.onException()
-    }
-  };
+    },
+  }
 
   public getRelease = async () => {
     const apiUrls = [
       'https://gh.cirno.xyz/api.github.com/repos/MaaAssistantArknights/MaaRelease/releases',
-      'https://api.github.com/repos/MaaAssistantArknights/MaaRelease/releases'
+      'https://api.github.com/repos/MaaAssistantArknights/MaaRelease/releases',
     ]
     for (const url of apiUrls) {
       const releaseResponse = await this.tryRequest(url)
       if (releaseResponse) {
         this.releaseTemp = {
           data: releaseResponse.data[0],
-          updated: Date.now()
+          updated: Date.now(),
         }
         break
       }
     }
     return this.releaseTemp?.data
-  };
+  }
 
-  public async checkUpdate (): Promise<Update | false | undefined> {
+  public async checkUpdate(): Promise<Update | false | undefined> {
     let release = null
     try {
       release = await this.getRelease()
@@ -214,32 +215,26 @@ class CoreInstaller extends ComponentInstaller {
     return {
       url: download.browser_download_url,
       version: tag_name,
-      releaseDate: published_at
+      releaseDate: published_at,
     }
   }
 
-  protected status_: InstallerStatus = 'pending';
-  public downloader_: DownloadManager | null = null;
+  protected status_: InstallerStatus = 'pending'
+  public downloader_: DownloadManager | null = null
 
   // 当前版本
-  private readonly versionFile = path.join(
-    getAppBaseDir(),
-    'core/core_version'
-  );
+  private readonly versionFile = path.join(getAppBaseDir(), 'core/core_version')
 
   // 可升级版本
   private readonly upgradableFile = path.join(
     getAppBaseDir(),
     'core/core_upgradable'
-  );
-
-  // 升级文件名
-  private readonly upgradeFile = path.join(
-    getAppBaseDir(),
-    'core/core_upgrade'
   )
 
-  protected readonly componentType: ComponentType = 'Maa Core';
+  // 升级文件名
+  private readonly upgradeFile = path.join(getAppBaseDir(), 'core/core_upgrade')
+
+  protected readonly componentType: ComponentType = 'Maa Core'
 }
 
 export default CoreInstaller

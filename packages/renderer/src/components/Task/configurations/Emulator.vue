@@ -7,31 +7,31 @@ import useDeviceStore from '@/store/devices'
 const deviceStore = useDeviceStore()
 
 interface EmulatorConfiguration {
-  commandLine: string; // 启动参数，用于从命令行启动指定模拟器
-  delay: 30 | 60 | 120 | 300 | 600; // 等待模拟器启动完成的延迟
+  commandLine: string // 启动参数，用于从命令行启动指定模拟器
+  delay: 30 | 60 | 120 | 300 | 600 // 等待模拟器启动完成的延迟
 }
 
 const delayOptions = [
   {
     value: 30,
-    label: '30秒 - 不建议'
+    label: '30秒 - 不建议',
   },
   {
     value: 60,
-    label: '一分钟'
+    label: '一分钟',
   },
   {
     value: 120,
-    label: '两分钟'
+    label: '两分钟',
   },
   {
     value: 300,
-    label: '五分钟'
+    label: '五分钟',
   },
   {
     value: 600,
-    label: '十分钟'
-  }
+    label: '十分钟',
+  },
 ]
 
 const props = defineProps<{
@@ -39,12 +39,18 @@ const props = defineProps<{
   taskIndex: number
 }>()
 
-const updateTaskConfigurations = inject('update:configuration') as
-  (key: string, value: any, index: number) => void
+const updateTaskConfigurations = inject('update:configuration') as (
+  key: string,
+  value: any,
+  index: number
+) => void
 
-const configurationDisabled = inject('configurationDisabled') as {re: boolean, nre: boolean}
+const configurationDisabled = inject('configurationDisabled') as {
+  re: boolean
+  nre: boolean
+}
 
-function handleUpdateConfiguration (key: string, value: any) {
+function handleUpdateConfiguration(key: string, value: any) {
   updateTaskConfigurations(key, value, props.taskIndex)
 }
 
@@ -54,7 +60,6 @@ const commandLine = deviceStore.getDevice(routeUuid)?.commandLine
 if (commandLine) {
   handleUpdateConfiguration('commandLine', commandLine)
 }
-
 </script>
 <template>
   <div class="configuration-form">

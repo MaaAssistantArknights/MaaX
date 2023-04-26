@@ -1,7 +1,9 @@
 type __PropertyArray = Electron.OpenDialogOptions['properties']
 type __CleanUndefined<T> = T extends undefined ? never : T
 
-type DialogProperty = __CleanUndefined<__PropertyArray> extends (infer T)[] ? T : never
+type DialogProperty = __CleanUndefined<__PropertyArray> extends (infer T)[]
+  ? T
+  : never
 
 type IpcMainHandleEventType__AutoRegister = {
   'main.CoreLoader:loadResource': (arg: { path: string }) => boolean
@@ -10,19 +12,34 @@ type IpcMainHandleEventType__AutoRegister = {
   'main.CoreLoader:create': () => boolean
   'main.CoreLoader:createEx': (arg: { address: string }) => boolean
   'main.CoreLoader:destroy': (arg: { uuid: string }) => boolean
-  'main.CoreLoader:connect': (arg: { address: string, uuid: string, adb_path: string, config: string }) => boolean
+  'main.CoreLoader:connect': (arg: {
+    address: string
+    uuid: string
+    adb_path: string
+    config: string
+  }) => boolean
   'main.CoreLoader:initCore': (arg: InitCoreParam) => boolean
   'main.CoreLoader:initCoreAsync': (arg: InitCoreParam) => number
   'main.CoreLoader:disconnectAndDestroy': (arg: { uuid: string }) => boolean
-  'main.CoreLoader:appendTask': (arg: { uuid: string, type: string, params: Record<string, unknown>}) => number
-  'main.CoreLoader:setTaskParams': (arg: { uuid: string, task_id: number, params: Record<string, unknown> }) => boolean
+  'main.CoreLoader:appendTask': (arg: {
+    uuid: string
+    type: string
+    params: Record<string, unknown>
+  }) => number
+  'main.CoreLoader:setTaskParams': (arg: {
+    uuid: string
+    task_id: number
+    params: Record<string, unknown>
+  }) => boolean
   'main.CoreLoader:start': (arg: { uuid: string }) => boolean
   'main.CoreLoader:stop': (arg: { uuid: string }) => boolean
   'main.CoreLoader:supportedStages': () => string[]
   'main.CoreLoader:changeTouchMode': (arg: { mode: TouchMode }) => boolean
   'main.CoreLoader:asyncScreencap': (arg: { uuid: string }) => number | boolean
   // WARN: 该方法尚未实现
-  'main.CoreLoader:getScreencap': (arg: { uuid: string }) => Promise<{ screenshot: string }>
+  'main.CoreLoader:getScreencap': (arg: {
+    uuid: string
+  }) => Promise<{ screenshot: string }>
 }
 
 type IpcMainHandleEventType = IpcMainHandleEventType__AutoRegister & {
@@ -32,13 +49,23 @@ type IpcMainHandleEventType = IpcMainHandleEventType__AutoRegister & {
   'main.CoreLoader:getCoreVersion': () => string | null
   'main.CoreLoader:upgrade': () => Promise<void>
 
-  'main.ScheduleRunner:shutdown': (arg: { option: 'shutdownEmulator' | 'shutdownAll' | 'shutdownComputer', pid: string }) => Promise<void>
-  'main.ComponentManager:getStatus': (componentName: ComponentType) => Promise<ComponentStatus | undefined>
-  'main.ComponentManager:install': (componentName: ComponentType) => Promise<void>
+  'main.ScheduleRunner:shutdown': (arg: {
+    option: 'shutdownEmulator' | 'shutdownAll' | 'shutdownComputer'
+    pid: string
+  }) => Promise<void>
+  'main.ComponentManager:getStatus': (
+    componentName: ComponentType
+  ) => Promise<ComponentStatus | undefined>
+  'main.ComponentManager:install': (
+    componentName: ComponentType
+  ) => Promise<void>
   'main.DeviceDetector:getAdbPath': () => string
   'main.DeviceDetector:getAdbDevices': () => Promise<Device[]>
   'main.DeviceDetector:getEmulators': () => Promise<Emulator[]>
-  'main.DeviceDetector:getDeviceUuid': (address: string, adbPath?: string) => Promise<string | false>
+  'main.DeviceDetector:getDeviceUuid': (
+    address: string,
+    adbPath?: string
+  ) => Promise<string | false>
   'main.DeviceDetector:startEmulator': (path: string) => Promise<void>
   'main.DeviceDetector:startEmulator2': (path: string) => Promise<void>
   'main.DeviceDetector:isDefaultAdbExists': () => boolean
@@ -58,7 +85,7 @@ type IpcMainHandleEventType = IpcMainHandleEventType__AutoRegister & {
   'main.Util:CleanLogs': () => void
   'main.Util:CleanDownloadCache': () => void
   'main.Util:RemoveAllConfig': () => void
-  'main.Util:GetCacheInfo': () => { log: number, download: number }
+  'main.Util:GetCacheInfo': () => { log: number; download: number }
   'main.Util:openFolder': (type: 'core' | 'ui-log' | 'core-log') => void
   'main.Util:restart': () => void
   'main.Task:readInfrastConfig': (args: { filepath: string }) => string
@@ -69,7 +96,11 @@ type IpcMainHandleEventType = IpcMainHandleEventType__AutoRegister & {
   'main.WindowManager:toggleMaximized': () => boolean | Error
   'main.WindowManager:minimize': () => boolean
   'main.WindowManager:isMaximized': () => boolean
-  'main.WindowManager:openDialog': (title: string, properties: DialogProperty[], filters: Electron.FileFilter[]) => Promise<Electron.OpenDialogReturnValue>
+  'main.WindowManager:openDialog': (
+    title: string,
+    properties: DialogProperty[],
+    filters: Electron.FileFilter[]
+  ) => Promise<Electron.OpenDialogReturnValue>
   'main.WindowManager:loaded': () => void
 }
 
@@ -88,16 +119,40 @@ type IpcMainOnEvent = keyof IpcMainOnEventType
 type IpcRendererOnEventType = {
   'renderer.WindowManager:updateMaximized': (isMaximized: boolean) => void
   'renderer.WindowManager:loaded': () => void
-  'renderer.WindowManager:showMessage': (arg: { message: string, options: MessageOptions }) => void
+  'renderer.WindowManager:showMessage': (arg: {
+    message: string
+    options: MessageOptions
+  }) => void
   'renderer.CoreLoader:callback': (arg: Callback) => void
   'renderer.DeviceDetector:searched': (devices: NativeDevice[]) => void
-  'renderer.DeviceDetector:changeStatus': (uuid: string, status: DeviceStatus) => void
-  'renderer.AppearanceManager:systemThemeUpdated': (theme: 'maa-dark' | 'maa-light') => void
+  'renderer.DeviceDetector:changeStatus': (
+    uuid: string,
+    status: DeviceStatus
+  ) => void
+  'renderer.AppearanceManager:systemThemeUpdated': (
+    theme: 'maa-dark' | 'maa-light'
+  ) => void
   // 'renderer.DownloadModal:updateStatus': () => void
-  'renderer.ComponentManager:updateStatus': (arg: { type: ComponentType, status: InstallerStatus, progress: number }) => void
-  'renderer.ComponentManager:installInterrupted': (arg: { type: ComponentType, status: 'exception', progress: 0 }) => void
-  'renderer.ComponentManager:installDone': (arg: { type: ComponentType, status: InstallerStatus, progress: 0 }) => void
-  'renderer.ComponentManager:downloadUpgradeDone': (arg: { type: ComponentType, status: InstallerStatus, progress: 0 }) => void
+  'renderer.ComponentManager:updateStatus': (arg: {
+    type: ComponentType
+    status: InstallerStatus
+    progress: number
+  }) => void
+  'renderer.ComponentManager:installInterrupted': (arg: {
+    type: ComponentType
+    status: 'exception'
+    progress: 0
+  }) => void
+  'renderer.ComponentManager:installDone': (arg: {
+    type: ComponentType
+    status: InstallerStatus
+    progress: 0
+  }) => void
+  'renderer.ComponentManager:downloadUpgradeDone': (arg: {
+    type: ComponentType
+    status: InstallerStatus
+    progress: 0
+  }) => void
   'renderer.Device:getScreenshot': (arg: { uuid: string }) => void
 }
 

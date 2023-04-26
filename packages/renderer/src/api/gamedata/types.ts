@@ -64,7 +64,7 @@ export type OperatorTag =
   | '快速复活'
   | '位移'
 
-export type OperatorProfession = 
+export type OperatorProfession =
   | 'MEDIC'
   | 'WARRIOR'
   | 'SPECIAL'
@@ -74,9 +74,7 @@ export type OperatorProfession =
   | 'TANK'
   | 'CASTER'
 
-export type OperatorProfessionEx =
-  | 'TOKEN'
-  | 'TRAP'
+export type OperatorProfessionEx = 'TOKEN' | 'TRAP'
 
 export interface Operator {
   name: string

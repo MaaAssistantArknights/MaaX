@@ -7,9 +7,9 @@ interface EmulatorAdapter {
   getAdbDevices: () => Promise<Device[]>
 
   /**
-     * @description Get all emulators
-     * @returns {Promise<Emulator[]>}
-     */
+   * @description Get all emulators
+   * @returns {Promise<Emulator[]>}
+   */
   getEmulators: () => Promise<Emulator[]>
 }
 

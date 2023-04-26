@@ -27,64 +27,72 @@ export interface ThemeAction {
   updateColorOpacity: (opacity: number) => void
   updateBgFollowTheme: (isFollow: boolean) => void
   updateAcrylic: (isAcrylic: boolean) => void
-  updateBgLight: (bgLight: { url?: string, opacity: number }) => void
-  updateBgDark: (bgDark: { url?: string, opacity: number }) => void
+  updateBgLight: (bgLight: { url?: string; opacity: number }) => void
+  updateBgDark: (bgDark: { url?: string; opacity: number }) => void
 }
 
-const useThemeStore = defineStore<'theme', ThemeState, ThemeGetter, ThemeAction>(
+const useThemeStore = defineStore<
   'theme',
-  {
-    state: () => {
-      return {
-        theme: 'maa-light',
-        systemTheme: 'maa-light',
-        themeColorOpacity: 0.9,
-        bgFollowTheme: false,
-        acrylic: true,
-        bgLight: {
-          url: undefined,
-          opacity: 1
-        },
-        bgDark: {
-          url: undefined,
-          opacity: 1
-        }
-      }
-    },
-    getters: {
-      currentTheme () {
-        if (this.theme === 'system') {
-          return this.systemTheme
-        }
-        return this.theme
-      }
-    },
-    actions: {
-      updateTheme (theme) {
-        this.theme = theme
-        window.ipcRenderer.invoke('main.AppearanceManager:themeUpdated', this.currentTheme === 'maa-dark')
+  ThemeState,
+  ThemeGetter,
+  ThemeAction
+>('theme', {
+  state: () => {
+    return {
+      theme: 'maa-light',
+      systemTheme: 'maa-light',
+      themeColorOpacity: 0.9,
+      bgFollowTheme: false,
+      acrylic: true,
+      bgLight: {
+        url: undefined,
+        opacity: 1,
       },
-      updateSystemTheme (theme) {
-        this.systemTheme = theme
-        window.ipcRenderer.invoke('main.AppearanceManager:themeUpdated', this.currentTheme === 'maa-dark')
+      bgDark: {
+        url: undefined,
+        opacity: 1,
       },
-      updateColorOpacity (opacity) {
-        this.themeColorOpacity = opacity
-      },
-      updateBgFollowTheme (isFollow: boolean) {
-        this.bgFollowTheme = isFollow
-      },
-      updateAcrylic (isAcrylic: boolean) {
-        this.acrylic = isAcrylic
-      },
-      updateBgLight (bgLight: { url?: string, opacity: number }) {
-        this.bgLight = bgLight
-      },
-      updateBgDark (bgDark: { url?: string, opacity: number }) {
-        this.bgDark = bgDark
-      }
     }
-  }
-)
+  },
+  getters: {
+    currentTheme() {
+      if (this.theme === 'system') {
+        return this.systemTheme
+      }
+      return this.theme
+    },
+  },
+  actions: {
+    updateTheme(theme) {
+      this.theme = theme
+      window.ipcRenderer.invoke(
+        'main.AppearanceManager:themeUpdated',
+        this.currentTheme === 'maa-dark'
+      )
+    },
+    updateSystemTheme(theme) {
+      this.systemTheme = theme
+      window.ipcRenderer.invoke(
+        'main.AppearanceManager:themeUpdated',
+        this.currentTheme === 'maa-dark'
+      )
+    },
+    updateColorOpacity(opacity) {
+      this.themeColorOpacity = opacity
+    },
+    updateBgFollowTheme(isFollow: boolean) {
+      this.bgFollowTheme = isFollow
+    },
+    updateAcrylic(isAcrylic: boolean) {
+      this.acrylic = isAcrylic
+    },
+    updateBgLight(bgLight: { url?: string; opacity: number }) {
+      this.bgLight = bgLight
+    },
+    updateBgDark(bgDark: { url?: string; opacity: number }) {
+      this.bgDark = bgDark
+    },
+  },
+})
 
 export default useThemeStore

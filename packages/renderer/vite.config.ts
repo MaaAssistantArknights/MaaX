@@ -1,11 +1,11 @@
-import { builtinModules } from "module";
-import { defineConfig, Plugin } from "vite";
-import path from "path";
-import vue from "@vitejs/plugin-vue";
-import resolve from "vite-plugin-resolve";
+import { builtinModules } from 'module'
+import { defineConfig, Plugin } from 'vite'
+import path from 'path'
+import vue from '@vitejs/plugin-vue'
+import resolve from 'vite-plugin-resolve'
 import vueI18n from '@intlify/vite-plugin-vue-i18n'
-import pkg from "../../package.json";
-import svgLoader from "vite-svg-loader";
+import pkg from '../../package.json'
+import svgLoader from 'vite-svg-loader'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -15,32 +15,32 @@ export default defineConfig({
     vue(),
     svgLoader(),
     vueI18n({
-      include: path.resolve(__dirname, 'src/i18n/**')
-    })
+      include: path.resolve(__dirname, 'src/i18n/**'),
+    }),
   ],
-  base: "./",
+  base: './',
   resolve: {
     alias: {
-      "@": path.join(__dirname, "src"),
-      "@common": path.join(__dirname, "../common"),
+      '@': path.join(__dirname, 'src'),
+      '@common': path.join(__dirname, '../common'),
     },
   },
   build: {
     emptyOutDir: true,
     sourcemap: true,
-    outDir: "../../dist/renderer",
+    outDir: '../../dist/renderer',
     rollupOptions: {
-      output:{
+      output: {
         entryFileNames: `assets/[name].js`,
         chunkFileNames: `assets/[name].js`,
         assetFileNames: `assets/[name].[ext]`,
-      }
-    }
+      },
+    },
   },
   server: {
     port: pkg.env.PORT,
   },
-});
+})
 
 /**
  * For usage of Electron and NodeJS APIs in the Renderer process
@@ -49,7 +49,7 @@ export default defineConfig({
 export function resolveElectron(
   resolves: Parameters<typeof resolve>[0] = {}
 ): Plugin {
-  const builtins = builtinModules.filter((t) => !t.startsWith("_"));
+  const builtins = builtinModules.filter(t => !t.startsWith('_'))
 
   /**
    * @see https://github.com/caoxiemeihao/vite-plugins/tree/main/packages/resolve#readme
@@ -58,7 +58,7 @@ export function resolveElectron(
     electron: electronExport(),
     ...builtinModulesExport(builtins),
     ...resolves,
-  });
+  })
 
   function electronExport() {
     return `
@@ -90,29 +90,29 @@ export {
   desktopCapturer,
   deprecate,
 }
-`;
+`
   }
 
   function builtinModulesExport(modules: string[]) {
     return modules
-      .map((moduleId) => {
-        const nodeModule = require(moduleId);
-        const requireModule = `const M = require("${moduleId}");`;
-        const exportDefault = "export default M;";
+      .map(moduleId => {
+        const nodeModule = require(moduleId)
+        const requireModule = `const M = require("${moduleId}");`
+        const exportDefault = 'export default M;'
         const exportMembers =
           Object.keys(nodeModule)
-            .map((attr) => `export const ${attr} = M.${attr}`)
-            .join(";\n") + ";";
+            .map(attr => `export const ${attr} = M.${attr}`)
+            .join(';\n') + ';'
         const nodeModuleCode = `
 ${requireModule}
 
 ${exportDefault}
 
 ${exportMembers}
-`;
+`
 
-        return { [moduleId]: nodeModuleCode };
+        return { [moduleId]: nodeModuleCode }
       })
-      .reduce((memo, item) => Object.assign(memo, item), {});
+      .reduce((memo, item) => Object.assign(memo, item), {})
   }
 }

@@ -5,15 +5,14 @@ import ItemCard from './ItemCard.vue'
 import { getItemBorderedImage } from '@/utils/game_image'
 
 const props = defineProps<{
-  name: string;
-  checked: boolean;
-  itemid: string;
+  name: string
+  checked: boolean
+  itemid: string
 }>()
 
 const emit = defineEmits<{
   (event: 'update:checked', value: boolean): void
 }>()
-
 </script>
 
 <template>
@@ -28,16 +27,14 @@ const emit = defineEmits<{
         <img
           :src="getItemBorderedImage(props.name)"
           @click="emit('update:checked', !props.checked)"
-        >
+        />
         <!-- <div>
           <NText>    {{ props.name }} </NText>
         </div> -->
       </div>
     </template>
     <NScrollbar :style="{ maxHeight: '50vh' }">
-      <ItemCard
-        :name="props.name"
-      />
+      <ItemCard :name="props.name" />
     </NScrollbar>
   </NPopover>
 </template>
@@ -48,7 +45,7 @@ const emit = defineEmits<{
   position: relative;
   padding: 4px;
 
-  &>img {
+  & > img {
     width: 60px;
     height: 60px;
     cursor: pointer;

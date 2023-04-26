@@ -5,5 +5,5 @@ import component from './component'
 export default {
   version,
   download,
-  component
+  component,
 }

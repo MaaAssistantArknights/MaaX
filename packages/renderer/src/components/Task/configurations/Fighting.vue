@@ -1,12 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed, Ref, inject } from 'vue'
-import {
-  NFormItem,
-  NInputNumber,
-  NSpace,
-  NSelect,
-  NInputGroup
-} from 'naive-ui'
+import { NFormItem, NInputNumber, NSpace, NSelect, NInputGroup } from 'naive-ui'
 import { gamedata } from '@/api'
 
 type DropConfiguration = Record<string, number>
@@ -36,23 +30,25 @@ const supportStages = [
   { label: '龙门币-6/5', value: 'CE-6' },
   { label: '经验-6/5', value: 'LS-6' },
   { label: '红票-5', value: 'AP-5' },
-  { label: '技能-5', value: 'CA-5' }
+  { label: '技能-5', value: 'CA-5' },
 ]
 
 const props = defineProps<{
-  configurations: FightingConfiguration;
+  configurations: FightingConfiguration
   taskIndex: number
 }>()
 
-const allItems: Ref<Array<{
-  label: string
-  value: string
-}>> = ref([])
+const allItems: Ref<
+  Array<{
+    label: string
+    value: string
+  }>
+> = ref([])
 
 const loading = ref(false)
 
 const drops = computed({
-  get () {
+  get() {
     const entries = Object.entries(props.configurations.drops)
     if (entries.length === 0) {
       return {}
@@ -60,7 +56,7 @@ const drops = computed({
     const [item_id, times] = entries[0]
     return { item_id, times }
   },
-  set (value: { item_id?: string, times?: number }) {
+  set(value: { item_id?: string; times?: number }) {
     let obj = {}
     if (!value.item_id) {
       obj = {}
@@ -68,34 +64,40 @@ const drops = computed({
       obj = { [value.item_id]: value.times ?? 0 }
     }
     handleUpdateConfiguration('drops', obj)
-  }
+  },
 })
 
-const updateTaskConfigurations = inject('update:configuration') as
-  (key: string, value: any, index: number) => void
+const updateTaskConfigurations = inject('update:configuration') as (
+  key: string,
+  value: any,
+  index: number
+) => void
 
-const configurationDisabled = inject('configurationDisabled') as {re: boolean, nre: boolean}
+const configurationDisabled = inject('configurationDisabled') as {
+  re: boolean
+  nre: boolean
+}
 
-function handleUpdateConfiguration (key: string, value: any) {
+function handleUpdateConfiguration(key: string, value: any) {
   updateTaskConfigurations(key, value, props.taskIndex)
 }
 
-function handleMedicineUpdate (value: number | null) {
+function handleMedicineUpdate(value: number | null) {
   if (value === null) value = 6
   handleUpdateConfiguration('medicine', value)
 }
 
-function handleTimesUpdate (value: number | null) {
+function handleTimesUpdate(value: number | null) {
   if (value === null) value = 6
   handleUpdateConfiguration('times', value)
 }
 
-function handleStoneUpdate (value: number | null) {
+function handleStoneUpdate(value: number | null) {
   if (value === null) value = 6
   handleUpdateConfiguration('stone', value)
 }
 
-function handleDropUpdate (value: { item_id?: string, times?: number }) {
+function handleDropUpdate(value: { item_id?: string; times?: number }) {
   drops.value = value
 }
 
@@ -110,11 +112,10 @@ onMounted(async () => {
     .filter(item => !['ACTIVITY_ITEM', 'ET_STAGE'].includes(item.itemType))
     .map(item => ({
       label: item.name,
-      value: item.itemId
+      value: item.itemId,
     }))
   loading.value = false
 })
-
 </script>
 
 <template>
@@ -203,17 +204,25 @@ onMounted(async () => {
             clearable
             :disabled="configurationDisabled.re"
             :value="drops.item_id"
-            @update:value="value => handleDropUpdate({item_id: value, times: drops.times})"
+            @update:value="
+              value => handleDropUpdate({ item_id: value, times: drops.times })
+            "
           />
           <NInputNumber
             placeholder="数量"
             :disabled="!drops.item_id || configurationDisabled.re"
-            :style="{width: '60px'}"
+            :style="{ width: '60px' }"
             :show-button="false"
             :value="drops.times"
             :min="0"
             :max="999"
-            @update:value="value => handleDropUpdate({item_id: drops.item_id, times: value ?? undefined})"
+            @update:value="
+              value =>
+                handleDropUpdate({
+                  item_id: drops.item_id,
+                  times: value ?? undefined,
+                })
+            "
           />
         </NInputGroup>
       </NFormItem>

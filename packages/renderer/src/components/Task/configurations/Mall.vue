@@ -13,24 +13,29 @@ interface MallConfiguration {
 }
 
 const props = defineProps<{
-  configurations: MallConfiguration;
+  configurations: MallConfiguration
   taskIndex: number
 }>()
 
-const updateTaskConfigurations = inject('update:configuration') as
-  (key: string, value: any, index: number) => void
-const configurationDisabled = inject('configurationDisabled') as {re: boolean, nre: boolean}
+const updateTaskConfigurations = inject('update:configuration') as (
+  key: string,
+  value: any,
+  index: number
+) => void
+const configurationDisabled = inject('configurationDisabled') as {
+  re: boolean
+  nre: boolean
+}
 
-function handleUpdateConfiguration (key: string, value: any) {
+function handleUpdateConfiguration(key: string, value: any) {
   updateTaskConfigurations(key, value, props.taskIndex)
 }
 
-function handleItemUpdate (items: { buy_first: string[], blacklist: string[] }) {
+function handleItemUpdate(items: { buy_first: string[]; blacklist: string[] }) {
   for (const [key, list] of Object.entries(items)) {
     handleUpdateConfiguration(key, list)
   }
 }
-
 </script>
 
 <template>

@@ -20,7 +20,7 @@ app.mount('#app').$nextTick(() => {
   initialStore().then(() => {
     router.replace({ path: '/device' })
     // debug only
-    window.onclick = (event) => {
+    window.onclick = event => {
       console.log('you clicked: ', event.target)
     }
   })

@@ -20,7 +20,9 @@ const onClose = () => {
 }
 
 const onToggleMaximized = async () => {
-  const result = await window.ipcRenderer.invoke('main.WindowManager:toggleMaximized')
+  const result = await window.ipcRenderer.invoke(
+    'main.WindowManager:toggleMaximized'
+  )
   if (result instanceof Error) {
     console.log()
   }
@@ -30,9 +32,12 @@ const onMinimize = () => {
   window.ipcRenderer.invoke('main.WindowManager:minimize')
 }
 
-window.ipcRenderer.on('renderer.WindowManager:updateMaximized', (_, maximized) => {
-  isMaximized.value = maximized
-})
+window.ipcRenderer.on(
+  'renderer.WindowManager:updateMaximized',
+  (_, maximized) => {
+    isMaximized.value = maximized
+  }
+)
 </script>
 
 <template>
@@ -48,10 +53,7 @@ window.ipcRenderer.on('renderer.WindowManager:updateMaximized', (_, maximized) =
         @click="onMinimize"
       >
         <template #icon>
-          <NIcon
-            class="traffic-light-icon"
-            color="#000"
-          >
+          <NIcon class="traffic-light-icon" color="#000">
             <IconWindowMinimize />
           </NIcon>
         </template>
@@ -64,10 +66,7 @@ window.ipcRenderer.on('renderer.WindowManager:updateMaximized', (_, maximized) =
         @click="onToggleMaximized"
       >
         <template #icon>
-          <NIcon
-            class="traffic-light-icon"
-            color="#000"
-          >
+          <NIcon class="traffic-light-icon" color="#000">
             <IconScaleExtend v-if="!isMaximized" />
             <IconScaleContract v-if="isMaximized" />
           </NIcon>
@@ -81,10 +80,7 @@ window.ipcRenderer.on('renderer.WindowManager:updateMaximized', (_, maximized) =
         @click="onClose"
       >
         <template #icon>
-          <NIcon
-            class="traffic-light-icon"
-            color="#000"
-          >
+          <NIcon class="traffic-light-icon" color="#000">
             <IconClose />
           </NIcon>
         </template>

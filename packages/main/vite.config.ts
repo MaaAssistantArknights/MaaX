@@ -10,15 +10,15 @@ export default defineConfig({
   resolve: {
     alias: {
       '@main': __dirname,
-      '@common': path.join(__dirname, '../common')
-    }
+      '@common': path.join(__dirname, '../common'),
+    },
   },
   build: {
     outDir: '../../dist/main',
     lib: {
       entry: 'index.ts',
       formats: ['cjs'],
-      fileName: () => '[name].cjs'
+      fileName: () => '[name].cjs',
     },
     minify: process.env./* from mode option */ NODE_ENV === 'production',
     sourcemap: true,
@@ -27,8 +27,8 @@ export default defineConfig({
       external: [
         'electron',
         ...builtinModules,
-        ...Object.keys(pkg.dependencies || {})
-      ]
-    }
-  }
+        ...Object.keys(pkg.dependencies || {}),
+      ],
+    },
+  },
 })

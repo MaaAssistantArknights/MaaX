@@ -2,9 +2,9 @@ import installExtension from 'electron-devtools-installer'
 import { BrowserWindow } from 'electron'
 import logger from './logger'
 
-function useDebug (window: BrowserWindow): void {
+function useDebug(window: BrowserWindow): void {
   installExtension('nhdogjmejiglipccpnnnanhbledajbpd')
-    .then((name) => logger.info(`Added Extension:  ${name}`))
+    .then(name => logger.info(`Added Extension:  ${name}`))
     .catch((err: Error) =>
       logger.error(`An error occurred while install extension: ${err.message}`)
     )
@@ -12,7 +12,11 @@ function useDebug (window: BrowserWindow): void {
   // Bypass CORS
   window.webContents.session.webRequest.onBeforeSendHeaders(
     {
-      urls: ['https://prts.wiki/*', 'https://maa.alisaqaq.moe/*', 'https://penguin-stats.io/*']
+      urls: [
+        'https://prts.wiki/*',
+        'https://maa.alisaqaq.moe/*',
+        'https://penguin-stats.io/*',
+      ],
     },
     (details, callback) => {
       details.requestHeaders.Origin = new URL(details.url).origin
@@ -21,11 +25,18 @@ function useDebug (window: BrowserWindow): void {
   )
   window.webContents.session.webRequest.onHeadersReceived(
     {
-      urls: ['https://prts.wiki/*', 'https://maa.alisaqaq.moe/*', 'https://penguin-stats.io/*']
+      urls: [
+        'https://prts.wiki/*',
+        'https://maa.alisaqaq.moe/*',
+        'https://penguin-stats.io/*',
+      ],
     },
     (details, callback) => {
       const corsHeader = { 'access-control-allow-origin': '*' }
-      details.responseHeaders = Object.assign(details.responseHeaders ?? {}, corsHeader)
+      details.responseHeaders = Object.assign(
+        details.responseHeaders ?? {},
+        corsHeader
+      )
       callback(details)
     }
   )

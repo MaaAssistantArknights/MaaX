@@ -5,7 +5,7 @@ import {
   NScrollbar,
   NSpace,
   useThemeVars,
-  NDropdown
+  NDropdown,
 } from 'naive-ui'
 import { ref, nextTick } from 'vue'
 import router from '@/router'
@@ -20,10 +20,10 @@ const taskStore = useTaskStore()
 const uuid = router.currentRoute.value.params.uuid as string
 
 const props = defineProps<{
-    isCollapsed: boolean;
+  isCollapsed: boolean
 }>()
 
-function handleSelectNewTask (key: string): void {
+function handleSelectNewTask(key: string): void {
   if (taskStore.copyTaskFromTemplate(uuid, key)) {
     logger.info('copy task from template', key)
   }
@@ -36,13 +36,13 @@ const options: DropdownMixedOption[] = [
     children: [
       {
         label: '启动模拟器',
-        key: 'emulator'
+        key: 'emulator',
       },
       {
         label: '关机/关闭模拟器',
-        key: 'shutdown'
-      }
-    ]
+        key: 'shutdown',
+      },
+    ],
   },
   {
     label: '游戏任务',
@@ -50,37 +50,37 @@ const options: DropdownMixedOption[] = [
     children: [
       {
         label: '开始唤醒',
-        key: 'startup'
+        key: 'startup',
       },
       {
         label: '代理作战',
-        key: 'fight'
+        key: 'fight',
       },
       {
         label: '基建换班',
-        key: 'infrast'
+        key: 'infrast',
       },
       {
         label: '自动公招',
-        key: 'recruit'
+        key: 'recruit',
       },
       {
         label: '信用购物',
-        key: 'mall'
+        key: 'mall',
       },
       {
         label: '领取日常',
-        key: 'award'
+        key: 'award',
       },
       {
         label: '无限肉鸽',
-        key: 'rogue'
-      }
+        key: 'rogue',
+      },
       // {
       //   label: '生息演算',
       //   key: 'ReclamationAlgorithm'
       // }
-    ]
+    ],
   },
   {
     label: '其他任务',
@@ -88,21 +88,21 @@ const options: DropdownMixedOption[] = [
     children: [
       {
         label: '挂机',
-        key: 'idle'
+        key: 'idle',
       },
       {
         label: '每日一抽',
-        key: 'null'
-      }
-    ]
-  }
+        key: 'null',
+      },
+    ],
+  },
 ]
 
 const showDropdown = ref(false)
 
 const dropdownPosition = ref({
   x: 0,
-  y: 0
+  y: 0,
 })
 
 const handleShowDropdown = (e: MouseEvent) => {
@@ -112,18 +112,14 @@ const handleShowDropdown = (e: MouseEvent) => {
     showDropdown.value = true
     dropdownPosition.value = {
       x: e.clientX,
-      y: e.clientY
+      y: e.clientY,
     }
   })
 }
-
 </script>
 
 <template>
-  <NCollapse
-    :expanded-names="props.isCollapsed ? null : '1'"
-    class="task-card"
-  >
+  <NCollapse :expanded-names="props.isCollapsed ? null : '1'" class="task-card">
     <template #arrow>
       <span />
     </template>
@@ -135,15 +131,21 @@ const handleShowDropdown = (e: MouseEvent) => {
         border:
           themeStore.currentTheme === 'maa-dark'
             ? `1px dashed ${themeVars.primaryColor}`
-            : 'dashed white'
+            : 'dashed white',
       }"
     >
       <template #header>
-        <div style="width :100%">
-          <NDropdown trigger="hover" :options="options" @select="handleSelectNewTask">
+        <div style="width: 100%">
+          <NDropdown
+            trigger="hover"
+            :options="options"
+            @select="handleSelectNewTask"
+          >
             <div ref="cardHeaderRef" class="card-header">
               <NSpace>
-                <span class="card-title"> {{ props.isCollapsed ? '新建任务' : '' }} </span>
+                <span class="card-title">
+                  {{ props.isCollapsed ? '新建任务' : '' }}
+                </span>
               </NSpace>
               <NSpace justify="end" align="center" />
             </div>
@@ -162,14 +164,12 @@ const handleShowDropdown = (e: MouseEvent) => {
 <style lang="less" scoped>
 @keyframes breathe {
   from {
-    box-shadow: 0 2px 6px 0 rgb(0 0 0 / 0.1),
-     0 2px 4px -1px rgb(0 0 0 / 0.1),
-     0 0 5px 0 transparent;
+    box-shadow: 0 2px 6px 0 rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.1),
+      0 0 5px 0 transparent;
   }
   to {
-    box-shadow:  0 2px 6px 0 rgb(0 0 0 / 0.1),
-     0 2px 4px -1px rgb(0 0 0 / 0.1),
-     0 0 10px var(--breathe-color);
+    box-shadow: 0 2px 6px 0 rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.1),
+      0 0 10px var(--breathe-color);
   }
 }
 .task-card {

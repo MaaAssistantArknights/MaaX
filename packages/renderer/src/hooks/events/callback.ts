@@ -13,7 +13,7 @@ import { postDrop } from '@/api/penguin'
 
 const messages: Record<string, MessageReactive> = {}
 
-export default function useCallbackEvents (): void {
+export default function useCallbackEvents(): void {
   const deviceStore = useDeviceStore()
   const taskStore = useTaskStore()
   const settingStore = useSettingStore()
@@ -39,7 +39,7 @@ export default function useCallbackEvents (): void {
       Copilot: (data: Callback.SubTaskError) => {},
       Shutdown: (data: Callback.SubTaskError) => {},
       Award: (data: Callback.SubTaskError) => {},
-      Debug: (data: Callback.SubTaskError) => {}
+      Debug: (data: Callback.SubTaskError) => {},
     },
     [AsstMsg.SubTaskStart]: {
       Emulator: (data: Callback.SubTaskStart) => {},
@@ -54,7 +54,7 @@ export default function useCallbackEvents (): void {
       Copilot: (data: Callback.SubTaskStart) => {},
       Shutdown: (data: Callback.SubTaskStart) => {},
       Award: (data: Callback.SubTaskStart) => {},
-      Debug: (data: Callback.SubTaskStart) => {}
+      Debug: (data: Callback.SubTaskStart) => {},
     },
     [AsstMsg.SubTaskCompleted]: {
       Emulator: (data: Callback.SubTaskCompleted) => {},
@@ -77,7 +77,7 @@ export default function useCallbackEvents (): void {
       Copilot: (data: Callback.SubTaskCompleted) => {},
       Shutdown: (data: Callback.SubTaskCompleted) => {},
       Award: (data: Callback.SubTaskCompleted) => {},
-      Debug: (data: Callback.SubTaskCompleted) => {}
+      Debug: (data: Callback.SubTaskCompleted) => {},
     },
     [AsstMsg.SubTaskExtraInfo]: {
       Emulator: (data: Callback.SubTaskExtraInfo) => {},
@@ -91,13 +91,13 @@ export default function useCallbackEvents (): void {
                 {
                   ...details,
                   reported: false,
-                  report_error: false
-                }
-              ]
+                  report_error: false,
+                },
+              ],
             })
             const task = taskStore.getTask(
               uuid.trim(),
-              (t) => t.task_id === taskid
+              t => t.task_id === taskid
             )
             if (task) {
               const resultIndex = task.results.fightInfo.length - 1
@@ -105,7 +105,7 @@ export default function useCallbackEvents (): void {
                 'NORMAL_DROP',
                 'SPECIAL_DROP',
                 'EXTRA_DROP',
-                'FURNITURE'
+                'FURNITURE',
               ]
               if (task.configurations.report_to_penguin) {
                 const drops = _.cloneDeep(details.drops)
@@ -118,11 +118,11 @@ export default function useCallbackEvents (): void {
                 const report = {
                   stageId: details.stage.stageId,
                   server: task.configurations.server as string,
-                  drops
+                  drops,
                 }
                 if (drops.length > 0) {
                   postDrop(report)
-                    .then((response) => {
+                    .then(response => {
                       task.results.fightInfo[resultIndex].reported = true
                       const reportId =
                         response.headers['X-Penguin-Set-PenguinID']
@@ -133,7 +133,7 @@ export default function useCallbackEvents (): void {
                         }
                       }
                     })
-                    .catch((error) => {
+                    .catch(error => {
                       task.results.fightInfo[resultIndex].report_error = true
                       window.$message.error('上报企鹅物流失败')
                       logger.error('上报企鹅物流失败', error)
@@ -161,7 +161,7 @@ export default function useCallbackEvents (): void {
             const name = device?.displayName ?? device?.address ?? uuid
             // eslint-disable-next-line no-new
             new Notification('Maa Assistant Arknights', {
-              body: `${name}公招获取到高级tag${String(details.tag)}`
+              body: `${name}公招获取到高级tag${String(details.tag)}`,
             })
             break
           }
@@ -169,14 +169,14 @@ export default function useCallbackEvents (): void {
             const { uuid, taskid, details } = data
             const task = taskStore.getTask(
               uuid.trim(),
-              (task) => task.task_id === taskid
+              task => task.task_id === taskid
             )
             if (task && !task.configurations.skip_robot) {
               const device = deviceStore.getDevice(uuid)
               const name = device?.displayName ?? device?.address ?? uuid
               // eslint-disable-next-line no-new
               new Notification('Maa Assistant Arknights', {
-                body: `${name}公招获取到高级tag${String(details.tag)}`
+                body: `${name}公招获取到高级tag${String(details.tag)}`,
               })
             }
             break
@@ -188,9 +188,9 @@ export default function useCallbackEvents (): void {
                 {
                   ...details,
                   refreshed: false,
-                  selectedTags: []
-                }
-              ]
+                  selectedTags: [],
+                },
+              ],
             })
             break
           }
@@ -198,7 +198,7 @@ export default function useCallbackEvents (): void {
             const { uuid, taskid, details } = data
             const task = taskStore.getTask(
               uuid.trim(),
-              (task) => task.task_id === taskid
+              task => task.task_id === taskid
             )
             if (task?.results.recruits) {
               _.last<any>(task.results.recruits).selectedTags = details.tags
@@ -209,7 +209,7 @@ export default function useCallbackEvents (): void {
             const { uuid, taskid } = data
             const task = taskStore.getTask(
               uuid.trim(),
-              (task) => task.task_id === taskid
+              task => task.task_id === taskid
             )
             if (task?.results.recruits) {
               _.last<any>(task.results.recruits).refreshed = true
@@ -227,7 +227,7 @@ export default function useCallbackEvents (): void {
           case 'NotEnoughStaff': {
             const { uuid, taskid } = data
             taskStore.mergeTaskResult(uuid.trim(), taskid, {
-              notEnoughStaff: true
+              notEnoughStaff: true,
             })
             break
           }
@@ -265,8 +265,8 @@ export default function useCallbackEvents (): void {
       },
       Shutdown: (data: Callback.SubTaskExtraInfo) => {},
       Award: (data: Callback.SubTaskExtraInfo) => {},
-      Debug: (data: Callback.SubTaskExtraInfo) => {}
-    }
+      Debug: (data: Callback.SubTaskExtraInfo) => {},
+    },
   }
 
   const callbackFn = {
@@ -306,7 +306,7 @@ export default function useCallbackEvents (): void {
           messages[uuid] = showMessage(
             `${device?.displayName ?? ''}尝试重连中...`,
             {
-              type: 'loading'
+              type: 'loading',
             }
           )
           deviceStore.updateDeviceStatus(uuid, 'connecting')
@@ -318,7 +318,7 @@ export default function useCallbackEvents (): void {
           }
           const device = deviceStore.getDevice(uuid)
           showMessage(`${device?.displayName ?? ''}重连成功`, {
-            type: 'success'
+            type: 'success',
           })
           deviceStore.updateDeviceStatus(uuid, 'connected')
           break
@@ -328,7 +328,7 @@ export default function useCallbackEvents (): void {
           if (device?.status === 'connecting') {
             messages[uuid]?.destroy()
             showMessage(`${device?.displayName ?? ''}重连失败`, {
-              type: 'error'
+              type: 'error',
             })
           } else {
             showMessage(
@@ -351,7 +351,7 @@ export default function useCallbackEvents (): void {
       showMessage('所有任务完成了( •̀ ω •́ )✧', { type: 'info' })
       // eslint-disable-next-line no-new
       new Notification('Maa Assistant Arknights', {
-        body: '所有任务完成了( •̀ ω •́ )✧'
+        body: '所有任务完成了( •̀ ω •́ )✧',
       })
       taskStore.resetToIdle(data.uuid.trim())
     },
@@ -361,18 +361,13 @@ export default function useCallbackEvents (): void {
     },
     [AsstMsg.TaskChainStart]: (data: Callback.TaskChainStart) => {
       const taskStore = useTaskStore()
-      taskStore.updateTaskStatus(
-        data.uuid.trim(),
-        data.taskid,
-        'processing',
-        0
-      )
+      taskStore.updateTaskStatus(data.uuid.trim(), data.taskid, 'processing', 0)
     },
     [AsstMsg.TaskChainCompleted]: (data: Callback.TaskChainCompleted) => {
       const taskStore = useTaskStore()
       const task = taskStore.getTask(
         data.uuid.trim(),
-        (task) => task.task_id === data.taskid
+        task => task.task_id === data.taskid
       )
       if (task) {
         const status: TaskStatus = task.enable ? 'success' : 'skipped'
@@ -393,7 +388,7 @@ export default function useCallbackEvents (): void {
     },
     [AsstMsg.SubTaskExtraInfo]: (data: Callback.SubTaskExtraInfo) => {
       subTaskFn[AsstMsg.SubTaskExtraInfo][data.taskchain](data)
-    }
+    },
   }
 
   window.ipcRenderer.on(

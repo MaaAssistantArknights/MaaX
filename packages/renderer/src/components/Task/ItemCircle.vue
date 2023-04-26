@@ -9,12 +9,11 @@ const props = defineProps<{
   width?: number
   height?: number
 }>()
-
 </script>
 <template>
   <NPopover trigger="hover">
     <template #trigger>
-      <div :style="{position: 'relative'}">
+      <div :style="{ position: 'relative' }">
         <NImage
           :width="props.width"
           :height="props.height"
@@ -34,7 +33,7 @@ const props = defineProps<{
 
 <style lang="less" scoped>
 .item-count {
-  background: rgba(0,0,0,.7);
+  background: rgba(0, 0, 0, 0.7);
   color: white;
   position: absolute;
   right: 0;

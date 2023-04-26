@@ -20,7 +20,7 @@ const components: Record<string, Component> = {
   rogue: Rogue,
   mall: Mall,
   shutdown: Shutdown,
-  idle: Idle
+  idle: Idle,
 }
 
 export default defineComponent({
@@ -28,10 +28,10 @@ export default defineComponent({
   props: {
     name: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
-  render () {
+  render() {
     const component = components[this.name]
     if (component) {
       // @ts-ignore
@@ -39,7 +39,7 @@ export default defineComponent({
     } else {
       return h(NoConfiguration)
     }
-  }
+  },
 })
 </script>
 

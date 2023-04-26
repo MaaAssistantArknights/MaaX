@@ -7,7 +7,7 @@ type SingletonType<T extends new (...args: any[]) => any> = T & {
 export const Singleton = <T extends new (...args: any[]) => any>(type: T): T =>
   new Proxy(type, {
     // this will hijack the constructor
-    construct (target: SingletonType<T>, argsList, newTarget) {
+    construct(target: SingletonType<T>, argsList, newTarget) {
       // we should skip the proxy for children of our target class
       if (target.prototype !== newTarget.prototype) {
         return Reflect.construct(target, argsList, newTarget)
@@ -18,5 +18,5 @@ export const Singleton = <T extends new (...args: any[]) => any>(type: T): T =>
       }
       // return the instance we created!
       return target[SINGLETON_KEY]
-    }
+    },
   })
