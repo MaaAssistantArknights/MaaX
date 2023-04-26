@@ -186,7 +186,7 @@ provide(
                     </NIcon>
                   </NButton>
                 </template>
-                展开当前任务
+                {{ _isCollapsed ? '展开' : '折叠' }}当前任务
               </NTooltip>
               <NTooltip>
                 <template #trigger>
