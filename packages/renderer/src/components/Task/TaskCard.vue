@@ -17,6 +17,7 @@ import DropdownMenu from './DropdownMenu.vue'
 import router from '@/router'
 import useThemeStore from '@/store/theme'
 import Timer from './Timer.vue'
+import IconEdit from '@/assets/icons/edit.svg?component'
 import IconAdd from '@/assets/icons/add.svg?component'
 import IconRemove from '@/assets/icons/remove.svg?component'
 import useDeviceStore from '@/store/devices'
@@ -36,6 +37,12 @@ const emit = defineEmits<{
   (event: 'copy'): void
   (event: 'delete'): void
 }>()
+
+const innerCollapse = ref(true)
+
+const _isCollapsed = computed(() => {
+  return props.isCollapsed && innerCollapse.value
+})
 
 const dropdownPosition = ref({
   x: 0,
@@ -116,7 +123,7 @@ provide(
 
 <template>
   <NCollapse
-    :expanded-names="props.isCollapsed ? null : '1'"
+    :expanded-names="_isCollapsed ? null : '1'"
     class="task-card"
     :class="props.taskInfo.status === 'idle' ? '' : 'undraggable'"
   >
@@ -127,7 +134,7 @@ provide(
       class="task-card-inner"
       :class="
         [
-          props.isCollapsed ? 'collapsed' : '',
+          _isCollapsed ? 'collapsed' : '',
           `task-card__status-${props.taskInfo.status}`,
         ].join(' ')
       "
@@ -162,6 +169,25 @@ provide(
               </div>
             </NSpace>
             <NSpace justify="end" align="center">
+              <NTooltip v-if="props.isCollapsed">
+                <template #trigger>
+                  <NButton
+                    text
+                    style="font-size: 25px"
+                    :disabled="!['idle'].includes(props.taskInfo.status)"
+                    @click="
+                      () => {
+                        innerCollapse = !innerCollapse
+                      }
+                    "
+                  >
+                    <NIcon>
+                      <IconEdit />
+                    </NIcon>
+                  </NButton>
+                </template>
+                展开当前任务
+              </NTooltip>
               <NTooltip>
                 <template #trigger>
                   <NButton
