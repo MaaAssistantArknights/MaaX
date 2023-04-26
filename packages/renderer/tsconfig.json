@@ -15,6 +15,7 @@
     "paths": {
       "@/*": ["src/*"],
       "@common/*": ["../common/*"],
+      "@main/*": ["../main/*"]
     },
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,

@@ -10,6 +10,7 @@ type ComponentStatus =
   | 'installed'
   | 'upgradable'
   | 'upgrading'
+  | 'need-restart'
 
 interface Component {
   type: ComponentType

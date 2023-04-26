@@ -5,39 +5,39 @@ import { parseArguments } from '@main/utils/arguments'
 
 export function useEmulatorHooks (adapter: Promise<EmulatorAdapter>): void {
   ipcMainHandle('main.DeviceDetector:getEmulators',
-    async (event): Promise<Emulator[]> => {
-      return await (await adapter).getEmulators()
+    async (event) => {
+      return (await adapter).getEmulators()
     }
   )
 
   ipcMainHandle('main.DeviceDetector:getAdbDevices',
-    async (event): Promise<Device[]> => {
-      return await (await adapter).getAdbDevices()
+    async (event) => {
+      return (await adapter).getAdbDevices()
     }
   )
   ipcMainHandle('main.DeviceDetector:getDeviceUuid',
-    async (event, address: string, adbPath?: string) => await getDeviceUuid(address, adbPath))
+    async (event, address, adbPath) => getDeviceUuid(address, adbPath))
 
   ipcMainHandle('main.DeviceDetector:getAdbPath',
-    async (event): Promise<string> => {
+    (event) => {
       return defaultAdbPath
     }
   )
   ipcMainHandle('main.DeviceDetector:startEmulator',
-    async (event, path: string): Promise<void> => {
+    async (event, path: string) => {
       const args = parseArguments(path)
       // eslint-disable-next-line
       await $$(args.splice(0, 1)[0], args)
     })
 
   ipcMainHandle('main.DeviceDetector:startEmulator2',
-    async (event, path: string): Promise<void> => {
-    // eslint-disable-next-line
-    await $`${path}`
+    async (event, path: string) => {
+      // eslint-disable-next-line
+      await $`${path}`
     })
 
   ipcMainHandle('main.DeviceDetector:isDefaultAdbExists',
-    (event): boolean => {
+    (event) => {
       return isDefaultAdbExists()
     })
 }

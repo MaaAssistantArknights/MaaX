@@ -1,5 +1,5 @@
 import SystemInformation from 'systeminformation'
-import electron from 'electron'
+import electron, { app } from 'electron'
 
 export const getArch = (): Api.Maa.Arch => {
   let arch: Api.Maa.Arch = 'NoArch'
@@ -53,4 +53,9 @@ export const isInDev = (): boolean => {
   const isEnvSet = 'ELECTRON_IS_DEV' in process.env
   const getFromEnv = Number.parseInt(process.env.ELECTRON_IS_DEV as string, 10) === 1
   return isEnvSet ? getFromEnv : !electron.app.isPackaged
+}
+
+export const reload = (): void => {
+  app.quit()
+  app.relaunch()
 }

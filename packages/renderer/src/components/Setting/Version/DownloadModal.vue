@@ -55,6 +55,8 @@ const installButtonText = (status: ComponentStatus) => {
       return '更新'
     case 'upgrading':
       return '正在更新'
+    case 'need-restart':
+      return '重启'
   }
 }
 
@@ -64,6 +66,8 @@ const installerStatusText = (status: InstallerStatus) => {
       return '下载中...'
     case 'unzipping':
       return '解压中...'
+    case 'restart':
+      return '重启'
     case 'exception':
       return '出错啦'
     default:
@@ -75,9 +79,16 @@ const handleInstall = (component: ComponentType) => {
   switch (componentStore[component].componentStatus) {
     case 'installed':
     case 'not-installed':
-    case 'not-compatible':
-    case 'upgradable': {
+    case 'not-compatible': {
       window.ipcRenderer.invoke('main.ComponentManager:install', component)
+      break
+    }
+    case 'upgradable': {
+      window.ipcRenderer.invoke('main.ComponentManager:upgrade', component)
+      break
+    }
+    case 'need-restart': {
+      window.ipcRenderer.invoke('main.Util:restart', component)
       break
     }
     default:

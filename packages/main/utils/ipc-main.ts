@@ -6,24 +6,26 @@ import logger from '@main/utils/logger'
 /**
  * 添加 ipc 调用的处理事件
  */
-export const ipcMainHandle = <T>(
-  eventName: IpcMainHandleEvent,
-  listener: (event: IpcMainInvokeEvent, ...args: any[]) => Promise<T> | void | T
-): void => {
-  ipcMain.handle(eventName, async (event, ...args: any[]) => {
+export function ipcMainHandle<Key extends IpcMainHandleEvent>(eventName: Key, listener: (event: IpcMainInvokeEvent, ...args: Parameters<IpcMainHandleEventType[Key]>) => ReturnType<IpcMainHandleEventType[Key]>): void {
+  ipcMain.handle(eventName, (event, ...args) => {
     logger.silly(`Receive ipcMain event: ${eventName}`)
-    return await listener(event, ...args)
+    return listener(event, ...(args as Parameters<IpcMainHandleEventType[Key]>))
   })
+}
+
+/**
+ * 添加 ipc 消息的处理事件
+ */
+export function ipcMainOn<Key extends IpcMainOnEvent>(eventName: Key, listener: (event: IpcMainInvokeEvent, ...args: Parameters<IpcMainOnEventType[Key]>) => void): void {
+  ipcMain.on(eventName, listener as (e: IpcMainInvokeEvent, ...as: any[]) => void)
 }
 
 export const ipcMainRemove = (eventName: IpcMainHandleEvent): void => {
   ipcMain.removeHandler(eventName)
 }
 
-export const ipcMainSend = (
-  eventName: IpcRendererHandleEvent,
-  ...args: any[]
-): void => {
+
+export function ipcMainSend<Key extends IpcRendererOnEvent>(eventName: Key, ...args: Parameters<IpcRendererOnEventType[Key]>): void {
   const win = new WindowManager().getWindow()
   logger.silly(`Send ipcRenderer event: ${eventName}`)
   win.webContents.send(eventName, ...args)
