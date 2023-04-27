@@ -9,7 +9,7 @@ import logger from '@/hooks/caller/logger'
 
 type Patcher<T> = (storage: T) => T
 
-export async function initialStor(): Promise<void> {
+export async function initialStore(): Promise<void> {
   const stores: Record<string, Store> = {
     device: useDeviceStore(),
     setting: useSettingStore(),
