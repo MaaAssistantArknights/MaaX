@@ -11,7 +11,7 @@ import {
   NText,
 } from 'naive-ui'
 import useDeviceStore from '@/store/devices'
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import logger from '@/hooks/caller/logger'
 import IconPencilAlt from '@/assets/icons/pencil-alt.svg?component'
 
@@ -24,7 +24,7 @@ const props = defineProps<{
 // const emit = defineEmits(['update:show'])
 const show = ref(false)
 
-const device = deviceStore.getDevice(props.uuid) as Device
+const device = computed(() => deviceStore.getDevice(props.uuid) as Device)
 const screenshot = ref('')
 let timer: NodeJS.Timer | null = null
 
@@ -57,7 +57,12 @@ const stopGetScreenshot = () => {
   window.ipcRenderer.off('renderer.Device:getScreenshot', () => {})
 }
 
+const inputContent = ref('')
+
 watch(show, newShowValue => {
+  if (device.value.displayName !== undefined) {
+    inputContent.value = device.value.displayName
+  }
   // if (newShowValue) {
   //   startGetScreenshot()
   // } else {
@@ -65,8 +70,13 @@ watch(show, newShowValue => {
   // }
 })
 
-const updateDisplayName = (displayName: string) => {
-  deviceStore.updateDeviceDisplayName(props.uuid, displayName)
+const updateDisplayName = event => {
+  if (inputContent.value === '') {
+    if (device.value.displayName !== undefined) {
+      inputContent.value = device.value.displayName
+    } else inputContent.value = device.value.uuid
+  }
+  deviceStore.updateDeviceDisplayName(props.uuid, inputContent.value)
 }
 </script>
 
@@ -88,10 +98,10 @@ const updateDisplayName = (displayName: string) => {
             <NText type="info"> 备注: </NText>
           </template>
           <NInput
-            v-model:value="device.displayName"
-            minlength="1"
+            v-model:value="inputContent"
             maxlength="11"
-            @update:value="updateDisplayName"
+            passively-activated
+            @change="updateDisplayName"
           >
             <template #prefix>
               <NIcon :component="IconPencilAlt" />

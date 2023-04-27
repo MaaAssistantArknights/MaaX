@@ -19,12 +19,19 @@ export async function initialStore(): Promise<void> {
 
   const patcher: Record<string, Patcher<any>> = {
     device: (storage: DeviceState) => {
-      storage.devices = storage.devices.map(device => ({
-        ...device,
-        status: 'unknown',
-        address: '',
-        pid: '',
-      }))
+      storage.devices = storage.devices.map(device =>
+        device.config === 'General'
+          ? {
+              ...device,
+              status: 'unknown',
+            }
+          : {
+              ...device,
+              status: 'unknown',
+              address: '',
+              pid: '',
+            }
+      )
       return storage
     },
     setting: (storage: SettingState) => {

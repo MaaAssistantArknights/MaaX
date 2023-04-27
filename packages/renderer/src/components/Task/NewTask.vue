@@ -116,6 +116,10 @@ const handleShowDropdown = (e: MouseEvent) => {
     }
   })
 }
+
+const onClickoutside = () => {
+  showDropdown.value = false
+}
 </script>
 
 <template>
@@ -133,23 +137,27 @@ const handleShowDropdown = (e: MouseEvent) => {
             ? `1px dashed ${themeVars.primaryColor}`
             : 'dashed white',
       }"
+      @mouseover="handleShowDropdown"
     >
       <template #header>
+        <NDropdown
+          trigger="manual"
+          :options="options"
+          :x="dropdownPosition.x"
+          :y="dropdownPosition.y"
+          :show="showDropdown"
+          :on-clickoutside="onClickoutside"
+          @select="handleSelectNewTask"
+        />
         <div style="width: 100%">
-          <NDropdown
-            trigger="hover"
-            :options="options"
-            @select="handleSelectNewTask"
-          >
-            <div ref="cardHeaderRef" class="card-header">
-              <NSpace>
-                <span class="card-title">
-                  {{ props.isCollapsed ? '新建任务' : '' }}
-                </span>
-              </NSpace>
-              <NSpace justify="end" align="center" />
-            </div>
-          </NDropdown>
+          <div ref="cardHeaderRef" class="card-header">
+            <NSpace>
+              <span class="card-title">
+                {{ props.isCollapsed ? '新建任务' : '' }}
+              </span>
+            </NSpace>
+            <NSpace justify="end" align="center" />
+          </div>
         </div>
       </template>
       <div class="card-content">

@@ -27,6 +27,7 @@ import router from '@/router'
 import Result from '@/components/Task/results/Index.vue'
 import logger from '@/hooks/caller/logger'
 import { runTasks, runStartEmulator } from '@/utils/task_runner'
+import { onBeforeRouteUpdate } from 'vue-router'
 
 const taskStore = useTaskStore()
 const deviceStore = useDeviceStore()
@@ -235,6 +236,13 @@ const currentTaskGroupIndexValue = computed({
 const currentTaskGroup = computed(() =>
   taskStore.getCurrentTaskGroup(uuid.value)
 )
+
+const key = ref(0)
+
+onBeforeRouteUpdate((to, from, next) => {
+  key.value++
+  next()
+})
 </script>
 
 <template>
@@ -244,6 +252,7 @@ const currentTaskGroup = computed(() =>
       <NSpace align="center">
         <TaskGroupActions :device-uuid="uuid" :task-group="currentTaskGroup" />
         <NSelect
+          :key="key"
           v-model:value="currentTaskGroupIndexValue"
           :options="taskGroupOptions"
           :consistent-menu-width="false"

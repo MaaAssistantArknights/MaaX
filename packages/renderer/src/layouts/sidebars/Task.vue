@@ -7,7 +7,8 @@ import DeviceCard from '@/components/Device/DeviceCard.vue'
 import router from '@/router'
 
 import useDeviceStore from '@/store/devices'
-import { computed } from 'vue'
+import { computed, nextTick, ref } from 'vue'
+import { onBeforeRouteUpdate } from 'vue-router'
 
 const deviceStore = useDeviceStore()
 const currentUuid = computed(
@@ -16,9 +17,22 @@ const currentUuid = computed(
 const currentDevice = computed(() =>
   deviceStore.devices.find(device => device.uuid === currentUuid.value)
 )
-const otherDevices = deviceStore.devices.filter(
+let otherDevices = deviceStore.devices.filter(
   device => device.uuid !== currentUuid.value
 )
+
+const refresh = ref(false)
+
+onBeforeRouteUpdate((to, from, next) => {
+  otherDevices = deviceStore.devices.filter(
+    device => device.uuid !== to.params.uuid
+  )
+  refresh.value = true
+  nextTick(() => {
+    refresh.value = false
+  })
+  next()
+})
 </script>
 
 <template>
@@ -73,7 +87,7 @@ const otherDevices = deviceStore.devices.filter(
       <DeviceCard :device="currentDevice!" />
     </div>
     <h2>其他设备</h2>
-    <div class="other-devices">
+    <div v-if="!refresh" class="other-devices">
       <DeviceCard
         v-for="device in otherDevices"
         :key="device.uuid"

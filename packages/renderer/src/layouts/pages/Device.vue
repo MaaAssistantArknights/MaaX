@@ -53,12 +53,11 @@ function addressChecker(cs: string) {
 async function handleCustomConnect() {
   console.log(address.value)
   if (addressChecker(address.value)) {
-    const loading = showMessage('正在连接', { type: 'loading', duration: 0 })
     if (deviceStore.devices.find(dev => dev.address === address.value)) {
-      loading.destroy()
       showMessage('设备已经存在了哦', { type: 'warning', duration: 5000 })
       return
     }
+    const loading = showMessage('正在连接', { type: 'loading', duration: 0 })
     const uuid = await window.ipcRenderer.invoke(
       'main.DeviceDetector:getDeviceUuid',
       address.value

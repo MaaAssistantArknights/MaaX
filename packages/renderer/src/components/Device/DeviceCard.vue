@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import IconDisconnect from '@/assets/icons/disconnect.svg?component'
 import DeviceDetailPopover from '@/components/Device/DeviceDetailPopover.vue'
 import IconLink from '@/assets/icons/link.svg?component'
@@ -18,6 +18,7 @@ import useTaskStore from '@/store/tasks'
 import useSettingStore from '@/store/settings'
 // import useTaskIdStore from '@/store/taskId'
 import { showMessage } from '@/utils/message'
+import { onBeforeRouteUpdate } from 'vue-router'
 
 const props = defineProps<{
   device: Device
@@ -108,6 +109,13 @@ async function handleDeviceConnect() {
     touch_mode: touchMode.value,
   } as InitCoreParam)
 }
+
+const key = ref(0)
+
+onBeforeRouteUpdate((to, from, next) => {
+  key.value++
+  next()
+})
 </script>
 
 <template>
@@ -149,7 +157,7 @@ async function handleDeviceConnect() {
           })()
         }}
       </NTooltip>
-      <DeviceDetailPopover :uuid="props.device.uuid">
+      <DeviceDetailPopover :key="key" :uuid="props.device.uuid">
         <div class="device-name">
           {{ deviceDisplayName }}
         </div>
