@@ -60,7 +60,7 @@ function deviceInfoParser(devices: Device[]): any[] {
   })
   if (ret.length === 0) {
     showMessage(
-      t('device.noAvailableDevice'),
+      t('device.noDeviceAvailable'),
       {
         type: 'info',
         duration: 0,
