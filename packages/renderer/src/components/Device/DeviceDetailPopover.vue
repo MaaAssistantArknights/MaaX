@@ -29,7 +29,7 @@ const device = computed(() => deviceStore.getDevice(props.uuid) as Device)
 const screenshot = ref('')
 
 let timer: NodeJS.Timer | null = null
-const tempName = ref('')
+const inputContent = ref('')
 
 const startGetScreenshot = async () => {
   logger.info('send get')
@@ -61,8 +61,9 @@ const stopGetScreenshot = () => {
 }
 
 watch(show, newShowValue => {
-  if (device.value.displayName !== undefined)
-    tempName.value = device.value.displayName
+  if (device.value.displayName !== undefined) {
+    inputContent.value = device.value.displayName
+  }
   // if (newShowValue) {
   //   startGetScreenshot()
   // } else {
@@ -71,15 +72,15 @@ watch(show, newShowValue => {
 })
 
 const updateDisplayName = event => {
-  console.log(tempName.value)
+  console.log(inputContent.value)
   console.log(device.value.displayName)
-  if (tempName.value === '') {
-    if (device.value.displayName !== undefined)
-      tempName.value = device.value.displayName
-    else tempName.value = device.value.uuid
+  if (inputContent.value === '') {
+    if (device.value.displayName !== undefined) {
+      inputContent.value = device.value.displayName
+    } else inputContent.value = device.value.uuid
   }
 
-  deviceStore.updateDeviceDisplayName(props.uuid, tempName.value)
+  deviceStore.updateDeviceDisplayName(props.uuid, inputContent.value)
 }
 </script>
 
@@ -101,8 +102,9 @@ const updateDisplayName = event => {
             <NText type="info"> 备注: </NText>
           </template>
           <NInput
-            v-model:value="tempName"
+            v-model:value="inputContent"
             maxlength="11"
+            passively-activated
             @change="updateDisplayName"
           >
             <template #prefix>

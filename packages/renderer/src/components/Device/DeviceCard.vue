@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import IconDisconnect from '@/assets/icons/disconnect.svg?component'
 import DeviceDetailPopover from '@/components/Device/DeviceDetailPopover.vue'
 import IconLink from '@/assets/icons/link.svg?component'
@@ -35,10 +35,10 @@ const touchMode = computed(() => settingStore.touchMode)
 const deviceDisplayName = computed(
   () => props.device.displayName || props.device.address
 )
-let routeUuid = computed(
+const routeUuid = computed(
   () => router.currentRoute.value.params.uuid as string | undefined
 )
-let isCurrent = computed(() => routeUuid.value === props.device.uuid)
+const isCurrent = computed(() => routeUuid.value === props.device.uuid)
 
 const connectedStatus: Set<DeviceStatus> = new Set(['connected', 'tasking'])
 const disconnectedStatus: Set<DeviceStatus> = new Set([
@@ -47,14 +47,6 @@ const disconnectedStatus: Set<DeviceStatus> = new Set([
   'connecting',
   'unknown',
 ])
-
-onBeforeRouteUpdate((to, from, next) => {
-  routeUuid = computed(
-    () => router.currentRoute.value.params.uuid as string | undefined
-  )
-  isCurrent = computed(() => routeUuid.value === props.device.uuid)
-  next()
-})
 
 // function disconnectDevice (uuid: string) {}
 
@@ -72,7 +64,6 @@ function handleJumpToTask() {
   //   return
   // }
   // 4.20完成了
-  // 问题似乎是router在push之后并不会刷新对应的页面
   if (!taskStore.getCurrentTaskGroup(props.device.uuid)) {
     taskStore.initDeviceTask(props.device.uuid)
   }
@@ -118,6 +109,13 @@ async function handleDeviceConnect() {
     touch_mode: touchMode.value,
   } as InitCoreParam)
 }
+
+const key = ref(0)
+
+onBeforeRouteUpdate((to, from, next) => {
+  key.value++
+  next()
+})
 </script>
 
 <template>
@@ -159,7 +157,7 @@ async function handleDeviceConnect() {
           })()
         }}
       </NTooltip>
-      <DeviceDetailPopover :uuid="props.device.uuid">
+      <DeviceDetailPopover :key="key" :uuid="props.device.uuid">
         <div class="device-name">
           {{ deviceDisplayName }}
         </div>
