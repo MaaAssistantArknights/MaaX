@@ -19,8 +19,7 @@
     "useUnknownInCatchVariables": false,
     "types": ["naive-ui/volar"],
     "isolatedModules": true,
-    "importsNotUsedAsValues": "error",
-    "ignoreDeprecations": "5.0"
+    "verbatimModuleSyntax": true
   },
   "include": ["packages/@types/**/*.d.ts", "packages/common/**/*.ts"]
 }
