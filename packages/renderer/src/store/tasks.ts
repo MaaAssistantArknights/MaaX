@@ -412,11 +412,11 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
       })
 
       // STEP 2. add new tasks.
-      for (const [, conf] of Object.entries(defaultTaskConf)) {
-        if (!origin?.some(t => t.name === conf.name)) {
-          origin?.push(_.cloneDeep(conf))
-        }
-      }
+      // for (const [, conf] of Object.entries(defaultTaskConf)) {
+      //   if (!origin?.some(t => t.name === conf.name)) {
+      //     origin?.push(_.cloneDeep(conf))
+      //   }
+      // }
     },
     copyTaskFromTemplate(uuid, task_name) {
       const origin = this.getCurrentTaskGroup(uuid)?.tasks
