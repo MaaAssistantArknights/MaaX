@@ -11,13 +11,16 @@
     "baseUrl": ".",
     "strict": true,
     "paths": {
+      "@type/*": ["packages/types/*"],
       "@common/*": ["./packages/common/*"],
-      "@main/*": ["./packages/main/*"]
+      "@main/*": ["./packages/main/*"],
     },
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "useUnknownInCatchVariables": false,
-    "types": ["naive-ui/volar"]
+    "types": ["naive-ui/volar"],
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true
   },
-  "include": ["packages/@types/**/*.d.ts", "packages/common/**/*.ts"]
+  "include": ["packages/types/**/*.ts", "packages/common/**/*.ts"]
 }

@@ -1,4 +1,5 @@
 import useSettingStore from '@/store/settings'
+import type { CoreTaskName, CoreTaskObjectMapper, GetTask } from '@type/task'
 import _ from 'lodash'
 
 /**
@@ -18,7 +19,7 @@ export function compareObjKey(oldTask: object, newTask: object): boolean {
 
 export function convertToCoreTaskConfiguration<
   K extends CoreTaskName,
-  T extends CoreTaskTemplate<K>
+  T extends GetTask<K>
 >(_name: K, task: T) {
   switch (task.name) {
     case 'Fight': {

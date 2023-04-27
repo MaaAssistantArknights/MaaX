@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { inject } from 'vue'
 import _ from 'lodash'
-import { RogueTheme } from '@common/enum/core'
+import {
+  RogueTheme,
+  type MizukiSquadType,
+  type PhantomSquadType,
+  type RolesType,
+} from '@type/game'
 import {
   NForm,
   NFormItem,
@@ -19,13 +24,9 @@ import type { GetConfig } from './types'
 
 type RogueConfig = GetConfig<'Roguelike'>
 
-type phantomSquadType = __TASKOBJ_PhantomSquadType
-type mizukiSquadType = __TASKOBJ_MizukiSquadType
-type rolesType = __TASKOBJ_RolesType
-
 const phantomSquadOptions: {
   label: string
-  value: phantomSquadType
+  value: PhantomSquadType
 }[] = [
   {
     label: '指挥分队',
@@ -71,7 +72,7 @@ const phantomSquadOptions: {
 
 const mizukiSquadOptions: {
   label: string
-  value: mizukiSquadType
+  value: MizukiSquadType
 }[] = [
   {
     label: '心胜于物分队',
@@ -129,7 +130,7 @@ const mizukiSquadOptions: {
 
 const rolesOptions: {
   label: string
-  value: rolesType
+  value: RolesType
 }[] = [
   {
     label: '随心所欲(三张随机)',

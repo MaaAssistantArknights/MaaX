@@ -1,16 +1,16 @@
 import type { AxiosRequestHeaders, AxiosResponse } from 'axios'
-import { backOff, IBackOffOptions } from 'exponential-backoff'
+import { backOff, type IBackOffOptions } from 'exponential-backoff'
 import useSettingStore from '@/store/settings'
 import service from './service'
 
-interface DropInfo {
+export interface DropInfo {
   dropType: string
   itemId: string
   quantity: number
 }
 
 export interface DropReport {
-  drops: DropInfo
+  drops: DropInfo[]
   stageId: string
   server: string
 }

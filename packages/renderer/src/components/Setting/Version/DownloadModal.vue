@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, Ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import {
   NButton,
   NModal,
@@ -12,6 +12,8 @@ import {
 } from 'naive-ui'
 import useComponentStore from '@/store/components'
 import useDeviceStore from '@/store/devices'
+import type { ComponentType, ComponentStatus } from '@type/componentManager'
+import type { InstallerStatus } from '@type/misc'
 
 const componentStore = useComponentStore()
 const deviceStore = useDeviceStore()
@@ -29,7 +31,7 @@ defineEmits<{
   (event: 'update:show', value: boolean): void
 }>()
 
-const showTooltip: Ref<ComponentType | undefined> = ref()
+const showTooltip = ref<ComponentType | undefined>()
 
 const tooltipPosition = ref({
   x: 0,
@@ -88,7 +90,7 @@ const handleInstall = (component: ComponentType) => {
       break
     }
     case 'need-restart': {
-      window.ipcRenderer.invoke('main.Util:restart', component)
+      window.ipcRenderer.invoke('main.Util:restart') // , component)
       break
     }
     default:

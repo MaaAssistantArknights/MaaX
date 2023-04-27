@@ -1,15 +1,16 @@
 import service from './service'
+import type { Platform, Arch, Component } from '@type/api/maa'
 
 export default {
   async getCompletePackage(
-    platform: Api.Maa.Platform,
-    arch: Api.Maa.Arch,
+    platform: Platform,
+    arch: Arch,
     version: string,
-    component: Api.Maa.Component
+    component: Component
   ) {
     return await service.get<{
-      platform: Api.Maa.Platform
-      arch: Api.Maa.Arch[]
+      platform: Platform
+      arch: Arch[]
       version: string
       url: string
       hash: string
@@ -20,15 +21,15 @@ export default {
     })
   },
   async getDiffPackage(
-    platform: Api.Maa.Platform,
-    arch: Api.Maa.Arch,
+    platform: Platform,
+    arch: Arch,
     from: string,
     to: string,
-    component: Api.Maa.Component
+    component: Component
   ) {
     return await service.get<{
-      platform: Api.Maa.Platform
-      arch: Api.Maa.Arch[]
+      platform: Platform
+      arch: Arch[]
       version: string
       url: string
       hash: string

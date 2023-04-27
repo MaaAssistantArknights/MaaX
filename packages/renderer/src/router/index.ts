@@ -1,4 +1,8 @@
-import { createMemoryHistory, createRouter, RouteRecordRaw } from 'vue-router'
+import {
+  createMemoryHistory,
+  createRouter,
+  type RouteRecordRaw,
+} from 'vue-router'
 
 import SideBarTask from '@/layouts/sidebars/Task.vue'
 import PageTask from '@/layouts/pages/Task.vue'

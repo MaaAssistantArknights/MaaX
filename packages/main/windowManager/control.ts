@@ -1,4 +1,5 @@
 import { ipcMainHandle, ipcMainOn } from '@main/utils/ipc-main'
+import type { DialogProperty } from '@type/misc'
 import type { BrowserWindow } from 'electron'
 import { ipcMain, dialog } from 'electron'
 

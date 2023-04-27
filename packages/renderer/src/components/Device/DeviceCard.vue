@@ -18,6 +18,8 @@ import useTaskStore from '@/store/tasks'
 import useSettingStore from '@/store/settings'
 // import useTaskIdStore from '@/store/taskId'
 import { showMessage } from '@/utils/message'
+import type { Device, DeviceStatus } from '@type/device'
+import type { InitCoreParam } from '@type/ipc'
 
 const props = defineProps<{
   device: Device

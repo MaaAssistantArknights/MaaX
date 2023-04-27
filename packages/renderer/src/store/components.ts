@@ -1,3 +1,5 @@
+import type { ComponentType, ComponentStatus } from '@type/componentManager'
+import type { InstallerStatus } from '@type/misc'
 import { defineStore } from 'pinia'
 
 export type ComponentStoreState = {

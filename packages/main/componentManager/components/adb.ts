@@ -3,6 +3,7 @@ import path from 'path'
 
 import AdbInstaller from '@main/componentManager/installers/adb'
 import { getAppBaseDir } from '@main/utils/path'
+import type { Component } from '@type/componentManager'
 
 export const getComponentAdb = async (): Promise<Component> => {
   const componentAdb: Component = {

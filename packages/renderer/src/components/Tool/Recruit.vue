@@ -3,21 +3,12 @@ import { useRoute } from 'vue-router'
 import { NAvatar, NButton, NCard, NSwitch, NTag, NTooltip } from 'naive-ui'
 import { ref } from 'vue'
 import { useSeperateTaskStore } from '@/store/seperateTask'
-import { AsstMsg, SubTaskMsgData } from '@common/enum/callback'
 import { getOperatorAvatar } from '@/utils/game_image'
 import { showMessage } from '@/utils/message'
+import { AsstMsg, type SubTaskExtraInfoMapper } from '@type/coreLoader/callback'
+import type { GetTask } from '@type/task'
 
-// TODO: 在TaskResult中实现
-type RecruitResult = {
-  tags: string[]
-  result: {
-    tags: string[]
-    opers: {
-      name: string
-      level: 1 | 2 | 3 | 4 | 5 | 6
-    }[]
-  }[]
-}
+type RecruitResult = SubTaskExtraInfoMapper['RecruitResult']
 
 const route = useRoute()
 const seperateTaskStore = useSeperateTaskStore()
@@ -74,7 +65,7 @@ function checkResult(res: RecruitResult['result'][number]) {
 }
 
 async function doRecruit(selectTags: string[] = []) {
-  const arg: __GetTask<'Recruit'>['configurations'] = {
+  const arg: GetTask<'Recruit'>['configurations'] = {
     select: [],
     confirm: [],
     times: 0,
@@ -100,7 +91,7 @@ async function doRecruit(selectTags: string[] = []) {
       }
       switch (msg) {
         case AsstMsg.SubTaskExtraInfo: {
-          const d = data as SubTaskMsgData[AsstMsg.SubTaskExtraInfo]
+          const d = data
           if (d.what === 'RecruitResult') {
             result.value = d.details
           }
@@ -135,7 +126,7 @@ async function doRecruit(selectTags: string[] = []) {
             <NSwitch v-model:value="useAvatar"></NSwitch>
           </div>
 
-          <NButton @click="doRecruit" :disabled="processing">识别</NButton>
+          <NButton @click="doRecruit()" :disabled="processing">识别</NButton>
         </div>
       </div>
     </template>

@@ -14,6 +14,7 @@ import useDeviceStore from '@/store/devices'
 import { ref, watch } from 'vue'
 import logger from '@/hooks/caller/logger'
 import IconPencilAlt from '@/assets/icons/pencil-alt.svg?component'
+import type { Device } from '@type/device'
 
 const deviceStore = useDeviceStore()
 

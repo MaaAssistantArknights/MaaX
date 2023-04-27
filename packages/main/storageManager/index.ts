@@ -4,6 +4,7 @@ import { app } from 'electron'
 import _ from 'lodash'
 import logger from '@main/utils/logger'
 import { Singleton } from '@common/function/singletonDecorator'
+import type { Module } from '@type/misc'
 
 type StorageOption<T> = Partial<{
   defaults: T

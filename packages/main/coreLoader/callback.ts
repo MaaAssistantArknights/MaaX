@@ -2,7 +2,7 @@ import ffi from '@tigerconnect/ffi-napi'
 import ref from '@tigerconnect/ref-napi'
 import logger from '@main/utils/logger'
 import { ipcMainSend } from '@main/utils/ipc-main'
-import { AsstMsg } from '@common/enum/callback'
+import type { AsstMsg } from '@type/coreLoader/callback'
 
 const callbackHandle = ffi.Callback(
   'void',

@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { MessageReactive, useMessage } from 'naive-ui'
+import { type MessageReactive, useMessage } from 'naive-ui'
 import { useI18n } from 'vue-i18n'
 
 import useDeviceStore from '@/store/devices'
 import useComponentStore from '@/store/components'
 import useTaskStore from '@/store/tasks'
-import { ref, Ref } from 'vue'
+import { ref } from 'vue'
 
 const { t } = useI18n()
 const message = useMessage()
@@ -13,7 +13,7 @@ const deviceStore = useDeviceStore()
 const componentStore = useComponentStore()
 const taskStore = useTaskStore()
 
-const connectMessage: Ref<MessageReactive | undefined> = ref()
+const connectMessage = ref<MessageReactive | undefined>()
 
 deviceStore.$onAction(({ name, store, args, after, onError }) => {
   if (name === 'updateDeviceStatus') {

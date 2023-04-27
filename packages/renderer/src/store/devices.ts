@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import logger from '@/hooks/caller/logger'
 import { runStartEmulator } from '@/utils/task_runner'
 import { showMessage } from '@/utils/message'
+import type { Device, NativeDevice, DeviceStatus } from '@type/device'
 
 export interface DeviceState {
   devices: Device[]

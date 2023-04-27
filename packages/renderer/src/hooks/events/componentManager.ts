@@ -1,5 +1,7 @@
 import useComponentStore from '@/store/components'
 import asst from '../caller/asst'
+import type { ComponentType } from '@type/componentManager'
+import type { InstallerStatus } from '@type/misc'
 
 export default function useComponentManagerEvents(): void {
   window.ipcRenderer.on(

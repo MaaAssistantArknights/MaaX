@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { NButton, NIcon, NMenu, MenuOption } from 'naive-ui'
-import { h, ref, Ref, computed } from 'vue'
+import { NButton, NIcon, NMenu, type MenuOption } from 'naive-ui'
+import { h, ref, computed } from 'vue'
 import DeviceCard from '@/components/Device/DeviceCard.vue'
 import useDeviceStore from '@/store/devices'
 import router from '@/router'
@@ -14,7 +14,7 @@ const currentDevice = computed(() =>
   deviceStore.devices.find(device => device.uuid === currentUuid)
 )
 
-const menuActiveKey: Ref<string | null> = ref(null)
+const menuActiveKey = ref<string | null>(null)
 const menuOptions: MenuOption[] = [
   {
     label: () =>

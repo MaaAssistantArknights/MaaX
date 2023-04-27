@@ -1,5 +1,6 @@
 import psList from 'ps-list'
-import { Singleton } from '@main/../common/function/singletonDecorator'
+import { Singleton } from '@common/function/singletonDecorator'
+import type { EmulatorAdapter, Device, Emulator } from '@type/device'
 
 @Singleton
 class MacEmulator implements EmulatorAdapter {

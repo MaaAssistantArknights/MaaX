@@ -14,6 +14,7 @@ import { TrashOutline } from '@vicons/ionicons5'
 
 import useTaskStore from '@/store/tasks'
 import EditIcon from '@/assets/icons/edit.svg?component'
+import type { TaskGroup } from '@type/task'
 
 const props = defineProps<{
   taskGroup: TaskGroup | undefined

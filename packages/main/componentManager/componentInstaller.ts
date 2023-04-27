@@ -1,11 +1,13 @@
-import unzipper, { Entry } from 'unzipper'
-import axios, { AxiosProxyConfig } from 'axios'
+import unzipper, { type Entry } from 'unzipper'
+import axios, { type AxiosProxyConfig } from 'axios'
 import fs from 'fs'
 import path from 'path'
 import logger from '@main/utils/logger'
 import DownloadManager from '@main/downloadManager'
 import detectSystemProxy from '@main/utils/proxy'
 import WindowManager from '@main/windowManager'
+import type { ComponentType, Update } from '@type/componentManager'
+import type { DownloadTask } from '@type/downloadManager'
 
 interface DownloadHandle {
   handleDownloadUpdate: (task: DownloadTask) => void
@@ -21,6 +23,7 @@ interface UnzipHandle {
 
 abstract class ComponentInstaller {
   public abstract install(): Promise<void>
+  public async upgrade(): Promise<void> {}
 
   public abstract checkUpdate(): Promise<Update | false | undefined>
   protected abstract onStart(): void

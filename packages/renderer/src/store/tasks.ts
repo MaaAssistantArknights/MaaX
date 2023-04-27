@@ -2,6 +2,13 @@ import { defineStore } from 'pinia'
 import _ from 'lodash'
 import { compareObjKey } from '@/utils/task_helper'
 import logger from '@/hooks/caller/logger'
+import type {
+  GetTask,
+  Task,
+  TaskGroup,
+  TaskGroups,
+  TaskStatus,
+} from '@type/task'
 
 export interface TaskState {
   deviceTasks: Record<string, TaskGroups>
@@ -46,8 +53,19 @@ export interface TaskAction {
   resetToIdle: (uuid: string) => void
 }
 
+type NoTemplateTask =
+  | 'CloseDown'
+  | 'Copilot'
+  | 'SSSCopilot'
+  | 'Depot'
+  | 'OperBox'
+  | 'ReclamationAlgorithm'
+  | 'Custom'
+  | 'SingleStep'
+  | 'VideoRecognition'
+
 export const taskTemplate: {
-  [key in Exclude<Task['name'], 'CloseDown' | 'Copilot'>]: __GetTask<key>
+  [key in Exclude<Task['name'], NoTemplateTask>]: GetTask<key>
 } = {
   Emulator: {
     name: 'Emulator',
@@ -223,7 +241,7 @@ export const taskTemplate: {
 
 function hasTemplate(
   task_name: Task['name']
-): task_name is Exclude<Task['name'], 'CloseDown' | 'Copilot'> {
+): task_name is Exclude<Task['name'], NoTemplateTask> {
   return task_name in taskTemplate
 }
 
