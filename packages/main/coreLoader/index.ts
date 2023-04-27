@@ -55,14 +55,22 @@ class CoreLoader {
       'onnxruntime_maa.dll',
       'MaaDerpLearning.dll',
     ],
-    linux: ['libiomp5.so', 'libmklml_intel.so', 'libmkldnn.so'],
-    darwin: ['libpaddle_inference.dylib'],
+    linux: [
+      'libopencv_world4.so',
+      'libonnxruntime.so',
+      'libMaaDerpLearning.so',
+    ],
+    darwin: [
+      'libopencv_world4.dylib',
+      'libonnxruntime.dylib',
+      'libMaaDerpLearning.dylib',
+    ],
   }
 
   private readonly libName: Record<string, string> = {
     win32: 'MaaCore.dll',
-    darwin: 'MeoAssistant.dylib',
-    linux: 'libMeoAssistant.so',
+    darwin: 'libMaaCore.dylib',
+    linux: 'libMaaCore.so',
   }
 
   private DLib!: ffi.DynamicLibrary
