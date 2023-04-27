@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, h, Component } from 'vue'
+import { defineComponent, h, type Component } from 'vue'
 import NoProgress from './NoProgress.vue'
 import Emulator from './Emulator.vue'
 import Game from './Game.vue'

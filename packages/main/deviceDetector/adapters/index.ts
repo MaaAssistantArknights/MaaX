@@ -1,4 +1,5 @@
 import { getPlatform } from '@main/utils/os'
+import type { EmulatorAdapter } from '@type/device'
 
 const getAdapter = async (): Promise<EmulatorAdapter> => {
   const platform = getPlatform()

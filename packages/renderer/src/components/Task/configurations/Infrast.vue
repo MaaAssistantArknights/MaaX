@@ -9,7 +9,7 @@ import {
   NUpload,
   NUploadDragger,
   NText,
-  UploadFileInfo,
+  type UploadFileInfo,
 } from 'naive-ui'
 import Draggable from 'vuedraggable'
 import _ from 'lodash'

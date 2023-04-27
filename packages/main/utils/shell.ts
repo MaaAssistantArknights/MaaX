@@ -1,7 +1,7 @@
+import execa, { type ExecaError } from 'execa'
+import iconv from 'iconv-lite'
 import logger from '@main/utils/logger'
 import { getPlatform } from '@main/utils/os'
-import execa, { ExecaError } from 'execa'
-import iconv from 'iconv-lite'
 
 interface ProcessOutput {
   stdout: string

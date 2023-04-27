@@ -21,6 +21,8 @@ import IconEdit from '@/assets/icons/edit.svg?component'
 import IconAdd from '@/assets/icons/add.svg?component'
 import IconRemove from '@/assets/icons/remove.svg?component'
 import useDeviceStore from '@/store/devices'
+import type { Task, TaskStatus } from '@type/task'
+
 const themeVars = useThemeVars()
 const themeStore = useThemeStore()
 const props = defineProps<{

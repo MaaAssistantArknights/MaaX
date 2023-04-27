@@ -1,23 +1,24 @@
 <script setup lang="ts">
-import { ref, Ref, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { gamedata } from '@/api'
 import { NCard, NText, NTag, NSkeleton } from 'naive-ui'
+import type { Item, Stage } from '@type/api/maa'
 
 const props = defineProps<{
   name: string
 }>()
 
-const items: Ref<Api.Maa.Item[]> = ref([])
-const stages: Ref<Api.Maa.Stage[]> = ref([])
+const items = ref<Item[]>([])
+const stages = ref<Stage[]>([])
 
-const info: Ref<Api.Maa.Item | undefined> = ref()
+const info = ref<Item | undefined>()
 const loading = ref(true)
 
 onMounted(async () => {
   const itemApi = await gamedata.getAllItems()
   const stageApi = await gamedata.getAllStages()
-  stages.value = Object.values(stageApi.stages) as unknown as Api.Maa.Stage[]
-  items.value = Object.values(itemApi.items) as unknown as Api.Maa.Item[]
+  stages.value = Object.values(stageApi.stages) as unknown as Stage[]
+  items.value = Object.values(itemApi.items) as unknown as Item[]
   const itemid = Object.values(itemApi.items).find(
     item => item.name === props.name
   )?.itemId
@@ -25,7 +26,7 @@ onMounted(async () => {
   loading.value = false
 })
 
-// function getStageInfo (stageId: string): Api.Maa.Stage | undefined {
+// function getStageInfo (stageId: string): Stage | undefined {
 //   return stages.value.find(stage => stage.stageId === stageId)
 // }
 </script>

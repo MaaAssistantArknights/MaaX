@@ -3,6 +3,7 @@ import fs from 'fs'
 import CoreLoader from '@main/coreLoader'
 import CoreInstaller from '@main/componentManager/installers/core'
 import path from 'path'
+import type { Component } from '@type/componentManager'
 
 export const getComponentCore = async (): Promise<Component> => {
   const coreLoader = new CoreLoader()
@@ -21,9 +22,10 @@ export const getComponentCore = async (): Promise<Component> => {
   const coreVersion = coreLoader.GetCoreVersion()
 
   if (coreVersion) {
+    const installer = componentCore.installer as CoreInstaller
     componentCore.status = 'installed'
-    fs.writeFileSync(componentCore.installer.versionFile, coreVersion, 'utf-8') // always check version
-    const update = await componentCore.installer.checkUpdate()
+    fs.writeFileSync(installer.getVersionFile(), coreVersion, 'utf-8') // always check version
+    const update = await installer.checkUpdate()
     if (update) {
       componentCore.status = 'upgradable'
     }

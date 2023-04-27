@@ -18,6 +18,7 @@ import useDeviceStore from '@/store/devices'
 import useSettingStore from '@/store/settings'
 
 import { showMessage } from '@/utils/message'
+import type { Device } from '@type/device'
 
 const dialog = useDialog()
 const { t } = useI18n()

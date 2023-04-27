@@ -19,6 +19,8 @@ import useSettingStore from '@/store/settings'
 // import useTaskIdStore from '@/store/taskId'
 import { showMessage } from '@/utils/message'
 import { onBeforeRouteUpdate } from 'vue-router'
+import type { Device, DeviceStatus } from '@type/device'
+import type { InitCoreParam } from '@type/ipc'
 
 const props = defineProps<{
   device: Device

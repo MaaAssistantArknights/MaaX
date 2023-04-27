@@ -1,7 +1,7 @@
 import path from 'path'
 import { format } from 'date-fns'
+import tslog, { type ILogObject } from 'tslog'
 import { ipcMainHandle } from './ipc-main'
-import tslog, { ILogObject } from 'tslog'
 import { createWriteStream, mkdirSync, existsSync, WriteStream } from 'fs'
 import { getAppBaseDir } from './path'
 

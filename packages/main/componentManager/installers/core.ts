@@ -8,6 +8,9 @@ import fs from 'fs'
 import { getAppBaseDir } from '@main/utils/path'
 import { getDownloadUrlSuffix } from '@main/utils/os'
 import CoreLoader from '@main/coreLoader'
+import type { ComponentType, Update } from '@type/componentManager'
+import type { DownloadTask } from '@type/downloadManager'
+import type { InstallerStatus } from '@type/misc'
 
 @Singleton
 class CoreInstaller extends ComponentInstaller {
@@ -217,6 +220,10 @@ class CoreInstaller extends ComponentInstaller {
       version: tag_name,
       releaseDate: published_at,
     }
+  }
+
+  public getVersionFile() {
+    return this.versionFile
   }
 
   protected status_: InstallerStatus = 'pending'

@@ -7,6 +7,7 @@ import _ from 'lodash'
 import { $ } from '@main/utils/shell'
 import logger from '@main/utils/logger'
 import { defaultAdbPath, getDeviceUuid } from '@main/deviceDetector/utils'
+import type { EmulatorAdapter, Emulator, Device } from '@type/device'
 
 const inUsePorts: string[] = [] // 本次识别已被使用的端口，将会在此暂存。
 

@@ -1,12 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted, computed, Ref, inject } from 'vue'
+import { ref, onMounted, computed, inject } from 'vue'
 import { NFormItem, NInputNumber, NSpace, NSelect, NInputGroup } from 'naive-ui'
 import { gamedata } from '@/api'
 import type { GetConfig } from './types'
 
 type FightConfig = GetConfig<'Fight'>
-
-type DropConfiguration = Record<string, number>
 
 const { getAllItems } = gamedata
 
@@ -29,16 +27,16 @@ const props = defineProps<{
   taskIndex: number
 }>()
 
-const allItems: Ref<
-  Array<{
+const allItems = ref<
+  {
     label: string
     value: string
-  }>
-> = ref([])
+  }[]
+>([])
 
 const loading = ref(false)
 
-const drops = computed({
+const drops = computed<{ item_id?: string; times?: number }>({
   get() {
     const entries = Object.entries(props.configurations.drops)
     if (entries.length === 0) {
@@ -47,7 +45,7 @@ const drops = computed({
     const [item_id, times] = entries[0]
     return { item_id, times }
   },
-  set(value: { item_id?: string; times?: number }) {
+  set(value) {
     let obj = {}
     if (!value.item_id) {
       obj = {}

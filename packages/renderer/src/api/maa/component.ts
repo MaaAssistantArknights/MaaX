@@ -1,3 +1,4 @@
+import type { Platform, Arch, Component } from '@type/api/maa'
 import service from './service'
 
 interface ComponentInfo {
@@ -8,8 +9,8 @@ interface ComponentInfo {
     publish_time: string
     update_log: string
     support: Array<{
-      platform: Api.Maa.Platform
-      arch: Api.Maa.Arch
+      platform: Platform
+      arch: Arch
     }>
   }>
   page: number
@@ -20,7 +21,7 @@ export default {
   async getAll() {
     return await service.get<ComponentInfo[]>('/component/getAll')
   },
-  async getInfo(component: Api.Maa.Component) {
+  async getInfo(component: Component) {
     return await service.get<ComponentInfo>('/component/getInfo', {
       params: {
         component,

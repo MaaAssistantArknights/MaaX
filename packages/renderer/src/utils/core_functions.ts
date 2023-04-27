@@ -1,5 +1,5 @@
 import logger from '@/hooks/caller/logger'
-import { TouchMode } from '@common/enum/settings'
+import { TouchMode, TouchModes } from '@type/misc'
 
 /**
  * roguelike theme extra resources
@@ -17,7 +17,7 @@ export async function loadCoreResources(): Promise<void> {
 
 export async function changeTouchMode(mode: TouchMode): Promise<boolean> {
   // check is RogueTheme contains mode
-  if (!Object.values(TouchMode).includes(mode)) {
+  if (!TouchModes.includes(mode)) {
     logger.error('Invalid touchmode', mode)
     return false
   } else {

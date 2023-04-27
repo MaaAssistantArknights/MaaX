@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { useI18n } from 'vue-i18n'
 import version from '@/hooks/caller/version'
-import { TouchMode } from '@common/enum/settings'
+import { TouchMode } from '@type/misc'
 
 export enum Locale {
   zhCN = 'ZhCN',

@@ -1,16 +1,17 @@
 import service from './service'
+import type { Platform, Arch, Component, VersionDetail } from '@type/api/maa'
 
 export default {
   async getVersion(
-    platform: Api.Maa.Platform,
-    arch: Api.Maa.Arch,
+    platform: Platform,
+    arch: Arch,
     version: string,
-    component: Api.Maa.Component
+    component: Component
   ) {
     return await service.get<{
-      platform: Api.Maa.Platform
-      arch: Api.Maa.Arch
-      version_metadata: Api.Maa.VersionDetail
+      platform: Platform
+      arch: Arch
+      version_metadata: VersionDetail
     }>(`/version/${platform}/${arch}/${version}`, {
       params: {
         component,

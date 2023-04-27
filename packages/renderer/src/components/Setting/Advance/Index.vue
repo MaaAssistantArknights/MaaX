@@ -4,7 +4,7 @@ import { NSelect, NFormItem, NSpace, NButton } from 'naive-ui'
 import { showMessage } from '@/utils/message'
 import { confirm } from '@/utils/dialog'
 import useSettingStore from '@/store/settings'
-import { TouchMode } from '@common/enum/settings'
+import { TouchMode } from '@type/misc'
 import { changeTouchMode } from '@/utils/core_functions'
 
 const settingStore = useSettingStore()

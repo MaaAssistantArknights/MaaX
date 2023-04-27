@@ -5,6 +5,7 @@ import useController from './control'
 import useTheme from './theme'
 import Storage from '@main/storageManager'
 import { getPlatform } from '@main/utils/os'
+import type { Module } from '@type/misc'
 
 const createWindow = (
   options?: BrowserWindowConstructorOptions

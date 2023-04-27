@@ -2,6 +2,7 @@ import { ipcMainHandle, ipcMainRemove } from '@main/utils/ipc-main'
 import { defaultAdbPath, getDeviceUuid, isDefaultAdbExists } from './utils'
 import { $$, $ } from '@main/utils/shell'
 import { parseArguments } from '@main/utils/arguments'
+import type { EmulatorAdapter } from '@type/device'
 
 export function useEmulatorHooks(adapter: Promise<EmulatorAdapter>): void {
   ipcMainHandle('main.DeviceDetector:getEmulators', async event => {

@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import _ from 'lodash'
-import { ref, onMounted, Ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { NEllipsis, NTable, NCollapse, NCollapseItem, NAlert } from 'naive-ui'
 import { getSystemInformation } from '@/hooks/caller/os'
 import { showBoolean } from '@/i18n'
 
-const siRef: Ref<any> = ref(null)
+const siRef = ref<any>(null)
 const siLoading = ref(false)
 
 const { t } = useI18n()

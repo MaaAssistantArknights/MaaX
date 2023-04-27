@@ -1,5 +1,4 @@
-import axios from 'axios'
-import type { AxiosInstance, AxiosRequestConfig } from 'axios'
+import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios'
 import _ from 'lodash'
 import useSettingStore from '@/store/settings'
 

@@ -9,6 +9,8 @@ import CoreInstaller from '@main/componentManager/installers/core'
 import AdbInstaller from '@main/componentManager/installers/adb'
 import { Singleton } from '@common/function/singletonDecorator'
 import { getAppBaseDir } from '@main/utils/path'
+import type { ComponentType } from '@type/componentManager'
+import type { DownloadTask } from '@type/downloadManager'
 
 @Singleton
 class DownloadManager {

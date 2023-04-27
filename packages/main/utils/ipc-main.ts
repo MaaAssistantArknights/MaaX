@@ -1,7 +1,15 @@
 /* eslint-disable @typescript-eslint/no-invalid-void-type */
-import { ipcMain, IpcMainInvokeEvent } from 'electron'
+import { ipcMain, type IpcMainInvokeEvent } from 'electron'
 import WindowManager from '@main/windowManager'
 import logger from '@main/utils/logger'
+import type {
+  IpcMainHandleEvent,
+  IpcMainHandleEventType,
+  IpcMainOnEvent,
+  IpcMainOnEventType,
+  IpcRendererOnEvent,
+  IpcRendererOnEventType,
+} from '@type/ipc'
 
 /**
  * 添加 ipc 调用的处理事件
