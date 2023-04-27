@@ -11,6 +11,7 @@ export default defineConfig({
     alias: {
       '@main': __dirname,
       '@common': path.join(__dirname, '../common'),
+      '@type': path.join(__dirname, '../types'),
     },
   },
   build: {

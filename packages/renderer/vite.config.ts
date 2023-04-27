@@ -23,6 +23,7 @@ export default defineConfig({
     alias: {
       '@': path.join(__dirname, 'src'),
       '@common': path.join(__dirname, '../common'),
+      '@type': path.join(__dirname, '../types'),
     },
   },
   build: {
