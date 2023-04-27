@@ -35,12 +35,12 @@ const otherDevices = deviceStore.devices.filter(
     <NSpace justify="space-between" align="center">
       <h2>当前设备</h2>
       <NSpace>
-        <!-- <NTooltip>
+        <NTooltip>
           <template #trigger>
             <NButton
               :disabled="
-                // currentDevice?.status !== 'connected'
-                undefined
+                currentDevice?.status !== 'connected'
+                // undefined
               "
               text
               style="font-size: 24px"
@@ -52,7 +52,7 @@ const otherDevices = deviceStore.devices.filter(
             </NButton>
           </template>
           小工具
-        </NTooltip> -->
+        </NTooltip>
         <NTooltip>
           <template #trigger>
             <NButton

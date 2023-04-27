@@ -3,13 +3,14 @@ import useTaskStore from '@/store/tasks'
 import useSettingStore from '@/store/settings'
 
 import { showMessage } from '@/utils/message'
-import { AsstMsg } from '@common/enum/callback'
+import { AsstMsg, SubTaskMsg, SubTaskMsgData } from '@common/enum/callback'
 import type { MessageReactive } from 'naive-ui'
 
 import logger from '@/hooks/caller/logger'
 import _ from 'lodash'
 
 import { postDrop } from '@/api/penguin'
+import { useSeperateTaskStore } from '@/store/seperateTask'
 
 const messages: Record<string, MessageReactive> = {}
 
@@ -17,11 +18,17 @@ export default function useCallbackEvents(): void {
   const deviceStore = useDeviceStore()
   const taskStore = useTaskStore()
   const settingStore = useSettingStore()
+  const seperateTaskStore = useSeperateTaskStore()
 
-  const subTaskFn = {
+  const subTaskFn: {
+    [key in SubTaskMsg]: Record<
+      CoreTaskName,
+      (data: SubTaskMsgData[key]) => void
+    >
+  } = {
     [AsstMsg.SubTaskError]: {
-      Emulator: (data: Callback.SubTaskError) => {},
       StartUp: (data: Callback.SubTaskError) => {},
+      CloseDown: (data: Callback.SubTaskError) => {},
       Fight: (data: Callback.SubTaskError) => {
         switch (data.subtask) {
           case 'ReportToPenguinStats': {
@@ -32,33 +39,27 @@ export default function useCallbackEvents(): void {
       },
       Mall: (data: Callback.SubTaskError) => {},
       Recruit: (data: Callback.SubTaskError) => {},
-      RecruitCalc: (data: Callback.SubTaskError) => {},
       Infrast: (data: Callback.SubTaskError) => {},
-      Visit: (data: Callback.SubTaskError) => {},
       Roguelike: (data: Callback.SubTaskError) => {},
       Copilot: (data: Callback.SubTaskError) => {},
-      Shutdown: (data: Callback.SubTaskError) => {},
       Award: (data: Callback.SubTaskError) => {},
-      Debug: (data: Callback.SubTaskError) => {},
+      // Debug: (data: Callback.SubTaskError) => {},
     },
     [AsstMsg.SubTaskStart]: {
-      Emulator: (data: Callback.SubTaskStart) => {},
       StartUp: (data: Callback.SubTaskStart) => {},
+      CloseDown: (data: Callback.SubTaskStart) => {},
       Fight: (data: Callback.SubTaskStart) => {},
       Mall: (data: Callback.SubTaskStart) => {},
       Recruit: (data: Callback.SubTaskStart) => {},
-      RecruitCalc: (data: Callback.SubTaskStart) => {},
       Infrast: (data: Callback.SubTaskStart) => {},
-      Visit: (data: Callback.SubTaskStart) => {},
       Roguelike: (data: Callback.SubTaskStart) => {},
       Copilot: (data: Callback.SubTaskStart) => {},
-      Shutdown: (data: Callback.SubTaskStart) => {},
       Award: (data: Callback.SubTaskStart) => {},
-      Debug: (data: Callback.SubTaskStart) => {},
+      // Debug: (data: Callback.SubTaskStart) => {},
     },
     [AsstMsg.SubTaskCompleted]: {
-      Emulator: (data: Callback.SubTaskCompleted) => {},
       StartUp: (data: Callback.SubTaskCompleted) => {},
+      CloseDown: (data: Callback.SubTaskCompleted) => {},
       Fight: (data: Callback.SubTaskCompleted) => {
         switch (data.subtask) {
           case 'ReportToPenguinStats': {
@@ -70,18 +71,15 @@ export default function useCallbackEvents(): void {
       },
       Mall: (data: Callback.SubTaskCompleted) => {},
       Recruit: (data: Callback.SubTaskCompleted) => {},
-      RecruitCalc: (data: Callback.SubTaskCompleted) => {},
       Infrast: (data: Callback.SubTaskCompleted) => {},
-      Visit: (data: Callback.SubTaskCompleted) => {},
       Roguelike: (data: Callback.SubTaskCompleted) => {},
       Copilot: (data: Callback.SubTaskCompleted) => {},
-      Shutdown: (data: Callback.SubTaskCompleted) => {},
       Award: (data: Callback.SubTaskCompleted) => {},
-      Debug: (data: Callback.SubTaskCompleted) => {},
+      // Debug: (data: Callback.SubTaskCompleted) => {},
     },
     [AsstMsg.SubTaskExtraInfo]: {
-      Emulator: (data: Callback.SubTaskExtraInfo) => {},
       StartUp: (data: Callback.SubTaskExtraInfo) => {},
+      CloseDown: (data: Callback.SubTaskExtraInfo) => {},
       Fight: (data: Callback.SubTaskExtraInfo) => {
         switch (data.what) {
           case 'StageDrops': {
@@ -218,7 +216,6 @@ export default function useCallbackEvents(): void {
           }
         }
       },
-      RecruitCalc: (data: Callback.SubTaskExtraInfo) => {},
       Infrast: (data: Callback.SubTaskExtraInfo) => {
         switch (data.what) {
           case 'EnterFacility': {
@@ -233,7 +230,6 @@ export default function useCallbackEvents(): void {
           }
         }
       },
-      Visit: (data: Callback.SubTaskExtraInfo) => {},
       Roguelike: (data: Callback.SubTaskExtraInfo) => {
         switch (data.what) {
           case 'StageInfo': {
@@ -263,9 +259,8 @@ export default function useCallbackEvents(): void {
           }
         }
       },
-      Shutdown: (data: Callback.SubTaskExtraInfo) => {},
       Award: (data: Callback.SubTaskExtraInfo) => {},
-      Debug: (data: Callback.SubTaskExtraInfo) => {},
+      // Debug: (data: Callback.SubTaskExtraInfo) => {},
     },
   }
 
@@ -348,11 +343,13 @@ export default function useCallbackEvents(): void {
       const deviceStore = useDeviceStore()
       const taskStore = useTaskStore()
       deviceStore.updateDeviceStatus(data.uuid.trim(), 'connected')
-      showMessage('所有任务完成了( •̀ ω •́ )✧', { type: 'info' })
-      // eslint-disable-next-line no-new
-      new Notification('Maa Assistant Arknights', {
-        body: '所有任务完成了( •̀ ω •́ )✧',
-      })
+      if (!seperateTaskStore.checkTasksFin(data.uuid, data.finished_tasks)) {
+        showMessage('所有任务完成了( •̀ ω •́ )✧', { type: 'info' })
+        // eslint-disable-next-line no-new
+        new Notification('Maa Assistant Arknights', {
+          body: '所有任务完成了( •̀ ω •́ )✧',
+        })
+      }
       taskStore.resetToIdle(data.uuid.trim())
     },
     [AsstMsg.TaskChainError]: (data: Callback.TaskChainError) => {
@@ -378,16 +375,24 @@ export default function useCallbackEvents(): void {
       // TODO
     },
     [AsstMsg.SubTaskError]: (data: Callback.SubTaskError) => {
-      subTaskFn[AsstMsg.SubTaskError][data.taskchain](data)
+      if (!seperateTaskStore.checkFilter(AsstMsg.SubTaskError, data)) {
+        subTaskFn[AsstMsg.SubTaskError][data.taskchain](data)
+      }
     },
     [AsstMsg.SubTaskStart]: (data: Callback.SubTaskStart) => {
-      subTaskFn[AsstMsg.SubTaskStart][data.taskchain](data)
+      if (!seperateTaskStore.checkFilter(AsstMsg.SubTaskStart, data)) {
+        subTaskFn[AsstMsg.SubTaskStart][data.taskchain](data)
+      }
     },
     [AsstMsg.SubTaskCompleted]: (data: Callback.SubTaskCompleted) => {
-      subTaskFn[AsstMsg.SubTaskCompleted][data.taskchain](data)
+      if (!seperateTaskStore.checkFilter(AsstMsg.SubTaskCompleted, data)) {
+        subTaskFn[AsstMsg.SubTaskCompleted][data.taskchain](data)
+      }
     },
     [AsstMsg.SubTaskExtraInfo]: (data: Callback.SubTaskExtraInfo) => {
-      subTaskFn[AsstMsg.SubTaskExtraInfo][data.taskchain](data)
+      if (!seperateTaskStore.checkFilter(AsstMsg.SubTaskExtraInfo, data)) {
+        subTaskFn[AsstMsg.SubTaskExtraInfo][data.taskchain](data)
+      }
     },
   }
 
