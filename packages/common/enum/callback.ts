@@ -15,3 +15,16 @@ export enum AsstMsg {
   SubTaskCompleted, // 原子任务完成
   SubTaskExtraInfo, // 原子任务额外信息
 }
+
+export type SubTaskMsg =
+  | AsstMsg.SubTaskError
+  | AsstMsg.SubTaskStart
+  | AsstMsg.SubTaskCompleted
+  | AsstMsg.SubTaskExtraInfo
+
+export type SubTaskMsgData = {
+  [AsstMsg.SubTaskError]: Callback.SubTaskError
+  [AsstMsg.SubTaskStart]: Callback.SubTaskStart
+  [AsstMsg.SubTaskCompleted]: Callback.SubTaskCompleted
+  [AsstMsg.SubTaskExtraInfo]: Callback.SubTaskExtraInfo
+}

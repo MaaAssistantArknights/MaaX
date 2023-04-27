@@ -50,25 +50,25 @@ namespace Callback {
   }
 
   interface AllTasksCompleted {
-    taskchain: import('@common/enum/callback').TaskChainMap
+    taskchain: CoreTaskName
     uuid: string
     finished_tasks: number[]
   }
 
   interface TaskChainStart {
-    taskchain: import('@common/enum/callback').TaskChainMap // 当前的任务链
+    taskchain: CoreTaskName // 当前的任务链
     taskid: number // 当前任务 TaskId
     uuid: string // 设备唯一码
   }
 
   interface TaskChainError {
-    taskchain: import('@common/enum/callback').TaskChainMap // 当前的任务链
+    taskchain: CoreTaskName // 当前的任务链
     taskid: number // 当前任务 TaskId
     uuid: string // 设备唯一码
   }
 
   interface TaskChainCompleted {
-    taskchain: import('@common/enum/callback').TaskChainMap // 当前的任务链
+    taskchain: CoreTaskName // 当前的任务链
     taskid: number // 当前任务 TaskId
     uuid: string // 设备唯一码
   }

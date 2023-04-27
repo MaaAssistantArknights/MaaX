@@ -11,7 +11,7 @@ const deviceStore = useDeviceStore()
 
 const currentUuid = router.currentRoute.value.params.uuid as string
 const currentDevice = computed(() =>
-  deviceStore.devices.find(device => device.uuid !== currentUuid)
+  deviceStore.devices.find(device => device.uuid === currentUuid)
 )
 
 const menuActiveKey: Ref<string | null> = ref(null)
