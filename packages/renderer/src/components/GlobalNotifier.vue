@@ -26,6 +26,7 @@ deviceStore.$onAction(({ name, store, args, after, onError }) => {
           t('device.connecting', { deviceName: device.displayName })
         )
       } else if (status === 'connected' && device.status !== 'tasking') {
+        // TODO: 想办法过滤掉独立启动任务的情况
         // 设备连接后提示，但是如果设备状态是从 tasking 到 connected，不提示
         if (connectMessage.value) connectMessage.value.destroy()
         connectMessage.value = message.success(

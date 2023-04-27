@@ -5,6 +5,7 @@ import { ref } from 'vue'
 import { useSeperateTaskStore } from '@/store/seperateTask'
 import { AsstMsg, SubTaskMsgData } from '@common/enum/callback'
 import { getOperatorAvatar } from '@/utils/game_image'
+import { showMessage } from '@/utils/message'
 
 // TODO: 在TaskResult中实现
 type RecruitResult = {
@@ -106,6 +107,8 @@ async function doRecruit(selectTags: string[] = []) {
           return true
         }
         case AsstMsg.SubTaskError:
+          showMessage('识别失败, 是不是没有进入公招界面呢?')
+        // fallthrough
         case AsstMsg.SubTaskCompleted:
           seperateTaskStore.unregister(currentUuid, taskId.value, h)
           processing.value = false
