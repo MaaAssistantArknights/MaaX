@@ -3,14 +3,18 @@ import fs from 'fs'
 import CoreLoader from '@main/coreLoader'
 import { ipcMainHandle, ipcMainRemove } from '@main/utils/ipc-main'
 import logger from '@main/utils/logger'
+import type {
+  IpcMainHandleEventTypeAutoRegister,
+  IpcMainHandleEvent,
+} from '@type/ipc'
 
 const core = new CoreLoader()
 
 const asstHooks: {
-  [key in keyof IpcMainHandleEventType__AutoRegister]: (
+  [key in keyof IpcMainHandleEventTypeAutoRegister]: (
     event: import('electron').IpcMainInvokeEvent,
-    ...arg: Parameters<IpcMainHandleEventType__AutoRegister[key]>
-  ) => ReturnType<IpcMainHandleEventType__AutoRegister[key]>
+    ...arg: Parameters<IpcMainHandleEventTypeAutoRegister[key]>
+  ) => ReturnType<IpcMainHandleEventTypeAutoRegister[key]>
 } = {
   'main.CoreLoader:loadResource': (_event, arg) => {
     return !!core.LoadResource(arg.path) ?? false
@@ -85,6 +89,9 @@ const asstHooks: {
   'main.CoreLoader:asyncScreencap': (_event, arg) => {
     return core.AsyncScreencap(arg.uuid)
   },
+  'main.CoreLoader:getScreencap': (_event, arg) => {
+    throw 'IPC main.CoreLoader:getScreencap: Not Implement Yet'
+  },
 }
 
 export default function useAsstHooks(): void {
@@ -98,7 +105,7 @@ export default function useAsstHooks(): void {
       return false
     }
     for (const eventName of Object.keys(asstHooks)) {
-      const e = eventName as keyof IpcMainHandleEventType__AutoRegister
+      const e = eventName as keyof IpcMainHandleEventTypeAutoRegister
       try {
         // TODO: 看看怎么把类型弄过去
         // @ts-ignore

@@ -11,8 +11,9 @@
     "baseUrl": ".",
     "strict": true,
     "paths": {
+      "@type/*": ["packages/types/*"],
       "@common/*": ["./packages/common/*"],
-      "@main/*": ["./packages/main/*"]
+      "@main/*": ["./packages/main/*"],
     },
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
@@ -21,5 +22,5 @@
     "isolatedModules": true,
     "verbatimModuleSyntax": true
   },
-  "include": ["packages/@types/**/*.d.ts", "packages/common/**/*.ts"]
+  "include": ["packages/types/**/*.ts", "packages/common/**/*.ts"]
 }

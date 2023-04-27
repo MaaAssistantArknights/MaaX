@@ -1,4 +1,4 @@
-import { Singleton } from '@main/../common/function/singletonDecorator'
+import { Singleton } from '@common/function/singletonDecorator'
 import Storage from '@main/storageManager'
 import path from 'path'
 import _ from 'lodash'
@@ -8,8 +8,8 @@ import ffi, { DynamicLibrary } from '@tigerconnect/ffi-napi'
 import ref from '@tigerconnect/ref-napi'
 import callbackHandle from './callback'
 import { getAppBaseDir } from '@main/utils/path'
-import { InstanceOptionKey } from '@main/../common/enum/core'
-import { TouchMode } from '@common/enum/settings'
+import type { TouchMode } from '@type/misc'
+import { InstanceOptionKey } from '@type/misc'
 import extract from 'extract-zip'
 
 const storage = new Storage()

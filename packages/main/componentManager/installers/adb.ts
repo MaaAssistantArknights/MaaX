@@ -7,6 +7,9 @@ import logger from '@main/utils/logger'
 import path from 'path'
 import { getAppBaseDir } from '@main/utils/path'
 import { getPlatform } from '@main/utils/os'
+import type { InstallerStatus } from '@type/misc'
+import type { DownloadTask } from '@type/downloadManager'
+import type { ComponentType, Update } from '@type/componentManager'
 
 @Singleton
 class AdbInstaller extends ComponentInstaller {

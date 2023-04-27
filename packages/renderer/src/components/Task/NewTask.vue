@@ -10,9 +10,11 @@ import {
 import { ref, nextTick } from 'vue'
 import router from '@/router'
 import useThemeStore from '@/store/theme'
-import { DropdownMixedOption } from 'naive-ui/es/dropdown/src/interface'
+import type { DropdownMixedOption } from 'naive-ui/es/dropdown/src/interface'
 import logger from '@/hooks/caller/logger'
 import useTaskStore from '@/store/tasks'
+import type { Task } from '@type/task'
+
 const themeVars = useThemeVars()
 const themeStore = useThemeStore()
 

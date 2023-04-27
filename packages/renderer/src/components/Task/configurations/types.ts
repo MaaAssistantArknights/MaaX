@@ -1,3 +1,5 @@
+import type { GetTask, Task } from '@type/task'
+
 export type GetConfig<T extends Task['name']> = Required<
-  __GetTask<T>['configurations']
+  GetTask<T>['configurations']
 >

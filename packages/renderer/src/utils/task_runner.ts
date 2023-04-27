@@ -1,8 +1,9 @@
 import logger from '@/hooks/caller/logger'
 import useTaskStore from '@/store/tasks'
-import { TaskChainMap } from '@common/enum/callback'
 import { showMessage } from './message'
 import { convertToCoreTaskConfiguration } from './task_helper'
+import type { Device } from '@type/device'
+import type { GetTask, Task } from '@type/task'
 
 let selfIncreasedId = 1000000
 const genUiTaskId = (): number => {
@@ -12,7 +13,7 @@ const genUiTaskId = (): number => {
 
 export async function runStartEmulator(
   uuid: string,
-  task: Task
+  task: GetTask<'Emulator'>
 ): Promise<void> {
   const taskStore = useTaskStore()
   task.task_id = genUiTaskId()
@@ -20,13 +21,13 @@ export async function runStartEmulator(
   taskStore.updateTaskStatus(uuid, task.task_id, 'processing', 0)
   window.ipcRenderer.invoke(
     'main.DeviceDetector:startEmulator',
-    task.configurations.commandLine as string
+    task.configurations.commandLine
   )
 }
 
 async function runTaskEmulator(
   uuid: string,
-  task: FrontTaskTemplate<'Emulator'>
+  task: GetTask<'Emulator'>
 ): Promise<void> {
   const taskStore = useTaskStore()
   task.task_id = genUiTaskId()
@@ -85,10 +86,7 @@ async function runTaskShutdown(uuid: string, task: Task): Promise<void> {
   // TODO
 }
 
-async function runTaskIdle(
-  uuid: string,
-  task: FrontTaskTemplate<'Idle'>
-): Promise<void> {
+async function runTaskIdle(uuid: string, task: GetTask<'Idle'>): Promise<void> {
   const taskStore = useTaskStore()
   task.task_id = genUiTaskId()
   taskStore.updateTaskStatus(uuid, task.task_id, 'processing', 0)

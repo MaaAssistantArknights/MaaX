@@ -1,6 +1,5 @@
-import { MessageOptions } from 'naive-ui'
-import { VNodeChild } from 'vue'
-import type { MessageReactive } from 'naive-ui'
+import type { MessageOptions, MessageReactive } from 'naive-ui'
+import type { VNodeChild } from 'vue'
 
 export const hideAllMessages = (): void => {
   window.$message.destroyAll()

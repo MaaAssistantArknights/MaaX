@@ -6,8 +6,7 @@ import {
   h,
   ref,
   watch,
-  PropType,
-  Ref,
+  type PropType,
 } from 'vue'
 
 interface Time {
@@ -48,7 +47,7 @@ export default defineComponent({
   },
   setup(props) {
     const instance = getCurrentInstance()
-    const interval: Ref<number | undefined> = ref()
+    const interval = ref<number | undefined>()
     const isActive = computed(() => {
       if (!props.startTime) {
         return false

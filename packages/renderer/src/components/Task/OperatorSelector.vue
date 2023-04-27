@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, Ref, h, VNode, computed } from 'vue'
+import { ref, onMounted, h, type VNode, computed } from 'vue'
 import _ from 'lodash'
 import {
   NBadge,
@@ -36,7 +36,7 @@ const emit = defineEmits<{
   (event: 'add:operator', operator: Operator): void
 }>()
 
-const operators: Ref<Operator[]> = ref([])
+const operators = ref<Operator[]>([])
 const loading = ref(false)
 
 const counts = computed(() => _.countBy(props.selectedOperators, 'profession'))

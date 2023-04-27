@@ -1,8 +1,10 @@
 import SystemInformation from 'systeminformation'
 import electron, { app } from 'electron'
 
-export const getArch = (): Api.Maa.Arch => {
-  let arch: Api.Maa.Arch = 'NoArch'
+import type { Arch, Platform } from '@type/api/maa'
+
+export const getArch = (): Arch => {
+  let arch: Arch = 'noArch'
   switch (process.arch) {
     case 'x64':
       arch = 'x64'
@@ -14,8 +16,8 @@ export const getArch = (): Api.Maa.Arch => {
   return arch
 }
 
-export const getPlatform = (): Api.Maa.Platform => {
-  let platform: Api.Maa.Platform = 'NoPlatform'
+export const getPlatform = (): Platform => {
+  let platform: Platform = 'noPlatform'
   switch (process.platform) {
     case 'win32':
       platform = 'windows'

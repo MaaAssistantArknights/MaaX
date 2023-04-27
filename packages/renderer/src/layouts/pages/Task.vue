@@ -7,7 +7,7 @@ import {
   NIcon,
   NTooltip,
   NSelect,
-  SelectOption,
+  type SelectOption,
 } from 'naive-ui'
 import _ from 'lodash'
 import Draggable from 'vuedraggable'
@@ -27,6 +27,8 @@ import router from '@/router'
 import Result from '@/components/Task/results/Index.vue'
 import logger from '@/hooks/caller/logger'
 import { runTasks, runStartEmulator } from '@/utils/task_runner'
+import type { InitCoreParam } from '@type/ipc'
+import type { GetTask } from '@type/task'
 
 const taskStore = useTaskStore()
 const deviceStore = useDeviceStore()
@@ -71,7 +73,7 @@ watch(
   }
 )
 
-async function handleStartUnconnected(task: Task) {
+async function handleStartUnconnected(task: GetTask<'Emulator'>) {
   deviceStore.updateDeviceStatus(uuid.value, 'tasking')
   await runStartEmulator(uuid.value, task)
   task.schedule_id = setTimeout(async () => {

@@ -1,9 +1,12 @@
-import { SubTaskMsg, SubTaskMsgData } from '@common/enum/callback'
+import type {
+  CallbackMapper,
+  SubTaskRelatedMsg,
+} from '@type/coreLoader/callback'
 import { defineStore } from 'pinia'
 
-type Handler = <M extends SubTaskMsg>(
+type Handler = <M extends SubTaskRelatedMsg>(
   msg: M,
-  data: SubTaskMsgData[M]
+  data: CallbackMapper[M]
 ) => boolean
 
 export const useSeperateTaskStore = defineStore('seperate-task', () => {
@@ -24,7 +27,10 @@ export const useSeperateTaskStore = defineStore('seperate-task', () => {
     }
   }
 
-  function checkFilter<M extends SubTaskMsg>(msg: M, data: SubTaskMsgData[M]) {
+  function checkFilter<M extends SubTaskRelatedMsg>(
+    msg: M,
+    data: CallbackMapper[M]
+  ) {
     const handler = handlers[`${data.uuid}:${data.taskid}`]
     if (handler?.(msg, data)) {
       return true

@@ -5,6 +5,7 @@ import { createI18n } from 'vue-i18n'
 
 import ZhCN from './zhCN.json'
 import EnUS from './enUS.json'
+import type { BooleanDisplayOption } from '@type/i18n/boolean'
 
 export const naiveUiLocale = {
   NZhCN,
