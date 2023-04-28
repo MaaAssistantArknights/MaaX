@@ -33,7 +33,7 @@ export type IpcRendererOnEventType = {
   }) => void
   'renderer.ComponentManager:installDone': (arg: {
     type: ComponentType
-    status: InstallerStatus
+    status: 'done'
     progress: 0
   }) => void
   'renderer.ComponentManager:downloadUpgradeDone': (arg: {

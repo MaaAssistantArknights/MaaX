@@ -1,4 +1,4 @@
-import type Installer from '@main/componentManager/componentInstaller'
+import type { Installer } from '@main/componentManager/types'
 
 export type ComponentType = 'Maa Core' | 'Maa App' | 'Android Platform Tools'
 
@@ -21,4 +21,5 @@ export interface Update {
   url: string
   version: string
   releaseDate: string
+  postUpgrade: () => void
 }

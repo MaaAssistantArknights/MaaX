@@ -1,125 +1,43 @@
-// https://dl.google.com/android/repository/platform-tools-latest-windows.zip
+import type { UpdateStatus } from '../types'
 import { Singleton } from '@common/function/singletonDecorator'
-import ComponentInstaller from '../componentInstaller'
-import DownloadManager from '@main/downloadManager'
-import { ipcMainSend } from '@main/utils/ipc-main'
-import logger from '@main/utils/logger'
-import path from 'path'
-import { getAppBaseDir } from '@main/utils/path'
+import { createFixedGetRelease } from '../utils/release'
 import { getPlatform } from '@main/utils/os'
-import type { InstallerStatus } from '@type/misc'
-import type { DownloadTask } from '@type/downloadManager'
-import type { ComponentType, Update } from '@type/componentManager'
+import { createCheckUpdate } from '../utils/update'
+import InstallerBase from '../installer'
 
 @Singleton
-class AdbInstaller extends ComponentInstaller {
-  public constructor() {
-    super()
-  }
+export default class AdbInstaller extends InstallerBase {
+  checkUpdate: () => Promise<UpdateStatus>
 
-  public async install(): Promise<void> {
-    try {
-      if (this.downloader_) {
-        const update = await this.checkUpdate()
-        if (update) {
-          this.downloader_?.downloadComponent(update.url, this.componentType)
-          this.status_ = 'downloading'
-        }
-      }
-    } catch (e) {
-      logger.error(e)
-    }
-  }
+  constructor() {
+    super('Android Platform Tools', 'platform-tools')
 
-  public get status(): InstallerStatus {
-    return this.status_
-  }
-
-  protected onStart(): void {}
-
-  protected onProgress(progress: number): void {
-    ipcMainSend('renderer.ComponentManager:updateStatus', {
-      type: this.componentType,
-      status: this.status_,
-      progress,
-    })
-  }
-
-  protected onCompleted(): void {
-    this.status_ = 'done'
-    ipcMainSend('renderer.ComponentManager:installDone', {
-      type: this.componentType,
-      status: this.status_,
-      progress: 0, // 不显示进度条
-    })
-  }
-
-  protected onException(): void {
-    this.status_ = 'exception'
-    ipcMainSend('renderer.ComponentManager:installInterrupted', {
-      type: this.componentType,
-      status: this.status_,
-      progress: 0,
-    })
-  }
-
-  public readonly downloadHandle = {
-    handleDownloadUpdate: (task: DownloadTask) => {
-      this.onProgress(0.8 * (task.progress.precent ?? 0))
-    },
-    handleDownloadCompleted: (task: DownloadTask) => {
-      this.status_ = 'unzipping'
-      this.onProgress(0.8)
-
-      const src = task.savePath
-      this.unzipFile(src, path.join(getAppBaseDir()))
-    },
-    handleDownloadInterrupted: () => {
-      this.status_ = 'exception'
-      this.onException()
-    },
-  }
-
-  public readonly unzipHandle = {
-    handleUnzipUpdate: (percent: number) => {
-      this.onProgress(0.8 * percent * 0.2)
-    },
-    handleUnzipCompleted: () => {
-      this.status_ = 'done'
-      this.onCompleted()
-    },
-    handleUnzipInterrupted: () => {
-      this.status_ = 'exception'
-      this.onException()
-    },
-  }
-
-  public async checkUpdate(): Promise<Update | false | undefined> {
     const platform = getPlatform()
-    if (platform === 'windows') {
-      return {
-        url: 'https://dl.google.com/android/repository/platform-tools-latest-windows.zip',
-        version: 'latest',
-        releaseDate: '',
-      }
-    } else if (platform === 'macos') {
-      return {
-        url: 'https://dl.google.com/android/repository/platform-tools-latest-darwin.zip',
-        version: 'latest',
-        releaseDate: '',
-      }
-    } else {
-      return {
-        url: 'https://dl.google.com/android/repository/platform-tools-latest-linux.zip',
-        version: 'latest',
-        releaseDate: '',
-      }
-    }
+    const platforSuffix = {
+      windows: 'windows',
+      macos: 'darwin',
+      linux: 'linux',
+      noPlatform: null,
+    }[platform]
+
+    const url = platforSuffix
+      ? `https://dl.google.com/android/repository/platform-tools-latest-${platforSuffix}.zip`
+      : null
+
+    const getRelease = createFixedGetRelease(url, `ADB-${platform}.zip`)
+
+    this.checkUpdate = createCheckUpdate(
+      getRelease,
+      {
+        OTA: () => 'NOT AVAILABLE',
+        Full: () => new RegExp(`ADB-${platform}.zip`, 'g'),
+      },
+      this.componentType,
+      this.componentDir
+    )
   }
 
-  protected status_: InstallerStatus = 'pending'
-  public downloader_: DownloadManager | null = null
-  protected readonly componentType: ComponentType = 'Android Platform Tools'
+  beforeUnzipCheck() {
+    return true
+  }
 }
-
-export default AdbInstaller

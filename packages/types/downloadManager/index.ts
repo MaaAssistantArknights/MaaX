@@ -22,3 +22,9 @@ export interface DownloadTask {
   savePath: string
   _sourceItem?: DownloadItem
 }
+
+export interface DownloadHandle {
+  handleDownloadUpdate: (task: DownloadTask) => void
+  handleDownloadCompleted: (task: DownloadTask) => void
+  handleDownloadInterrupted: () => void
+}
