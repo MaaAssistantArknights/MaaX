@@ -41,6 +41,12 @@ export function createCheckUpdate(
 
     const infoPath = infoPathOf(componentDir)
 
+    if (!fs.existsSync(infoPath.installRoot)) {
+      fs.mkdirSync(infoPath.installRoot, {
+        recursive: true,
+      })
+    }
+
     const currentVersion = fs.existsSync(infoPath.currentVersion)
       ? fs.readFileSync(infoPath.currentVersion, 'utf-8')
       : null

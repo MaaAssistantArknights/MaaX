@@ -10,7 +10,7 @@ import callbackHandle from './callback'
 import { getAppBaseDir } from '@main/utils/path'
 import type { TouchMode } from '@type/misc'
 import { InstanceOptionKey } from '@type/misc'
-import extract from 'extract-zip'
+import { unzipFile } from '@main/utils/unzip'
 
 const storage = new Storage()
 
@@ -587,14 +587,14 @@ class CoreLoader {
           `[CoreLoader] Start upgrade core, current version: ${currentVersion}, upgrade version: ${upgradeVersion}, upgrade file: ${upgradeFileName}`
         )
         unlinkSync(upgradeFilePath) // 提前删除, 防止因为压缩包损坏导致重复尝试更新
-        const unzipFile = path.join(
+        const compressedFile = path.join(
           getAppBaseDir(),
           'download',
           upgradeFileName
         )
         const dist = path.join(getAppBaseDir(), 'core')
-        if (existsSync(unzipFile)) {
-          await extract(unzipFile, { dir: dist })
+        if (existsSync(compressedFile)) {
+          await unzipFile(compressedFile, dist)
         }
       }
     }

@@ -79,6 +79,27 @@ async function handleCustomConnect() {
   } else {
     showMessage('设备地址不对哦，检查一下吧', { type: 'error', duration: 5000 })
   }
+  const loading = showMessage('正在连接', { type: 'loading', duration: 0 })
+  const uuid = await window.ipcRenderer.invoke(
+    'main.DeviceDetector:getDeviceUuid',
+    address.value
+  )
+  if (!(uuid as string | false)) {
+    loading.destroy()
+    showMessage('连接失败，检查一下地址吧', { type: 'error', duration: 5000 })
+    return
+  }
+  deviceStore.mergeSearchResult([
+    {
+      uuid: uuid as string,
+      address: address.value,
+      name: 'General',
+    },
+  ])
+  loading.destroy()
+  // } else {
+  //   showMessage('设备地址不对哦，检查一下吧', { type: 'error', duration: 5000 })
+  // }
 }
 
 const router = useRouter()

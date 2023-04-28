@@ -7,7 +7,7 @@ import logger from '@main/utils/logger'
 import { getAppBaseDir } from '@main/utils/path'
 import { createNotifier } from './utils/notifier'
 import type { InstallerStatus } from '@type/misc'
-import { unzipFile } from './utils/unzip'
+import { unzipFile } from '@main/utils/unzip'
 
 export default abstract class InstallerBase implements Installer {
   public readonly componentType: ComponentType
@@ -55,22 +55,17 @@ export default abstract class InstallerBase implements Installer {
 
               unzipFile(
                 task.savePath,
-                path.join(getAppBaseDir(), this.componentDir),
-                {
-                  handleUnzipUpdate: percent => {
-                    this.notifier.onProgress(0.8 + percent * 0.2)
-                  },
-                  handleUnzipCompleted: () => {
-                    this.status = 'done'
-                    update.update.postUpgrade() // 更新版本信息
-                    this.notifier.onCompleted()
-                  },
-                  handleUnzipInterrupted: () => {
-                    this.status = 'exception'
-                    this.notifier.onException()
-                  },
-                }
+                path.join(getAppBaseDir(), this.componentDir)
               )
+                .then(() => {
+                  this.status = 'done'
+                  update.update.postUpgrade() // 更新版本信息
+                  this.notifier.onCompleted()
+                })
+                .catch(() => {
+                  this.status = 'exception'
+                  this.notifier.onException()
+                })
             }
           },
           handleDownloadInterrupted: () => {
