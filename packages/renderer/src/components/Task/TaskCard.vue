@@ -162,7 +162,6 @@ provide(
                   <NButton
                     text
                     style="font-size: 25px"
-                    :disabled="!['idle'].includes(props.taskInfo.status)"
                     @click="
                       () => {
                         innerCollapse = !innerCollapse
@@ -210,46 +209,49 @@ provide(
                 </template>
                 删除当前任务
               </NTooltip>
-              <span
-                v-if="
-                  deviceStatus === 'tasking' && !['idle', 'waiting'].includes(props.taskInfo.status)
-                "
-                class="card-progress-hint"
-                :style="{ color: themeVars.primaryColor }"
-              >
-                {{
-                  (() => {
-                    switch (props.taskInfo.status) {
-                      case 'idle':
-                        return ''
-                      case 'waiting':
-                        return '等待中'
-                      case 'processing':
-                        return '进行中'
-                      case 'success':
-                        return '已完成'
-                      case 'warning':
-                        return '警告'
-                      case 'exception':
-                        return '任务出错'
-                      case 'stopped':
-                        return '手动取消'
-                      case 'skipped':
-                        return '已跳过'
+              <div class="card-progress-wrapper">
+                <span
+                  v-if="
+                    deviceStatus === 'tasking' &&
+                    !['idle', 'waiting'].includes(props.taskInfo.status)
+                  "
+                  class="card-progress-hint"
+                  :style="{ color: themeVars.primaryColor }"
+                >
+                  {{
+                    (() => {
+                      switch (props.taskInfo.status) {
+                        case 'idle':
+                          return ''
+                        case 'waiting':
+                          return '等待中'
+                        case 'processing':
+                          return '进行中'
+                        case 'success':
+                          return '已完成'
+                        case 'warning':
+                          return '警告'
+                        case 'exception':
+                          return '任务出错'
+                        case 'stopped':
+                          return '手动取消'
+                        case 'skipped':
+                          return '已跳过'
+                      }
+                    })()
+                  }}
+                </span>
+                <NSwitch
+                  v-else
+                  :value="props.taskInfo.enable"
+                  @update:value="
+                    enabled => {
+                      $emit('update:enable', enabled)
+                      resetTaskProgress(props.taskInfo)
                     }
-                  })()
-                }}
-              </span>
-              <NSwitch
-                v-else
-                :value="props.taskInfo.enable"
-                @update:value="
-                  enabled => {
-                    $emit('update:enable', enabled)
-                    resetTaskProgress(props.taskInfo)
-                  }
-                "
-              />
+                  "
+                />
+              </div>
             </NSpace>
           </div>
           <NProgress
@@ -323,8 +325,16 @@ provide(
   height: 22px;
 }
 
+.card-progress-wrapper {
+  width: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .card-progress-hint {
   font-size: smaller;
+  min-width: 40px;
 }
 
 .card-content {
