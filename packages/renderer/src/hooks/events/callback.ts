@@ -10,7 +10,7 @@ import _ from 'lodash'
 
 import { postDrop, type DropInfo } from '@/api/penguin'
 import { useSeperateTaskStore } from '@/store/seperateTask'
-import type { CoreTaskName, TaskStatus } from '@type/task'
+import type { CoreTaskName, GetTask, TaskStatus } from '@type/task'
 import {
   AsstMsg,
   type Callback,
@@ -67,10 +67,11 @@ export default function useCallbackEvents(): void {
                 },
               ],
             })
+            // TODO: 是否也会在抄作业的时候触发?
             const task = taskStore.getTask(
               uuid.trim(),
               t => t.task_id === taskid
-            )
+            ) as GetTask<'Fight'> | undefined
             if (task) {
               const resultIndex = task.results.fightInfo.length - 1
               const vaildDropType = [
@@ -136,22 +137,22 @@ export default function useCallbackEvents(): void {
             })
             break
           }
-          case 'RecruitSpecialTag': {
-            const { uuid, taskid, details } = data
-            const task = taskStore.getTask(
-              uuid.trim(),
-              task => task.task_id === taskid
-            )
-            if (task && !task.configurations.skip_robot) {
-              const device = deviceStore.getDevice(uuid)
-              const name = device?.displayName ?? device?.address ?? uuid
-              // eslint-disable-next-line no-new
-              new Notification('Maa Assistant Arknights', {
-                body: `${name}公招获取到高级tag${String(details.tag)}`,
-              })
-            }
-            break
-          }
+          // case 'RecruitRobotTag': {
+          //   const { uuid, taskid, details } = data
+          //   const task = taskStore.getTask(
+          //     uuid.trim(),
+          //     task => task.task_id === taskid
+          //   ) as GetTask<'Recruit'> | undefined
+          //   if (task && !task.configurations.skip_robot) {
+          //     const device = deviceStore.getDevice(uuid)
+          //     const name = device?.displayName ?? device?.address ?? uuid
+          //     // eslint-disable-next-line no-new
+          //     new Notification('Maa Assistant Arknights', {
+          //       body: `${name}公招获取到高级tag${String(details.tag)}`,
+          //     })
+          //   }
+          //   break
+          // }
           case 'RecruitResult': {
             const { uuid, taskid, details } = data
             taskStore.mergeTaskResult(uuid.trim(), taskid, {
