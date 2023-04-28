@@ -8,36 +8,13 @@ import type { Component, ComponentType } from '@type/componentManager'
 
 @Singleton
 class ComponentManager implements Module {
-  constructor() {
-    ipcMainHandle(
-      'main.ComponentManager:getStatus',
-      async (event, componentName: ComponentType) => {
-        this.components_[componentName] = await this.update[componentName]()
-        return this.components_[componentName]?.status
-      }
-    )
-
-    ipcMainHandle(
-      'main.ComponentManager:install',
-      async (event, componentName: ComponentType) => {
-        // 安装文件时，需要dispose core，否则无法写入
-        // TODO core 卸载炸了
-        if (componentName !== 'Android Platform Tools') {
-          const coreLoader = new CoreLoader()
-          coreLoader.dispose()
-        }
-        this.components_[componentName] = await this.update[componentName]()
-        this.components_[componentName]?.installer?.install()
-      }
-    )
-
-    ipcMainHandle(
-      'main.ComponentManager:upgrade',
-      async (event, componentName: ComponentType) => {
-        this.components_[componentName]?.installer?.upgrade()
-      }
-    )
+  private readonly updater: Record<ComponentType, () => Promise<Component>> = {
+    'Maa App': async () => ({ type: 'Maa App', status: 'installed' }),
+    'Maa Core': getComponentCore,
+    'Android Platform Tools': getComponentAdb,
   }
+
+  private readonly components: Partial<Record<ComponentType, Component>> = {}
 
   public get name(): string {
     return 'ComponentManager'
@@ -47,13 +24,43 @@ class ComponentManager implements Module {
     return '1.0.0'
   }
 
-  private readonly update: Record<ComponentType, () => Promise<Component>> = {
-    'Maa App': async () => ({ type: 'Maa App', status: 'installed' }),
-    'Maa Core': getComponentCore,
-    'Android Platform Tools': getComponentAdb,
-  }
+  constructor() {
+    ipcMainHandle(
+      'main.ComponentManager:getStatus',
+      async (event, componentName: ComponentType) => {
+        this.components[componentName] = await this.updater[componentName]()
+        return this.components[componentName]?.status
+      }
+    )
 
-  private readonly components_: Partial<Record<ComponentType, Component>> = {}
+    ipcMainHandle(
+      'main.ComponentManager:install',
+      async (event, componentName: ComponentType) => {
+        // 按理说这个时候应该没有Core才会进入install, 但是先留着吧
+        if (componentName === 'Maa Core') {
+          const coreLoader = new CoreLoader()
+          // coreLoader.dispose()
+        }
+        this.components[componentName] = await this.updater[componentName]()
+        this.components[componentName]?.installer?.install()
+      }
+    )
+
+    ipcMainHandle(
+      'main.ComponentManager:upgrade',
+      async (event, componentName: ComponentType) => {
+        // 安装文件时，需要dispose core，否则无法写入
+        // TODO core 卸载炸了
+        if (componentName === 'Maa Core') {
+          const coreLoader = new CoreLoader()
+          // MAA 4.13后无法正常卸载
+          // coreLoader.dispose()
+          return
+        }
+        this.components[componentName]?.installer?.install()
+      }
+    )
+  }
 }
 
 export default ComponentManager
