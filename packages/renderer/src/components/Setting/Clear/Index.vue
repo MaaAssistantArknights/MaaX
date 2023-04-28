@@ -42,23 +42,11 @@ onMounted(refreshStatus)
   <div id="clear" :style="{ textAlign: 'left' }">
     <h2 class="title">缓存清理</h2>
     <NSpace justify="start" align="center">
-      <NButton
-        type="primary"
-        :loading="loading"
-        round
-        size="small"
-        @click="cleanLogs"
-      >
+      <NButton type="primary" :loading="loading" round size="small" @click="cleanLogs">
         <span>清理日志</span>
         <span v-if="!loading">&nbsp;{{ formatBytes(cacheInfo.log) }}</span>
       </NButton>
-      <NButton
-        type="primary"
-        :loading="loading"
-        round
-        size="small"
-        @click="cleanDownloadCache"
-      >
+      <NButton type="primary" :loading="loading" round size="small" @click="cleanDownloadCache">
         <span>清理下载缓存</span>
         <span v-if="!loading">&nbsp;{{ formatBytes(cacheInfo.download) }}</span>
       </NButton>

@@ -1,13 +1,5 @@
 <script setup lang="ts">
-import {
-  NSpace,
-  NText,
-  NGrid,
-  NGridItem,
-  NButton,
-  NList,
-  NListItem,
-} from 'naive-ui'
+import { NSpace, NText, NGrid, NGridItem, NButton, NList, NListItem } from 'naive-ui'
 
 interface RecruitResult {
   tags: string[]
@@ -28,10 +20,7 @@ console.log(props)
 <template>
   <NSpace vertical>
     <NList :style="{ background: 'transparent' }">
-      <NListItem
-        v-for="(recruit, index) of props.results.recruits"
-        :key="index"
-      >
+      <NListItem v-for="(recruit, index) of props.results.recruits" :key="index">
         <NSpace align="center" justify="space-around">
           <NText :type="recruit.refreshed ? 'info' : 'default'">
             {{ recruit.refreshed ? '已刷新' : `${recruit.level}星干员` }}

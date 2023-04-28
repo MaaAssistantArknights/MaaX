@@ -34,12 +34,9 @@ export async function unzipFile(src: string, dest: string) {
       .map(
         file =>
           new Promise((resolve, reject) => {
-            const writeStream = fs.createWriteStream(
-              path.join(dest, file.path),
-              {
-                mode: (file.externalFileAttributes >>> 16) & 0o777,
-              }
-            )
+            const writeStream = fs.createWriteStream(path.join(dest, file.path), {
+              mode: (file.externalFileAttributes >>> 16) & 0o777,
+            })
             writeStream.on('ready', () => {
               file
                 .stream()

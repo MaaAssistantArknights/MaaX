@@ -53,8 +53,7 @@ export const getDownloadUrlSuffix = (): string => {
 export const isInDev = (): boolean => {
   // https://github.com/sindresorhus/electron-is-dev/blob/main/index.js
   const isEnvSet = 'ELECTRON_IS_DEV' in process.env
-  const getFromEnv =
-    Number.parseInt(process.env.ELECTRON_IS_DEV as string, 10) === 1
+  const getFromEnv = Number.parseInt(process.env.ELECTRON_IS_DEV as string, 10) === 1
   return isEnvSet ? getFromEnv : !electron.app.isPackaged
 }
 

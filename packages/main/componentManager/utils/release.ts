@@ -8,11 +8,7 @@ import type { ReleaseObject } from '../types'
 
 const MaxRetryTimes = 3
 
-async function tryRequest(
-  url: string,
-  component: ComponentType,
-  retryCount = MaxRetryTimes
-) {
+async function tryRequest(url: string, component: ComponentType, retryCount = MaxRetryTimes) {
   const proxy = await getProxy()
   for (let i = 0; i < retryCount; i++) {
     try {

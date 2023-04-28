@@ -40,6 +40,4 @@ type PropertyArray = OpenDialogOptions['properties']
 
 type CleanUndefined<T> = T extends undefined ? never : T
 
-export type DialogProperty = CleanUndefined<PropertyArray> extends (infer T)[]
-  ? T
-  : never
+export type DialogProperty = CleanUndefined<PropertyArray> extends (infer T)[] ? T : never

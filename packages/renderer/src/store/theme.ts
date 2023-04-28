@@ -32,12 +32,7 @@ export interface ThemeAction {
   updateBgDark: (bgDark: { url?: string; opacity: number }) => void
 }
 
-const useThemeStore = defineStore<
-  'theme',
-  ThemeState,
-  ThemeGetter,
-  ThemeAction
->('theme', {
+const useThemeStore = defineStore<'theme', ThemeState, ThemeGetter, ThemeAction>('theme', {
   state: () => {
     return {
       theme: 'maa-light',

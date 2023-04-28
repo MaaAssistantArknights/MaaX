@@ -193,9 +193,7 @@ onMounted(async () => {
             clearable
             :disabled="configurationDisabled.re"
             :value="drops.item_id"
-            @update:value="
-              value => handleDropUpdate({ item_id: value, times: drops.times })
-            "
+            @update:value="value => handleDropUpdate({ item_id: value, times: drops.times })"
           />
           <NInputNumber
             placeholder="数量"

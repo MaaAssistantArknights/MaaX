@@ -82,32 +82,28 @@ async function doRecruit(selectTags: string[] = []) {
       ...arg,
     },
   })
-  const h = seperateTaskStore.register(
-    currentUuid,
-    taskId.value,
-    (msg, data) => {
-      if (data.taskchain !== 'Recruit') {
-        return false
-      }
-      switch (msg) {
-        case AsstMsg.SubTaskExtraInfo: {
-          const d = data
-          if (d.what === 'RecruitResult') {
-            result.value = d.details
-          }
-          return true
-        }
-        case AsstMsg.SubTaskError:
-          showMessage('识别失败, 是不是没有进入公招界面呢?')
-        // fallthrough
-        case AsstMsg.SubTaskCompleted:
-          seperateTaskStore.unregister(currentUuid, taskId.value, h)
-          processing.value = false
-          return true
-      }
+  const h = seperateTaskStore.register(currentUuid, taskId.value, (msg, data) => {
+    if (data.taskchain !== 'Recruit') {
       return false
     }
-  )
+    switch (msg) {
+      case AsstMsg.SubTaskExtraInfo: {
+        const d = data
+        if (d.what === 'RecruitResult') {
+          result.value = d.details
+        }
+        return true
+      }
+      case AsstMsg.SubTaskError:
+        showMessage('识别失败, 是不是没有进入公招界面呢?')
+      // fallthrough
+      case AsstMsg.SubTaskCompleted:
+        seperateTaskStore.unregister(currentUuid, taskId.value, h)
+        processing.value = false
+        return true
+    }
+    return false
+  })
   await window.ipcRenderer.invoke('main.CoreLoader:start', {
     uuid: currentUuid,
   })
@@ -141,28 +137,16 @@ async function doRecruit(selectTags: string[] = []) {
       <template v-if="result">
         <div class="RecruitTag">
           <div>识别结果</div>
-          <NTag
-            v-for="item in result.tags"
-            :key="item"
-            :color="tagColor(tagLevel[item] ?? 3)"
-          >
+          <NTag v-for="item in result.tags" :key="item" :color="tagColor(tagLevel[item] ?? 3)">
             {{ item }}
           </NTag>
         </div>
         <div class="RecruitResults">
-          <div
-            v-for="(res, idx) in result.result"
-            :key="idx"
-            class="RecruitResult"
-          >
+          <div v-for="(res, idx) in result.result" :key="idx" class="RecruitResult">
             <div class="RecruitResultInfo">
               <div class="RecruitResultLevel">{{ checkResult(res) }} ★</div>
               <div class="RecruitResultTags">
-                <NTag
-                  v-for="item in res.tags"
-                  :key="item"
-                  :color="tagColor(tagLevel[item] ?? 3)"
-                >
+                <NTag v-for="item in res.tags" :key="item" :color="tagColor(tagLevel[item] ?? 3)">
                   {{ item }}
                 </NTag>
               </div>
@@ -172,11 +156,7 @@ async function doRecruit(selectTags: string[] = []) {
             </div>
             <div class="RecruitResultOpers">
               <template v-if="useAvatar">
-                <NTooltip
-                  v-for="oper in res.opers"
-                  :key="oper.name"
-                  trigger="hover"
-                >
+                <NTooltip v-for="oper in res.opers" :key="oper.name" trigger="hover">
                   <template #trigger>
                     <NAvatar
                       :src="getOperatorAvatar(oper.name)"
@@ -190,11 +170,7 @@ async function doRecruit(selectTags: string[] = []) {
                 </NTooltip>
               </template>
               <template v-else>
-                <NTooltip
-                  v-for="oper in res.opers"
-                  :key="oper.name"
-                  trigger="hover"
-                >
+                <NTooltip v-for="oper in res.opers" :key="oper.name" trigger="hover">
                   <template #trigger>
                     <NTag
                       :color="{

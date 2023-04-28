@@ -1,12 +1,5 @@
 <script setup lang="ts">
-import {
-  NCollapse,
-  NCollapseItem,
-  NScrollbar,
-  NSpace,
-  useThemeVars,
-  NDropdown,
-} from 'naive-ui'
+import { NCollapse, NCollapseItem, NScrollbar, NSpace, useThemeVars, NDropdown } from 'naive-ui'
 import { ref, nextTick } from 'vue'
 import router from '@/router'
 import useThemeStore from '@/store/theme'
@@ -138,11 +131,7 @@ const handleShowDropdown = (e: MouseEvent) => {
     >
       <template #header>
         <div style="width: 100%">
-          <NDropdown
-            trigger="hover"
-            :options="options"
-            @select="handleSelectNewTask"
-          >
+          <NDropdown trigger="hover" :options="options" @select="handleSelectNewTask">
             <div ref="cardHeaderRef" class="card-header">
               <NSpace>
                 <span class="card-title">
@@ -166,8 +155,7 @@ const handleShowDropdown = (e: MouseEvent) => {
 <style lang="less" scoped>
 @keyframes breathe {
   from {
-    box-shadow: 0 2px 6px 0 rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.1),
-      0 0 5px 0 transparent;
+    box-shadow: 0 2px 6px 0 rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.1), 0 0 5px 0 transparent;
   }
   to {
     box-shadow: 0 2px 6px 0 rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.1),

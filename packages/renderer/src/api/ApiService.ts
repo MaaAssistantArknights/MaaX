@@ -6,9 +6,7 @@ const getUA = (): string => {
   const settingStore = useSettingStore()
   const coreVersion = settingStore.version.core.current
   const uiVersion = `v${settingStore.version.ui.current ?? ''}`
-  const versionString = coreVersion
-    ? `(core v${coreVersion})`
-    : '(without core)'
+  const versionString = coreVersion ? `(core v${coreVersion})` : '(without core)'
   return `MeoAssistantArknights ${uiVersion} ${versionString}`
 }
 
@@ -50,11 +48,7 @@ class ApiService {
     return response.data
   }
 
-  async post<T>(
-    url: string,
-    data?: any,
-    config?: AxiosRequestConfig
-  ): Promise<T> {
+  async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
     const response = await this._instance.post(url, data, config)
     if (_.isError(response)) {
       throw response

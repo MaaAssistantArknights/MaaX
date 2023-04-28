@@ -8,10 +8,7 @@ import { TouchMode, TouchModes } from '@type/misc'
 export async function loadCoreResources(): Promise<void> {
   const basePath = await window.ipcRenderer.invoke('main.CoreLoader:getLibPath')
   // WARN: 改变了原有逻辑, 按类型来看应该传对象而非字符串, 不知道原来是什么情况
-  const status = await window.ipcRenderer.invoke(
-    'main.CoreLoader:loadResource',
-    { path: basePath }
-  )
+  const status = await window.ipcRenderer.invoke('main.CoreLoader:loadResource', { path: basePath })
   logger.info('Load base resources', basePath, status)
 }
 

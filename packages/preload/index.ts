@@ -16,10 +16,7 @@ const ipc = {
     channel: IpcRendererOnEvent,
     listener: (event: Electron.IpcRendererEvent, ...args: any[]) => void
   ): Electron.IpcRenderer => {
-    ipcRenderer.send(
-      'main.Util:LogSilly',
-      `ipcRenderer event "${channel}" registered`
-    )
+    ipcRenderer.send('main.Util:LogSilly', `ipcRenderer event "${channel}" registered`)
     return ipcRenderer.on(channel, listener)
   },
   send: (channel: IpcMainOnEvent, ...args: any[]): void => {
@@ -34,10 +31,7 @@ const ipc = {
     channel: IpcRendererOnEvent,
     listener: (event: Electron.IpcRendererEvent, ...args: any[]) => void
   ): Electron.IpcRenderer => {
-    ipcRenderer.send(
-      'main.Util:LogSilly',
-      `ipcRenderer event "${channel}" unregistered`
-    )
+    ipcRenderer.send('main.Util:LogSilly', `ipcRenderer event "${channel}" unregistered`)
     return ipcRenderer.off(channel, listener)
   },
 }

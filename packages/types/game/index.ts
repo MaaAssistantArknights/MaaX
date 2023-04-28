@@ -4,13 +4,7 @@ export type * from './recruit'
 export type * from './rogue'
 export * from './rogue'
 
-export type ClientType =
-  | 'Official'
-  | 'Bilibili'
-  | 'txwy'
-  | 'YoStarEN'
-  | 'YoStarJP'
-  | 'YoStarKR'
+export type ClientType = 'Official' | 'Bilibili' | 'txwy' | 'YoStarEN' | 'YoStarJP' | 'YoStarKR'
 
 export type Server = 'CN' | 'US' | 'JP' | 'KR'
 

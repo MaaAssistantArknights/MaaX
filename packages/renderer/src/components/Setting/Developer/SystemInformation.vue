@@ -72,9 +72,7 @@ onMounted(() => {
         <tbody>
           <tr>
             <td>
-              <NEllipsis>{{
-                $t('SystemInformation.System.Manufacturer')
-              }}</NEllipsis>
+              <NEllipsis>{{ $t('SystemInformation.System.Manufacturer') }}</NEllipsis>
             </td>
             <td>
               <NEllipsis>{{ si('system.manufacturer') }}</NEllipsis>
@@ -90,9 +88,7 @@ onMounted(() => {
           </tr>
           <tr>
             <td>
-              <NEllipsis>{{
-                $t('SystemInformation.System.Version')
-              }}</NEllipsis>
+              <NEllipsis>{{ $t('SystemInformation.System.Version') }}</NEllipsis>
             </td>
             <td>
               <NEllipsis>{{ si('system.version') }}</NEllipsis>
@@ -124,9 +120,7 @@ onMounted(() => {
           </tr>
           <tr>
             <td>
-              <NEllipsis>{{
-                $t('SystemInformation.System.Virtual')
-              }}</NEllipsis>
+              <NEllipsis>{{ $t('SystemInformation.System.Virtual') }}</NEllipsis>
             </td>
             <td>
               <NEllipsis>{{ si('system.virtual') }}</NEllipsis>
@@ -156,9 +150,7 @@ onMounted(() => {
           </tr>
           <tr>
             <td>
-              <NEllipsis>{{
-                $t('SystemInformation.Bios.ReleaseDate')
-              }}</NEllipsis>
+              <NEllipsis>{{ $t('SystemInformation.Bios.ReleaseDate') }}</NEllipsis>
             </td>
             <td>
               <NEllipsis>{{ si('bios.releaseDate') }}</NEllipsis>
@@ -183,17 +175,12 @@ onMounted(() => {
         </tbody>
       </NTable>
     </NCollapseItem>
-    <NCollapseItem
-      :title="$t('SystemInformation.Baseboard.Title')"
-      name="baseboard"
-    >
+    <NCollapseItem :title="$t('SystemInformation.Baseboard.Title')" name="baseboard">
       <NTable striped>
         <tbody>
           <tr>
             <td>
-              <NEllipsis>{{
-                $t('SystemInformation.Baseboard.Manufacturer')
-              }}</NEllipsis>
+              <NEllipsis>{{ $t('SystemInformation.Baseboard.Manufacturer') }}</NEllipsis>
             </td>
             <td>
               <NEllipsis>{{ si('baseboard.manufacturer') }}</NEllipsis>
@@ -201,9 +188,7 @@ onMounted(() => {
           </tr>
           <tr>
             <td>
-              <NEllipsis>{{
-                $t('SystemInformation.Baseboard.Model')
-              }}</NEllipsis>
+              <NEllipsis>{{ $t('SystemInformation.Baseboard.Model') }}</NEllipsis>
             </td>
             <td>
               <NEllipsis>{{ si('baseboard.model') }}</NEllipsis>
@@ -211,9 +196,7 @@ onMounted(() => {
           </tr>
           <tr>
             <td>
-              <NEllipsis>{{
-                $t('SystemInformation.Baseboard.Serial')
-              }}</NEllipsis>
+              <NEllipsis>{{ $t('SystemInformation.Baseboard.Serial') }}</NEllipsis>
             </td>
             <td>
               <NEllipsis>{{ si('baseboard.serial') }}</NEllipsis>
@@ -221,9 +204,7 @@ onMounted(() => {
           </tr>
           <tr>
             <td>
-              <NEllipsis>{{
-                $t('SystemInformation.Baseboard.Version')
-              }}</NEllipsis>
+              <NEllipsis>{{ $t('SystemInformation.Baseboard.Version') }}</NEllipsis>
             </td>
             <td>
               <NEllipsis>{{ si('baseboard.version') }}</NEllipsis>
@@ -231,25 +212,19 @@ onMounted(() => {
           </tr>
           <tr>
             <td>
-              <NEllipsis>{{
-                $t('SystemInformation.Baseboard.MemMax')
-              }}</NEllipsis>
+              <NEllipsis>{{ $t('SystemInformation.Baseboard.MemMax') }}</NEllipsis>
             </td>
             <td>
               <NEllipsis>
                 {{
-                  siRef?.baseboard.memMax
-                    ? formatBytes(siRef?.baseboard.memMax)
-                    : $t('Common.N/A')
+                  siRef?.baseboard.memMax ? formatBytes(siRef?.baseboard.memMax) : $t('Common.N/A')
                 }}
               </NEllipsis>
             </td>
           </tr>
           <tr>
             <td>
-              <NEllipsis>{{
-                $t('SystemInformation.Baseboard.MemSlots')
-              }}</NEllipsis>
+              <NEllipsis>{{ $t('SystemInformation.Baseboard.MemSlots') }}</NEllipsis>
             </td>
             <td>
               <NEllipsis>{{ si('baseboard.memSlots') }}</NEllipsis>
@@ -258,17 +233,12 @@ onMounted(() => {
         </tbody>
       </NTable>
     </NCollapseItem>
-    <NCollapseItem
-      :title="$t('SystemInformation.Chassis.Title')"
-      name="Chassis"
-    >
+    <NCollapseItem :title="$t('SystemInformation.Chassis.Title')" name="Chassis">
       <NTable striped>
         <tbody>
           <tr>
             <td>
-              <NEllipsis>{{
-                $t('SystemInformation.Chassis.Manufacturer')
-              }}</NEllipsis>
+              <NEllipsis>{{ $t('SystemInformation.Chassis.Manufacturer') }}</NEllipsis>
             </td>
             <td>
               <NEllipsis>{{ si('chassis.manufacturer') }}</NEllipsis>
@@ -292,9 +262,7 @@ onMounted(() => {
           </tr>
           <tr>
             <td>
-              <NEllipsis>{{
-                $t('SystemInformation.Chassis.Serial')
-              }}</NEllipsis>
+              <NEllipsis>{{ $t('SystemInformation.Chassis.Serial') }}</NEllipsis>
             </td>
             <td>
               <NEllipsis>{{ si('chassis.serial') }}</NEllipsis>
@@ -302,9 +270,7 @@ onMounted(() => {
           </tr>
           <tr>
             <td>
-              <NEllipsis>{{
-                $t('SystemInformation.Chassis.Version')
-              }}</NEllipsis>
+              <NEllipsis>{{ $t('SystemInformation.Chassis.Version') }}</NEllipsis>
             </td>
             <td>
               <NEllipsis>{{ si('chassis.version') }}</NEllipsis>
@@ -358,9 +324,7 @@ onMounted(() => {
           </tr>
           <tr>
             <td>
-              <NEllipsis>{{
-                $t('SystemInformation.Os.ReleaseDate')
-              }}</NEllipsis>
+              <NEllipsis>{{ $t('SystemInformation.Os.ReleaseDate') }}</NEllipsis>
             </td>
             <td>
               <NEllipsis>{{ si('os.release') }}</NEllipsis>
@@ -428,9 +392,7 @@ onMounted(() => {
           </tr>
           <tr>
             <td>
-              <NEllipsis>{{
-                $t('SystemInformation.Cpu.Processors')
-              }}</NEllipsis>
+              <NEllipsis>{{ $t('SystemInformation.Cpu.Processors') }}</NEllipsis>
             </td>
             <td>
               <NEllipsis>{{ si('cpu.processors') }}</NEllipsis>
@@ -446,16 +408,14 @@ onMounted(() => {
           </tr>
           <tr>
             <td>
-              <NEllipsis>{{
-                $t('SystemInformation.Cpu.PhysicalCores')
-              }}</NEllipsis>
+              <NEllipsis>{{ $t('SystemInformation.Cpu.PhysicalCores') }}</NEllipsis>
             </td>
             <td>
               <NEllipsis>
                 {{
-                  `${si('cpu.physicalCores')} (${si(
-                    'cpu.performanceCores'
-                  )} P-Cores + ${si('cpu.efficiencyCores')}
+                  `${si('cpu.physicalCores')} (${si('cpu.performanceCores')} P-Cores + ${si(
+                    'cpu.efficiencyCores'
+                  )}
                 E-Cores)`
                 }}
               </NEllipsis>
@@ -467,11 +427,7 @@ onMounted(() => {
             </td>
             <td>
               <NEllipsis>
-                {{
-                  `${si('cpu.speed')}GHz (${si('cpu.speedMin')}GHz ~ ${si(
-                    'cpu.speedMax'
-                  )}GHz)`
-                }}
+                {{ `${si('cpu.speed')}GHz (${si('cpu.speedMin')}GHz ~ ${si('cpu.speedMax')}GHz)` }}
               </NEllipsis>
             </td>
           </tr>
@@ -493,10 +449,7 @@ onMounted(() => {
         </tbody>
       </NTable>
     </NCollapseItem>
-    <NCollapseItem
-      :title="$t('SystemInformation.Graphics.Title')"
-      name="graphics"
-    >
+    <NCollapseItem :title="$t('SystemInformation.Graphics.Title')" name="graphics">
       <NCollapse display-directive="show">
         <NCollapseItem
           v-for="(graphic, index) of si('graphics.controllers')"
@@ -507,9 +460,7 @@ onMounted(() => {
             <tbody>
               <tr>
                 <td>
-                  <NEllipsis>{{
-                    $t('SystemInformation.Graphics.Vendor')
-                  }}</NEllipsis>
+                  <NEllipsis>{{ $t('SystemInformation.Graphics.Vendor') }}</NEllipsis>
                 </td>
                 <td>
                   <NEllipsis>{{ graphic.vendor }}</NEllipsis>
@@ -517,9 +468,7 @@ onMounted(() => {
               </tr>
               <tr>
                 <td>
-                  <NEllipsis>{{
-                    $t('SystemInformation.Graphics.Bus')
-                  }}</NEllipsis>
+                  <NEllipsis>{{ $t('SystemInformation.Graphics.Bus') }}</NEllipsis>
                 </td>
                 <td>
                   <NEllipsis>{{ graphic.bus }}</NEllipsis>
@@ -527,9 +476,7 @@ onMounted(() => {
               </tr>
               <tr>
                 <td>
-                  <NEllipsis>{{
-                    $t('SystemInformation.Graphics.VRAM')
-                  }}</NEllipsis>
+                  <NEllipsis>{{ $t('SystemInformation.Graphics.VRAM') }}</NEllipsis>
                 </td>
                 <td>
                   <NEllipsis>{{ `${graphic.vram} MiB` }}</NEllipsis>
@@ -540,10 +487,7 @@ onMounted(() => {
         </NCollapseItem>
       </NCollapse>
     </NCollapseItem>
-    <NCollapseItem
-      :title="$t('SystemInformation.Monitor.Title')"
-      name="monitor"
-    >
+    <NCollapseItem :title="$t('SystemInformation.Monitor.Title')" name="monitor">
       <NCollapse display-directive="show">
         <NCollapseItem
           v-for="(monitor, index) of si('graphics.displays')"
@@ -554,33 +498,23 @@ onMounted(() => {
             <tbody>
               <tr>
                 <td>
-                  <NEllipsis>{{
-                    $t('SystemInformation.Monitor.Size')
-                  }}</NEllipsis>
+                  <NEllipsis>{{ $t('SystemInformation.Monitor.Size') }}</NEllipsis>
                 </td>
                 <td>
-                  <NEllipsis>{{
-                    `${monitor.sizeX}mm * ${monitor.sizeY}mm`
-                  }}</NEllipsis>
+                  <NEllipsis>{{ `${monitor.sizeX}mm * ${monitor.sizeY}mm` }}</NEllipsis>
                 </td>
               </tr>
               <tr>
                 <td>
-                  <NEllipsis>{{
-                    $t('SystemInformation.Monitor.Resolution')
-                  }}</NEllipsis>
+                  <NEllipsis>{{ $t('SystemInformation.Monitor.Resolution') }}</NEllipsis>
                 </td>
                 <td>
-                  <NEllipsis>{{
-                    `${monitor.resolutionX}x${monitor.resolutionY}`
-                  }}</NEllipsis>
+                  <NEllipsis>{{ `${monitor.resolutionX}x${monitor.resolutionY}` }}</NEllipsis>
                 </td>
               </tr>
               <tr>
                 <td>
-                  <NEllipsis>{{
-                    $t('SystemInformation.Monitor.RefreshRate')
-                  }}</NEllipsis>
+                  <NEllipsis>{{ $t('SystemInformation.Monitor.RefreshRate') }}</NEllipsis>
                 </td>
                 <td>
                   <NEllipsis>{{ `${monitor.currentRefreshRate}Hz` }}</NEllipsis>
@@ -588,9 +522,7 @@ onMounted(() => {
               </tr>
               <tr>
                 <td>
-                  <NEllipsis>{{
-                    $t('SystemInformation.Monitor.PixelDepth')
-                  }}</NEllipsis>
+                  <NEllipsis>{{ $t('SystemInformation.Monitor.PixelDepth') }}</NEllipsis>
                 </td>
                 <td>
                   <NEllipsis>{{ showValue(monitor.pixelDepth) }}</NEllipsis>
@@ -598,9 +530,7 @@ onMounted(() => {
               </tr>
               <tr>
                 <td>
-                  <NEllipsis>{{
-                    $t('SystemInformation.Monitor.Connection')
-                  }}</NEllipsis>
+                  <NEllipsis>{{ $t('SystemInformation.Monitor.Connection') }}</NEllipsis>
                 </td>
                 <td>
                   <NEllipsis>{{ showValue(monitor.connection) }}</NEllipsis>
@@ -608,9 +538,7 @@ onMounted(() => {
               </tr>
               <tr>
                 <td>
-                  <NEllipsis>{{
-                    $t('SystemInformation.Monitor.IsBuiltin')
-                  }}</NEllipsis>
+                  <NEllipsis>{{ $t('SystemInformation.Monitor.IsBuiltin') }}</NEllipsis>
                 </td>
                 <td>
                   <NEllipsis>{{ showValue(monitor.builtin) }}</NEllipsis>
@@ -618,9 +546,7 @@ onMounted(() => {
               </tr>
               <tr>
                 <td>
-                  <NEllipsis>{{
-                    $t('SystemInformation.Monitor.Vendor')
-                  }}</NEllipsis>
+                  <NEllipsis>{{ $t('SystemInformation.Monitor.Vendor') }}</NEllipsis>
                 </td>
                 <td>
                   <NEllipsis>{{ showValue(monitor.vendor) }}</NEllipsis>
@@ -650,9 +576,7 @@ onMounted(() => {
               </tr>
               <tr>
                 <td>
-                  <NEllipsis>{{
-                    $t('SystemInformation.Net.Ip4Subnet')
-                  }}</NEllipsis>
+                  <NEllipsis>{{ $t('SystemInformation.Net.Ip4Subnet') }}</NEllipsis>
                 </td>
                 <td>
                   <NEllipsis>{{ showValue(adapter.ip4subnet) }}</NEllipsis>
@@ -668,9 +592,7 @@ onMounted(() => {
               </tr>
               <tr>
                 <td>
-                  <NEllipsis>{{
-                    $t('SystemInformation.Net.Ip6Subnet')
-                  }}</NEllipsis>
+                  <NEllipsis>{{ $t('SystemInformation.Net.Ip6Subnet') }}</NEllipsis>
                 </td>
                 <td>
                   <NEllipsis>{{ showValue(adapter.ip4subnet) }}</NEllipsis>
@@ -714,9 +636,7 @@ onMounted(() => {
                 </td>
                 <td>
                   <NEllipsis>{{
-                    adapter.speed
-                      ? `${adapter.speed} Mbit / s`
-                      : $t('Common.N/A')
+                    adapter.speed ? `${adapter.speed} Mbit / s` : $t('Common.N/A')
                   }}</NEllipsis>
                 </td>
               </tr>
@@ -725,10 +645,7 @@ onMounted(() => {
         </NCollapseItem>
       </NCollapse>
     </NCollapseItem>
-    <NCollapseItem
-      :title="$t('SystemInformation.MemLayout.Title')"
-      name="memLayout"
-    >
+    <NCollapseItem :title="$t('SystemInformation.MemLayout.Title')" name="memLayout">
       <NCollapse display-directive="show">
         <NCollapseItem
           v-for="(memory, index) of si('memLayout')"
@@ -739,9 +656,7 @@ onMounted(() => {
             <tbody>
               <tr>
                 <td>
-                  <NEllipsis>{{
-                    $t('SystemInformation.Memory.Size')
-                  }}</NEllipsis>
+                  <NEllipsis>{{ $t('SystemInformation.Memory.Size') }}</NEllipsis>
                 </td>
                 <td>
                   <NEllipsis>{{
@@ -751,9 +666,7 @@ onMounted(() => {
               </tr>
               <tr>
                 <td>
-                  <NEllipsis>{{
-                    $t('SystemInformation.Memory.Type')
-                  }}</NEllipsis>
+                  <NEllipsis>{{ $t('SystemInformation.Memory.Type') }}</NEllipsis>
                 </td>
                 <td>
                   <NEllipsis>{{ showValue(memory.type) }}</NEllipsis>
@@ -761,9 +674,7 @@ onMounted(() => {
               </tr>
               <tr>
                 <td>
-                  <NEllipsis>{{
-                    $t('SystemInformation.Memory.Ecc')
-                  }}</NEllipsis>
+                  <NEllipsis>{{ $t('SystemInformation.Memory.Ecc') }}</NEllipsis>
                 </td>
                 <td>
                   <NEllipsis>{{ showValue(!!memory.ecc) }}</NEllipsis>
@@ -771,23 +682,17 @@ onMounted(() => {
               </tr>
               <tr>
                 <td>
-                  <NEllipsis>{{
-                    $t('SystemInformation.Memory.ClockSpeed')
-                  }}</NEllipsis>
+                  <NEllipsis>{{ $t('SystemInformation.Memory.ClockSpeed') }}</NEllipsis>
                 </td>
                 <td>
                   <NEllipsis>{{
-                    !!memory.clockSpeed
-                      ? `${memory.clockSpeed}MHz`
-                      : $t('Common.N/A')
+                    !!memory.clockSpeed ? `${memory.clockSpeed}MHz` : $t('Common.N/A')
                   }}</NEllipsis>
                 </td>
               </tr>
               <tr>
                 <td>
-                  <NEllipsis>{{
-                    $t('SystemInformation.Memory.Manufacturer')
-                  }}</NEllipsis>
+                  <NEllipsis>{{ $t('SystemInformation.Memory.Manufacturer') }}</NEllipsis>
                 </td>
                 <td>
                   <NEllipsis>{{ showValue(memory.manufacturer) }}</NEllipsis>
@@ -795,9 +700,7 @@ onMounted(() => {
               </tr>
               <tr>
                 <td>
-                  <NEllipsis>{{
-                    $t('SystemInformation.Memory.Serial')
-                  }}</NEllipsis>
+                  <NEllipsis>{{ $t('SystemInformation.Memory.Serial') }}</NEllipsis>
                 </td>
                 <td>
                   <NEllipsis>{{ showValue(memory.serialNum) }}</NEllipsis>
@@ -808,23 +711,14 @@ onMounted(() => {
         </NCollapseItem>
       </NCollapse>
     </NCollapseItem>
-    <NCollapseItem
-      :title="$t('SystemInformation.DiskLayout.Title')"
-      name="diskLayout"
-    >
+    <NCollapseItem :title="$t('SystemInformation.DiskLayout.Title')" name="diskLayout">
       <NCollapse display-directive="show">
-        <NCollapseItem
-          v-for="(disk, index) of si('diskLayout')"
-          :key="index"
-          :title="disk.name"
-        >
+        <NCollapseItem v-for="(disk, index) of si('diskLayout')" :key="index" :title="disk.name">
           <NTable striped>
             <tbody>
               <tr>
                 <td>
-                  <NEllipsis>{{
-                    $t('SystemInformation.DiskLayout.Vendor')
-                  }}</NEllipsis>
+                  <NEllipsis>{{ $t('SystemInformation.DiskLayout.Vendor') }}</NEllipsis>
                 </td>
                 <td>
                   <NEllipsis>{{ showValue(disk.vendor) }}</NEllipsis>
@@ -832,9 +726,7 @@ onMounted(() => {
               </tr>
               <tr>
                 <td>
-                  <NEllipsis>{{
-                    $t('SystemInformation.DiskLayout.Type')
-                  }}</NEllipsis>
+                  <NEllipsis>{{ $t('SystemInformation.DiskLayout.Type') }}</NEllipsis>
                 </td>
                 <td>
                   <NEllipsis>{{ showValue(disk.type) }}</NEllipsis>
@@ -842,9 +734,7 @@ onMounted(() => {
               </tr>
               <tr>
                 <td>
-                  <NEllipsis>{{
-                    $t('SystemInformation.DiskLayout.InterfaceType')
-                  }}</NEllipsis>
+                  <NEllipsis>{{ $t('SystemInformation.DiskLayout.InterfaceType') }}</NEllipsis>
                 </td>
                 <td>
                   <NEllipsis>{{ showValue(disk.interfaceType) }}</NEllipsis>
@@ -852,9 +742,7 @@ onMounted(() => {
               </tr>
               <tr>
                 <td>
-                  <NEllipsis>{{
-                    $t('SystemInformation.DiskLayout.Size')
-                  }}</NEllipsis>
+                  <NEllipsis>{{ $t('SystemInformation.DiskLayout.Size') }}</NEllipsis>
                 </td>
                 <td>
                   <NEllipsis>{{

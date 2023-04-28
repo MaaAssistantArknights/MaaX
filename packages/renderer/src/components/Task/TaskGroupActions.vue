@@ -1,14 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import {
-  NIcon,
-  NButton,
-  NPopconfirm,
-  NInput,
-  NSpace,
-  NText,
-  useMessage,
-} from 'naive-ui'
+import { NIcon, NButton, NPopconfirm, NInput, NSpace, NText, useMessage } from 'naive-ui'
 import { useI18n } from 'vue-i18n'
 import { TrashOutline } from '@vicons/ionicons5'
 
@@ -61,13 +53,7 @@ const handleDelete = () => {
     <NText v-else>
       {{ props.taskGroup?.name }}
     </NText>
-    <NButton
-      v-if="!isEditing"
-      size="small"
-      quaternary
-      circle
-      @click="isEditing = true"
-    >
+    <NButton v-if="!isEditing" size="small" quaternary circle @click="isEditing = true">
       <template #icon>
         <NIcon>
           <EditIcon />

@@ -1,15 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import {
-  NInput,
-  NAlert,
-  NButton,
-  NIcon,
-  NText,
-  NForm,
-  NFormItem,
-  useDialog,
-} from 'naive-ui'
+import { NInput, NAlert, NButton, NIcon, NText, NForm, NFormItem, useDialog } from 'naive-ui'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import useDeviceStore from '@/store/devices'
@@ -59,10 +50,7 @@ async function handleCustomConnect() {
       showMessage('设备已经存在了哦', { type: 'warning', duration: 5000 })
       return
     }
-    const uuid = await window.ipcRenderer.invoke(
-      'main.DeviceDetector:getDeviceUuid',
-      address.value
-    )
+    const uuid = await window.ipcRenderer.invoke('main.DeviceDetector:getDeviceUuid', address.value)
     if (!(uuid as string | false)) {
       loading.destroy()
       showMessage('连接失败，检查一下地址吧', { type: 'error', duration: 5000 })
@@ -129,11 +117,7 @@ onMounted(async () => {
         </NFormItem>
         <!-- 保持空格，使button和input对齐 -->
         <NFormItem label=" ">
-          <NButton
-            type="primary"
-            class="operation"
-            @click="handleCustomConnect"
-          >
+          <NButton type="primary" class="operation" @click="handleCustomConnect">
             <span>添加</span>
             <NIcon size="24px">
               <IconLink />

@@ -27,10 +27,7 @@ function handleUpdateConfiguration(key: string, value: any) {
 
 function handleConfirmUpdate(checked: boolean, value: number) {
   if (checked) {
-    handleUpdateConfiguration(
-      'confirm',
-      _.uniq([...props.configurations.confirm, value])
-    )
+    handleUpdateConfiguration('confirm', _.uniq([...props.configurations.confirm, value]))
   } else {
     handleUpdateConfiguration(
       'confirm',
@@ -82,9 +79,7 @@ function handleExpediteUpdate(value: number | null) {
       <NCheckbox
         :disabled="configurationDisabled.re"
         :checked="configurations.expedite"
-        @update:checked="
-          checked => handleUpdateConfiguration('expedite', checked)
-        "
+        @update:checked="checked => handleUpdateConfiguration('expedite', checked)"
       />
     </NFormItem>
     <NFormItem

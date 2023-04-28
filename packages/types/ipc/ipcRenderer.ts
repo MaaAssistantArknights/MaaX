@@ -7,19 +7,11 @@ import type { MessageOptions } from 'naive-ui'
 export type IpcRendererOnEventType = {
   'renderer.WindowManager:updateMaximized': (isMaximized: boolean) => void
   'renderer.WindowManager:loaded': () => void
-  'renderer.WindowManager:showMessage': (arg: {
-    message: string
-    options: MessageOptions
-  }) => void
+  'renderer.WindowManager:showMessage': (arg: { message: string; options: MessageOptions }) => void
   'renderer.CoreLoader:callback': (arg: Callback) => void
   'renderer.DeviceDetector:searched': (devices: NativeDevice[]) => void
-  'renderer.DeviceDetector:changeStatus': (
-    uuid: string,
-    status: DeviceStatus
-  ) => void
-  'renderer.AppearanceManager:systemThemeUpdated': (
-    theme: 'maa-dark' | 'maa-light'
-  ) => void
+  'renderer.DeviceDetector:changeStatus': (uuid: string, status: DeviceStatus) => void
+  'renderer.AppearanceManager:systemThemeUpdated': (theme: 'maa-dark' | 'maa-light') => void
   // 'renderer.DownloadModal:updateStatus': () => void
   'renderer.ComponentManager:updateStatus': (arg: {
     type: ComponentType

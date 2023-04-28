@@ -44,9 +44,7 @@ export type IpcMainHandleEventTypeAutoRegister = {
   'main.CoreLoader:changeTouchMode': (arg: { mode: TouchMode }) => boolean
   'main.CoreLoader:asyncScreencap': (arg: { uuid: string }) => number | boolean
   // WARN: 该方法尚未实现
-  'main.CoreLoader:getScreencap': (arg: {
-    uuid: string
-  }) => Promise<{ screenshot: string }>
+  'main.CoreLoader:getScreencap': (arg: { uuid: string }) => Promise<{ screenshot: string }>
 }
 
 export type IpcMainHandleEventType = IpcMainHandleEventTypeAutoRegister & {
@@ -63,12 +61,8 @@ export type IpcMainHandleEventType = IpcMainHandleEventTypeAutoRegister & {
   'main.ComponentManager:getStatus': (
     componentName: ComponentType
   ) => Promise<ComponentStatus | undefined>
-  'main.ComponentManager:install': (
-    componentName: ComponentType
-  ) => Promise<void>
-  'main.ComponentManager:upgrade': (
-    componentName: ComponentType
-  ) => Promise<void>
+  'main.ComponentManager:install': (componentName: ComponentType) => Promise<void>
+  'main.ComponentManager:upgrade': (componentName: ComponentType) => Promise<void>
   'main.DeviceDetector:getAdbPath': () => string
   'main.DeviceDetector:getAdbDevices': () => Promise<Device[]>
   'main.DeviceDetector:getEmulators': () => Promise<Emulator[]>

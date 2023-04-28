@@ -100,19 +100,12 @@ const resetTaskProgress = (taskInfo: Task) => {
 }
 
 const uuid = router.currentRoute.value.params.uuid as string
-const deviceStatus = computed(
-  () => deviceStore.getDevice(uuid)?.status ?? 'disconnected'
-)
+const deviceStatus = computed(() => deviceStore.getDevice(uuid)?.status ?? 'disconnected')
 
 provide(
   'configurationDisabled',
   computed(() => {
-    const notEditableStatus: TaskStatus[] = [
-      'exception',
-      'skipped',
-      'success',
-      'warning',
-    ]
+    const notEditableStatus: TaskStatus[] = ['exception', 'skipped', 'success', 'warning']
     return {
       // 运行时可编辑任务用
       re: notEditableStatus.includes(props.taskInfo.status),
@@ -135,18 +128,12 @@ provide(
     <NCollapseItem
       class="task-card-inner"
       :class="
-        [
-          _isCollapsed ? 'collapsed' : '',
-          `task-card__status-${props.taskInfo.status}`,
-        ].join(' ')
+        [_isCollapsed ? 'collapsed' : '', `task-card__status-${props.taskInfo.status}`].join(' ')
       "
       name="1"
       display-directive="show"
       :style="{
-        border:
-          themeStore.currentTheme === 'maa-dark'
-            ? `1px solid ${themeVars.primaryColor}`
-            : '',
+        border: themeStore.currentTheme === 'maa-dark' ? `1px solid ${themeVars.primaryColor}` : '',
         '--breathe-color': themeVars.primaryColor,
       }"
     >
@@ -157,8 +144,7 @@ provide(
               <span class="card-title">{{ props.taskInfo.title || '' }}</span>
               <div
                 v-if="
-                  deviceStatus === 'tasking' &&
-                  !['idle', 'waiting'].includes(props.taskInfo.status)
+                  deviceStatus === 'tasking' && !['idle', 'waiting'].includes(props.taskInfo.status)
                 "
                 justify="end"
               >
@@ -196,8 +182,7 @@ provide(
                     text
                     style="font-size: 25px"
                     :disabled="
-                      deviceStatus === 'tasking' &&
-                      !['idle'].includes(props.taskInfo.status)
+                      deviceStatus === 'tasking' && !['idle'].includes(props.taskInfo.status)
                     "
                     @click="() => $emit('copy')"
                   >
@@ -214,8 +199,7 @@ provide(
                     text
                     style="font-size: 25px"
                     :disabled="
-                      deviceStatus === 'tasking' &&
-                      !['idle'].includes(props.taskInfo.status)
+                      deviceStatus === 'tasking' && !['idle'].includes(props.taskInfo.status)
                     "
                     @click="() => $emit('delete')"
                   >
@@ -228,8 +212,7 @@ provide(
               </NTooltip>
               <span
                 v-if="
-                  deviceStatus === 'tasking' &&
-                  !['idle', 'waiting'].includes(props.taskInfo.status)
+                  deviceStatus === 'tasking' && !['idle', 'waiting'].includes(props.taskInfo.status)
                 "
                 class="card-progress-hint"
                 :style="{ color: themeVars.primaryColor }"
@@ -296,8 +279,7 @@ provide(
 <style lang="less" scoped>
 @keyframes breathe {
   from {
-    box-shadow: 0 2px 6px 0 rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.1),
-      0 0 5px 0 transparent;
+    box-shadow: 0 2px 6px 0 rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.1), 0 0 5px 0 transparent;
   }
   to {
     box-shadow: 0 2px 6px 0 rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.1),

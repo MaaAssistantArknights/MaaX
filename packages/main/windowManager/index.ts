@@ -7,9 +7,7 @@ import Storage from '@main/storageManager'
 import { getPlatform } from '@main/utils/os'
 import type { Module } from '@type/misc'
 
-const createWindow = (
-  options?: BrowserWindowConstructorOptions
-): BrowserWindow => {
+const createWindow = (options?: BrowserWindowConstructorOptions): BrowserWindow => {
   const storage = new Storage()
   const module =
     getPlatform() === 'windows' && storage.get('theme.acrylic')

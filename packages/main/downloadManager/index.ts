@@ -67,9 +67,7 @@ export default class DownloadManager implements Module {
         task.progress.receivedBytes = receivedBytes
         task.progress.prevReceivedBytes = receivedBytes
         task.progress.totalBytes = totalBytes
-        task.progress.precent = totalBytes
-          ? receivedBytes / totalBytes
-          : undefined
+        task.progress.precent = totalBytes ? receivedBytes / totalBytes : undefined
         task.paused = item.isPaused()
 
         handler.handleDownloadUpdate(task)

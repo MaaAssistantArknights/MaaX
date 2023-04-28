@@ -3,14 +3,7 @@ import { computed } from 'vue'
 import IconDisconnect from '@/assets/icons/disconnect.svg?component'
 import DeviceDetailPopover from '@/components/Device/DeviceDetailPopover.vue'
 import IconLink from '@/assets/icons/link.svg?component'
-import {
-  NButton,
-  NTooltip,
-  NIcon,
-  NSpace,
-  NPopconfirm,
-  useThemeVars,
-} from 'naive-ui'
+import { NButton, NTooltip, NIcon, NSpace, NPopconfirm, useThemeVars } from 'naive-ui'
 
 import useDeviceStore from '@/store/devices'
 import router from '@/router'
@@ -33,12 +26,8 @@ const settingStore = useSettingStore()
 const touchMode = computed(() => settingStore.touchMode)
 // const taskIdStore = useTaskIdStore()
 
-const deviceDisplayName = computed(
-  () => props.device.displayName || props.device.address
-)
-const routeUuid = computed(
-  () => router.currentRoute.value.params.uuid as string | undefined
-)
+const deviceDisplayName = computed(() => props.device.displayName || props.device.address)
+const routeUuid = computed(() => router.currentRoute.value.params.uuid as string | undefined)
 const isCurrent = computed(() => routeUuid.value === props.device.uuid)
 
 const connectedStatus: Set<DeviceStatus> = new Set(['connected', 'tasking'])
@@ -165,21 +154,13 @@ async function handleDeviceConnect() {
         @positive-click="handleDeviceDisconnect"
       >
         <template #trigger>
-          <NButton
-            class="operation"
-            text
-            :focusable="false"
-            style="font-size: 24px"
-          >
+          <NButton class="operation" text :focusable="false" style="font-size: 24px">
             <NIcon>
               <IconDisconnect />
             </NIcon>
           </NButton>
         </template>
-        {{
-          (device?.status === 'tasking' ? '当前设备正在进行任务，' : '') +
-          '确定断开连接？'
-        }}
+        {{ (device?.status === 'tasking' ? '当前设备正在进行任务，' : '') + '确定断开连接？' }}
       </NPopconfirm>
       <NButton
         v-if="disconnectedStatus.has(device?.status ?? 'unknown')"
@@ -251,14 +232,12 @@ async function handleDeviceConnect() {
 
   &[data-status='connecting']::before {
     background-color: #28cd41;
-    animation: connecting 1s cubic-bezier(0.46, 1, 0.76, 0.94) alternate
-      infinite;
+    animation: connecting 1s cubic-bezier(0.46, 1, 0.76, 0.94) alternate infinite;
   }
 
   &[data-status='waitingTask']::before {
     background-color: #28cd41;
-    animation: connecting 1s cubic-bezier(0.46, 1, 0.76, 0.94) alternate
-      infinite;
+    animation: connecting 1s cubic-bezier(0.46, 1, 0.76, 0.94) alternate infinite;
   }
 
   &[data-status='connected']::before {

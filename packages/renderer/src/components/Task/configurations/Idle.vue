@@ -4,10 +4,7 @@ import { NFormItem, NSpace, NTimePicker, NButton } from 'naive-ui'
 import router from '@/router'
 import useDeviceStore from '@/store/devices'
 import useTaskStore from '@/store/tasks'
-import {
-  secondsToFormattedDuration,
-  formattedDurationToSeconds,
-} from '@/utils/time_picker'
+import { secondsToFormattedDuration, formattedDurationToSeconds } from '@/utils/time_picker'
 import _ from 'lodash'
 import { showMessage } from '@/utils/message'
 import type { GetConfig } from './types'
@@ -53,17 +50,10 @@ const routeUuid = router.currentRoute.value.params.uuid as string
         <NTimePicker
           :disabled="configurationDisabled.nre"
           :style="{ width: '100%' }"
-          :default-formatted-value="
-            secondsToFormattedDuration(props.configurations.delay)
-          "
+          :default-formatted-value="secondsToFormattedDuration(props.configurations.delay)"
           :actions="['confirm']"
           @update:formatted-value="
-            value =>
-              _.set(
-                props.configurations,
-                'delay',
-                formattedDurationToSeconds(value)
-              )
+            value => _.set(props.configurations, 'delay', formattedDurationToSeconds(value))
           "
         />
       </NFormItem>

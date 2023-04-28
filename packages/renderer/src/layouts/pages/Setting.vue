@@ -27,12 +27,7 @@ provide(
 </script>
 
 <template>
-  <NForm
-    class="setting-form"
-    label-width="250px"
-    :show-feedback="false"
-    label-placement="left"
-  >
+  <NForm class="setting-form" label-width="250px" :show-feedback="false" label-placement="left">
     <General />
     <Report />
     <Version />

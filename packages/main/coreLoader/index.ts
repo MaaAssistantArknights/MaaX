@@ -50,21 +50,9 @@ function createVoidPointer(): ref.Value<void> {
 @Singleton
 class CoreLoader {
   private readonly dependences: Record<string, string[]> = {
-    win32: [
-      'opencv_world4_maa.dll',
-      'onnxruntime_maa.dll',
-      'MaaDerpLearning.dll',
-    ],
-    linux: [
-      'libopencv_world4.so',
-      'libonnxruntime.so',
-      'libMaaDerpLearning.so',
-    ],
-    darwin: [
-      'libopencv_world4.dylib',
-      'libonnxruntime.dylib',
-      'libMaaDerpLearning.dylib',
-    ],
+    win32: ['opencv_world4_maa.dll', 'onnxruntime_maa.dll', 'MaaDerpLearning.dll'],
+    linux: ['libopencv_world4.so', 'libonnxruntime.so', 'libMaaDerpLearning.so'],
+    darwin: ['libopencv_world4.dylib', 'libonnxruntime.dylib', 'libMaaDerpLearning.dylib'],
   }
 
   private readonly libName: Record<string, string> = {
@@ -87,9 +75,7 @@ class CoreLoader {
     CoreLoader.loadStatus = false
     CoreLoader.libPath = storage.get(CoreLoader.libPathKey) as string
     if (!_.isString(CoreLoader.libPath) || !existsSync(CoreLoader.libPath)) {
-      logger.error(
-        `Update resource folder: ${CoreLoader.libPath} --> ${CoreLoader.defaultLibPath}`
-      )
+      logger.error(`Update resource folder: ${CoreLoader.libPath} --> ${CoreLoader.defaultLibPath}`)
       CoreLoader.libPath = CoreLoader.defaultLibPath
       if (!existsSync(CoreLoader.libPath)) mkdirSync(CoreLoader.libPath)
     }
@@ -380,18 +366,8 @@ class CoreLoader {
   }
 
   /** @deprecated 已废弃，将在接下来的版本中移除 */
-  public Connect(
-    address: string,
-    uuid: string,
-    adbPath: string,
-    config: string
-  ): boolean {
-    return this.MeoAsstLib.AsstConnect(
-      this.MeoAsstPtr[uuid],
-      adbPath,
-      address,
-      config
-    )
+  public Connect(address: string, uuid: string, adbPath: string, config: string): boolean {
+    return this.MeoAsstLib.AsstConnect(this.MeoAsstPtr[uuid], adbPath, address, config)
   }
 
   /**
@@ -410,13 +386,7 @@ class CoreLoader {
     config: string,
     block: boolean = false
   ): number {
-    return this.MeoAsstLib.AsstAsyncConnect(
-      this.MeoAsstPtr[uuid],
-      adbPath,
-      address,
-      config,
-      block
-    )
+    return this.MeoAsstLib.AsstAsyncConnect(this.MeoAsstPtr[uuid], adbPath, address, config, block)
   }
 
   /**
@@ -427,11 +397,7 @@ class CoreLoader {
    * @returns
    */
   public AppendTask(uuid: string, type: string, params: string): number {
-    return this.MeoAsstLib.AsstAppendTask(
-      this.GetCoreInstanceByUUID(uuid),
-      type,
-      params
-    )
+    return this.MeoAsstLib.AsstAppendTask(this.GetCoreInstanceByUUID(uuid), type, params)
   }
 
   /**
@@ -442,11 +408,7 @@ class CoreLoader {
    */
 
   public SetTaskParams(uuid: string, taskId: number, params: string): boolean {
-    return this.MeoAsstLib.AsstSetTaskParams(
-      this.GetCoreInstanceByUUID(uuid),
-      taskId,
-      params
-    )
+    return this.MeoAsstLib.AsstSetTaskParams(this.GetCoreInstanceByUUID(uuid), taskId, params)
   }
 
   /**
@@ -486,10 +448,7 @@ class CoreLoader {
    */
   public AsyncScreencap(uuid: string, block: boolean = true): number | boolean {
     if (!this.MeoAsstPtr[uuid]) return false
-    return this.MeoAsstLib.AsstAsyncScreencap(
-      this.GetCoreInstanceByUUID(uuid),
-      block
-    )
+    return this.MeoAsstLib.AsstAsyncScreencap(this.GetCoreInstanceByUUID(uuid), block)
   }
 
   public GetImage(uuid: string): string {
@@ -521,16 +480,8 @@ class CoreLoader {
     return this.MeoAsstLib.AsstLog(level, message)
   }
 
-  public SetInstanceOption(
-    uuid: string,
-    key: InstanceOptionKey,
-    value: string
-  ): boolean {
-    return this.MeoAsstLib.AsstSetInstanceOption(
-      this.GetCoreInstanceByUUID(uuid),
-      key,
-      value
-    )
+  public SetInstanceOption(uuid: string, key: InstanceOptionKey, value: string): boolean {
+    return this.MeoAsstLib.AsstSetInstanceOption(this.GetCoreInstanceByUUID(uuid), key, value)
   }
 
   public SetTouchMode(uuid: string, mode: TouchMode): boolean {
@@ -560,19 +511,11 @@ class CoreLoader {
 
   public async Upgrade(): Promise<void> {
     logger.info('Start upgrade core')
-    const currentVersionFile = path.join(
-      getAppBaseDir(),
-      'core',
-      'core_version'
-    )
+    const currentVersionFile = path.join(getAppBaseDir(), 'core', 'core_version')
     const currentVersion = existsSync(currentVersionFile)
       ? readFileSync(currentVersionFile, 'utf-8')
       : 'CUR_NOT_FOUND'
-    const upgradeVersionFile = path.join(
-      getAppBaseDir(),
-      'core',
-      'core_upgradable'
-    )
+    const upgradeVersionFile = path.join(getAppBaseDir(), 'core', 'core_upgradable')
     const upgradeVersion = existsSync(upgradeVersionFile)
       ? readFileSync(upgradeVersionFile, 'utf-8')
       : 'UPG_NOT_FOUND'
@@ -587,11 +530,7 @@ class CoreLoader {
           `[CoreLoader] Start upgrade core, current version: ${currentVersion}, upgrade version: ${upgradeVersion}, upgrade file: ${upgradeFileName}`
         )
         unlinkSync(upgradeFilePath) // 提前删除, 防止因为压缩包损坏导致重复尝试更新
-        const compressedFile = path.join(
-          getAppBaseDir(),
-          'download',
-          upgradeFileName
-        )
+        const compressedFile = path.join(getAppBaseDir(), 'download', upgradeFileName)
         const dist = path.join(getAppBaseDir(), 'core')
         if (existsSync(compressedFile)) {
           await unzipFile(compressedFile, dist)

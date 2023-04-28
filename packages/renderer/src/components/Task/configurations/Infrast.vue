@@ -121,9 +121,7 @@ function onFacilityEnableUpdate(name: string, enabled: boolean) {
   if (fac) {
     fac.enabled = enabled
   }
-  const updated = facs
-    .filter(facility => facility.enabled)
-    .map(facility => facility.name)
+  const updated = facs.filter(facility => facility.enabled).map(facility => facility.name)
   handleUpdateConfiguration('facility', updated)
 }
 
@@ -145,10 +143,9 @@ async function infrastConfigParse(path: string | undefined) {
   }
   infrastConfig.path.value = path
   // eslint-disable-next-line vue/max-len
-  const raw_content = (await window.ipcRenderer.invoke(
-    'main.Task:readInfrastConfig',
-    { filepath: infrastConfig.path.value }
-  )) as string
+  const raw_content = (await window.ipcRenderer.invoke('main.Task:readInfrastConfig', {
+    filepath: infrastConfig.path.value,
+  })) as string
   if (raw_content.length < 1) {
     showMessage('读取基建文件文件失败', {
       type: 'error',
@@ -189,10 +186,7 @@ async function infrastConfigParse(path: string | undefined) {
 }
 
 onMounted(() => {
-  if (
-    props.configurations.mode === 10000 &&
-    props.configurations.filename.length > 1
-  ) {
+  if (props.configurations.mode === 10000 && props.configurations.filename.length > 1) {
     infrastConfigParse(props.configurations.filename)
   }
 })
@@ -219,9 +213,7 @@ onMounted(() => {
           <NCheckbox
             :checked="element.enabled"
             :label="$t(`task.infrast.${element.name}`)"
-            @update:checked="
-              checked => onFacilityEnableUpdate(element.name, checked)
-            "
+            @update:checked="checked => onFacilityEnableUpdate(element.name, checked)"
           />
         </template>
       </Draggable>
@@ -266,9 +258,7 @@ onMounted(() => {
         <NCheckbox
           :disabled="configurationDisabled.re"
           :checked="props.configurations.replenish"
-          @update:checked="
-            checked => handleUpdateConfiguration('replenish', checked)
-          "
+          @update:checked="checked => handleUpdateConfiguration('replenish', checked)"
         >
           源石碎片自动补货
         </NCheckbox>
@@ -277,9 +267,7 @@ onMounted(() => {
         <NCheckbox
           :disabled="configurationDisabled.re"
           :checked="props.configurations.dorm_trust_enabled"
-          @update:checked="
-            checked => handleUpdateConfiguration('dorm_trust_enabled', checked)
-          "
+          @update:checked="checked => handleUpdateConfiguration('dorm_trust_enabled', checked)"
         >
           宿舍空余位置蹭信赖
         </NCheckbox>
@@ -289,8 +277,7 @@ onMounted(() => {
           :disabled="configurationDisabled.re"
           :checked="props.configurations.dorm_notstationed_enabled"
           @update:checked="
-            checked =>
-              handleUpdateConfiguration('dorm_notstationed_enabled', checked)
+            checked => handleUpdateConfiguration('dorm_notstationed_enabled', checked)
           "
         >
           不将已入驻的干员放入宿舍
@@ -338,11 +325,7 @@ onMounted(() => {
       >
         <NUploadDragger style="display: block">
           <NText> 点击或者拖动文件 </NText>
-          <NText
-            v-if="infrastConfig.loadStatus.value"
-            depth="3"
-            style="display: block"
-          >
+          <NText v-if="infrastConfig.loadStatus.value" depth="3" style="display: block">
             {{ infrastConfig.title ? infrastConfig.title : '该配置没有标题' }}
           </NText>
         </NUploadDragger>

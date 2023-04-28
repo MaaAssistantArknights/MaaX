@@ -40,9 +40,7 @@ const props = defineProps<{
 const buy_first = ref(props.buy_first)
 const blacklist = ref(props.blacklist)
 
-const others = ref(
-  _.difference(socialShopItems, [...buy_first.value, ...blacklist.value])
-)
+const others = ref(_.difference(socialShopItems, [...buy_first.value, ...blacklist.value]))
 
 const emit = defineEmits<{
   (event: 'update:show', value: boolean): void
@@ -64,10 +62,7 @@ function handleUpdate() {
 </script>
 
 <template>
-  <NModal
-    :show="props.show"
-    @update:show="value => $emit('update:show', value)"
-  >
+  <NModal :show="props.show" @update:show="value => $emit('update:show', value)">
     <NCard
       style="width: 600px"
       title="信用购买"
@@ -76,17 +71,9 @@ function handleUpdate() {
       role="dialog"
       aria-modal="true"
     >
-      <MallItems
-        v-model:items="buy_first"
-        text="优先购买"
-        @updated="handleUpdate"
-      />
+      <MallItems v-model:items="buy_first" text="优先购买" @updated="handleUpdate" />
       <NDivider />
-      <MallItems
-        v-model:items="blacklist"
-        text="黑名单"
-        @updated="handleUpdate"
-      />
+      <MallItems v-model:items="blacklist" text="黑名单" @updated="handleUpdate" />
       <NDivider />
       <MallItems v-model:items="others" text="随缘购买" />
     </NCard>

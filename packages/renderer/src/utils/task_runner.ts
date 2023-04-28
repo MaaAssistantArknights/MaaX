@@ -11,51 +11,34 @@ const genUiTaskId = (): number => {
   return selfIncreasedId
 }
 
-export async function runStartEmulator(
-  uuid: string,
-  task: GetTask<'Emulator'>
-): Promise<void> {
+export async function runStartEmulator(uuid: string, task: GetTask<'Emulator'>): Promise<void> {
   const taskStore = useTaskStore()
   task.task_id = genUiTaskId()
   // 不await
   taskStore.updateTaskStatus(uuid, task.task_id, 'processing', 0)
-  window.ipcRenderer.invoke(
-    'main.DeviceDetector:startEmulator',
-    task.configurations.commandLine
-  )
+  window.ipcRenderer.invoke('main.DeviceDetector:startEmulator', task.configurations.commandLine)
 }
 
-async function runTaskEmulator(
-  uuid: string,
-  task: GetTask<'Emulator'>
-): Promise<void> {
+async function runTaskEmulator(uuid: string, task: GetTask<'Emulator'>): Promise<void> {
   const taskStore = useTaskStore()
   task.task_id = genUiTaskId()
   taskStore.updateTaskStatus(uuid, task.task_id, 'processing', 0)
-  window.ipcRenderer.invoke(
-    'main.DeviceDetector:startEmulator',
-    task.configurations.commandLine
-  )
+  window.ipcRenderer.invoke('main.DeviceDetector:startEmulator', task.configurations.commandLine)
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   task.schedule_id = setTimeout(async () => {
     // FIXME: Emulator无法转换为Device
-    const devices: Device[] = await window.ipcRenderer.invoke(
-      'main.DeviceDetector:getEmulators'
-    ) // 等待时间结束后进行一次设备搜索，但不合并结果
+    const devices: Device[] = await window.ipcRenderer.invoke('main.DeviceDetector:getEmulators') // 等待时间结束后进行一次设备搜索，但不合并结果
     const device = devices.find(device => device.uuid === uuid) // 检查指定uuid的设备是否存在
     if (device) {
       // 设备活了
       logger.silly('Emulator is alive', uuid)
-      const status = await window.ipcRenderer.invoke(
-        'main.CoreLoader:initCore',
-        {
-          // 创建连接
-          address: device.address,
-          uuid: device.uuid,
-          adb_path: device.adbPath,
-          config: device.config,
-        }
-      )
+      const status = await window.ipcRenderer.invoke('main.CoreLoader:initCore', {
+        // 创建连接
+        address: device.address,
+        uuid: device.uuid,
+        adb_path: device.adbPath,
+        config: device.config,
+      })
       if (status) {
         taskStore.updateTaskStatus(uuid, task.task_id, 'success', 0)
         logger.silly('Emulator is alive and connected', uuid)
@@ -118,14 +101,11 @@ export async function runTasks(uuid: string): Promise<void> {
       default: {
         // default -> core tasks
         task.status = 'waiting'
-        const taskId = await window.ipcRenderer.invoke(
-          'main.CoreLoader:appendTask',
-          {
-            uuid: uuid,
-            type: task.name,
-            params: convertToCoreTaskConfiguration(task.name, task),
-          }
-        )
+        const taskId = await window.ipcRenderer.invoke('main.CoreLoader:appendTask', {
+          uuid: uuid,
+          type: task.name,
+          params: convertToCoreTaskConfiguration(task.name, task),
+        })
         if (taskId !== 0) {
           task.task_id = taskId
         }

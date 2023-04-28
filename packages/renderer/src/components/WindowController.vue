@@ -20,9 +20,7 @@ const onClose = () => {
 }
 
 const onToggleMaximized = async () => {
-  const result = await window.ipcRenderer.invoke(
-    'main.WindowManager:toggleMaximized'
-  )
+  const result = await window.ipcRenderer.invoke('main.WindowManager:toggleMaximized')
   if (result instanceof Error) {
     console.log()
   }
@@ -32,12 +30,9 @@ const onMinimize = () => {
   window.ipcRenderer.invoke('main.WindowManager:minimize')
 }
 
-window.ipcRenderer.on(
-  'renderer.WindowManager:updateMaximized',
-  (_, maximized) => {
-    isMaximized.value = maximized
-  }
-)
+window.ipcRenderer.on('renderer.WindowManager:updateMaximized', (_, maximized) => {
+  isMaximized.value = maximized
+})
 </script>
 
 <template>
@@ -45,26 +40,14 @@ window.ipcRenderer.on(
     <div class="placeholder-bar" />
     <div class="drag-bar" />
     <NSpace class="traffic-lights">
-      <NButton
-        circle
-        type="warning"
-        size="tiny"
-        class="traffic-light"
-        @click="onMinimize"
-      >
+      <NButton circle type="warning" size="tiny" class="traffic-light" @click="onMinimize">
         <template #icon>
           <NIcon class="traffic-light-icon" color="#000">
             <IconWindowMinimize />
           </NIcon>
         </template>
       </NButton>
-      <NButton
-        circle
-        type="success"
-        size="tiny"
-        class="traffic-light"
-        @click="onToggleMaximized"
-      >
+      <NButton circle type="success" size="tiny" class="traffic-light" @click="onToggleMaximized">
         <template #icon>
           <NIcon class="traffic-light-icon" color="#000">
             <IconScaleExtend v-if="!isMaximized" />
@@ -72,13 +55,7 @@ window.ipcRenderer.on(
           </NIcon>
         </template>
       </NButton>
-      <NButton
-        circle
-        type="error"
-        size="tiny"
-        class="traffic-light"
-        @click="onClose"
-      >
+      <NButton circle type="error" size="tiny" class="traffic-light" @click="onClose">
         <template #icon>
           <NIcon class="traffic-light-icon" color="#000">
             <IconClose />

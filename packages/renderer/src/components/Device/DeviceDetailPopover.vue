@@ -31,18 +31,14 @@ let timer: NodeJS.Timer | null = null
 
 const startGetScreenshot = async () => {
   logger.info('send get')
-  window.ipcRenderer.on(
-    'renderer.Device:getScreenshot',
-    async (event, data) => {
-      if (data.uuid === props.uuid) {
-        const imageData = await window.ipcRenderer.invoke(
-          'main.CoreLoader:getScreencap',
-          { uuid: props.uuid }
-        )
-        screenshot.value = imageData.screenshot
-      }
+  window.ipcRenderer.on('renderer.Device:getScreenshot', async (event, data) => {
+    if (data.uuid === props.uuid) {
+      const imageData = await window.ipcRenderer.invoke('main.CoreLoader:getScreencap', {
+        uuid: props.uuid,
+      })
+      screenshot.value = imageData.screenshot
     }
-  )
+  })
   if (timer) clearInterval(timer)
   timer = setInterval(async () => {
     logger.info('send asyncScreencap')
@@ -129,8 +125,7 @@ const updateDisplayName = (displayName: string) => {
                 </template>
               </NInput>
             </template>
-            模拟器自动启动命令, 非必要请不要修改这里的内容,
-            留空将会在下一次链接时尝试自动获取
+            模拟器自动启动命令, 非必要请不要修改这里的内容, 留空将会在下一次链接时尝试自动获取
           </NTooltip>
         </NDescriptionsItem>
       </NDescriptions>

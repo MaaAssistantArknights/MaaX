@@ -12,30 +12,23 @@ export function useEmulatorHooks(adapter: Promise<EmulatorAdapter>): void {
   ipcMainHandle('main.DeviceDetector:getAdbDevices', async event => {
     return (await adapter).getAdbDevices()
   })
-  ipcMainHandle(
-    'main.DeviceDetector:getDeviceUuid',
-    async (event, address, adbPath) => getDeviceUuid(address, adbPath)
+  ipcMainHandle('main.DeviceDetector:getDeviceUuid', async (event, address, adbPath) =>
+    getDeviceUuid(address, adbPath)
   )
 
   ipcMainHandle('main.DeviceDetector:getAdbPath', event => {
     return defaultAdbPath
   })
-  ipcMainHandle(
-    'main.DeviceDetector:startEmulator',
-    async (event, path: string) => {
-      const args = parseArguments(path)
-      // eslint-disable-next-line
-      await $$(args.splice(0, 1)[0], args)
-    }
-  )
+  ipcMainHandle('main.DeviceDetector:startEmulator', async (event, path: string) => {
+    const args = parseArguments(path)
+    // eslint-disable-next-line
+    await $$(args.splice(0, 1)[0], args)
+  })
 
-  ipcMainHandle(
-    'main.DeviceDetector:startEmulator2',
-    async (event, path: string) => {
-      // eslint-disable-next-line
-      await $`${path}`
-    }
-  )
+  ipcMainHandle('main.DeviceDetector:startEmulator2', async (event, path: string) => {
+    // eslint-disable-next-line
+    await $`${path}`
+  })
 
   ipcMainHandle('main.DeviceDetector:isDefaultAdbExists', event => {
     return isDefaultAdbExists()

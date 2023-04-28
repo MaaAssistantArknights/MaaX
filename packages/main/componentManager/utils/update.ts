@@ -29,9 +29,7 @@ export function createCheckUpdate(
     const release = (await getRelease()) ?? null
 
     if (!release) {
-      logger.error(
-        `[Component Installer | ${component}] Failed to get latest release`
-      )
+      logger.error(`[Component Installer | ${component}] Failed to get latest release`)
       return {
         msg: 'failedAccessLatest',
       }
@@ -68,9 +66,7 @@ export function createCheckUpdate(
 
       const item = assets.find(asset => asset.name === ota)
       if (item) {
-        logger.info(
-          `[Component Installer | ${component}] Found update asset: ${latestVersion}`
-        )
+        logger.info(`[Component Installer | ${component}] Found update asset: ${latestVersion}`)
 
         fs.writeFileSync(infoPath.latestFile, item.name, 'utf-8')
 
@@ -100,17 +96,13 @@ export function createCheckUpdate(
     const item = assets.find(asset => full.test(asset.name))
 
     if (!item) {
-      logger.error(
-        `[Component Installer | ${component}] Failed to retrieve core update asset`
-      )
+      logger.error(`[Component Installer | ${component}] Failed to retrieve core update asset`)
       return {
         msg: 'failedAccessLatest', // 考虑换一个更明确的, 如failedRetrieveLatest
       }
     }
 
-    logger.info(
-      `[Component Installer | ${component}] Found full asset: ${latestVersion}`
-    )
+    logger.info(`[Component Installer | ${component}] Found full asset: ${latestVersion}`)
 
     fs.writeFileSync(infoPath.latestFile, item.name, 'utf-8')
 

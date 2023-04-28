@@ -14,10 +14,7 @@ export default {
     window.removeLoading()
 
     const components: Partial<Record<ComponentType, ComponentStatus>> = {
-      'Maa Core': await window.ipcRenderer.invoke(
-        'main.ComponentManager:getStatus',
-        'Maa Core'
-      ),
+      'Maa Core': await window.ipcRenderer.invoke('main.ComponentManager:getStatus', 'Maa Core'),
     }
 
     const showError = showTip ? window.$message.error : undefined
@@ -51,8 +48,6 @@ export default {
 
     return loaded
   },
-  dispose: async () =>
-    await window.ipcRenderer.invoke('main.CoreLoader:dispose'),
-  upgradeCore: async () =>
-    await window.ipcRenderer.invoke('main.CoreLoader:upgrade'),
+  dispose: async () => await window.ipcRenderer.invoke('main.CoreLoader:dispose'),
+  upgradeCore: async () => await window.ipcRenderer.invoke('main.CoreLoader:upgrade'),
 }

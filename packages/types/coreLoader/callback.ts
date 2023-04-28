@@ -163,9 +163,8 @@ type SubTaskExtraInfoCallbackTemplate<What extends SubTaskExtraInfoWhat> = {
   uuid: string
 }
 
-type SubTaskExtraInfoCallbackGenerator<
-  Whats extends SubTaskExtraInfoWhat = SubTaskExtraInfoWhat
-> = Whats extends unknown ? SubTaskExtraInfoCallbackTemplate<Whats> : never
+type SubTaskExtraInfoCallbackGenerator<Whats extends SubTaskExtraInfoWhat = SubTaskExtraInfoWhat> =
+  Whats extends unknown ? SubTaskExtraInfoCallbackTemplate<Whats> : never
 
 export type CallbackMapper = {
   [AsstMsg.InternalError]: {

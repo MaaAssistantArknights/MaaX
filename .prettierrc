@@ -4,5 +4,5 @@
   "singleQuote": true,
   "arrowParens": "avoid",
   "vueIndentScriptAndStyle": false,
-  "printWidth": 80
+  "printWidth": 100
 }

@@ -3,10 +3,7 @@ import fs from 'fs'
 import CoreLoader from '@main/coreLoader'
 import { ipcMainHandle, ipcMainRemove } from '@main/utils/ipc-main'
 import logger from '@main/utils/logger'
-import type {
-  IpcMainHandleEventTypeAutoRegister,
-  IpcMainHandleEvent,
-} from '@type/ipc'
+import type { IpcMainHandleEventTypeAutoRegister, IpcMainHandleEvent } from '@type/ipc'
 
 const core = new CoreLoader()
 
@@ -72,9 +69,7 @@ const asstHooks: {
     }
     const jsonPath = path.join(core.libPath, 'resource/tasks.json')
     const tasks = JSON.parse(String(fs.readFileSync(jsonPath)))
-    const stages = Object.keys(tasks).filter(s =>
-      /[A-Z0-9]+-([A-Z0-9]+-?)?[0-9]/.test(s)
-    )
+    const stages = Object.keys(tasks).filter(s => /[A-Z0-9]+-([A-Z0-9]+-?)?[0-9]/.test(s))
     return stages
   },
   'main.CoreLoader:getImage': (_event, arg) => {

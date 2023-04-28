@@ -36,8 +36,7 @@ function onlyAllowNumber(value: string) {
               :style="{ width: '200px' }"
             />
           </template>
-          如不填将默认使用企鹅物流汇报ID, 汇报ID仅包含数字,
-          不正确的ID会在首次汇报结果时候自动替换
+          如不填将默认使用企鹅物流汇报ID, 汇报ID仅包含数字, 不正确的ID会在首次汇报结果时候自动替换
         </NTooltip>
       </NFormItem>
     </NSpace>

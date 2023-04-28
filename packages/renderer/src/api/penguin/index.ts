@@ -41,9 +41,7 @@ export async function postDrop(report: DropReport): Promise<AxiosResponse> {
     version: settingStore.version.core.current,
   }
 
-  const headers: AxiosRequestHeaders = reportId
-    ? { Authorization: `PenguinID ${reportId}` }
-    : {}
+  const headers: AxiosRequestHeaders = reportId ? { Authorization: `PenguinID ${reportId}` } : {}
 
   return await backOff(
     () =>

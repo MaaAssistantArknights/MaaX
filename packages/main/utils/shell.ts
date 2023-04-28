@@ -16,10 +16,7 @@ const textDecoder = (buf: Buffer): string =>
  * 示例: $\`tasklist | findstr ${name}\`
  * @returns Promise<{stdout:string, stderr:string}>
  */
-export async function $(
-  pieces: TemplateStringsArray,
-  ...args: string[]
-): Promise<ProcessOutput> {
+export async function $(pieces: TemplateStringsArray, ...args: string[]): Promise<ProcessOutput> {
   const ret = { stderr: '', stdout: '' }
 
   let cmd = pieces[0]
@@ -54,10 +51,7 @@ export async function $(
  * @param args 参数
  * @returns Promise<{stdout:string, stderr:string}>
  */
-export async function $$(
-  file: string,
-  args?: string[]
-): Promise<ProcessOutput> {
+export async function $$(file: string, args?: string[]): Promise<ProcessOutput> {
   const ret = { stderr: '', stdout: '' }
   logger.info(`exec: ${file} ${args ? args.join(' ') : ''}`)
   try {

@@ -33,9 +33,7 @@ export default abstract class InstallerBase implements Installer {
         this.notifier.onException()
         return
       case 'alreadyLatest':
-        logger.info(
-          `[Component Installer | ${this.componentType}] No update available`
-        )
+        logger.info(`[Component Installer | ${this.componentType}] No update available`)
         this.notifier.onCompleted()
         return
       case 'haveUpdate': {
@@ -53,10 +51,7 @@ export default abstract class InstallerBase implements Installer {
               this.status = 'unzipping'
               this.notifier.onProgress(0.8)
 
-              unzipFile(
-                task.savePath,
-                path.join(getAppBaseDir(), this.componentDir)
-              )
+              unzipFile(task.savePath, path.join(getAppBaseDir(), this.componentDir))
                 .then(() => {
                   this.status = 'done'
                   update.update.postUpgrade() // 更新版本信息
