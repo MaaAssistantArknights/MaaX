@@ -10,6 +10,7 @@ export enum Locale {
 }
 
 export interface SettingState {
+  report_to_penguin: boolean
   penguinReportId: string
   yituliuReportId: string
   clientType: CoreResourceType
@@ -39,6 +40,7 @@ export interface SettingAction {
   toggleMonsters: () => void
   setTouchMode: (mode: TouchMode) => void
   dontShowCoreNotInstalled: () => void
+  changeReportToPenguin(checked: boolean): void
 }
 
 export interface SettingGetters {
@@ -51,6 +53,7 @@ const useSettingStore = defineStore<'setting', SettingState, SettingGetters, Set
   {
     state: () => {
       return {
+        report_to_penguin: true,
         penguinReportId: '',
         yituliuReportId: '',
         clientType: 'CN',
@@ -111,6 +114,9 @@ const useSettingStore = defineStore<'setting', SettingState, SettingGetters, Set
       changeClientType(type: CoreResourceType) {
         this.clientType = type
       },
+      changeReportToPenguin(checked: boolean) {
+        this.report_to_penguin = checked
+      }
     },
   }
 )

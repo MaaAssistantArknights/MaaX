@@ -72,7 +72,7 @@ export default function useCallbackEvents(): void {
             if (task) {
               const resultIndex = task.results.fightInfo.length - 1
               const vaildDropType = ['NORMAL_DROP', 'SPECIAL_DROP', 'EXTRA_DROP', 'FURNITURE']
-              if (task.configurations.report_to_penguin) {
+              if (settingStore.report_to_penguin) {
                 const drops = _.cloneDeep(details.drops)
                   .filter(drop => vaildDropType.includes(drop.dropType))
                   .filter(drop => !drop.itemId.includes('token'))
