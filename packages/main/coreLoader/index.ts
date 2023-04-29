@@ -321,7 +321,11 @@ class CoreLoader {
    * @param path? 未指定就用libPath
    * @returns
    */
-  public LoadResource(path?: string): Boolean {
+  public LoadResource(path: string = this.libPath): Boolean {
+    if (!existsSync(path)) {
+      logger.error(`[LoadResource] path not exists ${path}` )
+      return false
+    }
     return this.MeoAsstLib.AsstLoadResource(path ?? this.libPath)
   }
 

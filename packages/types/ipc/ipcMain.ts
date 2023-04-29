@@ -12,6 +12,9 @@ export interface InitCoreParam {
   touch_mode: TouchMode
 }
 
+// 客户端资源类型, b服和官服都是CN
+export type CoreResourceType = 'CN' | 'YoStarEN' | 'YoStarJP'| 'YoStarKR' | 'txwy'
+
 export type IpcMainHandleEventTypeAutoRegister = {
   'main.CoreLoader:loadResource': (arg: { path: string }) => boolean
   'main.CoreLoader:getImage': (arg: { uuid: string }) => string

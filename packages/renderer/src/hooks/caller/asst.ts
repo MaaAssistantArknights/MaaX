@@ -8,7 +8,12 @@ export default {
     const settingStore = useSettingStore()
 
     loaded = await window.ipcRenderer.invoke('main.CoreLoader:load')
-    if (loaded) await loadCoreResources()
+    if (loaded) {
+      await loadCoreResources('CN')
+    }
+    if (settingStore.clientType !== 'CN') {
+      await loadCoreResources(settingStore.clientType)
+    }
     settingStore.updateVersionInfo()
 
     window.removeLoading()
