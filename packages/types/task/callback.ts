@@ -93,7 +93,14 @@ export type CallbackMapper = {
     uuid: string
   }
   [AsstMsg.SubTaskExtraInfo]: SubTaskExtraInfoCallbackGenerator
-  [AsstMsg.SubTaskStopped]: {}
+  [AsstMsg.SubTaskStopped]: {
+    subtask: string
+    class: string
+    taskchain: CoreTaskName
+    taskid: number
+    details: {}
+    uuid: string
+  }
 }
 
 type CallbackTemplate<Code extends AsstMsg> = {

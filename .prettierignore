@@ -1,4 +1,5 @@
 packages/common/ArknightsGameData/**
+dist/**
 *.md
 *.yml
 *.yaml

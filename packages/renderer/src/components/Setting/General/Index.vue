@@ -2,7 +2,7 @@
 import { NSelect, NFormItem, NSpace } from 'naive-ui'
 import useSettingStore, { Locale } from '@/store/settings'
 import { ref, inject } from 'vue'
-import type { CoreResourceType } from '@type/ipc'
+import type { ResourceType } from '@type/game'
 import { loadCoreResources } from '@/utils/core_functions'
 import { showMessage } from '@/utils/message'
 
@@ -21,7 +21,7 @@ const localeOptions = [
   },
 ]
 
-const clientOptions: { label: string; value: CoreResourceType }[] = [
+const clientOptions: { label: string; value: ResourceType }[] = [
   {
     label: '官服/Bilibili',
     value: 'CN',
@@ -64,7 +64,7 @@ function handleChangeLocale(locale: Locale) {
   settingStore.changeLocale(locale)
 }
 
-async function handleChangeClientType(type: CoreResourceType) {
+async function handleChangeClientType(type: ResourceType) {
   const status = await loadCoreResources(type)
   if (status) {
     settingStore.changeClientType(type)

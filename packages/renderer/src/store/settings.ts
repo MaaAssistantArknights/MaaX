@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { useI18n } from 'vue-i18n'
 import version from '@/hooks/caller/version'
 import { TouchMode } from '@type/misc'
-import type { CoreResourceType } from '@type/ipc'
+import type { ResourceType } from '@type/game'
 
 export enum Locale {
   zhCN = 'ZhCN',
@@ -13,7 +13,7 @@ export interface SettingState {
   report_to_penguin: boolean
   penguinReportId: string
   yituliuReportId: string
-  clientType: CoreResourceType
+  clientType: ResourceType
   version: {
     core: {
       current?: string
@@ -35,7 +35,7 @@ export interface SettingAction {
   setPenguinReportId: (reportId: string) => void
   setYituliuReportId: (reportId: string) => void
   changeLocale: (locale: Locale) => void
-  changeClientType: (type: CoreResourceType) => void
+  changeClientType: (type: ResourceType) => void
   updateVersionInfo: () => Promise<void>
   toggleMonsters: () => void
   setTouchMode: (mode: TouchMode) => void
@@ -111,12 +111,12 @@ const useSettingStore = defineStore<'setting', SettingState, SettingGetters, Set
       dontShowCoreNotInstalled() {
         this.hintCoreNotInstalled = false
       },
-      changeClientType(type: CoreResourceType) {
+      changeClientType(type: ResourceType) {
         this.clientType = type
       },
       changeReportToPenguin(checked: boolean) {
         this.report_to_penguin = checked
-      }
+      },
     },
   }
 )
