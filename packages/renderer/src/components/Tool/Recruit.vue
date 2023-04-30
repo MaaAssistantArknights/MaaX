@@ -5,7 +5,7 @@ import { ref } from 'vue'
 import { useSeperateTaskStore } from '@/store/seperateTask'
 import { getOperatorAvatar } from '@/utils/game_image'
 import { showMessage } from '@/utils/message'
-import { AsstMsg, type SubTaskExtraInfoMapper } from '@type/coreLoader/callback'
+import { AsstMsg, type SubTaskExtraInfoMapper } from '@type/task/callback'
 import type { GetTask } from '@type/task'
 
 type RecruitResult = SubTaskExtraInfoMapper['RecruitResult']

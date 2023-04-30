@@ -1,4 +1,4 @@
-import type { CallbackMapper, SubTaskRelatedMsg } from '@type/coreLoader/callback'
+import type { CallbackMapper, SubTaskRelatedMsg } from '@type/task/callback'
 import { defineStore } from 'pinia'
 
 type Handler = <M extends SubTaskRelatedMsg>(msg: M, data: CallbackMapper[M]) => boolean

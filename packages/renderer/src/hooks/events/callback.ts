@@ -16,7 +16,7 @@ import {
   type Callback,
   type CallbackMapper,
   type SubTaskRelatedMsg,
-} from '@type/coreLoader/callback'
+} from '@type/task/callback'
 
 const messages: Record<string, MessageReactive> = {}
 
@@ -223,6 +223,7 @@ export default function useCallbackEvents(): void {
       Award: data => {},
       // Debug: (data) => {},
     },
+    [AsstMsg.SubTaskStopped]: {},
   }
 
   const callbackFn: {

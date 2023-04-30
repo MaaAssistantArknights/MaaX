@@ -1,5 +1,5 @@
 import type { ComponentType } from '@type/componentManager'
-import type { Callback } from '@type/coreLoader/callback'
+import type { Callback } from '@type/task/callback'
 import type { DeviceStatus, NativeDevice } from '@type/device'
 import type { InstallerStatus } from '@type/misc'
 import type { MessageOptions } from 'naive-ui'
