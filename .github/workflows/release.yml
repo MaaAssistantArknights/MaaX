@@ -77,8 +77,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Build and publish
-        run: pnpm run publish --arch=${{ matrix.arch }}
+      - name: Build app
+        run: pnpm run make --arch=${{ matrix.arch }}
+
+      - name: Publish to mirrors
+        run: pnpm run publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           MAA_MINIO_ACCESS_KEY: ${{ secrets.MAA_MINIO_ACCESS_KEY }}
