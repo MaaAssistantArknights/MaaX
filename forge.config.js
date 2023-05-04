@@ -74,6 +74,7 @@ module.exports = {
         endpoint: 'https://s3.maa-org.net',
         bucket: 'maa-x',
         region: 'us-east-1',
+        s3ForcePathStyle: true,
         accessKeyId: process.env['MAA_MINIO_ACCESS_KEY'],
         secretAccessKey: process.env['MAA_MINIO_SECRET_KEY'],
       },
