@@ -27,6 +27,7 @@
     "@electron-forge/maker-zip": "^6.1.1",
     "@electron-forge/plugin-vite": "^6.1.1",
     "@electron-forge/publisher-github": "^6.1.1",
+    "@electron-forge/publisher-s3": "^6.1.1",
     "@intlify/vite-plugin-vue-i18n": "^5.0.1",
     "@types/animejs": "^3.1.7",
     "@types/cron": "^1.7.3",
