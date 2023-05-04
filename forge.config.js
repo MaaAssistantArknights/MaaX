@@ -71,7 +71,7 @@ module.exports = {
     {
       name: '@electron-forge/publisher-s3',
       config: {
-        endpoint: 'https://s3.maa-org.net',
+        endpoint: 'https://s3.maa-org.net:25240',
         bucket: 'maa-x',
         region: 'us-east-1',
         s3ForcePathStyle: true,
