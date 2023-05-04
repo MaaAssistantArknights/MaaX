@@ -68,5 +68,14 @@ module.exports = {
         },
       },
     },
+    {
+      name: '@electron-forge/publisher-s3',
+      config: {
+        endpoint: 'https://s3.maa-org.net',
+        bucket: 'maa-x',
+        accessKeyId: process.env['MAA_MINIO_ACCESS_KEY'],
+        secretAccessKey: process.env['MAA_MINIO_SECRET_KEY'],
+      },
+    },
   ],
 }
