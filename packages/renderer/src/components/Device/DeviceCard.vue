@@ -26,7 +26,9 @@ const settingStore = useSettingStore()
 const touchMode = computed(() => settingStore.touchMode)
 // const taskIdStore = useTaskIdStore()
 
-const deviceDisplayName = computed(() => props.device.displayName || props.device.address)
+const deviceDisplayName = computed(
+  () => props.device.displayName || props.device.address || props.device.uuid
+)
 const routeUuid = computed(() => router.currentRoute.value.params.uuid as string | undefined)
 const isCurrent = computed(() => routeUuid.value === props.device.uuid)
 
