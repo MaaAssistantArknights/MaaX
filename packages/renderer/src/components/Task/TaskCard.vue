@@ -17,7 +17,7 @@ import DropdownMenu from './DropdownMenu.vue'
 import router from '@/router'
 import useThemeStore from '@/store/theme'
 import Timer from './Timer.vue'
-import IconEdit from '@/assets/icons/edit.svg?component'
+import { SettingsOutline as IconSettings } from '@vicons/ionicons5'
 import IconAdd from '@/assets/icons/add.svg?component'
 import IconRemove from '@/assets/icons/remove.svg?component'
 import useDeviceStore from '@/store/devices'
@@ -128,7 +128,11 @@ provide(
     <NCollapseItem
       class="task-card-inner"
       :class="
-        [_isCollapsed ? 'collapsed' : '', `task-card__status-${props.taskInfo.status}`].join(' ')
+        [
+          _isCollapsed ? 'collapsed' : '',
+          `task-card__status-${props.taskInfo.status}`,
+          !innerCollapse && props.isCollapsed ? 'inner-expanded' : '',
+        ].join(' ')
       "
       name="1"
       display-directive="show"
@@ -169,11 +173,11 @@ provide(
                     "
                   >
                     <NIcon>
-                      <IconEdit />
+                      <IconSettings />
                     </NIcon>
                   </NButton>
                 </template>
-                {{ _isCollapsed ? '展开' : '折叠' }}当前任务
+                {{ _isCollapsed ? '展开' : '折叠' }}设置
               </NTooltip>
               <NTooltip>
                 <template #trigger>
@@ -306,6 +310,12 @@ provide(
 
   &.collapsed {
     border-radius: 12px 12px 0 0;
+  }
+
+  &.inner-expanded .card-content {
+    height: auto;
+    min-height: auto;
+    aspect-ratio: auto;
   }
 
   &.task-card__status-processing {
