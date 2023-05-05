@@ -371,7 +371,7 @@ class CoreLoader {
 
   /** @deprecated 已废弃，将在接下来的版本中移除 */
   public Connect(address: string, uuid: string, adbPath: string, config: string): boolean {
-    return this.MeoAsstLib.AsstConnect(this.MeoAsstPtr[uuid], adbPath, address, config)
+    return this.MeoAsstLib.AsstConnect(this.MeoAsstPtr[uuid], `"${adbPath}"`, address, config)
   }
 
   /**
@@ -390,7 +390,13 @@ class CoreLoader {
     config: string,
     block: boolean = false
   ): number {
-    return this.MeoAsstLib.AsstAsyncConnect(this.MeoAsstPtr[uuid], adbPath, address, config, block)
+    return this.MeoAsstLib.AsstAsyncConnect(
+      this.MeoAsstPtr[uuid],
+      `"${adbPath}"`,
+      address,
+      config,
+      block
+    )
   }
 
   /**
