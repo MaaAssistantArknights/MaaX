@@ -84,11 +84,14 @@ class WindowsAdapter implements EmulatorAdapter {
     const cmd = await getCommandLine(e.pid)
     e.commandLine = cmd // 从命令行启动的指令
     const arg = getBluestackInstanceName(cmd)
+    const registryKey = e.adbPath?.includes('BlueStacks_nxt_cn')
+      ? 'BlueStacks_nxt_cn'
+      : 'BlueStacks_nxt'
     const confPath = path.join(
       path.normalize(
         JSON.parse(
           (
-            await $`Get-ItemProperty -Path Registry::HKEY_LOCAL_MACHINE\\SOFTWARE\\BlueStacks_nxt | Select-Object -Property UserDefinedDir | ConvertTo-Json`
+            await $`Get-ItemProperty -Path Registry::HKEY_LOCAL_MACHINE\\SOFTWARE\\${registryKey} | Select-Object -Property UserDefinedDir | ConvertTo-Json`
           ).stdout
         ).UserDefinedDir
       ),
@@ -143,7 +146,6 @@ class WindowsAdapter implements EmulatorAdapter {
         ? RegExp(`bst.instance.${arg}.status.adb_port="(\\d{4,6})"`)
         : /bst.instance.(?:.*).status.adb_port="(\d{4,6})"/
       const confPort = conf.match(confPortInstanceExp)
-      console.log('confport:')
       e.displayName = 'BlueStack Global'
       if (confPort) {
         e.address = `127.0.0.1:${confPort[1]}`
