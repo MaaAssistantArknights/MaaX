@@ -238,13 +238,6 @@ const currentTaskGroupIndexValue = computed({
 const currentTaskGroup = computed(() =>
   taskStore.getCurrentTaskGroup(uuid.value)
 )
-
-const key = ref(0)
-
-onBeforeRouteUpdate((to, from, next) => {
-  key.value++
-  next()
-})
 </script>
 
 <template>
@@ -254,7 +247,7 @@ onBeforeRouteUpdate((to, from, next) => {
       <NSpace align="center">
         <TaskGroupActions :device-uuid="uuid" :task-group="currentTaskGroup" />
         <NSelect
-          :key="key"
+          :key="uuid"
           v-model:value="currentTaskGroupIndexValue"
           :options="taskGroupOptions"
           :consistent-menu-width="false"

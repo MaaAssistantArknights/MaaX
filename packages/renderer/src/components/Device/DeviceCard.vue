@@ -111,13 +111,6 @@ async function handleDeviceConnect() {
     touch_mode: touchMode.value,
   } as InitCoreParam)
 }
-
-const key = ref(0)
-
-onBeforeRouteUpdate((to, from, next) => {
-  key.value++
-  next()
-})
 </script>
 
 <template>
@@ -159,7 +152,7 @@ onBeforeRouteUpdate((to, from, next) => {
           })()
         }}
       </NTooltip>
-      <DeviceDetailPopover :key="key" :uuid="props.device.uuid">
+      <DeviceDetailPopover :key="routeUuid" :uuid="props.device.uuid">
         <div class="device-name">
           {{ deviceDisplayName }}
         </div>
