@@ -1,14 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, provide, watch } from 'vue'
-import {
-  NSpace,
-  NButton,
-  NSwitch,
-  NIcon,
-  NTooltip,
-  NSelect,
-  type SelectOption,
-} from 'naive-ui'
+import { NSpace, NButton, NSwitch, NIcon, NTooltip, NSelect, type SelectOption } from 'naive-ui'
 import _ from 'lodash'
 import Draggable from 'vuedraggable'
 import TaskCard from '@/components/Task/TaskCard.vue'
@@ -40,9 +32,7 @@ const isGrid = ref(false)
 const actionLoading = ref(false)
 
 const uuid = computed(() => router.currentRoute.value.params.uuid as string)
-const device = computed(() =>
-  deviceStore.devices.find(device => device.uuid === uuid.value)
-)
+const device = computed(() => deviceStore.devices.find(device => device.uuid === uuid.value))
 const tasks = computed(() => {
   if (!taskStore.deviceTasks[uuid.value]) {
     taskStore.initDeviceTask(uuid.value)
@@ -78,23 +68,18 @@ async function handleStartUnconnected(task: GetTask<'Emulator'>) {
   deviceStore.updateDeviceStatus(uuid.value, 'tasking')
   await runStartEmulator(uuid.value, task)
   task.schedule_id = setTimeout(async () => {
-    const devices: any[] = await window.ipcRenderer.invoke(
-      'main.DeviceDetector:getEmulators'
-    ) // 等待时间结束后进行一次设备搜索，但不合并结果
+    const devices: any[] = await window.ipcRenderer.invoke('main.DeviceDetector:getEmulators') // 等待时间结束后进行一次设备搜索，但不合并结果
     const device = devices.find(device => device.uuid === uuid.value) // 检查指定uuid的设备是否存在
     if (device) {
       // 设备活了
       logger.debug(device)
-      const status = await window.ipcRenderer.invoke(
-        'main.CoreLoader:initCore',
-        {
-          // 创建连接
-          address: device.address,
-          uuid: device.uuid,
-          adb_path: device.adbPath,
-          config: device.config,
-        } as InitCoreParam
-      ) // ERROR!
+      const status = await window.ipcRenderer.invoke('main.CoreLoader:initCore', {
+        // 创建连接
+        address: device.address,
+        uuid: device.uuid,
+        adb_path: device.adbPath,
+        config: device.config,
+      } as InitCoreParam) // ERROR!
       if (status) {
         taskStore.updateTaskStatus(uuid.value, task.task_id, 'success', 0)
         logger.silly('自动启动模拟器成功')
@@ -235,9 +220,7 @@ const currentTaskGroupIndexValue = computed({
     taskStore.deviceTasks[uuid.value].currentId = value
   },
 })
-const currentTaskGroup = computed(() =>
-  taskStore.getCurrentTaskGroup(uuid.value)
-)
+const currentTaskGroup = computed(() => taskStore.getCurrentTaskGroup(uuid.value))
 </script>
 
 <template>
@@ -254,9 +237,7 @@ const currentTaskGroup = computed(() =>
           @update:value="handleChangeTaskGroupIndex"
         >
           <template #action>
-            <NButton text @click="handleCreateNewTaskGroup">
-              点此新建任务组
-            </NButton>
+            <NButton text @click="handleCreateNewTaskGroup"> 点此新建任务组 </NButton>
           </template>
         </NSelect>
 
@@ -278,12 +259,7 @@ const currentTaskGroup = computed(() =>
           <span>切换到{{ isGrid ? '简单' : '详细' }}信息</span>
         </NTooltip>
 
-        <NButton
-          type="primary"
-          round
-          :loading="actionLoading"
-          @click="handleStart"
-        >
+        <NButton type="primary" round :loading="actionLoading" @click="handleStart">
           <span>{{ deviceStatus === 'tasking' ? '停止' : '开始' }}</span>
         </NButton>
       </NSpace>
@@ -307,11 +283,7 @@ const currentTaskGroup = computed(() =>
           @copy="() => handleTaskCopy(index)"
           @delete="() => handleTaskDelete(index)"
         >
-          <Result
-            v-if="task.showResult"
-            :name="task.name"
-            :results="task.results"
-          />
+          <Result v-if="task.showResult" :name="task.name" :results="task.results" />
           <Configuration
             v-else
             :name="task.name"

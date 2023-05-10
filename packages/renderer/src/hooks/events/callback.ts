@@ -10,13 +10,13 @@ import _ from 'lodash'
 
 import { postDrop, type DropInfo } from '@/api/penguin'
 import { useSeperateTaskStore } from '@/store/seperateTask'
-import type { CoreTaskName, TaskStatus } from '@type/task'
+import type { CoreTaskName, GetTask, TaskStatus } from '@type/task'
 import {
   AsstMsg,
   type Callback,
   type CallbackMapper,
   type SubTaskRelatedMsg,
-} from '@type/coreLoader/callback'
+} from '@type/task/callback'
 
 const messages: Record<string, MessageReactive> = {}
 
@@ -27,9 +27,7 @@ export default function useCallbackEvents(): void {
   const seperateTaskStore = useSeperateTaskStore()
 
   const subTaskFn: {
-    [key in SubTaskRelatedMsg]: Partial<
-      Record<CoreTaskName, (data: CallbackMapper[key]) => void>
-    >
+    [key in SubTaskRelatedMsg]: Partial<Record<CoreTaskName, (data: CallbackMapper[key]) => void>>
   } = {
     [AsstMsg.SubTaskError]: {
       Fight: data => {
@@ -67,19 +65,14 @@ export default function useCallbackEvents(): void {
                 },
               ],
             })
-            const task = taskStore.getTask(
-              uuid.trim(),
-              t => t.task_id === taskid
-            )
+            // TODO: 是否也会在抄作业的时候触发?
+            const task = taskStore.getTask(uuid.trim(), t => t.task_id === taskid) as
+              | GetTask<'Fight'>
+              | undefined
             if (task) {
               const resultIndex = task.results.fightInfo.length - 1
-              const vaildDropType = [
-                'NORMAL_DROP',
-                'SPECIAL_DROP',
-                'EXTRA_DROP',
-                'FURNITURE',
-              ]
-              if (task.configurations.report_to_penguin) {
+              const vaildDropType = ['NORMAL_DROP', 'SPECIAL_DROP', 'EXTRA_DROP', 'FURNITURE']
+              if (settingStore.report_to_penguin) {
                 const drops = _.cloneDeep(details.drops)
                   .filter(drop => vaildDropType.includes(drop.dropType))
                   .filter(drop => !drop.itemId.includes('token'))
@@ -96,8 +89,7 @@ export default function useCallbackEvents(): void {
                   postDrop(report)
                     .then(response => {
                       task.results.fightInfo[resultIndex].reported = true
-                      const reportId =
-                        response.headers['X-Penguin-Set-PenguinID']
+                      const reportId = response.headers['X-Penguin-Set-PenguinID']
                       if (reportId) {
                         settingStore.penguinReportId = reportId
                         if (settingStore.yituliuReportId.trim() === '') {
@@ -136,22 +128,22 @@ export default function useCallbackEvents(): void {
             })
             break
           }
-          case 'RecruitSpecialTag': {
-            const { uuid, taskid, details } = data
-            const task = taskStore.getTask(
-              uuid.trim(),
-              task => task.task_id === taskid
-            )
-            if (task && !task.configurations.skip_robot) {
-              const device = deviceStore.getDevice(uuid)
-              const name = device?.displayName ?? device?.address ?? uuid
-              // eslint-disable-next-line no-new
-              new Notification('Maa Assistant Arknights', {
-                body: `${name}公招获取到高级tag${String(details.tag)}`,
-              })
-            }
-            break
-          }
+          // case 'RecruitRobotTag': {
+          //   const { uuid, taskid, details } = data
+          //   const task = taskStore.getTask(
+          //     uuid.trim(),
+          //     task => task.task_id === taskid
+          //   ) as GetTask<'Recruit'> | undefined
+          //   if (task && !task.configurations.skip_robot) {
+          //     const device = deviceStore.getDevice(uuid)
+          //     const name = device?.displayName ?? device?.address ?? uuid
+          //     // eslint-disable-next-line no-new
+          //     new Notification('Maa Assistant Arknights', {
+          //       body: `${name}公招获取到高级tag${String(details.tag)}`,
+          //     })
+          //   }
+          //   break
+          // }
           case 'RecruitResult': {
             const { uuid, taskid, details } = data
             taskStore.mergeTaskResult(uuid.trim(), taskid, {
@@ -167,10 +159,7 @@ export default function useCallbackEvents(): void {
           }
           case 'RecruitTagsSelected': {
             const { uuid, taskid, details } = data
-            const task = taskStore.getTask(
-              uuid.trim(),
-              task => task.task_id === taskid
-            )
+            const task = taskStore.getTask(uuid.trim(), task => task.task_id === taskid)
             if (task?.results.recruits) {
               _.last<any>(task.results.recruits).selectedTags = details.tags
             }
@@ -178,10 +167,7 @@ export default function useCallbackEvents(): void {
           }
           case 'RecruitTagsRefreshed': {
             const { uuid, taskid } = data
-            const task = taskStore.getTask(
-              uuid.trim(),
-              task => task.task_id === taskid
-            )
+            const task = taskStore.getTask(uuid.trim(), task => task.task_id === taskid)
             if (task?.results.recruits) {
               _.last<any>(task.results.recruits).refreshed = true
             }
@@ -237,6 +223,7 @@ export default function useCallbackEvents(): void {
       Award: data => {},
       // Debug: (data) => {},
     },
+    [AsstMsg.SubTaskStopped]: {},
   }
 
   const callbackFn: {
@@ -275,12 +262,9 @@ export default function useCallbackEvents(): void {
             messages[uuid].destroy()
           }
           const device = deviceStore.getDevice(uuid)
-          messages[uuid] = showMessage(
-            `${device?.displayName ?? ''}尝试重连中...`,
-            {
-              type: 'loading',
-            }
-          )
+          messages[uuid] = showMessage(`${device?.displayName ?? ''}尝试重连中...`, {
+            type: 'loading',
+          })
           deviceStore.updateDeviceStatus(uuid, 'connecting')
           break
         }
@@ -303,11 +287,7 @@ export default function useCallbackEvents(): void {
               type: 'error',
             })
           } else {
-            showMessage(
-              `${device?.displayName ?? ''}已断开连接`,
-              { type: 'info' },
-              true
-            )
+            showMessage(`${device?.displayName ?? ''}已断开连接`, { type: 'info' }, true)
           }
           deviceStore.updateDeviceStatus(uuid, 'disconnected')
           break
@@ -339,10 +319,7 @@ export default function useCallbackEvents(): void {
     },
     [AsstMsg.TaskChainCompleted]: data => {
       const taskStore = useTaskStore()
-      const task = taskStore.getTask(
-        data.uuid.trim(),
-        task => task.task_id === data.taskid
-      )
+      const task = taskStore.getTask(data.uuid.trim(), task => task.task_id === data.taskid)
       if (task) {
         const status: TaskStatus = task.enable ? 'success' : 'skipped'
         taskStore.updateTaskStatus(data.uuid.trim(), data.taskid, status, 0)
@@ -373,27 +350,21 @@ export default function useCallbackEvents(): void {
     },
   }
 
-  window.ipcRenderer.on(
-    'renderer.CoreLoader:callback',
-    (event, callback: Callback) => {
-      const { code } = callback
-      if (callbackFn[code]) {
-        logger.debug(`[callback] handle AsstMsg:${code}:`)
-        logger.debug(callback)
+  window.ipcRenderer.on('renderer.CoreLoader:callback', (event, callback: Callback) => {
+    const { code } = callback
+    if (callbackFn[code]) {
+      logger.debug(`[callback] handle AsstMsg:${code}:`)
+      logger.debug(callback)
 
-        // 使用函数来建立参数约束
-        function dispatch<T extends keyof CallbackMapper>(
-          c: T,
-          d: CallbackMapper[T]
-        ) {
-          callbackFn[c]?.(d)
-        }
-
-        dispatch(code, callback.data)
-      } else {
-        logger.debug(`[callback] unhandle AsstMsg:${code}`)
-        logger.debug(callback)
+      // 使用函数来建立参数约束
+      function dispatch<T extends keyof CallbackMapper>(c: T, d: CallbackMapper[T]) {
+        callbackFn[c]?.(d)
       }
+
+      dispatch(code, callback.data)
+    } else {
+      logger.debug(`[callback] unhandle AsstMsg:${code}`)
+      logger.debug(callback)
     }
-  )
+  })
 }

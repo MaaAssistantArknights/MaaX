@@ -1,67 +1,97 @@
+import fs from 'fs'
+import path from 'path'
 import type { BrowserWindow } from 'electron'
 
-import path from 'path'
-import fs from 'fs'
-
+import { Singleton } from '@main/../common/function/singletonDecorator'
 import WindowManager from '@main/windowManager'
-import ComponentInstaller from '@main/componentManager/componentInstaller'
-import CoreInstaller from '@main/componentManager/installers/core'
-import AdbInstaller from '@main/componentManager/installers/adb'
-import { Singleton } from '@common/function/singletonDecorator'
+import type { DownloadHandle, DownloadTask } from '@type/downloadManager'
+import type { Module } from '@type/misc'
 import { getAppBaseDir } from '@main/utils/path'
-import type { ComponentType } from '@type/componentManager'
-import type { DownloadTask } from '@type/downloadManager'
 
 @Singleton
-class DownloadManager {
-  constructor() {
-    // initialize variables
-    this.window_ = new WindowManager().getWindow()
-    this.tasks_ = {
-      'Maa App': {
-        state: 'interrupted',
-        paused: false,
-        savePath: '',
-        progress: {
-          prevReceivedBytes: 0,
-          receivedBytes: 0,
-        },
-      },
-      'Maa Core': {
-        state: 'interrupted',
-        paused: false,
-        savePath: '',
-        progress: {
-          prevReceivedBytes: 0,
-          receivedBytes: 0,
-        },
-      },
-      'Android Platform Tools': {
-        state: 'interrupted',
-        paused: false,
-        savePath: '',
-        progress: {
-          prevReceivedBytes: 0,
-          receivedBytes: 0,
-        },
-      },
-    }
-    this.installers_ = {
-      'Maa Core': new CoreInstaller(),
-      'Android Platform Tools': new AdbInstaller(),
-    }
+export default class DownloadManager implements Module {
+  private readonly window: BrowserWindow
+  private readonly download_path: string
 
-    for (const installer of Object.values(this.installers_)) {
-      installer.downloader_ = this
-    }
+  private pendingTaskHandler: DownloadHandle | null
+  private pendingTaskResolve: (() => void)[]
+
+  constructor() {
+    this.window = new WindowManager().getWindow()
+    this.download_path = path.join(getAppBaseDir(), 'download')
+    this.pendingTaskHandler = null
+    this.pendingTaskResolve = []
+
     if (!fs.existsSync(this.download_path)) {
       fs.mkdirSync(this.download_path)
     }
-    // register hook
-    this.window_.webContents.session.on(
-      'will-download',
-      this.handleWillDownload
-    )
+
+    this.window.webContents.session.on('will-download', (event, item) => {
+      const handler = this.pendingTaskHandler
+      if (!handler) {
+        event.preventDefault()
+        return
+      }
+
+      item.setSavePath(path.join(this.download_path, item.getFilename()))
+
+      const task: DownloadTask = {
+        state: item.getState(),
+        startTime: item.getStartTime() * 1000,
+        speed: 0,
+        progress: {
+          totalBytes: item.getTotalBytes(),
+          receivedBytes: 0,
+          prevReceivedBytes: 0,
+          precent: 0,
+        },
+        paused: item.isPaused(),
+        savePath: item.getSavePath(),
+        _sourceItem: item,
+      }
+
+      if (fs.existsSync(item.getSavePath())) {
+        // 看起来如果存在对应文件则直接视为下载完成
+        handler.handleDownloadCompleted(task)
+        this.pollNextDownload()
+        event.preventDefault()
+        return
+      }
+
+      item.on('updated', (event, state) => {
+        const receivedBytes = item.getReceivedBytes()
+        const totalBytes = item.getTotalBytes()
+
+        task.state = state
+        task.speed = receivedBytes - task.progress.prevReceivedBytes
+        task.progress.receivedBytes = receivedBytes
+        task.progress.prevReceivedBytes = receivedBytes
+        task.progress.totalBytes = totalBytes
+        task.progress.precent = totalBytes ? receivedBytes / totalBytes : undefined
+        task.paused = item.isPaused()
+
+        handler.handleDownloadUpdate(task)
+      })
+
+      item.on('done', (event, state) => {
+        const receivedBytes = item.getReceivedBytes()
+        task.progress.receivedBytes = receivedBytes
+        task.state = state
+
+        switch (state) {
+          case 'completed':
+            handler.handleDownloadCompleted(task)
+            break
+          case 'cancelled':
+          case 'interrupted':
+            fs.rmSync(path.join(item.getSavePath(), item.getFilename()))
+            handler.handleDownloadInterrupted()
+            break
+        }
+      })
+
+      this.pollNextDownload()
+    })
   }
 
   public get name(): string {
@@ -72,143 +102,24 @@ class DownloadManager {
     return '1.0.0'
   }
 
-  public async downloadComponent(
-    url: string,
-    component: ComponentType
-  ): Promise<void> {
-    this.will_download_ = component
-    this.window_.webContents.downloadURL(url)
-  }
-
-  // 用于应对强制关闭
-  public pauseDownload = (component: ComponentType): void => {
-    this.tasks_[component]._sourceItem?.pause()
-  }
-
-  // 用于应对强制关闭
-  public cancelDownload = (component: ComponentType): void => {
-    this.tasks_[component]._sourceItem?.cancel()
-  }
-
-  private readonly handleWillDownload = (
-    event: Electron.Event,
-    item: Electron.DownloadItem
-  ): void => {
-    const component = this.will_download_
-    if (!component) {
-      event.preventDefault()
-      return
+  async download(url: string, handler: DownloadHandle): Promise<void> {
+    if (this.pendingTaskHandler) {
+      // 仍然有下载任务没有收到will-download
+      await new Promise<void>(resolve => {
+        this.pendingTaskResolve.push(resolve)
+      })
     }
-
-    item.setSavePath(path.join(this.download_path, item.getFilename()))
-
-    this.tasks_[component] = {
-      state: item.getState(),
-      startTime: item.getStartTime() * 1000,
-      speed: 0,
-      progress: {
-        totalBytes: item.getTotalBytes(),
-        receivedBytes: 0,
-        prevReceivedBytes: 0,
-        precent: 0,
-      },
-      paused: item.isPaused(),
-      savePath: item.getSavePath(),
-      _sourceItem: item,
-    }
-
-    // 将文件存储到this.download_path
-    if (fs.existsSync(item.getSavePath())) {
-      this.handleDownloadCompleted(event, item, component)
-      this.will_download_ = undefined
-      event.preventDefault()
-      return
-    }
-
-    item.on('updated', (event, state) => {
-      this.handleDownloadUpdate(event, state, item, component)
-    })
-
-    item.on('done', (event, state) => {
-      const receivedBytes = item.getReceivedBytes()
-      this.tasks_[component].progress.receivedBytes = receivedBytes
-      this.tasks_[component].state = state
-
-      switch (state) {
-        case 'completed':
-          this.handleDownloadCompleted(event, item, component)
-          break
-        case 'cancelled':
-        case 'interrupted':
-          this.handleDownloadInterrupted(event, item, component)
-          break
-      }
-    })
-
-    this.will_download_ = undefined
+    this.pendingTaskHandler = handler
+    this.window.webContents.downloadURL(url)
   }
 
-  private readonly handleDownloadUpdate = (
-    event: Electron.Event,
-    state: 'interrupted' | 'progressing',
-    item: Electron.DownloadItem,
-    component: ComponentType
-  ): void => {
-    const receivedBytes = item.getReceivedBytes()
-    const totalBytes = item.getTotalBytes()
-
-    this.tasks_[component].state = state
-    this.tasks_[component].speed =
-      receivedBytes - this.tasks_[component].progress.prevReceivedBytes
-    this.tasks_[component].progress.receivedBytes = receivedBytes
-    this.tasks_[component].progress.prevReceivedBytes = receivedBytes
-    this.tasks_[component].progress.totalBytes = totalBytes
-    this.tasks_[component].progress.precent = totalBytes
-      ? receivedBytes / totalBytes
-      : undefined
-    this.tasks_[component].paused = item.isPaused()
-
-    const installer = this.installers_[component]
-    if (installer) {
-      installer.downloadHandle.handleDownloadUpdate(this.tasks_[component])
+  private pollNextDownload() {
+    const res = this.pendingTaskResolve.shift()
+    if (res) {
+      res()
+    } else {
+      // 手动置空, 防止下一次download判定为还有下载任务未完成
+      this.pendingTaskHandler = null
     }
   }
-
-  private readonly handleDownloadInterrupted = (
-    event: Electron.Event,
-    item: Electron.DownloadItem,
-    component: ComponentType
-  ): void => {
-    fs.rmSync(path.join(item.getSavePath(), item.getFilename()))
-    const installer = this.installers_[component]
-    if (installer) {
-      installer.downloadHandle.handleDownloadInterrupted()
-    }
-  }
-
-  private readonly handleDownloadCompleted = (
-    event: Electron.Event,
-    item: Electron.DownloadItem,
-    component: ComponentType
-  ): void => {
-    const installer = this.installers_[component]
-    if (installer) {
-      installer.downloadHandle.handleDownloadCompleted(this.tasks_[component])
-    }
-  }
-
-  private tasks_: { [component in ComponentType]: DownloadTask }
-
-  // 这个变量用于存储已经触发window_.webContents.downloadURL但是还未触发'will-download'事件的临时变量
-  // 理论上downloadURL后会立刻触发'will-download'事件
-  // 但是未验证在两句不同的downloadURL后的行为是否能够达到预期
-  private will_download_?: ComponentType
-
-  private readonly window_: BrowserWindow
-  private readonly installers_: {
-    [component in ComponentType]?: ComponentInstaller
-  }
-  private readonly download_path = path.join(getAppBaseDir(), 'download')
 }
-
-export default DownloadManager

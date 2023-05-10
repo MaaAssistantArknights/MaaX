@@ -1,13 +1,5 @@
 <script lang="ts">
-import {
-  computed,
-  defineComponent,
-  getCurrentInstance,
-  h,
-  ref,
-  watch,
-  type PropType,
-} from 'vue'
+import { computed, defineComponent, getCurrentInstance, h, ref, watch, type PropType } from 'vue'
 
 interface Time {
   hours: number
@@ -21,9 +13,7 @@ type Formatter = (time: Time) => string
 const defaultFormatter: Formatter = ({ hours, minutes, seconds }) => {
   const arr = [minutes, seconds]
   if (hours !== 0) arr.unshift(hours)
-  return arr
-    .map((x, index) => (index === 0 ? String(x) : String(x).padStart(2, '0')))
-    .join(':')
+  return arr.map((x, index) => (index === 0 ? String(x) : String(x).padStart(2, '0'))).join(':')
 }
 
 export default defineComponent({

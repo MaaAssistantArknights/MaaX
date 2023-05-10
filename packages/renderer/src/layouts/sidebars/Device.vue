@@ -1,14 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import {
-  NIcon,
-  NSpace,
-  NButton,
-  NTooltip,
-  NText,
-  NTime,
-  useDialog,
-} from 'naive-ui'
+import { NIcon, NSpace, NButton, NTooltip, NText, NTime, useDialog } from 'naive-ui'
 import { useI18n } from 'vue-i18n'
 import IconRefresh from '@/assets/icons/refresh.svg?component'
 import IconSettings from '@/assets/icons/settings.svg?component'
@@ -82,9 +74,7 @@ function deviceInfoParser(devices: Device[]): any[] {
 }
 
 async function handleRefreshDevices() {
-  const is_exist = await window.ipcRenderer.invoke(
-    'main.DeviceDetector:isDefaultAdbExists'
-  )
+  const is_exist = await window.ipcRenderer.invoke('main.DeviceDetector:isDefaultAdbExists')
   if (!is_exist) {
     showMessage(t('device.adbNotAvailable'), {
       type: 'error',
@@ -124,22 +114,14 @@ setInterval(() => {
 
 <template>
   <div>
-    <NButton
-      text
-      style="font-size: 24px"
-      @click="$router.push({ path: '/settings' })"
-    >
+    <NButton text style="font-size: 24px" @click="$router.push({ path: '/settings' })">
       <NIcon>
         <IconSettings />
       </NIcon>
     </NButton>
     <h2>已连接的设备</h2>
     <div class="connected-devices">
-      <DeviceCard
-        v-for="device in connectedDevices"
-        :key="device.uuid"
-        :device="device"
-      />
+      <DeviceCard v-for="device in connectedDevices" :key="device.uuid" :device="device" />
     </div>
     <NSpace :justify="'space-between'" :align="'center'">
       <h2>其他设备</h2>
@@ -160,11 +142,7 @@ setInterval(() => {
       </NTooltip>
     </NSpace>
     <div class="disconnected-devices">
-      <DeviceCard
-        v-for="device in disconnectedDevices"
-        :key="device.uuid"
-        :device="device"
-      />
+      <DeviceCard v-for="device in disconnectedDevices" :key="device.uuid" :device="device" />
     </div>
     <!-- <div class="unknown-devices">
                   <DeviceCard
@@ -177,12 +155,7 @@ setInterval(() => {
       <NText depth="2">
         {{ $t('Common.lastUpdate') }}:&nbsp;
         <span v-if="deviceStore.lastUpdate === null">从不</span>
-        <NTime
-          v-else
-          :time="deviceStore.lastUpdate"
-          :to="now"
-          type="relative"
-        />
+        <NTime v-else :time="deviceStore.lastUpdate" :to="now" type="relative" />
       </NText>
     </div>
   </div>

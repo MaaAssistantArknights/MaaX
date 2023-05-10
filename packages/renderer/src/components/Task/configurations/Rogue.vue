@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import { inject } from 'vue'
 import _ from 'lodash'
-import {
-  RogueTheme,
-  type MizukiSquadType,
-  type PhantomSquadType,
-  type RolesType,
-} from '@type/game'
+import { RogueTheme, type MizukiSquadType, type PhantomSquadType, type RolesType } from '@type/game'
 import {
   NForm,
   NFormItem,
@@ -201,11 +196,7 @@ function handleUpdateRogueTheme(value: string) {
   updateTaskConfigurations('theme', value, props.taskIndex)
   // 切主题, 检查一下分队
   if (value === RogueTheme.Phantom) {
-    if (
-      !phantomSquadOptions.find(
-        item => item.value === props.configurations.squad
-      )
-    ) {
+    if (!phantomSquadOptions.find(item => item.value === props.configurations.squad)) {
       showMessage('当前分队不支持傀影主题, 已自动切换到指挥分队', {
         type: 'info',
         duration: 5000,
@@ -214,11 +205,7 @@ function handleUpdateRogueTheme(value: string) {
       handleUpdateConfiguration('squad', '指挥分队')
     }
   } else {
-    if (
-      !mizukiSquadOptions.find(
-        item => item.value === props.configurations.squad
-      )
-    ) {
+    if (!mizukiSquadOptions.find(item => item.value === props.configurations.squad)) {
       showMessage('当前分队不支持水月主题, 已自动切换到指挥分队', {
         type: 'info',
         duration: 5000,
@@ -286,9 +273,7 @@ function handleUpdateStartsCount(value: number | null) {
             <NInput
               :disabled="configurationDisabled.re"
               :value="props.configurations.core_char"
-              @update:value="
-                value => handleUpdateConfiguration('core_char', value)
-              "
+              @update:value="value => handleUpdateConfiguration('core_char', value)"
             />
           </template>
           仅支持单个干员中！文！名！。默认识别练度自动选择
@@ -308,9 +293,7 @@ function handleUpdateStartsCount(value: number | null) {
         <NCheckbox
           :disabled="configurationDisabled.re"
           :checked="props.configurations.use_support"
-          @update:checked="
-            value => handleUpdateConfiguration('use_support', value)
-          "
+          @update:checked="value => handleUpdateConfiguration('use_support', value)"
         >
           开局干员使用助战
         </NCheckbox>
@@ -321,10 +304,7 @@ function handleUpdateStartsCount(value: number | null) {
             <NCheckbox
               :disabled="configurationDisabled.re"
               :checked="props.configurations.use_nonfriend_support"
-              @update:checked="
-                value =>
-                  handleUpdateConfiguration('use_nonfriend_support', value)
-              "
+              @update:checked="value => handleUpdateConfiguration('use_nonfriend_support', value)"
             >
               允许使用非好友助战
             </NCheckbox>

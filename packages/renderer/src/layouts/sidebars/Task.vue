@@ -11,9 +11,7 @@ import { computed, nextTick, ref } from 'vue'
 import { onBeforeRouteUpdate } from 'vue-router'
 
 const deviceStore = useDeviceStore()
-const currentUuid = computed(
-  () => router.currentRoute.value.params.uuid as string
-)
+const currentUuid = computed(() => router.currentRoute.value.params.uuid as string)
 const currentDevice = computed(() =>
   deviceStore.devices.find(device => device.uuid === currentUuid.value)
 )
@@ -37,11 +35,7 @@ onBeforeRouteUpdate((to, from, next) => {
 
 <template>
   <div>
-    <NButton
-      text
-      style="font-size: 24px"
-      @click="$router.push({ path: '/settings' })"
-    >
+    <NButton text style="font-size: 24px" @click="$router.push({ path: '/settings' })">
       <NIcon>
         <IconSettings />
       </NIcon>
@@ -69,11 +63,7 @@ onBeforeRouteUpdate((to, from, next) => {
         </NTooltip>
         <NTooltip>
           <template #trigger>
-            <NButton
-              text
-              style="font-size: 24px"
-              @click="$router.push({ path: '/device' })"
-            >
+            <NButton text style="font-size: 24px" @click="$router.push({ path: '/device' })">
               <NIcon>
                 <IconDevices />
               </NIcon>

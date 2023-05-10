@@ -21,36 +21,34 @@ export interface ComponentStoreAction {
   ) => void
 }
 
-const useComponentStore = defineStore<
+const useComponentStore = defineStore<'component', ComponentStoreState, {}, ComponentStoreAction>(
   'component',
-  ComponentStoreState,
-  {},
-  ComponentStoreAction
->('component', {
-  state: () => {
-    return {
-      'Maa Core': {
-        componentStatus: 'not-installed',
-        installerStatus: 'pending',
-        installerProgress: 0,
-      },
-      'Android Platform Tools': {
-        componentStatus: 'not-installed',
-        installerStatus: 'pending',
-        installerProgress: 0,
-      },
-      'Maa App': {
-        componentStatus: 'not-installed',
-        installerStatus: 'pending',
-        installerProgress: 0,
-      },
-    }
-  },
-  actions: {
-    updateComponentStatus(component, status) {
-      this[component] = { ...this[component], ...status }
+  {
+    state: () => {
+      return {
+        'Maa Core': {
+          componentStatus: 'not-installed',
+          installerStatus: 'pending',
+          installerProgress: 0,
+        },
+        'Android Platform Tools': {
+          componentStatus: 'not-installed',
+          installerStatus: 'pending',
+          installerProgress: 0,
+        },
+        'Maa App': {
+          componentStatus: 'not-installed',
+          installerStatus: 'pending',
+          installerProgress: 0,
+        },
+      }
     },
-  },
-})
+    actions: {
+      updateComponentStatus(component, status) {
+        this[component] = { ...this[component], ...status }
+      },
+    },
+  }
+)
 
 export default useComponentStore

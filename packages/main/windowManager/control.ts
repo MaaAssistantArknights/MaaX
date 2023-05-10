@@ -36,27 +36,16 @@ export default function useController(window: BrowserWindow): void {
   })
 
   window.on('maximize', () => {
-    window.webContents.send(
-      'renderer.WindowManager:updateMaximized',
-      window.isMaximized()
-    )
+    window.webContents.send('renderer.WindowManager:updateMaximized', window.isMaximized())
   })
 
   window.on('unmaximize', () => {
-    window.webContents.send(
-      'renderer.WindowManager:updateMaximized',
-      window.isMaximized()
-    )
+    window.webContents.send('renderer.WindowManager:updateMaximized', window.isMaximized())
   })
 
   ipcMainHandle(
     'main.WindowManager:openDialog',
-    async (
-      event,
-      title: string,
-      properties: DialogProperty[],
-      filters: Electron.FileFilter[]
-    ) => {
+    async (event, title: string, properties: DialogProperty[], filters: Electron.FileFilter[]) => {
       return await dialog.showOpenDialog(window, {
         title: title,
         properties: properties,

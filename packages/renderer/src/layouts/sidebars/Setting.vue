@@ -11,12 +11,7 @@ import { NButton, NIcon, NAnchor, NAnchorLink } from 'naive-ui'
       </NIcon>
     </NButton>
     <h2>设置</h2>
-    <NAnchor
-      class="setting-anchor"
-      offset-target=".main"
-      type="block"
-      :bound="80"
-    >
+    <NAnchor class="setting-anchor" offset-target=".main" type="block" :bound="80">
       <NAnchorLink title="数据上报" href="#statistics-report" />
       <NAnchorLink title="版本信息" href="#version" />
       <NAnchorLink title="外观" href="#appearance" />

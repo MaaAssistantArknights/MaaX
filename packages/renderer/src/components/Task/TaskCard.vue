@@ -17,7 +17,7 @@ import DropdownMenu from './DropdownMenu.vue'
 import router from '@/router'
 import useThemeStore from '@/store/theme'
 import Timer from './Timer.vue'
-import IconEdit from '@/assets/icons/edit.svg?component'
+import { SettingsOutline as IconSettings } from '@vicons/ionicons5'
 import IconAdd from '@/assets/icons/add.svg?component'
 import IconRemove from '@/assets/icons/remove.svg?component'
 import useDeviceStore from '@/store/devices'
@@ -100,19 +100,12 @@ const resetTaskProgress = (taskInfo: Task) => {
 }
 
 const uuid = router.currentRoute.value.params.uuid as string
-const deviceStatus = computed(
-  () => deviceStore.getDevice(uuid)?.status ?? 'disconnected'
-)
+const deviceStatus = computed(() => deviceStore.getDevice(uuid)?.status ?? 'disconnected')
 
 provide(
   'configurationDisabled',
   computed(() => {
-    const notEditableStatus: TaskStatus[] = [
-      'exception',
-      'skipped',
-      'success',
-      'warning',
-    ]
+    const notEditableStatus: TaskStatus[] = ['exception', 'skipped', 'success', 'warning']
     return {
       // 运行时可编辑任务用
       re: notEditableStatus.includes(props.taskInfo.status),
@@ -138,15 +131,13 @@ provide(
         [
           _isCollapsed ? 'collapsed' : '',
           `task-card__status-${props.taskInfo.status}`,
+          !innerCollapse && props.isCollapsed ? 'inner-expanded' : '',
         ].join(' ')
       "
       name="1"
       display-directive="show"
       :style="{
-        border:
-          themeStore.currentTheme === 'maa-dark'
-            ? `1px solid ${themeVars.primaryColor}`
-            : '',
+        border: themeStore.currentTheme === 'maa-dark' ? `1px solid ${themeVars.primaryColor}` : '',
         '--breathe-color': themeVars.primaryColor,
       }"
     >
@@ -157,8 +148,7 @@ provide(
               <span class="card-title">{{ props.taskInfo.title || '' }}</span>
               <div
                 v-if="
-                  deviceStatus === 'tasking' &&
-                  !['idle', 'waiting'].includes(props.taskInfo.status)
+                  deviceStatus === 'tasking' && !['idle', 'waiting'].includes(props.taskInfo.status)
                 "
                 justify="end"
               >
@@ -176,7 +166,6 @@ provide(
                   <NButton
                     text
                     style="font-size: 25px"
-                    :disabled="!['idle'].includes(props.taskInfo.status)"
                     @click="
                       () => {
                         innerCollapse = !innerCollapse
@@ -184,11 +173,11 @@ provide(
                     "
                   >
                     <NIcon>
-                      <IconEdit />
+                      <IconSettings />
                     </NIcon>
                   </NButton>
                 </template>
-                {{ _isCollapsed ? '展开' : '折叠' }}当前任务
+                {{ _isCollapsed ? '展开' : '折叠' }}设置
               </NTooltip>
               <NTooltip>
                 <template #trigger>
@@ -196,8 +185,7 @@ provide(
                     text
                     style="font-size: 25px"
                     :disabled="
-                      deviceStatus === 'tasking' &&
-                      !['idle'].includes(props.taskInfo.status)
+                      deviceStatus === 'tasking' && !['idle'].includes(props.taskInfo.status)
                     "
                     @click="() => $emit('copy')"
                   >
@@ -214,8 +202,7 @@ provide(
                     text
                     style="font-size: 25px"
                     :disabled="
-                      deviceStatus === 'tasking' &&
-                      !['idle'].includes(props.taskInfo.status)
+                      deviceStatus === 'tasking' && !['idle'].includes(props.taskInfo.status)
                     "
                     @click="() => $emit('delete')"
                   >
@@ -226,47 +213,49 @@ provide(
                 </template>
                 删除当前任务
               </NTooltip>
-              <span
-                v-if="
-                  deviceStatus === 'tasking' &&
-                  !['idle', 'waiting'].includes(props.taskInfo.status)
-                "
-                class="card-progress-hint"
-                :style="{ color: themeVars.primaryColor }"
-              >
-                {{
-                  (() => {
-                    switch (props.taskInfo.status) {
-                      case 'idle':
-                        return ''
-                      case 'waiting':
-                        return '等待中'
-                      case 'processing':
-                        return '进行中'
-                      case 'success':
-                        return '已完成'
-                      case 'warning':
-                        return '警告'
-                      case 'exception':
-                        return '任务出错'
-                      case 'stopped':
-                        return '手动取消'
-                      case 'skipped':
-                        return '已跳过'
+              <div class="card-progress-wrapper">
+                <span
+                  v-if="
+                    deviceStatus === 'tasking' &&
+                    !['idle', 'waiting'].includes(props.taskInfo.status)
+                  "
+                  class="card-progress-hint"
+                  :style="{ color: themeVars.primaryColor }"
+                >
+                  {{
+                    (() => {
+                      switch (props.taskInfo.status) {
+                        case 'idle':
+                          return ''
+                        case 'waiting':
+                          return '等待中'
+                        case 'processing':
+                          return '进行中'
+                        case 'success':
+                          return '已完成'
+                        case 'warning':
+                          return '警告'
+                        case 'exception':
+                          return '任务出错'
+                        case 'stopped':
+                          return '手动取消'
+                        case 'skipped':
+                          return '已跳过'
+                      }
+                    })()
+                  }}
+                </span>
+                <NSwitch
+                  v-else
+                  :value="props.taskInfo.enable"
+                  @update:value="
+                    enabled => {
+                      $emit('update:enable', enabled)
+                      resetTaskProgress(props.taskInfo)
                     }
-                  })()
-                }}
-              </span>
-              <NSwitch
-                v-else
-                :value="props.taskInfo.enable"
-                @update:value="
-                  enabled => {
-                    $emit('update:enable', enabled)
-                    resetTaskProgress(props.taskInfo)
-                  }
-                "
-              />
+                  "
+                />
+              </div>
             </NSpace>
           </div>
           <NProgress
@@ -296,8 +285,7 @@ provide(
 <style lang="less" scoped>
 @keyframes breathe {
   from {
-    box-shadow: 0 2px 6px 0 rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.1),
-      0 0 5px 0 transparent;
+    box-shadow: 0 2px 6px 0 rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.1), 0 0 5px 0 transparent;
   }
   to {
     box-shadow: 0 2px 6px 0 rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.1),
@@ -324,6 +312,12 @@ provide(
     border-radius: 12px 12px 0 0;
   }
 
+  &.inner-expanded .card-content {
+    height: auto;
+    min-height: auto;
+    aspect-ratio: auto;
+  }
+
   &.task-card__status-processing {
     animation: breathe 3s ease-in-out alternate infinite;
   }
@@ -341,8 +335,16 @@ provide(
   height: 22px;
 }
 
+.card-progress-wrapper {
+  width: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .card-progress-hint {
   font-size: smaller;
+  min-width: 40px;
 }
 
 .card-content {

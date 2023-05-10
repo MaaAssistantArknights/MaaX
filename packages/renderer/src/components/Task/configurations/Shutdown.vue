@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import { NFormItem, NSelect, NTimePicker, NSpace, NButton } from 'naive-ui'
 import _ from 'lodash'
-import {
-  secondsToFormattedDuration,
-  formattedDurationToSeconds,
-} from '@/utils/time_picker'
+import { secondsToFormattedDuration, formattedDurationToSeconds } from '@/utils/time_picker'
 // import useTaskIdStore from '@/store/taskId'
 import router from '@/router'
 import { showMessage } from '@/utils/message'
@@ -98,17 +95,10 @@ function handleUpdateConfiguration(key: string, value: any) {
         <NTimePicker
           :disabled="configurationDisabled.nre"
           :style="{ width: '100%' }"
-          :default-formatted-value="
-            secondsToFormattedDuration(props.configurations.delay)
-          "
+          :default-formatted-value="secondsToFormattedDuration(props.configurations.delay)"
           :actions="['confirm']"
           @update:formatted-value="
-            value =>
-              _.set(
-                props.configurations,
-                'delay',
-                formattedDurationToSeconds(value)
-              )
+            value => _.set(props.configurations, 'delay', formattedDurationToSeconds(value))
           "
         />
       </NFormItem>
@@ -119,12 +109,7 @@ function handleUpdateConfiguration(key: string, value: any) {
         label-placement="left"
         :show-feedback="false"
       >
-        <NButton
-          quaternary
-          type="primary"
-          :focusable="false"
-          @click="handleCancelShutdown"
-        >
+        <NButton quaternary type="primary" :focusable="false" @click="handleCancelShutdown">
           取消定时
         </NButton>
       </NFormItem>

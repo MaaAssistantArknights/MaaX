@@ -32,15 +32,9 @@ export function ipcMainHandle<Key extends IpcMainHandleEvent>(
  */
 export function ipcMainOn<Key extends IpcMainOnEvent>(
   eventName: Key,
-  listener: (
-    event: IpcMainInvokeEvent,
-    ...args: Parameters<IpcMainOnEventType[Key]>
-  ) => void
+  listener: (event: IpcMainInvokeEvent, ...args: Parameters<IpcMainOnEventType[Key]>) => void
 ): void {
-  ipcMain.on(
-    eventName,
-    listener as (e: IpcMainInvokeEvent, ...as: any[]) => void
-  )
+  ipcMain.on(eventName, listener as (e: IpcMainInvokeEvent, ...as: any[]) => void)
 }
 
 export const ipcMainRemove = (eventName: IpcMainHandleEvent): void => {

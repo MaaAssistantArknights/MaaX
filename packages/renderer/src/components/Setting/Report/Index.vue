@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import useSettingStore from '@/store/settings'
-import { NSpace, NTooltip, NInput, NFormItem } from 'naive-ui'
+import { NSpace, NTooltip, NInput, NFormItem, NSwitch } from 'naive-ui'
 
 const settingStore = useSettingStore()
 
@@ -13,6 +13,12 @@ function onlyAllowNumber(value: string) {
   <div id="statistics-report">
     <h2 class="title">数据上报</h2>
     <NSpace vertical justify="center">
+      <NFormItem label="启用掉落数据上报">
+        <NSwitch
+          :value="settingStore.report_to_penguin"
+          @update:value="value => settingStore.changeReportToPenguin(value)"
+        />
+      </NFormItem>
       <NFormItem label="企鹅物流汇报ID">
         <NTooltip trigger="hover">
           <template #trigger>
@@ -36,8 +42,7 @@ function onlyAllowNumber(value: string) {
               :style="{ width: '200px' }"
             />
           </template>
-          如不填将默认使用企鹅物流汇报ID, 汇报ID仅包含数字,
-          不正确的ID会在首次汇报结果时候自动替换
+          如不填将默认使用企鹅物流汇报ID, 汇报ID仅包含数字, 不正确的ID会在首次汇报结果时候自动替换
         </NTooltip>
       </NFormItem>
     </NSpace>

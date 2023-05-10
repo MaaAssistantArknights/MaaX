@@ -69,16 +69,10 @@ const coreSettingsDisabled = inject('coreSettingsDisabled') as { nre: boolean }
           />
         </NFormItem>
         <NFormItem label="强制替换ADB">
-          <NButton type="error" :disabled="coreSettingsDisabled.nre">
-            强制替换ADB
-          </NButton>
+          <NButton type="error" :disabled="coreSettingsDisabled.nre"> 强制替换ADB </NButton>
         </NFormItem>
         <NFormItem label="重置所有配置">
-          <NButton
-            type="error"
-            :disabled="coreSettingsDisabled.nre"
-            @click="removeAllConfigDialog"
-          >
+          <NButton type="error" :disabled="coreSettingsDisabled.nre" @click="removeAllConfigDialog">
             重置所有配置
           </NButton>
         </NFormItem>

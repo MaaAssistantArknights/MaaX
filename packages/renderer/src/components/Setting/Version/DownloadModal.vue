@@ -1,15 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-import {
-  NButton,
-  NModal,
-  NCard,
-  NSpace,
-  NProgress,
-  NAlert,
-  NTooltip,
-  NPopconfirm,
-} from 'naive-ui'
+import { NButton, NModal, NCard, NSpace, NProgress, NAlert, NTooltip, NPopconfirm } from 'naive-ui'
 import useComponentStore from '@/store/components'
 import useDeviceStore from '@/store/devices'
 import type { ComponentType, ComponentStatus } from '@type/componentManager'
@@ -18,9 +9,7 @@ import type { InstallerStatus } from '@type/misc'
 const componentStore = useComponentStore()
 const deviceStore = useDeviceStore()
 
-const isTasking = computed(() =>
-  deviceStore.devices.some(device => device.status === 'tasking')
-)
+const isTasking = computed(() => deviceStore.devices.some(device => device.status === 'tasking'))
 
 const props = defineProps<{
   show: boolean
@@ -128,11 +117,7 @@ const handleMouseLeave = () => {
   showTooltip.value = undefined
 }
 
-const components: ComponentType[] = [
-  'Maa App',
-  'Maa Core',
-  'Android Platform Tools',
-]
+const components: ComponentType[] = ['Maa App', 'Maa Core', 'Android Platform Tools']
 
 onMounted(() => {
   Promise.all(
@@ -196,9 +181,7 @@ onMounted(() => {
               {{
                 [
                   installButtonText(componentStore[component].componentStatus),
-                  installerStatusText(
-                    componentStore[component].installerStatus
-                  ),
+                  installerStatusText(componentStore[component].installerStatus),
                 ]
                   .filter(text => !!text)
                   .join(' - ')
@@ -212,15 +195,11 @@ onMounted(() => {
               <template #trigger>
                 <NButton
                   type="primary"
-                  :secondary="
-                    componentStore[component].componentStatus === 'installed'
-                  "
+                  :secondary="componentStore[component].componentStatus === 'installed'"
                   size="small"
                   @click="() => handleInstallButtonClick(component)"
                 >
-                  {{
-                    installButtonText(componentStore[component].componentStatus)
-                  }}
+                  {{ installButtonText(componentStore[component].componentStatus) }}
                 </NButton>
               </template>
             </NPopconfirm>
@@ -229,16 +208,11 @@ onMounted(() => {
       </NSpace>
       <NTooltip
         trigger="manual"
-        :x="
-          tooltipPosition.x +
-          getInstallProgress(showTooltip) * tooltipPosition.width
-        "
+        :x="tooltipPosition.x + getInstallProgress(showTooltip) * tooltipPosition.width"
         :y="tooltipPosition.y"
         :show="
           !!showTooltip &&
-          ['installing', 'upgrading'].includes(
-            componentStore[showTooltip].componentStatus
-          )
+          ['installing', 'upgrading'].includes(componentStore[showTooltip].componentStatus)
         "
       >
         {{ Math.ceil(getInstallProgress(showTooltip) * 100) }}%

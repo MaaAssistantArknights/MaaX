@@ -52,18 +52,11 @@ function handleUpdateConfiguration(key: string, value: any) {
         @update:value="value => handleUpdateConfiguration('client_type', value)"
       />
     </NFormItem>
-    <NFormItem
-      size="small"
-      label-align="left"
-      label-placement="left"
-      :show-feedback="false"
-    >
+    <NFormItem size="small" label-align="left" label-placement="left" :show-feedback="false">
       <NCheckbox
         :disabled="configurationDisabled.nre"
         :checked="props.configurations.start_game_enabled"
-        @update:checked="
-          checked => handleUpdateConfiguration('start_game_enabled', checked)
-        "
+        @update:checked="checked => handleUpdateConfiguration('start_game_enabled', checked)"
       >
         自动启动客户端
       </NCheckbox>

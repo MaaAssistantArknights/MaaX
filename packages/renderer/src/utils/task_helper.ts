@@ -17,10 +17,10 @@ export function compareObjKey(oldTask: object, newTask: object): boolean {
   return true
 }
 
-export function convertToCoreTaskConfiguration<
-  K extends CoreTaskName,
-  T extends GetTask<K>
->(_name: K, task: T) {
+export function convertToCoreTaskConfiguration<K extends CoreTaskName, T extends GetTask<K>>(
+  _name: K,
+  task: T
+) {
   switch (task.name) {
     case 'Fight': {
       const settingStore = useSettingStore()

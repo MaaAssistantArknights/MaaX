@@ -15,8 +15,7 @@ type StorageOption<T> = Partial<{
   deserialize: (raw: string) => T
 }>
 
-const convertExt = (str?: string): string | undefined =>
-  /\.\w+/.test(str ?? '') ? str : undefined
+const convertExt = (str?: string): string | undefined => (/\.\w+/.test(str ?? '') ? str : undefined)
 
 @Singleton
 class Storage<T extends Object> implements Module {
@@ -25,8 +24,7 @@ class Storage<T extends Object> implements Module {
     this.m_cwd = option?.cwd ?? app.getPath('userData')
     this.m_ext = convertExt(option?.ext) ?? '.json'
     this.m_name = option?.name ?? 'config'
-    this.m_serialize =
-      option?.serialize ?? ((value: T) => JSON.stringify(value, null, '  '))
+    this.m_serialize = option?.serialize ?? ((value: T) => JSON.stringify(value, null, '  '))
     this.m_deserialize = option?.deserialize ?? JSON.parse
 
     if (!fs.existsSync(this.m_cwd)) {

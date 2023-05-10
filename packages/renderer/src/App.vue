@@ -75,8 +75,7 @@ const style = computed(() => {
     themeStore.bgFollowTheme && themeStore.currentTheme === 'maa-dark'
       ? themeStore.bgDark
       : themeStore.bgLight
-  const bodyColor =
-    themeStore.currentTheme === 'maa-dark' ? '#0f0f0f' : '#f0f0f0'
+  const bodyColor = themeStore.currentTheme === 'maa-dark' ? '#0f0f0f' : '#f0f0f0'
   return {
     '--inner-bg': `url(${bg.url})`,
     '--inner-opacity': bg.opacity,
@@ -97,9 +96,7 @@ onMounted(() => {
     :date-locale="naiveUiLocale[`NDate${settingStore.locale}`]"
     :theme="themeStore.currentTheme === 'maa-light' ? null : darkTheme"
     :theme-overrides="
-      themeStore.currentTheme === 'maa-light'
-        ? lightThemeOverrides
-        : darkThemeOverrides
+      themeStore.currentTheme === 'maa-light' ? lightThemeOverrides : darkThemeOverrides
     "
     :style="style"
   >

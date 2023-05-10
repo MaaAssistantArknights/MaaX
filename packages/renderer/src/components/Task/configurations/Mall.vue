@@ -48,9 +48,7 @@ function handleItemUpdate(items: { buy_first: string[]; blacklist: string[] }) {
       <NCheckbox
         :disabled="configurationDisabled.nre"
         :checked="props.configurations.shopping"
-        @update:checked="
-          checked => handleUpdateConfiguration('shopping', checked)
-        "
+        @update:checked="checked => handleUpdateConfiguration('shopping', checked)"
       />
     </NFormItem>
 

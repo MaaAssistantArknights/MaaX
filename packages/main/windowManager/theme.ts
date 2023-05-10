@@ -6,10 +6,7 @@ import Storage from '@main/storageManager'
 export default function useTheme(window: BrowserWindow): void {
   const themeEvent = (): void => {
     const isDark = nativeTheme.shouldUseDarkColors
-    ipcMainSend(
-      'renderer.AppearanceManager:systemThemeUpdated',
-      isDark ? 'maa-dark' : 'maa-light'
-    )
+    ipcMainSend('renderer.AppearanceManager:systemThemeUpdated', isDark ? 'maa-dark' : 'maa-light')
   }
 
   ipcMainHandle('main.AppearanceManager:themeUpdated', (event, isDark) => {

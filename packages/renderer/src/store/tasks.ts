@@ -2,25 +2,14 @@ import { defineStore } from 'pinia'
 import _ from 'lodash'
 import { compareObjKey } from '@/utils/task_helper'
 import logger from '@/hooks/caller/logger'
-import type {
-  GetTask,
-  Task,
-  TaskGroup,
-  TaskGroups,
-  TaskStatus,
-} from '@type/task'
+import type { GetTask, Task, TaskGroup, TaskGroups, TaskStatus } from '@type/task'
 
 export interface TaskState {
   deviceTasks: Record<string, TaskGroups>
 }
 
 export interface TaskAction {
-  updateTaskStatus: (
-    uuid: string,
-    taskId: number,
-    status: TaskStatus,
-    progress: number
-  ) => void
+  updateTaskStatus: (uuid: string, taskId: number, status: TaskStatus, progress: number) => void
   mergeTaskResult: (uuid: string, taskId: number, patch: any) => void
   updateTaskConfigurations: (
     uuid: string,
@@ -34,16 +23,9 @@ export interface TaskAction {
   initDeviceTask: (uuid: string) => void
   newTaskGroup: (uuid: string) => TaskGroup
   getCurrentTaskGroup: (uuid: string) => TaskGroup | undefined
-  changeTaskGroupName: (
-    uuid: string,
-    task_group_id: number,
-    name: string
-  ) => void
+  changeTaskGroupName: (uuid: string, task_group_id: number, name: string) => void
   deleteTaskGroup: (uuid: string, task_group_id: number) => void
-  getTask: (
-    uuid: string,
-    predicate: (task: Task) => boolean
-  ) => Task | undefined
+  getTask: (uuid: string, predicate: (task: Task) => boolean) => Task | undefined
   getTaskProcess: (uuid: string, taskId: string) => number | undefined
   stopAllTasks: (uuid: string) => void
   copyTask: (uuid: string, index: number) => boolean
@@ -145,15 +127,7 @@ export const taskTemplate: {
       mode: 0, // 0: 单设置最优  10000: 自定义换班, 读配置
       filename: '', // 自定义换班文件名
       plan_index: 0, // 使用配置中的方案序号，
-      facility: [
-        'Mfg',
-        'Trade',
-        'Power',
-        'Control',
-        'Reception',
-        'Office',
-        'Dorm',
-      ],
+      facility: ['Mfg', 'Trade', 'Power', 'Control', 'Reception', 'Office', 'Dorm'],
       drones: '_NotUse', // 无人机用途
       threshold: 0.3,
       replenish: false, // 自动源石补货
@@ -239,9 +213,7 @@ export const taskTemplate: {
   // }
 }
 
-function hasTemplate(
-  task_name: Task['name']
-): task_name is Exclude<Task['name'], NoTemplateTask> {
+function hasTemplate(task_name: Task['name']): task_name is Exclude<Task['name'], NoTemplateTask> {
   return task_name in taskTemplate
 }
 
@@ -274,10 +246,7 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
       const task = tasks?.find(predicate)
       if (task) {
         const configurations = _.set(task.configurations, key, value)
-        if (
-          task.task_id > 0 &&
-          ['processing', 'waiting'].includes(task.status)
-        ) {
+        if (task.task_id > 0 && ['processing', 'waiting'].includes(task.status)) {
           window.ipcRenderer.invoke('main.CoreLoader:setTaskParams', {
             uuid,
             task_id: task.task_id,
@@ -413,12 +382,7 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
           return
         }
         task.title = defaultTaskConf[task.name].title
-        if (
-          !compareObjKey(
-            task.configurations,
-            defaultTaskConf[task.name].configurations
-          )
-        ) {
+        if (!compareObjKey(task.configurations, defaultTaskConf[task.name].configurations)) {
           // show(
           //   t('task.common.fixTask', [task.title]),
           //   { type: 'warning', duration: 0, closable: true },

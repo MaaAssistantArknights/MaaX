@@ -144,20 +144,21 @@ interface FrontTaskTemplate<Name extends FrontTaskName> {
   results: Record<string, any>
 }
 
-type CoreTaskGenerator<Names extends CoreTaskName = CoreTaskName> =
-  Names extends unknown ? CoreTaskTemplate<Names> : never
-type FrontTaskGenerator<Names extends FrontTaskName = FrontTaskName> =
-  Names extends unknown ? FrontTaskTemplate<Names> : never
+type CoreTaskGenerator<Names extends CoreTaskName = CoreTaskName> = Names extends unknown
+  ? CoreTaskTemplate<Names>
+  : never
+type FrontTaskGenerator<Names extends FrontTaskName = FrontTaskName> = Names extends unknown
+  ? FrontTaskTemplate<Names>
+  : never
 
 export type CoreTask = CoreTaskGenerator
 export type FrontTask = FrontTaskGenerator
 
-export type GetTask<Name extends CoreTaskName | FrontTaskName> =
-  Name extends CoreTaskName
-    ? CoreTaskTemplate<Name>
-    : Name extends FrontTaskName
-    ? FrontTaskTemplate<Name>
-    : never
+export type GetTask<Name extends CoreTaskName | FrontTaskName> = Name extends CoreTaskName
+  ? CoreTaskTemplate<Name>
+  : Name extends FrontTaskName
+  ? FrontTaskTemplate<Name>
+  : never
 
 export type Task = CoreTask | FrontTask
 

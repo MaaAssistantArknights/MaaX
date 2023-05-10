@@ -67,11 +67,7 @@ const credits = [
             <NSpace size="large" align="center">
               <NText> {{ index + 1 }}) </NText>
               <NButton text tag="a" :href="credit.url" target="_blank">
-                <NText
-                  :style="{ fontSize: '1.25rem' }"
-                  underline
-                  type="primary"
-                >
+                <NText :style="{ fontSize: '1.25rem' }" underline type="primary">
                   {{ credit.name }}
                 </NText>
               </NButton>

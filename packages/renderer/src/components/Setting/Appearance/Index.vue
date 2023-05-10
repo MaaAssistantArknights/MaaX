@@ -44,9 +44,7 @@ async function openBgFileSelector(): Promise<URL | undefined> {
     return undefined
   }
   const filepath: string = filePaths[0]
-  return new URL(
-    filepath.startsWith('file://') ? filepath : `file://${filepath}`
-  )
+  return new URL(filepath.startsWith('file://') ? filepath : `file://${filepath}`)
 }
 
 async function handleLightBgSelect() {

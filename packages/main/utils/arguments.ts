@@ -53,9 +53,7 @@ export function parseArguments(command: string): string[] {
     args.push(tempString.trim())
   }
   if (state === 'string') {
-    throw Error(
-      `${singleQuote ? 'Single quote' : 'Double quote'} is not closed`
-    )
+    throw Error(`${singleQuote ? 'Single quote' : 'Double quote'} is not closed`)
   }
   return args
 }

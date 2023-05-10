@@ -12,11 +12,7 @@ function useDebug(window: BrowserWindow): void {
   // Bypass CORS
   window.webContents.session.webRequest.onBeforeSendHeaders(
     {
-      urls: [
-        'https://prts.wiki/*',
-        'https://maa.alisaqaq.moe/*',
-        'https://penguin-stats.io/*',
-      ],
+      urls: ['https://prts.wiki/*', 'https://maa.alisaqaq.moe/*', 'https://penguin-stats.io/*'],
     },
     (details, callback) => {
       details.requestHeaders.Origin = new URL(details.url).origin
@@ -25,18 +21,11 @@ function useDebug(window: BrowserWindow): void {
   )
   window.webContents.session.webRequest.onHeadersReceived(
     {
-      urls: [
-        'https://prts.wiki/*',
-        'https://maa.alisaqaq.moe/*',
-        'https://penguin-stats.io/*',
-      ],
+      urls: ['https://prts.wiki/*', 'https://maa.alisaqaq.moe/*', 'https://penguin-stats.io/*'],
     },
     (details, callback) => {
       const corsHeader = { 'access-control-allow-origin': '*' }
-      details.responseHeaders = Object.assign(
-        details.responseHeaders ?? {},
-        corsHeader
-      )
+      details.responseHeaders = Object.assign(details.responseHeaders ?? {}, corsHeader)
       callback(details)
     }
   )

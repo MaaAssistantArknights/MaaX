@@ -47,9 +47,7 @@ export default defineConfig({
  * For usage of Electron and NodeJS APIs in the Renderer process
  * @see https://github.com/caoxiemeihao/electron-vue-vite/issues/52
  */
-export function resolveElectron(
-  resolves: Parameters<typeof resolve>[0] = {}
-): Plugin {
+export function resolveElectron(resolves: Parameters<typeof resolve>[0] = {}): Plugin {
   const builtins = builtinModules.filter(t => !t.startsWith('_'))
 
   /**

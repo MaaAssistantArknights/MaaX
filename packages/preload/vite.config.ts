@@ -16,11 +16,7 @@ export default defineConfig({
     minify: process.env.NODE_ENV === 'production',
     emptyOutDir: true,
     rollupOptions: {
-      external: [
-        'electron',
-        ...builtinModules,
-        ...Object.keys(pkg.dependencies || {}),
-      ],
+      external: ['electron', ...builtinModules, ...Object.keys(pkg.dependencies || {})],
     },
   },
   plugins: [vue()],

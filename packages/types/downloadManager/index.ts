@@ -1,10 +1,6 @@
 import type { DownloadItem } from 'electron'
 
-export type DownloadTaskState =
-  | 'progressing'
-  | 'completed'
-  | 'cancelled'
-  | 'interrupted'
+export type DownloadTaskState = 'progressing' | 'completed' | 'cancelled' | 'interrupted'
 
 export interface DownloadProgressInfo {
   precent?: number
@@ -21,4 +17,10 @@ export interface DownloadTask {
   paused: boolean
   savePath: string
   _sourceItem?: DownloadItem
+}
+
+export interface DownloadHandle {
+  handleDownloadUpdate: (task: DownloadTask) => void
+  handleDownloadCompleted: (task: DownloadTask) => void
+  handleDownloadInterrupted: () => void
 }

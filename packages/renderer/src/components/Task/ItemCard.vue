@@ -19,9 +19,7 @@ onMounted(async () => {
   const stageApi = await gamedata.getAllStages()
   stages.value = Object.values(stageApi.stages) as unknown as Stage[]
   items.value = Object.values(itemApi.items) as unknown as Item[]
-  const itemid = Object.values(itemApi.items).find(
-    item => item.name === props.name
-  )?.itemId
+  const itemid = Object.values(itemApi.items).find(item => item.name === props.name)?.itemId
   info.value = items.value.find(x => x.itemId === itemid)
   loading.value = false
 })
@@ -57,8 +55,7 @@ onMounted(async () => {
       <NText depth="3" tag="div"> 获取方式 </NText>
       <NText tag="div">
         {{
-          info?.obtainApproach ||
-          ((info?.stageDropList ?? []).length !== 0 ? '关卡掉落' : '未知')
+          info?.obtainApproach || ((info?.stageDropList ?? []).length !== 0 ? '关卡掉落' : '未知')
         }}
       </NText>
       <!-- <NSpace
