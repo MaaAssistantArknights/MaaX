@@ -525,16 +525,16 @@ class CoreLoader {
 
   public async Upgrade(): Promise<void> {
     logger.info('Start upgrade core')
-    const currentVersionFile = path.join(getAppBaseDir(), 'core', 'core_version')
+    const currentVersionFile = path.join(getAppBaseDir(), 'core', 'version')
     const currentVersion = existsSync(currentVersionFile)
       ? readFileSync(currentVersionFile, 'utf-8')
       : 'CUR_NOT_FOUND'
-    const upgradeVersionFile = path.join(getAppBaseDir(), 'core', 'core_upgradable')
+    const upgradeVersionFile = path.join(getAppBaseDir(), 'core', 'upgradable')
     const upgradeVersion = existsSync(upgradeVersionFile)
       ? readFileSync(upgradeVersionFile, 'utf-8')
       : 'UPG_NOT_FOUND'
     if (currentVersion !== upgradeVersion) {
-      const upgradeFilePath = path.join(getAppBaseDir(), 'core', 'core_upgrade')
+      const upgradeFilePath = path.join(getAppBaseDir(), 'core', 'upgrade')
       const upgradeFileName = existsSync(upgradeFilePath)
         ? readFileSync(upgradeFilePath, 'utf-8')
         : null
@@ -553,7 +553,5 @@ class CoreLoader {
     }
   }
 }
-
-// (new CoreLoader()).load()
 
 export default CoreLoader

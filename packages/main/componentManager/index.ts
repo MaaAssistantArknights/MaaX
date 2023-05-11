@@ -47,10 +47,10 @@ class ComponentManager implements Module {
       // 安装文件时，需要dispose core，否则无法写入
       // TODO core 卸载炸了
       if (componentName === 'Maa Core') {
-        const coreLoader = new CoreLoader()
+        // const coreLoader = new CoreLoader()
         // MAA 4.13后无法正常卸载
         // coreLoader.dispose()
-        return
+        // return
       }
       this.components[componentName]?.installer?.install()
     })
