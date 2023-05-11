@@ -1,36 +1,15 @@
 <script setup lang="ts">
 import { inject } from 'vue'
-import { NFormItem, NInput, NSelect, NSpace } from 'naive-ui'
+import { NFormItem, NInput, NSelect, NSpace, NTimePicker } from 'naive-ui'
 import router from '@/router'
 import useDeviceStore from '@/store/devices'
 import type { GetConfig } from './types'
+import { secondsToFormattedDuration, formattedDurationToSeconds } from '@/utils/time_picker'
+import _ from 'lodash'
 
 const deviceStore = useDeviceStore()
 
 type EmulatorConfig = GetConfig<'Emulator'>
-
-const delayOptions = [
-  {
-    value: 30,
-    label: '30秒 - 不建议',
-  },
-  {
-    value: 60,
-    label: '一分钟',
-  },
-  {
-    value: 120,
-    label: '两分钟',
-  },
-  {
-    value: 300,
-    label: '五分钟',
-  },
-  {
-    value: 600,
-    label: '十分钟',
-  },
-]
 
 const props = defineProps<{
   configurations: EmulatorConfig
@@ -48,48 +27,32 @@ const configurationDisabled = inject('configurationDisabled') as {
   nre: boolean
 }
 
-function handleUpdateConfiguration(key: string, value: any) {
-  updateTaskConfigurations(key, value, props.taskIndex)
-}
-
 const routeUuid = router.currentRoute.value.params.uuid as string
-
-const commandLine = deviceStore.getDevice(routeUuid)?.commandLine
-if (commandLine) {
-  handleUpdateConfiguration('commandLine', commandLine)
-}
 </script>
 <template>
   <div class="configuration-form">
     <NSpace vertical>
       <NFormItem
-        label="启动后延迟"
+        label="等待模拟器启动"
         :show-label="true"
         size="small"
         label-align="left"
         label-placement="left"
         :show-feedback="false"
       >
-        <NSelect
+        <NTimePicker
           :disabled="configurationDisabled.nre"
-          :value="props.configurations.delay"
-          :options="delayOptions"
-          @update:value="value => handleUpdateConfiguration('delay', value)"
-        />
-      </NFormItem>
-      <NFormItem
-        label="当前参数"
-        :show-label="true"
-        size="small"
-        label-align="left"
-        label-placement="left"
-        :show-feedback="false"
-      >
-        <NInput
-          :style="{ textAlign: 'left' }"
-          spellcheck="false"
-          type="textarea"
-          :value="configurations.commandLine"
+          :style="{ width: '100%' }"
+          :default-formatted-value="secondsToFormattedDuration(props.configurations.delay)"
+          :actions="['confirm']"
+          @update:formatted-value="
+            (value: string | null) =>
+              _.set(
+                props.configurations,
+                'delay',
+                formattedDurationToSeconds(value)
+              )
+          "
         />
       </NFormItem>
     </NSpace>

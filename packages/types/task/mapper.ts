@@ -158,7 +158,6 @@ export type CoreTaskObjectMapper = {
 export type FrontTaskObjectMapper = {
   Emulator: {
     enable?: boolean
-    commandLine: string
     delay: number
   }
   Shutdown: {

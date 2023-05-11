@@ -436,6 +436,10 @@ class CoreLoader {
    * @returns
    */
   public Stop(uuid: string): boolean {
+    if (!this.GetCoreInstanceByUUID(uuid)) {
+      logger.warn(`[Stop] uuid not exists ${uuid}`)
+      return true
+    }
     return this.MeoAsstLib.AsstStop(this.GetCoreInstanceByUUID(uuid))
   }
 

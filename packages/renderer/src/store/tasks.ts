@@ -56,7 +56,6 @@ export const taskTemplate: {
     status: 'idle',
     enable: false,
     configurations: {
-      commandLine: '',
       delay: 300, // 执行后续任务的等待延迟
     },
     results: {},

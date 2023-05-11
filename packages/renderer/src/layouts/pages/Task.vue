@@ -57,7 +57,8 @@ watch(
     switch (newStatus) {
       case 'waitingTaskEnd':
         deviceStore.updateDeviceStatus(uuid.value, 'tasking')
-        await handleSubStart()
+        await runTasks(uuid.value)
+        // await handleSubStart()
         break
     }
   }
@@ -103,10 +104,10 @@ async function handleSubStart() {
   }
   deviceStore.updateDeviceStatus(uuid.value as string, 'tasking')
   await runTasks(uuid.value)
-
-  await window.ipcRenderer.invoke('main.CoreLoader:start', {
-    uuid: uuid.value,
-  })
+  // logger.info('in substart')
+  // await window.ipcRenderer.invoke('main.CoreLoader:start', {
+  //   uuid: uuid.value,
+  // })
 }
 
 async function handleSubStop() {
@@ -143,32 +144,36 @@ async function handleStart() {
       touch_mode: touchMode.value,
     })
   } else {
-    // 设备状态为 unknown 或 disconnect , 检查是否有启动模拟器的参数, 如果有则尝试自启动, 没有则提示
-    if (device?.commandLine && device.commandLine?.length > 0) {
-      // 有启动参数
-      if (await deviceStore.wakeUpDevice(uuid.value)) {
-        // 有启动参数, 且自启成功
-        deviceStore.updateDeviceStatus(device.uuid as string, 'waitingTask')
-        await window.ipcRenderer.invoke('main.CoreLoader:initCore', {
-          address: device.address,
-          uuid: device.uuid,
-          adb_path: device.adbPath,
-          config: device.config,
-          touch_mode: touchMode.value,
-        })
-      } else {
-        showMessage('设备自启失败, 请尝试手动启动设备', {
-          type: 'warning',
-          duration: 2000,
-        })
-      }
-    } else {
-      // 无启动参数
-      showMessage('设备启动参数未知, 请先刷新设备列表或尝试手动连接', {
-        type: 'warning',
-        duration: 2000,
-      })
-    }
+    await handleSubStart()
+
+    // TODO
+    // 设备状态为 unknown 或 disconnect , 直接进行任务, 依赖设备启动任务
+    //
+    //   if (device?.commandLine && device.commandLine?.length > 0) {
+    //     // 有启动参数
+    //     if (await deviceStore.wakeUpDevice(uuid.value)) {
+    //       // 有启动参数, 且自启成功
+    //       deviceStore.updateDeviceStatus(device.uuid as string, 'waitingTask')
+    //       await window.ipcRenderer.invoke('main.CoreLoader:initCore', {
+    //         address: device.address,
+    //         uuid: device.uuid,
+    //         adb_path: device.adbPath,
+    //         config: device.config,
+    //         touch_mode: touchMode.value,
+    //       })
+    //     } else {
+    //       showMessage('设备自启失败, 请尝试手动启动设备', {
+    //         type: 'warning',
+    //         duration: 2000,
+    //       })
+    //     }
+    //   } else {
+    //     // 无启动参数
+    //     showMessage('设备启动参数未知, 请先刷新设备列表或尝试手动连接', {
+    //       type: 'warning',
+    //       duration: 2000,
+    //     })
+    //   }
   }
 }
 
