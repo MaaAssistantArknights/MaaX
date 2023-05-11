@@ -89,7 +89,7 @@ export default function useCallbackEvents(): void {
                   postDrop(report)
                     .then(response => {
                       task.results.fightInfo[resultIndex].reported = true
-                      const reportId = response.headers['X-Penguin-Set-PenguinID']
+                      const reportId = response.headers['x-penguin-set-penguinid']
                       if (reportId) {
                         settingStore.penguinReportId = reportId
                         if (settingStore.yituliuReportId.trim() === '') {

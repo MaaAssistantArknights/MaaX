@@ -1,4 +1,4 @@
-import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios'
+import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from 'axios'
 import _ from 'lodash'
 import useSettingStore from '@/store/settings'
 
@@ -6,8 +6,8 @@ const getUA = (): string => {
   const settingStore = useSettingStore()
   const coreVersion = settingStore.version.core.current
   const uiVersion = `v${settingStore.version.ui.current ?? ''}`
-  const versionString = coreVersion ? `(core v${coreVersion})` : '(without core)'
-  return `MeoAssistantArknights ${uiVersion} ${versionString}`
+  const versionString = coreVersion ? `(core ${coreVersion})` : '(without core)'
+  return `MAAX ${uiVersion} ${versionString}`
 }
 
 class ApiService {
@@ -18,10 +18,12 @@ class ApiService {
     })
 
     this._instance.interceptors.request.use(
-      request => {
+      async request => {
+        const UA = getUA()
+        await window.ipcRenderer.invoke('main.Util:updateUA', { urls: [baseUrl + '/*'], UA: UA })
         request.headers = {
           ...request.headers,
-          'User-Agent': getUA(),
+          // 'User-Agent': getUA(),
         }
         return request
       },
@@ -40,20 +42,20 @@ class ApiService {
     )
   }
 
-  async get<T>(url: string, config?: AxiosRequestConfig): Promise<T | Error> {
+  async get<T>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T> | Error> {
     const response = await this._instance.get(url, config)
     if (_.isError(response)) {
       throw response
     }
-    return response.data
+    return response
   }
 
-  async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
+  async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
     const response = await this._instance.post(url, data, config)
     if (_.isError(response)) {
       throw response
     }
-    return response.data
+    return response
   }
 
   get baseUrl(): string | undefined {
