@@ -9,6 +9,7 @@ import {
   NUpload,
   NUploadDragger,
   NText,
+  NTooltip,
   type UploadFileInfo,
 } from 'naive-ui'
 import Draggable from 'vuedraggable'
@@ -29,6 +30,8 @@ const infrastConfig = {
   loadStatus: ref(false),
   title: ref(''),
   config: ref(),
+  configDescription: ref(''),
+  planDescription: ref(''),
 }
 
 const droneUsageOptions: {
@@ -136,6 +139,7 @@ async function handleSelectInfrastConfig(options: { file: UploadFileInfo }) {
   await infrastConfigParse(options.file.file?.path)
 }
 
+// FIXME: 启动任务后会导致界面重新渲染，又读了一次文件
 async function infrastConfigParse(path: string | undefined) {
   if (!path) {
     showMessage('请选择配置文件')
@@ -157,6 +161,9 @@ async function infrastConfigParse(path: string | undefined) {
   try {
     const content = JSON.parse(raw_content)
     infrastConfig.title.value = content.title
+    if (infrastConfig.title.value.length > 1) {
+      infrastConfig.title.value = infrastConfig.title.value.replaceAll(/\n|\\n/g, '<br>')
+    }
     if (!content.plans) {
       showMessage('读取基建文件文件失败, 文件缺少配置', {
         type: 'error',
@@ -165,12 +172,20 @@ async function infrastConfigParse(path: string | undefined) {
       })
       return
     }
-    handleUpdateConfiguration('filename', path)
+    if (props.configurations.filename != path) {
+      handleUpdateConfiguration('filename', path)
+    }
+    infrastConfig.configDescription.value = `${
+      content.description ?? '该基建文件无描述'
+    }`.replaceAll(/\n|\\n/g, '<br>')
     infrastConfig.config.value = []
     content.plans.forEach((v: any, index: number) => {
       infrastConfig.config.value.push({
         label: v.name,
         value: index,
+        description: `${v.description ?? '该方案无描述'} <br> ${
+          v.description_post ?? ''
+        }`.replaceAll(/\n|\\n/g, '<br>'),
       })
     })
   } catch (e) {
@@ -315,34 +330,50 @@ onMounted(() => {
         }
       "
     >
-      <NUpload
-        v-if="props.configurations.mode === 10000"
-        :default-upload="false"
-        :show-file-list="false"
-        :multiple="false"
-        accept=".json"
-        @change="handleSelectInfrastConfig"
-      >
-        <NUploadDragger style="display: block">
-          <NText> 点击或者拖动文件 </NText>
-          <NText v-if="infrastConfig.loadStatus.value" depth="3" style="display: block">
-            {{ infrastConfig.title ? infrastConfig.title : '该配置没有标题' }}
-          </NText>
-        </NUploadDragger>
-      </NUpload>
+      <NTooltip v-if="props.configurations.mode === 10000" width="trigger" trigger="hover">
+        <template #trigger>
+          <NUpload
+            :default-upload="false"
+            :show-file-list="false"
+            :multiple="false"
+            accept=".json"
+            @change="handleSelectInfrastConfig"
+          >
+            <NUploadDragger style="display: block">
+              <NText> 点击或者拖动文件 </NText>
+              <NText v-if="infrastConfig.loadStatus.value" depth="3" style="display: block">
+                <span
+                  v-html="
+                    infrastConfig.title.value.length > 0
+                      ? infrastConfig.title.value
+                      : '该配置没有标题'
+                  "
+                ></span>
+              </NText>
+            </NUploadDragger>
+          </NUpload>
+        </template>
+        <template #default>
+          <span v-html="infrastConfig.configDescription.value"> </span>
+        </template>
+      </NTooltip>
     </NFormItem>
-    <NFormItem
-      v-if="infrastConfig.loadStatus && props.configurations.mode === 10000"
-      label="换班方案"
-      label-placement="left"
-    >
-      <NSelect
-        :disabled="configurationDisabled.nre"
-        :value="props.configurations.plan_index"
-        :options="infrastConfig.config.value"
-        @update:value="value => handleUpdateConfiguration('plan_index', value)"
-      />
-    </NFormItem>
+    <NTooltip v-if="props.configurations.mode === 10000" width="trigger" trigger="hover">
+      <template #trigger>
+        <NFormItem label="换班方案" label-placement="left">
+          <NSelect
+            :disabled="configurationDisabled.nre"
+            :value="props.configurations.plan_index"
+            :options="infrastConfig.config.value"
+            @update:value="value => handleUpdateConfiguration('plan_index', value)"
+          />
+        </NFormItem>
+      </template>
+      <template #default>
+        <span v-html="infrastConfig.config.value[props.configurations.plan_index].description">
+        </span>
+      </template>
+    </NTooltip>
   </NSpace>
 </template>
 
