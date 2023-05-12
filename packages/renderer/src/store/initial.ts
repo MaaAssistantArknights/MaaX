@@ -6,6 +6,7 @@ import useSettingStore, { type SettingState } from './settings'
 import useTaskStore, { type TaskState } from './tasks'
 import useThemeStore, { type ThemeState } from './theme'
 import logger from '@/hooks/caller/logger'
+import type { CoreTaskName, FrontTaskName } from '@type/task'
 
 type Patcher<T> = (storage: T) => T
 
@@ -34,7 +35,12 @@ export async function initialStore(): Promise<void> {
       for (const taskGroups of Object.values(storage.deviceTasks)) {
         for (const taskGroup of taskGroups.groups) {
           for (const task of taskGroup.tasks) {
-            task.task_id = -1
+            task.name = (task.name.slice(0, 1).toUpperCase() + task.name.slice(1)) as
+              | CoreTaskName
+              | FrontTaskName
+            if ((task.name as string) === 'Rogue') {
+              task.name = 'Roguelike'
+            }
             task.progress = 0
             task.startTime = undefined
             task.endTime = undefined
