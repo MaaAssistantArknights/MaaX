@@ -29,6 +29,9 @@ class WindowManager implements Module {
         getPlatform() === 'macos' && storage.get('theme.acrylic')
           ? 'under-window'
           : 'appearance-based',
+      titleBarOverlay: true,
+      // frameless和titleBarStyle: 'hidden'同时开，会显示窗口控制按钮
+      titleBarStyle: 'hidden',
       width: 1024,
       height: 768,
       minWidth: 800,
