@@ -3,6 +3,7 @@ import type { Arch, Platform } from '@type/api/maa'
 import type { ComponentType, ComponentStatus } from '@type/componentManager'
 import type { DialogProperty, TouchMode } from '@type/misc'
 import type { Device, Emulator } from '@type/device'
+import type { Acrylic } from '@type/appearanceManager/theme'
 
 export interface InitCoreParam {
   address: string
@@ -99,6 +100,7 @@ export type IpcMainHandleEventType = IpcMainHandleEventTypeAutoRegister & {
   'main.StorageManager:set': (key: string, val: any) => boolean
   'main.StorageManager:has': (key: string) => boolean
   'main.AppearanceManager:themeUpdated': (isDark: boolean) => void
+  'main.AppearanceManager:acrylicUpdated': (isAcrylic: boolean) => void
   'main.WindowManager:toggleMaximized': () => boolean | Error
   'main.WindowManager:minimize': () => boolean
   'main.WindowManager:isMaximized': () => boolean

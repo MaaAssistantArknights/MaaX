@@ -2,12 +2,12 @@ import { app, BrowserWindow, shell } from 'electron'
 import { release } from 'os'
 import { join } from 'path'
 import fs from 'fs'
-import { spawn } from 'child_process'
-import { getPlatform, isInDev } from '@main/utils/os'
+import vibe from '@pyke/vibe'
 
 import useDebug from '@main/utils/debug'
 import logger from '@main/utils/logger'
 import useHooks from '@main/hooks'
+import { getPlatform, isInDev } from '@main/utils/os'
 
 // modules
 import WindowManager from '@main/windowManager'
@@ -69,6 +69,8 @@ async function createApp(): Promise<void> {
     return { action: 'deny' }
   })
 }
+
+vibe.setup(app)
 
 app.whenReady().then(createApp)
 

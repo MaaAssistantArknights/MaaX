@@ -81,11 +81,11 @@
     "arknights"
   ],
   "dependencies": {
+    "@pyke/vibe": "^0.4.0",
     "@tigerconnect/ffi-napi": "4.0.3-tc3",
     "@tigerconnect/ref-napi": "4.0.0-tc8",
     "axios": "^0.27.2",
     "crypto-js": "^4.1.1",
-    "electron-acrylic-window": "^0.5.11",
     "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^8.1.0",
     "execa": "^5.1.1",

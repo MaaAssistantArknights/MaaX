@@ -45,6 +45,7 @@ const commonThemeOverrides: Partial<ThemeCommonVars> = {
   errorColorHover: '#ff8f8f',
   errorColorPressed: '#ff4747',
   errorColorSuppl: '#ff8f8f',
+  cardColor: 'transparent',
 }
 
 const lightThemeOverrides: GlobalThemeOverrides = {
