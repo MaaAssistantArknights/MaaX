@@ -11,6 +11,12 @@ export default function useTheme(window: BrowserWindow): void {
 
   ipcMainHandle('main.AppearanceManager:themeUpdated', (event, isDark) => {
     const storage = new Storage()
+    if (getPlatform() === 'windows') {
+      window.setTitleBarOverlay({
+        color: isDark ? '#0f0f0f' : '#f0f0f0',
+        symbolColor: isDark ? '#ffffff' : '#000000',
+      })
+    }
     if (getPlatform() === 'windows' && storage.get('theme.acrylic')) {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const { setVibrancy } = require('electron-acrylic-window')

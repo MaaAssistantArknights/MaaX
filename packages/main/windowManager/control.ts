@@ -59,6 +59,11 @@ export default function useController(window: BrowserWindow): void {
       x: 12,
       y: 12,
     })
+  } else {
+    window.setTitleBarOverlay({
+      color: '#000000C0',
+      symbolColor: '#FFFFFF',
+    })
   }
   // window.setWindowButtonVisibility(true)
   // window.setTitleBarOverlay({
