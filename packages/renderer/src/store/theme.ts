@@ -37,9 +37,9 @@ const useThemeStore = defineStore<'theme', ThemeState, ThemeGetter, ThemeAction>
     return {
       theme: 'maa-light',
       systemTheme: 'maa-light',
-      themeColorOpacity: 0.9,
+      themeColorOpacity: 1,
       bgFollowTheme: false,
-      acrylic: true,
+      acrylic: false,
       bgLight: {
         url: undefined,
         opacity: 1,
