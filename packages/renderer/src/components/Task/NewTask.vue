@@ -9,7 +9,6 @@ import useTaskStore from '@/store/tasks'
 import type { Task } from '@type/task'
 
 const themeVars = useThemeVars()
-const themeStore = useThemeStore()
 
 const taskStore = useTaskStore()
 const uuid = router.currentRoute.value.params.uuid as string
@@ -111,6 +110,10 @@ const handleShowDropdown = (e: MouseEvent) => {
     }
   })
 }
+
+const handleClickOutside = () => {
+  showDropdown.value = false
+}
 </script>
 
 <template>
@@ -118,50 +121,29 @@ const handleShowDropdown = (e: MouseEvent) => {
     <template #arrow>
       <span />
     </template>
-    <NCollapseItem
-      class="task-card-inner"
-      name="1"
-      display-directive="show"
-      :style="{
-        border:
-          themeStore.currentTheme === 'maa-dark'
-            ? `1px dashed ${themeVars.primaryColor}`
-            : 'dashed white',
-      }"
-    >
-      <template #header>
-        <div style="width: 100%">
-          <NDropdown trigger="hover" :options="options" @select="handleSelectNewTask">
-            <div ref="cardHeaderRef" class="card-header">
-              <NSpace>
-                <span class="card-title">
-                  {{ props.isCollapsed ? '新建任务' : '' }}
-                </span>
-              </NSpace>
-              <NSpace justify="end" align="center" />
-            </div>
-          </NDropdown>
-        </div>
-      </template>
-      <div class="card-content">
-        <NScrollbar @contextmenu="handleShowDropdown">
-          <slot />
-        </NScrollbar>
+    <div class="task-card-inner" :style="{
+        border: `3px dashed ${themeVars.borderColor}`
+      }">
+      <NCollapseItem name="1" display-directive="show">
+        <template #header>
+          <div class="card-header" />
+        </template>
+        <div class="card-content" />
+      </NCollapseItem>
+      <div class="dropdown-area" @contextmenu="handleShowDropdown">
+        <NSpace justify="center" align="center" style="height: 100%;">
+          <NText>点击鼠标右键创建新任务</NText>
+        </NSpace>
       </div>
-    </NCollapseItem>
+      <NDropdown trigger="manual" :options="options" @select="handleSelectNewTask"
+        :x="dropdownPosition.x" :y="dropdownPosition.y" :show="showDropdown"
+        :on-clickoutside="handleClickOutside">
+      </NDropdown>
+    </div>
   </NCollapse>
 </template>
 
 <style lang="less" scoped>
-@keyframes breathe {
-  from {
-    box-shadow: 0 2px 6px 0 rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.1), 0 0 5px 0 transparent;
-  }
-  to {
-    box-shadow: 0 2px 6px 0 rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.1),
-      0 0 10px var(--breathe-color);
-  }
-}
 .task-card {
   user-select: none;
   transition: width 0.3s var(--n-bezier);
@@ -172,9 +154,9 @@ const handleShowDropdown = (e: MouseEvent) => {
 }
 
 .task-card-inner {
+  position: relative;
   overflow: hidden;
   background: rgba(255, 255, 255, 0);
-  box-shadow: 0 2px 6px 0 rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.1);
   border-radius: 12px;
   float: none;
 
@@ -209,5 +191,15 @@ const handleShowDropdown = (e: MouseEvent) => {
   transition: height 0.3s var(--n-bezier);
   aspect-ratio: 9 / 4;
   min-height: 120px;
+}
+
+.dropdown-area {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
 }
 </style>
