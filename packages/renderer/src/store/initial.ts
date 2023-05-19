@@ -5,6 +5,7 @@ import useDeviceStore, { type DeviceState } from './devices'
 import useSettingStore, { type SettingState } from './settings'
 import useTaskStore, { type TaskState } from './tasks'
 import useThemeStore, { type ThemeState } from './theme'
+import useTaskScheduleStore, { type TaskScheduleState } from './taskSchedule'
 import logger from '@/hooks/caller/logger'
 import type { CoreTaskName, FrontTaskName } from '@type/task'
 
@@ -15,6 +16,7 @@ export async function initialStore(): Promise<void> {
     device: useDeviceStore(),
     setting: useSettingStore(),
     tasks: useTaskStore(),
+    taskSchedule: useTaskScheduleStore(),
     theme: useThemeStore(),
   }
 
@@ -48,6 +50,14 @@ export async function initialStore(): Promise<void> {
             task.results = {}
             task.showResult = false
           }
+        }
+      }
+      return storage
+    },
+    taskSchedule: (storage: TaskScheduleState) => {
+      for (const taskSchedule of Object.values(storage.scheduleList)) {
+        for (const taskScheduleGroup of taskSchedule.groups) {
+          taskScheduleGroup.scheduleId = -1
         }
       }
       return storage

@@ -41,3 +41,8 @@ type PropertyArray = OpenDialogOptions['properties']
 type CleanUndefined<T> = T extends undefined ? never : T
 
 export type DialogProperty = CleanUndefined<PropertyArray> extends (infer T)[] ? T : never
+
+/**
+ * 设备唯一标识符
+ */
+export type UUID = string

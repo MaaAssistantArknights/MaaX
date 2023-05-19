@@ -3,9 +3,10 @@ import _ from 'lodash'
 import { compareObjKey } from '@/utils/task_helper'
 import logger from '@/hooks/caller/logger'
 import type { GetTask, Task, TaskGroup, TaskGroups, TaskStatus } from '@type/task'
+import type { UUID } from '@type/misc'
 
 export interface TaskState {
-  deviceTasks: Record<string, TaskGroups>
+  deviceTasks: Record<UUID, TaskGroups>
 }
 
 export interface TaskAction {
