@@ -121,9 +121,12 @@ const handleClickOutside = () => {
     <template #arrow>
       <span />
     </template>
-    <div class="task-card-inner" :style="{
-        border: `3px dashed ${themeVars.borderColor}`
-      }">
+    <div
+      class="task-card-inner"
+      :style="{
+        border: `3px dashed ${themeVars.borderColor}`,
+      }"
+    >
       <NCollapseItem name="1" display-directive="show">
         <template #header>
           <div class="card-header" />
@@ -131,13 +134,19 @@ const handleClickOutside = () => {
         <div class="card-content" />
       </NCollapseItem>
       <div class="dropdown-area" @contextmenu="handleShowDropdown">
-        <NSpace justify="center" align="center" style="height: 100%;">
+        <NSpace justify="center" align="center" style="height: 100%">
           <NText>点击鼠标右键创建新任务</NText>
         </NSpace>
       </div>
-      <NDropdown trigger="manual" :options="options" @select="handleSelectNewTask"
-        :x="dropdownPosition.x" :y="dropdownPosition.y" :show="showDropdown"
-        :on-clickoutside="handleClickOutside">
+      <NDropdown
+        trigger="manual"
+        :options="options"
+        @select="handleSelectNewTask"
+        :x="dropdownPosition.x"
+        :y="dropdownPosition.y"
+        :show="showDropdown"
+        :on-clickoutside="handleClickOutside"
+      >
       </NDropdown>
     </div>
   </NCollapse>

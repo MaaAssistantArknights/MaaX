@@ -153,6 +153,9 @@ devDependencies:
   pinia:
     specifier: ^2.0.34
     version: 2.0.34(typescript@5.0.4)(vue@3.2.47)
+  prettier:
+    specifier: 2.8.8
+    version: registry.npmjs.org/prettier@2.8.8
   source-map-support:
     specifier: ^0.5.21
     version: 0.5.21
@@ -7818,6 +7821,14 @@ packages:
     name: prelude-ls
     version: 1.1.2
     engines: {node: '>= 0.8.0'}
+    dev: true
+
+  registry.npmjs.org/prettier@2.8.8:
+    resolution: {integrity: sha512-tdN8qQGvNjw4CHbY+XXk0JgCXn9QiF21a55rBe5LJAU+kDyC4WQn4+awm2Xfk2lQMk5fKup9XgzTZtGkjBdP9Q==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/prettier/-/prettier-2.8.8.tgz}
+    name: prettier
+    version: 2.8.8
+    engines: {node: '>=10.13.0'}
+    hasBin: true
     dev: true
 
   registry.npmjs.org/require-directory@2.1.1:

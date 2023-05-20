@@ -104,10 +104,21 @@ async function handleDeviceConnect() {
 </script>
 
 <template>
-  <div v-if="device" class="device-card" :class="isCurrent ? 'current' : ''" :style="{
-    backgroundColor: isCurrent ? themeVars.hoverColor : 'transparent',
-  }">
-    <NButton class="device-info" text :focusable="false" @click="handleJumpToTask" @dblclick="handleDeviceConnect">
+  <div
+    v-if="device"
+    class="device-card"
+    :class="isCurrent ? 'current' : ''"
+    :style="{
+      backgroundColor: isCurrent ? themeVars.hoverColor : 'transparent',
+    }"
+  >
+    <NButton
+      class="device-info"
+      text
+      :focusable="false"
+      @click="handleJumpToTask"
+      @dblclick="handleDeviceConnect"
+    >
       <NTooltip>
         <template #trigger>
           <div class="device-status" :data-status="device?.status" />
@@ -138,8 +149,12 @@ async function handleDeviceConnect() {
       </DeviceDetailPopover>
     </NButton>
     <NSpace :align="'center'">
-      <NPopconfirm v-if="connectedStatus.has(device?.status ?? 'unknown')" positive-text="确定" negative-text="取消"
-        @positive-click="handleDeviceDisconnect">
+      <NPopconfirm
+        v-if="connectedStatus.has(device?.status ?? 'unknown')"
+        positive-text="确定"
+        negative-text="取消"
+        @positive-click="handleDeviceDisconnect"
+      >
         <template #trigger>
           <NButton class="operation" text :focusable="false" style="font-size: 24px">
             <NIcon>
@@ -149,8 +164,15 @@ async function handleDeviceConnect() {
         </template>
         {{ (device?.status === 'tasking' ? '当前设备正在进行任务，' : '') + '确定断开连接？' }}
       </NPopconfirm>
-      <NButton v-if="disconnectedStatus.has(device?.status ?? 'unknown')" class="operation" text :focusable="false"
-        style="font-size: 24px" :disabled="'connecting' === device?.status" @click="handleDeviceConnect">
+      <NButton
+        v-if="disconnectedStatus.has(device?.status ?? 'unknown')"
+        class="operation"
+        text
+        :focusable="false"
+        style="font-size: 24px"
+        :disabled="'connecting' === device?.status"
+        @click="handleDeviceConnect"
+      >
         <NIcon>
           <IconLink />
         </NIcon>

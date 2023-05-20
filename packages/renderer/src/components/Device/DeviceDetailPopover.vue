@@ -50,7 +50,7 @@ const startGetScreenshot = async () => {
 const stopGetScreenshot = () => {
   if (timer) clearInterval(timer)
   timer = null
-  window.ipcRenderer.off('renderer.Device:getScreenshot', () => { })
+  window.ipcRenderer.off('renderer.Device:getScreenshot', () => {})
 }
 
 watch(show, newShowValue => {
@@ -72,13 +72,23 @@ const updateDisplayName = (displayName: string) => {
       <slot />
     </template>
     <template #default>
-      <NDescriptions label-placement="top" label-align="left" :column="0" :bordered="false"
-        style="max-width: fit-content">
+      <NDescriptions
+        label-placement="top"
+        label-align="left"
+        :column="0"
+        :bordered="false"
+        style="max-width: fit-content"
+      >
         <NDescriptionsItem>
           <template #label>
             <NText type="info"> 备注: </NText>
           </template>
-          <NInput v-model:value="props.device.displayName" minlength="1" maxlength="11" @update:value="updateDisplayName">
+          <NInput
+            v-model:value="props.device.displayName"
+            minlength="1"
+            maxlength="11"
+            @update:value="updateDisplayName"
+          >
             <template #prefix>
               <NIcon :component="IconPencilAlt" />
             </template>
@@ -106,8 +116,13 @@ const updateDisplayName = (displayName: string) => {
           </template>
           <NTooltip trigger="hover">
             <template #trigger>
-              <NInput v-model:value="props.device.commandLine" type="textarea" placeholder="启动命令"
-                :autosize="{ minRows: 3 }" style="min-width: 100%">
+              <NInput
+                v-model:value="props.device.commandLine"
+                type="textarea"
+                placeholder="启动命令"
+                :autosize="{ minRows: 3 }"
+                style="min-width: 100%"
+              >
                 <template #prefix>
                   <NIcon :component="IconPencilAlt" />
                 </template>
