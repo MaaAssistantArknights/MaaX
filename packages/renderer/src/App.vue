@@ -9,10 +9,9 @@ import {
   NConfigProvider,
   NMessageProvider,
   NDialogProvider,
-  GlobalThemeOverrides,
   darkTheme,
-  ThemeCommonVars,
 } from 'naive-ui'
+import type { GlobalThemeOverrides, ThemeCommonVars } from 'naive-ui'
 import { naiveUiLocale } from '@/i18n'
 import useThemeStore from '@/store/theme'
 import useSettingStore, { Locale } from '@/store/settings'
