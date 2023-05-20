@@ -14,7 +14,7 @@ const currentUuid = computed(() => router.currentRoute.value.params.uuid as stri
 const currentDevice = computed(() =>
   deviceStore.devices.find(device => device.uuid === currentUuid.value)
 )
-const otherDevices = deviceStore.devices.filter(device => device.uuid !== currentUuid.value)
+const otherDevices = computed(() => deviceStore.devices.filter(device => device.uuid !== currentUuid.value))
 </script>
 
 <template>
@@ -29,15 +29,8 @@ const otherDevices = deviceStore.devices.filter(device => device.uuid !== curren
       <NSpace>
         <NTooltip>
           <template #trigger>
-            <NButton
-              :disabled="
-                currentDevice?.status !== 'connected'
-                // undefined
-              "
-              text
-              style="font-size: 24px"
-              @click="$router.push({ path: `/tool/${currentUuid}` })"
-            >
+            <NButton :disabled="currentDevice?.status !== 'connected'" text style="font-size: 24px"
+              @click="$router.push({ path: `/tool/${currentUuid}` })">
               <NIcon>
                 <IconTool />
               </NIcon>

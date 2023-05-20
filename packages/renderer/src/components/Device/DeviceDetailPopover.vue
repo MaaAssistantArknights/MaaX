@@ -19,22 +19,21 @@ import type { Device } from '@type/device'
 const deviceStore = useDeviceStore()
 
 const props = defineProps<{
-  uuid: string
+  device: Device
 }>()
 
 // const emit = defineEmits(['update:show'])
 const show = ref(false)
 
-const device = deviceStore.getDevice(props.uuid) as Device
 const screenshot = ref('')
 let timer: NodeJS.Timer | null = null
 
 const startGetScreenshot = async () => {
   logger.info('send get')
   window.ipcRenderer.on('renderer.Device:getScreenshot', async (event, data) => {
-    if (data.uuid === props.uuid) {
+    if (data.uuid === props.device.uuid) {
       const imageData = await window.ipcRenderer.invoke('main.CoreLoader:getScreencap', {
-        uuid: props.uuid,
+        uuid: props.device.uuid,
       })
       screenshot.value = imageData.screenshot
     }
@@ -43,7 +42,7 @@ const startGetScreenshot = async () => {
   timer = setInterval(async () => {
     logger.info('send asyncScreencap')
     await window.ipcRenderer.invoke('main.CoreLoader:asyncScreencap', {
-      uuid: props.uuid,
+      uuid: props.device.uuid,
     })
   }, 3000)
 }
@@ -51,7 +50,7 @@ const startGetScreenshot = async () => {
 const stopGetScreenshot = () => {
   if (timer) clearInterval(timer)
   timer = null
-  window.ipcRenderer.off('renderer.Device:getScreenshot', () => {})
+  window.ipcRenderer.off('renderer.Device:getScreenshot', () => { })
 }
 
 watch(show, newShowValue => {
@@ -63,7 +62,7 @@ watch(show, newShowValue => {
 })
 
 const updateDisplayName = (displayName: string) => {
-  deviceStore.updateDeviceDisplayName(props.uuid, displayName)
+  deviceStore.updateDeviceDisplayName(props.device.uuid, displayName)
 }
 </script>
 
@@ -73,23 +72,13 @@ const updateDisplayName = (displayName: string) => {
       <slot />
     </template>
     <template #default>
-      <NDescriptions
-        label-placement="top"
-        label-align="left"
-        :column="0"
-        :bordered="false"
-        style="max-width: fit-content"
-      >
+      <NDescriptions label-placement="top" label-align="left" :column="0" :bordered="false"
+        style="max-width: fit-content">
         <NDescriptionsItem>
           <template #label>
             <NText type="info"> 备注: </NText>
           </template>
-          <NInput
-            v-model:value="device.displayName"
-            minlength="1"
-            maxlength="11"
-            @update:value="updateDisplayName"
-          >
+          <NInput v-model:value="props.device.displayName" minlength="1" maxlength="11" @update:value="updateDisplayName">
             <template #prefix>
               <NIcon :component="IconPencilAlt" />
             </template>
@@ -99,13 +88,17 @@ const updateDisplayName = (displayName: string) => {
           <template #label>
             <NText type="info"> 设备标识符: </NText>
           </template>
-          {{ device.uuid }}
+          <template #default>
+            {{ props.device.uuid }}
+          </template>
         </NDescriptionsItem>
         <NDescriptionsItem>
           <template #label>
             <NText type="info"> 连接地址: </NText>
           </template>
-          {{ device.address.length > 0 ? device.address : '刷新以查看' }}
+          <template #default>
+            {{ props.device.address.length > 0 ? props.device.address : '刷新以查看' }}
+          </template>
         </NDescriptionsItem>
         <NDescriptionsItem>
           <template #label>
@@ -113,23 +106,19 @@ const updateDisplayName = (displayName: string) => {
           </template>
           <NTooltip trigger="hover">
             <template #trigger>
-              <NInput
-                v-model:value="device.commandLine"
-                type="textarea"
-                placeholder="启动命令"
-                :autosize="{ minRows: 3 }"
-                style="min-width: 100%"
-              >
+              <NInput v-model:value="props.device.commandLine" type="textarea" placeholder="启动命令"
+                :autosize="{ minRows: 3 }" style="min-width: 100%">
                 <template #prefix>
                   <NIcon :component="IconPencilAlt" />
                 </template>
               </NInput>
             </template>
-            模拟器自动启动命令, 非必要请不要修改这里的内容, 留空将会在下一次链接时尝试自动获取
+            <template #default>
+              模拟器自动启动命令, 非必要请不要修改这里的内容, 留空将会在下一次链接时尝试自动获取
+            </template>
           </NTooltip>
         </NDescriptionsItem>
       </NDescriptions>
-
       <NDivider />
       <NImage width="320" height="180" src="screenshot" />
     </template>
