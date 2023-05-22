@@ -3,7 +3,7 @@ import type { DownloadItem } from 'electron'
 export type DownloadTaskState = 'progressing' | 'completed' | 'cancelled' | 'interrupted'
 
 export interface DownloadProgressInfo {
-  precent?: number
+  percent?: number
   prevReceivedBytes: number
   receivedBytes: number
   totalBytes?: number

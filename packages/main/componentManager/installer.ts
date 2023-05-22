@@ -38,10 +38,18 @@ export default abstract class InstallerBase implements Installer {
         return
       case 'haveUpdate': {
         const dm = new DownloadManager()
-        update.update.url = update.update.url.replace('https://github.com/', 'https://s3.maa-org.net:25240/maa-release')
-        dm.download(update.update.url, {
+        const url = update.update.url
+        const urlMatches = /^https:\/\/(.+)\/MaaAssistantArknights\/MaaAssistantArknights\/releases\/download\/(.+)\/(.+)$/.exec(url)
+        if (!urlMatches) {
+          logger.error(`[Component Installer | ${this.componentType}] Invalid update url: ${url}`)
+          this.notifier.onException()
+          return
+        }
+        const [, , version, filename] = urlMatches
+
+        dm.download(`https://s3.maa-org.net:25240/maa-release/MaaAssistantArknights/MaaAssistantArknights/release/download/${version}/${filename}`, {
           handleDownloadUpdate: task => {
-            this.notifier.onProgress(0.8 * (task.progress.precent ?? 0))
+            this.notifier.onProgress(0.8 * (task.progress.percent ?? 0))
           },
           handleDownloadCompleted: task => {
             if (!this.beforeExtractCheck()) {
