@@ -39,7 +39,7 @@ export const getSystemInformation = async (): Promise<any> => {
 export const getDownloadUrlSuffix = (): string => {
   let ret = ''
   const platform = getPlatform()
-  const arch = getArch();
+  const arch = getArch()
   switch (platform) {
     case 'windows':
       ret = '-win-x64'
@@ -49,9 +49,9 @@ export const getDownloadUrlSuffix = (): string => {
       break
     case 'linux':
       if (arch === 'x64') {
-        ret = '-linux-x64'
+        ret = '-linux-x86_64'
       } else {
-        ret = '-linux-arm64'
+        ret = '-linux-aarch64'
       }
       break
   }

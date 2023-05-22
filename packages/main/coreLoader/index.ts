@@ -10,7 +10,7 @@ import callbackHandle from './callback'
 import { getAppBaseDir } from '@main/utils/path'
 import type { TouchMode } from '@type/misc'
 import { InstanceOptionKey } from '@type/misc'
-import { unzipFile } from '@main/utils/extract'
+import { extractFile, unzipFile } from '@main/utils/extract'
 
 const storage = new Storage()
 
@@ -547,7 +547,7 @@ class CoreLoader {
         const compressedFile = path.join(getAppBaseDir(), 'download', upgradeFileName)
         const dist = path.join(getAppBaseDir(), 'core')
         if (existsSync(compressedFile)) {
-          await unzipFile(compressedFile, dist)
+          await extractFile(compressedFile, dist)
         }
       }
     }

@@ -15,8 +15,8 @@ export default class CoreInstaller extends InstallerBase {
 
     const getRelease = createGetRelease(
       [
-        'https://gh.cirno.xyz/api.github.com/repos/MaaAssistantArknights/MaaRelease/releases',
-        'https://api.github.com/repos/MaaAssistantArknights/MaaRelease/releases',
+        'https://gh.cirno.xyz/api.github.com/repos/MaaAssistantArknights/MaaAssistantArknights/releases',
+        'https://api.github.com/repos/MaaAssistantArknights/MaaAssistantArknights/releases',
       ],
       this.componentType
     )
@@ -27,8 +27,8 @@ export default class CoreInstaller extends InstallerBase {
     this.checkUpdate = createCheckUpdate(
       getRelease,
       {
-        OTA: (cur, late) => `MAAComponent-OTA-${cur}_${late}${suffix}.${ext}`,
-        Full: () => new RegExp(`MAA-v(.+)${suffix}.${ext}`, 'g'),
+        OTA: (cur, late) => `MAAComponent-OTA-${cur}_${late}${suffix}${ext}`,
+        Full: () => new RegExp(`MAA-v(.+)${suffix}${ext.replaceAll('.', '\\.')}`, 'g'),
       },
       this.componentType,
       this.componentDir
