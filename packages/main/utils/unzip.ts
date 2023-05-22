@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import unzipper from 'unzipper'
+import tar from 'tar'
 
 import logger from './logger'
 
@@ -55,4 +56,15 @@ export async function unzipFile(src: string, dest: string) {
           })
       )
   )
+}
+
+export async function untarFile(src: string, dest: string) {
+  if (!fs.existsSync(dest)) {
+    fs.mkdirSync(dest, { recursive: true })
+  }
+
+  tar.x({
+    file: src,
+    cwd: dest,
+  })
 }
