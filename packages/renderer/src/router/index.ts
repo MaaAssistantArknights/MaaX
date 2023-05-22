@@ -15,6 +15,7 @@ import PageTool from '@/layouts/pages/Tool.vue'
 import ToolCopilot from '@/components/Tool/Copilot.vue'
 import ToolItem from '@/components/Tool/Item.vue'
 import ToolRecruit from '@/components/Tool/Recruit.vue'
+import ToolSchedule from '@/components/Tool/Schedule.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -57,6 +58,10 @@ const routes: RouteRecordRaw[] = [
         path: 'recruit',
         component: ToolRecruit,
       },
+      {
+        path: 'schedule',
+        component: ToolSchedule,
+      }
     ],
   },
 ]
