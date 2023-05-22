@@ -7,7 +7,7 @@ import logger from '@main/utils/logger'
 import { getAppBaseDir } from '@main/utils/path'
 import { createNotifier } from './utils/notifier'
 import type { InstallerStatus } from '@type/misc'
-import { unzipFile } from '@main/utils/unzip'
+import { extractFile } from '@main/utils/extract'
 
 export default abstract class InstallerBase implements Installer {
   public readonly componentType: ComponentType
@@ -16,7 +16,7 @@ export default abstract class InstallerBase implements Installer {
   private notifier: Notifier
 
   abstract checkUpdate: () => Promise<UpdateStatus>
-  abstract beforeUnzipCheck(): boolean
+  abstract beforeExtractCheck(): boolean
 
   constructor(type: ComponentType, dir: string) {
     this.componentType = type
@@ -38,20 +38,21 @@ export default abstract class InstallerBase implements Installer {
         return
       case 'haveUpdate': {
         const dm = new DownloadManager()
+        update.update.url = update.update.url.replace('https://github.com/', 'https://s3.maa-org.net:25240/maa-release')
         dm.download(update.update.url, {
           handleDownloadUpdate: task => {
             this.notifier.onProgress(0.8 * (task.progress.precent ?? 0))
           },
           handleDownloadCompleted: task => {
-            if (!this.beforeUnzipCheck()) {
+            if (!this.beforeExtractCheck()) {
               // 没有提前卸载, 乐
               this.status = 'restart'
               this.notifier.onDownloadedUpgrade()
             } else {
-              this.status = 'unzipping'
+              this.status = 'extracting'
               this.notifier.onProgress(0.8)
-
-              unzipFile(task.savePath, path.join(getAppBaseDir(), this.componentDir))
+              
+              extractFile(task.savePath, path.join(getAppBaseDir(), this.componentDir))
                 .then(() => {
                   this.status = 'done'
                   update.update.postUpgrade() // 更新版本信息

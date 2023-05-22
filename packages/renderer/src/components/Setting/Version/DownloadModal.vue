@@ -55,7 +55,7 @@ const installerStatusText = (status: InstallerStatus) => {
   switch (status) {
     case 'downloading':
       return '下载中...'
-    case 'unzipping':
+    case 'extracting':
       return '解压中...'
     case 'restart':
       return '重启'

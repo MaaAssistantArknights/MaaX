@@ -37,7 +37,7 @@ export default class AdbInstaller extends InstallerBase {
     )
   }
 
-  beforeUnzipCheck() {
+  beforeExtractCheck() {
     return true
   }
 }

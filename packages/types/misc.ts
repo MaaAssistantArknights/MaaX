@@ -3,7 +3,7 @@ import type { OpenDialogOptions } from 'electron'
 export type InstallerStatus =
   | 'pending'
   | 'downloading'
-  | 'unzipping'
+  | 'extracting'
   | 'restart'
   | 'done'
   | 'exception'
