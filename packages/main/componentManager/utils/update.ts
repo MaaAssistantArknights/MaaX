@@ -91,7 +91,7 @@ export function createCheckUpdate(
         )
       }
     }
-
+    logger.debug(assets)
     const full = assetName.Full()
     const item = assets.find(asset => full.test(asset.name))
 

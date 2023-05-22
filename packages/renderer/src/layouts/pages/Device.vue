@@ -12,8 +12,6 @@ import { showMessage } from '@/utils/message'
 
 const address = ref('')
 const deviceStore = useDeviceStore()
-const dialog = useDialog()
-const { t } = useI18n()
 
 function addressChecker(cs: string) {
   let [ip, port] = cs.split(':')
@@ -68,35 +66,6 @@ async function handleCustomConnect() {
     showMessage('设备地址不对哦，检查一下吧', { type: 'error', duration: 5000 })
   }
 }
-
-const router = useRouter()
-const settingStore = useSettingStore()
-
-onMounted(async () => {
-  // 检查是否没有正确安装组件
-  await settingStore.updateVersionInfo()
-  if (!settingStore.version.core.current && settingStore.hintCoreNotInstalled) {
-    dialog.info({
-      title: t('Common.hint'),
-      content: t('componentManager.notInstalled', {
-        componentType: t('download["Maa Core"]'),
-      }),
-      positiveText: t('Common.goNow'),
-      negativeText: t('Common.dontShowAgain'),
-      onPositiveClick: () => {
-        router.push({
-          path: '/settings',
-          query: {
-            requireInstallComponent: 1,
-          },
-        })
-      },
-      onNegativeClick: () => {
-        settingStore.dontShowCoreNotInstalled()
-      },
-    })
-  }
-})
 </script>
 
 <template>

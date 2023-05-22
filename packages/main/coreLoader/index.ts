@@ -10,7 +10,7 @@ import callbackHandle from './callback'
 import { getAppBaseDir } from '@main/utils/path'
 import type { TouchMode } from '@type/misc'
 import { InstanceOptionKey } from '@type/misc'
-import { unzipFile } from '@main/utils/unzip'
+import { extractFile, unzipFile } from '@main/utils/extract'
 
 const storage = new Storage()
 
@@ -51,7 +51,7 @@ function createVoidPointer(): ref.Value<void> {
 class CoreLoader {
   private readonly dependences: Record<string, string[]> = {
     win32: ['opencv_world4_maa.dll', 'onnxruntime_maa.dll', 'MaaDerpLearning.dll'],
-    linux: ['libopencv_world4.so', 'libonnxruntime.so', 'libMaaDerpLearning.so'],
+    linux: ['libopencv_world4.so.407', 'libonnxruntime.so.1.14.1', 'libMaaDerpLearning.so'],
     darwin: ['libopencv_world4.dylib', 'libonnxruntime.dylib', 'libMaaDerpLearning.dylib'],
   }
 
@@ -547,7 +547,7 @@ class CoreLoader {
         const compressedFile = path.join(getAppBaseDir(), 'download', upgradeFileName)
         const dist = path.join(getAppBaseDir(), 'core')
         if (existsSync(compressedFile)) {
-          await unzipFile(compressedFile, dist)
+          await extractFile(compressedFile, dist)
         }
       }
     }

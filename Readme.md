@@ -18,15 +18,13 @@
 
 
 
-## 下载链接
+## 下载链接 (国内镜像)
 
-***注：正式版还未发布，以下列出的链接暂时无效***
+***注：正式版还未发布，以下列出的链接为测试版***
 
-[Windows](https://github.com/MaaAssistantArknights/MeoAsstElectronUI/releases/latest/download/MeoAssistantArknights-win-x64-2.0.0.exe)
+[Windows](https://s3.maa-org.net:25240/maa-x/MaaAssistantArknights/MaaX/releases/download/v2.0.0-beta.6/maa-x-win32-x64-2.0.0-beta.6.zip)
 
-[Linux](https://github.com/MaaAssistantArknights/MeoAsstElectronUI/releases/latest/download/MeoAssistantArknights-linux-x64-2.0.0.zip)
-
-[macOS](https://github.com/MaaAssistantArknights/MeoAsstElectronUI/releases/latest/download/MeoAssistantArknights-mac-x64-2.0.0.zip)
+**Linux**和**macOS**还在测试中，暂时不提供下载
 
 ## 致谢
 

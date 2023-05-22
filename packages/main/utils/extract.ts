@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import unzipper from 'unzipper'
+import tar from 'tar'
 
 import logger from './logger'
 
@@ -55,4 +56,27 @@ export async function unzipFile(src: string, dest: string) {
           })
       )
   )
+}
+
+export async function untarFile(src: string, dest: string) {
+  tar.x({
+    file: src,
+    cwd: dest,
+  })
+}
+
+export async function extractFile(src: string, dest: string) {
+  if (!fs.existsSync(dest)) {
+    fs.mkdirSync(dest, { recursive: true })
+  }
+  
+  if (src.endsWith('.zip')) {
+    await unzipFile(src, dest)
+  } else if (/\.tar(\.[gbx]z)?$/.test(src)) {
+    await untarFile(src, dest)
+  } else if (src.endsWith('tgz')) {
+    await untarFile(src, dest)
+  } else {
+    logger.error('Unknown zipped file type')
+  }
 }

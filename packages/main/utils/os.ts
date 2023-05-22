@@ -39,12 +39,37 @@ export const getSystemInformation = async (): Promise<any> => {
 export const getDownloadUrlSuffix = (): string => {
   let ret = ''
   const platform = getPlatform()
+  const arch = getArch()
   switch (platform) {
     case 'windows':
       ret = '-win-x64'
       break
     case 'macos':
       ret = '-macos'
+      break
+    case 'linux':
+      if (arch === 'x64') {
+        ret = '-linux-x86_64'
+      } else {
+        ret = '-linux-aarch64'
+      }
+      break
+  }
+  return ret
+}
+
+export const getDownloadUrlExtension = (): string => {
+  let ret = ''
+  const platform = getPlatform()
+  switch (platform) {
+    case 'windows':
+      ret = '.zip'
+      break
+    case 'macos':
+      ret = '.zip'
+      break
+    case 'linux':
+      ret = '.tar.gz'
       break
   }
   return ret

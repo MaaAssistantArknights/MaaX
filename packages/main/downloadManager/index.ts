@@ -7,6 +7,7 @@ import WindowManager from '@main/windowManager'
 import type { DownloadHandle, DownloadTask } from '@type/downloadManager'
 import type { Module } from '@type/misc'
 import { getAppBaseDir } from '@main/utils/path'
+import logger from '@main/utils/logger'
 
 @Singleton
 export default class DownloadManager implements Module {
@@ -110,6 +111,7 @@ export default class DownloadManager implements Module {
       })
     }
     this.pendingTaskHandler = handler
+    logger.info(`Start downloading, url: ${url}`)
     this.window.webContents.downloadURL(url)
   }
 

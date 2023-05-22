@@ -15,26 +15,26 @@ import { ref, watch } from 'vue'
 import logger from '@/hooks/caller/logger'
 import IconPencilAlt from '@/assets/icons/pencil-alt.svg?component'
 import type { Device } from '@type/device'
+import ClickToEdit from '@/components/UtilComponents/ClickToEdit.vue'
 
 const deviceStore = useDeviceStore()
 
 const props = defineProps<{
-  uuid: string
+  device: Device
 }>()
 
 // const emit = defineEmits(['update:show'])
 const show = ref(false)
 
-const device = deviceStore.getDevice(props.uuid) as Device
 const screenshot = ref('')
 let timer: NodeJS.Timer | null = null
 
 const startGetScreenshot = async () => {
   logger.info('send get')
   window.ipcRenderer.on('renderer.Device:getScreenshot', async (event, data) => {
-    if (data.uuid === props.uuid) {
+    if (data.uuid === props.device.uuid) {
       const imageData = await window.ipcRenderer.invoke('main.CoreLoader:getScreencap', {
-        uuid: props.uuid,
+        uuid: props.device.uuid,
       })
       screenshot.value = imageData.screenshot
     }
@@ -43,7 +43,7 @@ const startGetScreenshot = async () => {
   timer = setInterval(async () => {
     logger.info('send asyncScreencap')
     await window.ipcRenderer.invoke('main.CoreLoader:asyncScreencap', {
-      uuid: props.uuid,
+      uuid: props.device.uuid,
     })
   }, 3000)
 }
@@ -63,7 +63,7 @@ watch(show, newShowValue => {
 })
 
 const updateDisplayName = (displayName: string) => {
-  deviceStore.updateDeviceDisplayName(props.uuid, displayName)
+  deviceStore.updateDeviceDisplayName(props.device.uuid, displayName)
 }
 </script>
 
@@ -78,81 +78,57 @@ const updateDisplayName = (displayName: string) => {
         label-align="left"
         :column="0"
         :bordered="false"
-        style="max-width: fit-content"
+        style="min-width: 100%; max-width: 320px"
       >
         <NDescriptionsItem>
           <template #label>
-            <NText type="info"> 备注: </NText>
+            <NText type="info"> 备注: （双击可编辑）</NText>
           </template>
-          <NInput
-            v-model:value="device.displayName"
-            minlength="1"
-            maxlength="11"
+          <ClickToEdit
+            :value="props.device.displayName"
             @update:value="updateDisplayName"
-          >
-            <template #prefix>
-              <NIcon :component="IconPencilAlt" />
-            </template>
-          </NInput>
+            spellcheck="false"
+          />
         </NDescriptionsItem>
         <NDescriptionsItem>
           <template #label>
             <NText type="info"> 设备标识符: </NText>
           </template>
-          {{ device.uuid }}
+          <template #default>
+            {{ props.device.uuid }}
+          </template>
         </NDescriptionsItem>
         <NDescriptionsItem>
           <template #label>
             <NText type="info"> 连接地址: </NText>
           </template>
-          {{ device.address.length > 0 ? device.address : '刷新以查看' }}
+          <template #default>
+            {{ props.device.address.length > 0 ? props.device.address : '刷新以查看' }}
+          </template>
         </NDescriptionsItem>
         <NDescriptionsItem>
           <template #label>
-            <NText type="info"> 启动命令: </NText>
+            <NText type="info"> 启动命令: （双击可编辑）</NText>
           </template>
           <NTooltip trigger="hover">
             <template #trigger>
-              <NInput
-                v-model:value="device.commandLine"
+              <ClickToEdit
+                v-model:value="props.device.commandLine"
                 type="textarea"
-                placeholder="启动命令"
-                :autosize="{ minRows: 3 }"
-                style="min-width: 100%"
-              >
-                <template #prefix>
-                  <NIcon :component="IconPencilAlt" />
-                </template>
-              </NInput>
+                placeholder="未设置启动命令"
+                :autosize="{ minRows: 1 }"
+                style="min-width: 100%; padding: 0 4px"
+                spellcheck="false"
+              />
             </template>
-            模拟器自动启动命令, 非必要请不要修改这里的内容, 留空将会在下一次链接时尝试自动获取
+            <template #default>
+              模拟器自动启动命令, 非必要请不要修改这里的内容, 留空将会在下一次链接时尝试自动获取
+            </template>
           </NTooltip>
         </NDescriptionsItem>
       </NDescriptions>
-
       <NDivider />
       <NImage width="320" height="180" src="screenshot" />
     </template>
   </NPopover>
 </template>
-
-<style scoped>
-:deep(.n-input__input-el) {
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  padding-left: 5px !important;
-  height: 15px !important;
-}
-
-:deep(.n-input) {
-  --n-color: rgba(255, 255, 255, 0) !important;
-}
-
-:deep(.n-input__border) {
-  border: none !important;
-}
-
-:deep(.n-input-wrapper) {
-  padding: 0 !important;
-}
-</style>

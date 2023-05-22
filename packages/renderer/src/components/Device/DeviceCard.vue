@@ -142,7 +142,7 @@ async function handleDeviceConnect() {
           })()
         }}
       </NTooltip>
-      <DeviceDetailPopover :uuid="props.device.uuid">
+      <DeviceDetailPopover :device="props.device">
         <div class="device-name">
           {{ deviceDisplayName }}
         </div>
