@@ -27,32 +27,21 @@ export default abstract class InstallerBase implements Installer {
   }
 
   async install() {
-    const update = await this.checkUpdate()
-    switch (update.msg) {
-      case 'failedAccessLatest':
-        this.notifier.onException()
-        return
-      case 'alreadyLatest':
-        logger.info(`[Component Installer | ${this.componentType}] No update available`)
-        this.notifier.onCompleted()
-        return
-      case 'haveUpdate': {
-        const dm = new DownloadManager()
-        const url = update.update.url
-        const urlMatches =
-          /^https:\/\/(.+)\/MaaAssistantArknights\/MaaAssistantArknights\/releases\/download\/(.+)\/(.+)$/.exec(
-            url
-          )
-        if (!urlMatches) {
-          logger.error(`[Component Installer | ${this.componentType}] Invalid update url: ${url}`)
+    try {
+      const info = await this.checkUpdate()
+      switch (info.msg) {
+        case 'failedAccessLatest':
           this.notifier.onException()
           return
-        }
-        const [, host, version, filename] = urlMatches
+        case 'alreadyLatest':
+          logger.info(`[Component Installer | ${this.componentType}] No update available`)
+          this.notifier.onCompleted()
+          return
+        case 'haveUpdate': {
+          const dm = new DownloadManager()
+          const { url, postUpgrade } = info.update
 
-        dm.download(
-          `https://s3.maa-org.net:25240/maa-release/MaaAssistantArknights/MaaAssistantArknights/releases/download/${filename}`,
-          {
+          dm.download(url, {
             handleDownloadUpdate: task => {
               this.notifier.onProgress(0.99 * (task.progress.percent ?? 0))
             },
@@ -68,7 +57,7 @@ export default abstract class InstallerBase implements Installer {
                 extractFile(task.savePath, path.join(getAppBaseDir(), this.componentDir))
                   .then(() => {
                     this.status = 'done'
-                    update.update.postUpgrade() // 更新版本信息
+                    postUpgrade() // 更新版本信息
                     this.notifier.onCompleted()
                   })
                   .catch(() => {
@@ -82,10 +71,15 @@ export default abstract class InstallerBase implements Installer {
               this.notifier.onException()
             },
           }
-        ).then(() => {
-          this.status = 'downloading'
-        })
+          ).then(() => {
+            this.status = 'downloading'
+          })
+        }
       }
+    } catch (error) {
+      logger.error(`[Component Installer | ${this.componentType}] Failed to install: ${error}`)
+      this.status = 'exception'
+      this.notifier.onException()
     }
   }
 }
