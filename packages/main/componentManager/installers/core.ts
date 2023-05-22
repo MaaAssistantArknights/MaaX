@@ -31,7 +31,18 @@ export default class CoreInstaller extends InstallerBase {
         Full: () => new RegExp(`MAA-v(.+)${suffix}${ext.replaceAll('.', '\\.')}`, 'g'),
       },
       this.componentType,
-      this.componentDir
+      this.componentDir,
+      (oldUrl: string) => {
+        const urlMatches =
+          /^https:\/\/(.+)\/MaaAssistantArknights\/MaaAssistantArknights\/releases\/download\/(.+)\/(.+)$/.exec(
+            oldUrl
+          )
+        if (!urlMatches) {
+          throw new Error(`Invalid update url: ${oldUrl}`)
+        }
+        const [, host, version, filename] = urlMatches
+        return `https://s3.maa-org.net:25240/maa-release/MaaAssistantArknights/MaaAssistantArknights/releases/download/${filename}`
+      }
     )
   }
 

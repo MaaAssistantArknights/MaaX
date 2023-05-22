@@ -25,7 +25,8 @@ export async function unzipFile(src: string, dest: string) {
   for (const file of dir.files.filter(file => file.type === 'Directory')) {
     const dirpath = path.join(dest, file.path)
     if (!fs.existsSync(dirpath)) {
-      fs.mkdirSync(dirpath)
+      logger.debug(`[Extract Helper] create directory: ${dirpath}`)
+      fs.mkdirSync(dirpath, { recursive: true })
     }
   }
   // 写入文件
@@ -35,6 +36,12 @@ export async function unzipFile(src: string, dest: string) {
       .map(
         file =>
           new Promise((resolve, reject) => {
+            const dirpath = path.join(dest, path.dirname(file.path))
+            if (!fs.existsSync(dirpath)) {
+              logger.debug(`[Extract Helper] create directory: ${dirpath}`)
+              fs.mkdirSync(dirpath, { recursive: true })
+            }
+            logger.debug(`[Extract Helper] create file: ${file.path}`)
             const writeStream = fs.createWriteStream(path.join(dest, file.path), {
               mode: (file.externalFileAttributes >>> 16) & 0o777,
             })

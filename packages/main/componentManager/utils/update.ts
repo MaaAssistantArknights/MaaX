@@ -23,7 +23,8 @@ export function createCheckUpdate(
     Full: () => RegExp
   },
   component: ComponentType,
-  componentDir: string
+  componentDir: string,
+  urlReplacer?: (oldUrl: string) => string
 ) {
   return async (): Promise<UpdateStatus> => {
     const release = (await getRelease()) ?? null
@@ -87,7 +88,7 @@ export function createCheckUpdate(
       } else {
         logger.warn(
           `[Component Installer | ${component}] ` +
-          'Unable to acquire OTA update asset, attempting to obtain full update asset'
+            'Unable to acquire OTA update asset, attempting to obtain full update asset'
         )
       }
     }
@@ -106,19 +107,12 @@ export function createCheckUpdate(
 
     fs.writeFileSync(infoPath.latestFile, item.name, 'utf-8')
 
-    const url = item.browser_download_url
-    const urlMatches =
-      /^https:\/\/(.+)\/MaaAssistantArknights\/MaaAssistantArknights\/releases\/download\/(.+)\/(.+)$/.exec(
-        url
-      )
-    if (!urlMatches) {
-      throw new Error(`Invalid update url: ${url}`)
-    }
-    const [, host, version, filename] = urlMatches
     return {
       msg: 'haveUpdate',
       update: {
-        url: `https://s3.maa-org.net:25240/maa-release/MaaAssistantArknights/MaaAssistantArknights/releases/download/${filename}`,
+        url:
+          urlReplacer?.call(createCheckUpdate, item.browser_download_url) ??
+          item.browser_download_url,
         version: latestVersion,
         releaseDate: published_at,
         postUpgrade: () => {
