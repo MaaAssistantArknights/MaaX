@@ -69,7 +69,8 @@ export async function extractFile(src: string, dest: string) {
   if (!fs.existsSync(dest)) {
     fs.mkdirSync(dest, { recursive: true })
   }
-  
+  logger.info(`extracting file: ${src} -> ${dest}`)
+
   if (src.endsWith('.zip')) {
     await unzipFile(src, dest)
   } else if (/\.tar(\.[gbx]z)?$/.test(src)) {

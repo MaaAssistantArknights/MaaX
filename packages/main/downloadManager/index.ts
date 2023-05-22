@@ -85,7 +85,9 @@ export default class DownloadManager implements Module {
             break
           case 'cancelled':
           case 'interrupted':
-            fs.rmSync(path.join(item.getSavePath(), item.getFilename()))
+            if (fs.existsSync(item.getSavePath())) {
+              fs.rmSync(item.getSavePath())
+            }
             handler.handleDownloadInterrupted()
             break
         }

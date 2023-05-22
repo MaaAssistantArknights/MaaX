@@ -39,44 +39,50 @@ export default abstract class InstallerBase implements Installer {
       case 'haveUpdate': {
         const dm = new DownloadManager()
         const url = update.update.url
-        const urlMatches = /^https:\/\/(.+)\/MaaAssistantArknights\/MaaAssistantArknights\/releases\/download\/(.+)\/(.+)$/.exec(url)
+        const urlMatches =
+          /^https:\/\/(.+)\/MaaAssistantArknights\/MaaAssistantArknights\/releases\/download\/(.+)\/(.+)$/.exec(
+            url
+          )
         if (!urlMatches) {
           logger.error(`[Component Installer | ${this.componentType}] Invalid update url: ${url}`)
           this.notifier.onException()
           return
         }
-        const [, , version, filename] = urlMatches
+        const [, host, version, filename] = urlMatches
 
-        dm.download(`https://s3.maa-org.net:25240/maa-release/MaaAssistantArknights/MaaAssistantArknights/release/download/${version}/${filename}`, {
-          handleDownloadUpdate: task => {
-            this.notifier.onProgress(0.8 * (task.progress.percent ?? 0))
-          },
-          handleDownloadCompleted: task => {
-            if (!this.beforeExtractCheck()) {
-              // 没有提前卸载, 乐
-              this.status = 'restart'
-              this.notifier.onDownloadedUpgrade()
-            } else {
-              this.status = 'extracting'
-              this.notifier.onProgress(0.8)
-              
-              extractFile(task.savePath, path.join(getAppBaseDir(), this.componentDir))
-                .then(() => {
-                  this.status = 'done'
-                  update.update.postUpgrade() // 更新版本信息
-                  this.notifier.onCompleted()
-                })
-                .catch(() => {
-                  this.status = 'exception'
-                  this.notifier.onException()
-                })
-            }
-          },
-          handleDownloadInterrupted: () => {
-            this.status = 'exception'
-            this.notifier.onException()
-          },
-        }).then(() => {
+        dm.download(
+          `https://s3.maa-org.net:25240/maa-release/MaaAssistantArknights/MaaAssistantArknights/releases/download/${filename}`,
+          {
+            handleDownloadUpdate: task => {
+              this.notifier.onProgress(0.99 * (task.progress.percent ?? 0))
+            },
+            handleDownloadCompleted: task => {
+              if (!this.beforeExtractCheck()) {
+                // 没有提前卸载, 乐
+                this.status = 'restart'
+                this.notifier.onDownloadedUpgrade()
+              } else {
+                this.status = 'extracting'
+                this.notifier.onProgress(0.99)
+
+                extractFile(task.savePath, path.join(getAppBaseDir(), this.componentDir))
+                  .then(() => {
+                    this.status = 'done'
+                    update.update.postUpgrade() // 更新版本信息
+                    this.notifier.onCompleted()
+                  })
+                  .catch(() => {
+                    this.status = 'exception'
+                    this.notifier.onException()
+                  })
+              }
+            },
+            handleDownloadInterrupted: () => {
+              this.status = 'exception'
+              this.notifier.onException()
+            },
+          }
+        ).then(() => {
           this.status = 'downloading'
         })
       }
