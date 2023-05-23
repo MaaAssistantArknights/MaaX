@@ -79,7 +79,7 @@ export type SubTaskExtraInfoMapper = {
   PenguinId: {
     id: string
   }
-  Depot: {
+  DepotInfo: {
     done: boolean
     arkplanner: DepotResult<Depot_ArkPlanner>
     lolicon: DepotResult<Depot_Lolicon>
