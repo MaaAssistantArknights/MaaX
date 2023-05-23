@@ -41,7 +41,7 @@ export default class CoreInstaller extends InstallerBase {
           throw new Error(`Invalid update url: ${oldUrl}`)
         }
         const [, host, version, filename] = urlMatches
-        return `https://s3.maa-org.net:25240/maa-release/MaaAssistantArknights/MaaAssistantArknights/releases/download/${filename}`
+        return `https://s3.maa-org.net:25240/maa-release/MaaAssistantArknights/MaaAssistantArknights/releases/download/${version}/${filename}`
       }
     )
   }
