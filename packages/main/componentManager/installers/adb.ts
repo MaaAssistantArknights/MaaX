@@ -13,8 +13,8 @@ export default class AdbInstaller extends InstallerBase {
       name: 'Google',
       urlReplacer: oldUrl => {
         return oldUrl
-      }
-    }
+      },
+    },
   ]
 
   checkUpdate: () => Promise<UpdateStatus>
@@ -44,7 +44,10 @@ export default class AdbInstaller extends InstallerBase {
       },
       this.componentType,
       this.componentDir,
-      () => storage.get(['component', this.componentType, 'installMirror']),
+      () =>
+        this.sources.find(
+          s => s.name === storage.get(['component', this.componentType, 'installMirror'])
+        ) || this.sources[0]
     )
   }
 
