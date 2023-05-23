@@ -85,24 +85,22 @@ export default function useCallbackEvents(): void {
                   server: task.configurations.server as string,
                   drops,
                 }
-                if (drops.length > 0) {
-                  postDrop(report)
-                    .then(response => {
-                      task.results.fightInfo[resultIndex].reported = true
-                      const reportId = response.headers['x-penguin-set-penguinid']
-                      if (reportId) {
-                        settingStore.penguinReportId = reportId
-                        if (settingStore.yituliuReportId.trim() === '') {
-                          settingStore.yituliuReportId = reportId
-                        }
+                postDrop(report)
+                  .then(response => {
+                    task.results.fightInfo[resultIndex].reported = true
+                    const reportId = response.headers['x-penguin-set-penguinid']
+                    if (reportId) {
+                      settingStore.penguinReportId = reportId
+                      if (settingStore.yituliuReportId.trim() === '') {
+                        settingStore.yituliuReportId = reportId
                       }
-                    })
-                    .catch(error => {
-                      task.results.fightInfo[resultIndex].report_error = true
-                      window.$message.error('上报企鹅物流失败')
-                      logger.error('上报企鹅物流失败', error)
-                    })
-                }
+                    }
+                  })
+                  .catch(error => {
+                    task.results.fightInfo[resultIndex].report_error = true
+                    window.$message.error('上报企鹅物流失败')
+                    logger.error('上报企鹅物流失败', error)
+                  })
               }
             }
             break

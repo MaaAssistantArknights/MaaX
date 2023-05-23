@@ -19,11 +19,9 @@ class ApiService {
 
     this._instance.interceptors.request.use(
       async request => {
-        const UA = getUA()
-        await window.ipcRenderer.invoke('main.Util:updateUA', { urls: [baseUrl + '/*'], UA: UA })
         request.headers = {
           ...request.headers,
-          // 'User-Agent': getUA(),
+          'User-Agent': getUA(),
         }
         return request
       },

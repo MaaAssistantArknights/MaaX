@@ -2,6 +2,7 @@ import type { AxiosRequestHeaders, AxiosResponse } from 'axios'
 import { backOff, type IBackOffOptions } from 'exponential-backoff'
 import useSettingStore from '@/store/settings'
 import service from './service'
+import logger from '@/hooks/caller/logger'
 
 export interface DropInfo {
   dropType: string
@@ -40,8 +41,11 @@ export async function postDrop(report: DropReport): Promise<AxiosResponse> {
     source: 'MeoAssistant',
     version: settingStore.version.core.current,
   }
+  const idempotentKey = await window.ipcRenderer.invoke('main.Util:generateIdempotentKey')
+  logger.silly(`[PostDrop] idempotentKey: ${idempotentKey}`)
 
   const headers: AxiosRequestHeaders = reportId ? { Authorization: `PenguinID ${reportId}` } : {}
+  headers['X-Penguin-Idempotency-Key'] = idempotentKey
 
   return await backOff(
     () =>

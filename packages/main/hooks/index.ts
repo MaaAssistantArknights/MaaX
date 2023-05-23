@@ -6,7 +6,6 @@ import useShutdownHooks from './shutdown'
 import useClearHooks from './clear'
 import useTaskHooks from './task'
 import usePathHooks from './path'
-import useUAHooks from './ua'
 
 export default function useHooks(): void {
   useVersionHooks()
@@ -17,5 +16,4 @@ export default function useHooks(): void {
   useClearHooks()
   useTaskHooks()
   usePathHooks()
-  useUAHooks()
 }

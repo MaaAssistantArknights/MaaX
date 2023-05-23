@@ -68,6 +68,20 @@ async function createApp(): Promise<void> {
     if (url.startsWith('https:')) shell.openExternal(url)
     return { action: 'deny' }
   })
+
+  // bypass cors
+  win.webContents.session.webRequest.onBeforeSendHeaders((details, callback) => {
+    callback({ requestHeaders: { Origin: '*', ...details.requestHeaders } })
+  })
+
+  win.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+    callback({
+      responseHeaders: {
+        'Access-Control-Allow-Headers': ['*'],
+        ...details.responseHeaders,
+      },
+    })
+  })
 }
 
 vibe.setup(app)
