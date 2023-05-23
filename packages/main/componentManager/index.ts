@@ -54,6 +54,13 @@ class ComponentManager implements Module {
       }
       this.components[componentName]?.installer?.install()
     })
+
+    ipcMainHandle(
+      'main.ComponentManager:getAvailableMirrors',
+      async (event, componentName: ComponentType) => {
+        return this.components[componentName]?.installer?.sources.map(s => s.name) ?? []
+      }
+    )
   }
 }
 

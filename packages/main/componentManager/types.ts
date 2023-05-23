@@ -9,17 +9,18 @@ export interface UnzipHandle {
 
 export type UpdateStatus =
   | {
-      msg: 'failedAccessLatest'
-    }
+    msg: 'failedAccessLatest'
+  }
   | {
-      msg: 'alreadyLatest'
-    }
+    msg: 'alreadyLatest'
+  }
   | {
-      msg: 'haveUpdate'
-      update: Update
-    }
+    msg: 'haveUpdate'
+    update: Update
+  }
 
 export interface Installer {
+  readonly sources: SourceMirror[]
   readonly componentType: ComponentType
   readonly componentDir: string
 
@@ -42,4 +43,9 @@ export interface Notifier {
   onCompleted(): void
   onDownloadedUpgrade(): void
   onException(): void
+}
+
+export interface SourceMirror {
+  readonly name: string
+  readonly urlReplacer: (oldUrl: string) => string
 }

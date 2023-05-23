@@ -46,7 +46,7 @@ class Storage<T extends Object> implements Module {
     return '1.0.0'
   }
 
-  get(key: string): any {
+  get(key: string | string[]): any {
     return _.get(this.m_storage, key)
   }
 

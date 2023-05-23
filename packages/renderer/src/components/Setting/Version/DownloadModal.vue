@@ -1,10 +1,22 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-import { NButton, NModal, NCard, NSpace, NProgress, NAlert, NTooltip, NPopconfirm } from 'naive-ui'
+import {
+  NButton,
+  NModal,
+  NCard,
+  NSpace,
+  NProgress,
+  NAlert,
+  NTooltip,
+  NPopconfirm,
+  NPopselect,
+  NSelect,
+} from 'naive-ui'
 import useComponentStore from '@/store/components'
 import useDeviceStore from '@/store/devices'
 import type { ComponentType, ComponentStatus } from '@type/componentManager'
 import type { InstallerStatus } from '@type/misc'
+import type { Ref } from 'vue'
 
 const componentStore = useComponentStore()
 const deviceStore = useDeviceStore()
@@ -119,23 +131,48 @@ const handleMouseLeave = () => {
 
 const components: ComponentType[] = ['Maa App', 'Maa Core', 'Android Platform Tools']
 
+type ComponentSources = {
+  [key in ComponentType]: string[]
+}
+
+const componentsSources: Ref<ComponentSources> = ref({
+  'Maa App': [],
+  'Maa Core': [],
+  'Android Platform Tools': [],
+})
+
 onMounted(() => {
   Promise.all(
-    components.map(component => {
-      return new Promise<void>(resolve => {
-        window.ipcRenderer
-          .invoke('main.ComponentManager:getStatus', component)
-          .then((status: ComponentStatus | undefined) => {
-            if (status) {
-              componentStore.updateComponentStatus(component, {
-                componentStatus: status,
-              })
-            }
-            resolve()
-          })
-          .catch(() => resolve())
-      })
-    })
+    components.map(
+      component =>
+        new Promise<void>(resolve => {
+          window.ipcRenderer
+            .invoke('main.ComponentManager:getStatus', component)
+            .then((status: ComponentStatus | undefined) => {
+              if (status) {
+                componentStore.updateComponentStatus(component, {
+                  componentStatus: status,
+                })
+              }
+              resolve()
+            })
+            .catch(() => resolve())
+        })
+    )
+  )
+  Promise.all(
+    components.map(
+      component =>
+        new Promise<void>(resolve => {
+          window.ipcRenderer
+            .invoke('main.ComponentManager:getAvailableMirrors', component)
+            .then((sources: string[]) => {
+              componentsSources.value[component] = sources
+              resolve()
+            })
+            .catch(() => resolve())
+        })
+    )
   )
 })
 </script>
@@ -167,9 +204,34 @@ onMounted(() => {
             :rail-color="'transparent'"
           />
           <div class="download-info">
-            <div class="download-title">
-              {{ $t(`download["${component}"]`) }}
-            </div>
+            <NSpace class="download-title" align="center">
+              <!-- <NSpace v-if="componentsSources[component].length > 1" align="center" size="small">
+                <span>从</span>
+                <NSelect
+                  style="width: 120px"
+                  v-model:value="componentStore[component].installMirror"
+                  size="small"
+                  placeholder="选择镜像"
+                  :options="
+                    componentsSources[component].map(source => ({ label: source, value: source }))
+                  "
+                />
+                <span>下载</span>
+              </NSpace> -->
+              <span>{{ $t(`download["${component}"]`) }}</span>
+              <NPopselect
+                v-if="componentsSources[component].length > 1"
+                v-model:value="componentStore[component].installMirror"
+                :options="
+                  componentsSources[component].map(source => ({ label: source, value: source }))
+                "
+                trigger="click"
+              >
+                <NButton secondary type="primary">
+                  下载源：{{ componentStore[component].installMirror }}
+                </NButton>
+              </NPopselect>
+            </NSpace>
             <div
               v-if="
                 ['installing', 'upgrading', 'installed'].includes(

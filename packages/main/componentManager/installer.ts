@@ -1,7 +1,7 @@
 import path from 'path'
 
 import DownloadManager from '@main/downloadManager'
-import type { Installer, Notifier, UpdateStatus } from './types'
+import type { Installer, Notifier, SourceMirror, UpdateStatus } from './types'
 import type { ComponentType } from '@type/componentManager'
 import logger from '@main/utils/logger'
 import { getAppBaseDir } from '@main/utils/path'
@@ -12,6 +12,7 @@ import { extractFile } from '@main/utils/extract'
 export default abstract class InstallerBase implements Installer {
   public readonly componentType: ComponentType
   public readonly componentDir: string
+  public abstract readonly sources: SourceMirror[]
   public status: InstallerStatus
   private notifier: Notifier
 
@@ -21,7 +22,6 @@ export default abstract class InstallerBase implements Installer {
   constructor(type: ComponentType, dir: string) {
     this.componentType = type
     this.componentDir = dir
-
     this.status = 'pending'
     this.notifier = createNotifier(this.componentType, this)
   }

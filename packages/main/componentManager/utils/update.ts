@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 
 import logger from '@main/utils/logger'
-import type { ReleaseObject, UpdateStatus } from '../types'
+import type { ReleaseObject, SourceMirror, UpdateStatus } from '../types'
 import type { ComponentType } from '@type/componentManager'
 import { getAppBaseDir } from '@main/utils/path'
 
@@ -24,7 +24,7 @@ export function createCheckUpdate(
   },
   component: ComponentType,
   componentDir: string,
-  urlReplacer?: (oldUrl: string) => string
+  getSource: () => SourceMirror
 ) {
   return async (): Promise<UpdateStatus> => {
     const release = (await getRelease()) ?? null
@@ -92,7 +92,7 @@ export function createCheckUpdate(
         )
       }
     }
-    logger.debug(assets)
+    // logger.debug(assets)
     const full = assetName.Full()
     const item = assets.find(asset => full.test(asset.name))
 
@@ -110,9 +110,7 @@ export function createCheckUpdate(
     return {
       msg: 'haveUpdate',
       update: {
-        url:
-          urlReplacer?.call(createCheckUpdate, item.browser_download_url) ??
-          item.browser_download_url,
+        url: getSource().urlReplacer(item.browser_download_url),
         version: latestVersion,
         releaseDate: published_at,
         postUpgrade: () => {

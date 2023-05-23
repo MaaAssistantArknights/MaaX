@@ -3,7 +3,6 @@ import type { Arch, Platform } from '@type/api/maa'
 import type { ComponentType, ComponentStatus } from '@type/componentManager'
 import type { DialogProperty, TouchMode } from '@type/misc'
 import type { Device, Emulator } from '@type/device'
-import type { Acrylic } from '@type/appearanceManager/theme'
 
 export interface InitCoreParam {
   address: string
@@ -64,6 +63,7 @@ export type IpcMainHandleEventType = IpcMainHandleEventTypeAutoRegister & {
   ) => Promise<ComponentStatus | undefined>
   'main.ComponentManager:install': (componentName: ComponentType) => Promise<void>
   'main.ComponentManager:upgrade': (componentName: ComponentType) => Promise<void>
+  'main.ComponentManager:getAvailableMirrors': (componentName: ComponentType) => Promise<string[]>
   'main.DeviceDetector:getAdbPath': () => string
   'main.DeviceDetector:getAdbDevices': () => Promise<Device[]>
   'main.DeviceDetector:getEmulators': () => Promise<Emulator[]>
