@@ -68,6 +68,9 @@ const darkThemeOverrides: GlobalThemeOverrides = {
     primaryColorSuppl: '#b9e4c6',
     ...commonThemeOverrides,
   },
+  Checkbox: {
+    checkMarkColor: '#000',
+  },
 }
 
 const style = computed(() => {
