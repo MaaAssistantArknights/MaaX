@@ -127,13 +127,11 @@ provide(
     </template>
     <NCollapseItem
       class="task-card-inner"
-      :class="
-        [
-          _isCollapsed ? 'collapsed' : '',
-          `task-card__status-${props.taskInfo.status}`,
-          !innerCollapse && props.isCollapsed ? 'inner-expanded' : '',
-        ].join(' ')
-      "
+      :class="[
+        _isCollapsed ? 'collapsed' : '',
+        `task-card__status-${props.taskInfo.status}`,
+        !innerCollapse && props.isCollapsed ? 'inner-expanded' : '',
+      ]"
       name="1"
       display-directive="show"
       :style="{
@@ -309,7 +307,7 @@ provide(
   float: none;
 
   &.collapsed {
-    border-radius: 12px 12px 0 0;
+    // border-radius: 12px 12px 0 0;
   }
 
   &.inner-expanded .card-content {
