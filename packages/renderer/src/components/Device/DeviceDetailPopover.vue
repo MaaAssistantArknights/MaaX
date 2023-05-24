@@ -11,7 +11,7 @@ import {
   NText,
 } from 'naive-ui'
 import useDeviceStore from '@/store/devices'
-import { ref, watch } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import logger from '@/hooks/caller/logger'
 import IconPencilAlt from '@/assets/icons/pencil-alt.svg?component'
 import type { Device } from '@type/device'
@@ -27,44 +27,43 @@ const props = defineProps<{
 const show = ref(false)
 
 const screenshot = ref('')
-let timer: NodeJS.Timer | null = null
+let timer: number | null = null
 
-const startGetScreenshot = async () => {
-  logger.info('send get')
-  window.ipcRenderer.on('renderer.Device:getScreenshot', async (event, data) => {
-    if (data.uuid === props.device.uuid) {
-      const imageData = await window.ipcRenderer.invoke('main.CoreLoader:getScreencap', {
-        uuid: props.device.uuid,
-      })
-      screenshot.value = imageData.screenshot
-    }
-  })
-  if (timer) clearInterval(timer)
-  timer = setInterval(async () => {
+async function gotScreenshot(event: Electron.IpcRendererEvent, data: { uuid: string }) {
+  if (data.uuid === props.device.uuid) {
+    const imageData = await window.ipcRenderer.invoke('main.CoreLoader:getScreencap', {
+      uuid: props.device.uuid,
+    })
+    screenshot.value = imageData.screenshot
+  }
+}
+
+const updateDisplayName = (displayName: string) => {
+  deviceStore.updateDeviceDisplayName(props.device.uuid, displayName)
+}
+
+const updateCommandLine = (commandLine: string) => {
+  deviceStore.updateCommandLine(props.device.uuid, commandLine)
+}
+
+onMounted(() => {
+  // register event
+  window.ipcRenderer.on('renderer.Device:getScreenshot', gotScreenshot)
+  // start timer
+  timer = window.setInterval(async () => {
     logger.info('send asyncScreencap')
     await window.ipcRenderer.invoke('main.CoreLoader:asyncScreencap', {
       uuid: props.device.uuid,
     })
   }, 3000)
-}
-
-const stopGetScreenshot = () => {
-  if (timer) clearInterval(timer)
-  timer = null
-  window.ipcRenderer.off('renderer.Device:getScreenshot', () => {})
-}
-
-watch(show, newShowValue => {
-  // if (newShowValue) {
-  //   startGetScreenshot()
-  // } else {
-  //   stopGetScreenshot()
-  // }
 })
 
-const updateDisplayName = (displayName: string) => {
-  deviceStore.updateDeviceDisplayName(props.device.uuid, displayName)
-}
+onUnmounted(() => {
+  // unregister event
+  window.ipcRenderer.off('renderer.Device:getScreenshot', gotScreenshot)
+  // stop timer
+  if (timer) window.clearInterval(timer)
+})
 </script>
 
 <template>
@@ -85,7 +84,7 @@ const updateDisplayName = (displayName: string) => {
             <NText type="info"> 备注: （双击可编辑）</NText>
           </template>
           <ClickToEdit
-            :value="props.device.displayName"
+            :value="props.device.displayName ?? ''"
             @update:value="updateDisplayName"
             spellcheck="false"
           />
@@ -113,7 +112,8 @@ const updateDisplayName = (displayName: string) => {
           <NTooltip trigger="hover">
             <template #trigger>
               <ClickToEdit
-                v-model:value="props.device.commandLine"
+                :value="props.device.commandLine ?? ''"
+                @update:value="updateCommandLine"
                 type="textarea"
                 placeholder="未设置启动命令"
                 :autosize="{ minRows: 1 }"

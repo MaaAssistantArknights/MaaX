@@ -15,6 +15,7 @@ export interface DeviceAction {
   removeNotInUseDevice: () => void
   updateDeviceUuid: (oldUuid: string, newUuid: string) => void
   updateDeviceDisplayName: (uuid: string, displayName: string) => void
+  updateCommandLine: (uuid: string, commandLine: string) => void
   getDevice: (uuid: string) => Device | undefined
   deleteDevice: (uuid: string) => void
   wakeUpDevice: (uuid: string) => Promise<boolean>
@@ -78,6 +79,12 @@ const useDeviceStore = defineStore<'device', DeviceState, {}, DeviceAction>('dev
           displayName = origin.uuid // 如果为空，则使用uuid
         }
         origin.displayName = displayName
+      }
+    },
+    updateCommandLine(uuid, commandLine) {
+      const origin = this.devices.find(dev => dev.uuid === uuid)
+      if (origin != null) {
+        origin.commandLine = commandLine
       }
     },
     deleteDevice(uuid) {
