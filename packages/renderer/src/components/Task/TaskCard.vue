@@ -307,7 +307,7 @@ provide(
   float: none;
 
   &.collapsed {
-    // border-radius: 12px 12px 0 0;
+    border-radius: 12px 12px 0 0;
   }
 
   &.inner-expanded .card-content {
