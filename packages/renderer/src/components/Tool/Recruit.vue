@@ -5,7 +5,7 @@ import { ref } from 'vue'
 import { useSeperateTaskStore } from '@/store/seperateTask'
 import { getOperatorAvatar } from '@/utils/game_image'
 import { showMessage } from '@/utils/message'
-import { AsstMsg, type SubTaskExtraInfoMapper } from '@type/task/callback'
+import { AsstMsg, type CallbackMapper, type SubTaskExtraInfoMapper } from '@type/task/callback'
 import type { GetTask } from '@type/task'
 
 type RecruitResult = SubTaskExtraInfoMapper['RecruitResult']
@@ -88,7 +88,7 @@ async function doRecruit(selectTags: string[] = []) {
     }
     switch (msg) {
       case AsstMsg.SubTaskExtraInfo: {
-        const d = data
+        const d = data as CallbackMapper[AsstMsg.SubTaskExtraInfo]
         if (d.what === 'RecruitResult') {
           result.value = d.details
         }

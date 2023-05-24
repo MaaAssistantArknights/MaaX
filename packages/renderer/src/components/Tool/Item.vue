@@ -5,7 +5,7 @@ import { ref } from 'vue'
 import { useSeperateTaskStore } from '@/store/seperateTask'
 import { getItemBorderedImage, getOperatorAvatar } from '@/utils/game_image'
 import { showMessage } from '@/utils/message'
-import { AsstMsg, type SubTaskExtraInfoMapper } from '@type/task/callback'
+import { AsstMsg, type CallbackMapper, type SubTaskExtraInfoMapper } from '@type/task/callback'
 import type { GetTask } from '@type/task'
 import { items } from '@common/ArknightsGameData/zh_CN/gamedata/excel/item_table.json'
 
@@ -46,7 +46,7 @@ async function doDepot() {
     }
     switch (msg) {
       case AsstMsg.SubTaskExtraInfo: {
-        const d = data
+        const d = data as CallbackMapper[AsstMsg.SubTaskExtraInfo]
         if (d.what === 'DepotInfo') {
           result.value = d.details
         }
@@ -57,13 +57,15 @@ async function doDepot() {
         seperateTaskStore.unregister(currentUuid, taskId.value, h)
         processing.value = false
         return true
-      case AsstMsg.SubTaskCompleted:
-        if (data.subtask === 'DepotRecognitionTask') {
+      case AsstMsg.SubTaskCompleted: {
+        const d = data as CallbackMapper[AsstMsg.SubTaskCompleted]
+        if (d.subtask === 'DepotRecognitionTask') {
           seperateTaskStore.unregister(currentUuid, taskId.value, h)
           processing.value = false
           return true
         }
         return false
+      }
     }
     return false
   })
