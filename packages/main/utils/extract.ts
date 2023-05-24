@@ -4,6 +4,7 @@ import unzipper from 'unzipper'
 import tar from 'tar'
 
 import logger from './logger'
+import { getPlatform } from './os'
 
 export async function unzipFile(src: string, dest: string) {
   const dir = await unzipper.Open.file(src)
@@ -29,6 +30,7 @@ export async function unzipFile(src: string, dest: string) {
       fs.mkdirSync(dirpath, { recursive: true })
     }
   }
+  const platform = getPlatform()
   // 写入文件
   return Promise.all<void>(
     dir.files
@@ -42,9 +44,14 @@ export async function unzipFile(src: string, dest: string) {
               fs.mkdirSync(dirpath, { recursive: true })
             }
             logger.debug(`[Extract Helper] create file: ${file.path}`)
-            const writeStream = fs.createWriteStream(path.join(dest, file.path), {
-              mode: (file.externalFileAttributes >>> 16) & 0o777,
-            })
+            const writeStream = fs.createWriteStream(
+              path.join(dest, file.path),
+              platform === 'windows'
+                ? undefined
+                : {
+                    mode: (file.externalFileAttributes >>> 16) & 0o777,
+                  }
+            )
             writeStream.on('ready', () => {
               file
                 .stream()
