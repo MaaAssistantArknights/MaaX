@@ -223,95 +223,97 @@ function handleUpdateStartsCount(value: number | null) {
 </script>
 
 <template>
-  <NForm
-    :show-label="true"
-    size="small"
-    label-align="left"
-    label-placement="left"
-    :show-feedback="false"
-  >
-    <NSpace vertical>
-      <NFormItem label="主题">
-        <NSelect
-          :disabled="configurationDisabled.re"
-          :value="props.configurations.theme"
-          :options="themeOptions"
-          @update:value="value => handleUpdateRogueTheme(value)"
-        />
-      </NFormItem>
-      <NFormItem label="作战策略">
-        <NSelect
-          :disabled="configurationDisabled.re"
-          :value="props.configurations.mode"
-          :options="strategyOptions"
-          @update:value="value => handleUpdateConfiguration('mode', value)"
-        />
-      </NFormItem>
-      <NFormItem label="开局分队">
-        <NSelect
-          :disabled="configurationDisabled.re"
-          :value="props.configurations.squad"
-          :options="
-            props.configurations.theme === RogueTheme.Phantom
-              ? phantomSquadOptions
-              : mizukiSquadOptions
-          "
-          @update:value="value => handleUpdateConfiguration('squad', value)"
-        />
-      </NFormItem>
-      <NFormItem label="开局职业">
-        <NSelect
-          :disabled="configurationDisabled.re"
-          :value="props.configurations.roles"
-          :options="rolesOptions"
-          @update:value="value => handleUpdateConfiguration('roles', value)"
-        />
-      </NFormItem>
-      <NFormItem label="开局干员">
-        <NTooltip trigger="hover">
-          <template #trigger>
-            <NInput
-              :disabled="configurationDisabled.re"
-              :value="props.configurations.core_char"
-              @update:value="value => handleUpdateConfiguration('core_char', value)"
-            />
-          </template>
-          仅支持单个干员中！文！名！。默认识别练度自动选择
-        </NTooltip>
-      </NFormItem>
-      <NFormItem label="作战次数">
-        <NInputNumber
-          :min="0"
-          :max="999"
-          :disabled="configurationDisabled.re"
-          :value="props.configurations.starts_count"
-          :update-value-on-input="false"
-          @update:value="handleUpdateStartsCount"
-        />
-      </NFormItem>
-      <NFormItem>
-        <NCheckbox
-          :disabled="configurationDisabled.re"
-          :checked="props.configurations.use_support"
-          @update:checked="value => handleUpdateConfiguration('use_support', value)"
-        >
-          开局干员使用助战
-        </NCheckbox>
-      </NFormItem>
-      <NFormItem>
-        <NTooltip trigger="hover">
-          <template #trigger>
-            <NCheckbox
-              :disabled="configurationDisabled.re"
-              :checked="props.configurations.use_nonfriend_support"
-              @update:checked="value => handleUpdateConfiguration('use_nonfriend_support', value)"
-            >
-              允许使用非好友助战
-            </NCheckbox>
-          </template>
-          是否可以是非好友助战干员，仅在勾选'开局干员使用助战'时有效
-        </NTooltip>
-      </NFormItem>
-    </NSpace>
-  </NForm>
+  <div class="configuration-form">
+    <NForm
+      size="small"
+      label-align="left"
+      label-placement="left"
+      label-width="auto"
+      :show-feedback="false"
+    >
+      <NSpace vertical>
+        <NFormItem label="主题">
+          <NSelect
+            :disabled="configurationDisabled.re"
+            :value="props.configurations.theme"
+            :options="themeOptions"
+            @update:value="value => handleUpdateRogueTheme(value)"
+          />
+        </NFormItem>
+        <NFormItem label="作战策略">
+          <NSelect
+            :disabled="configurationDisabled.re"
+            :value="props.configurations.mode"
+            :options="strategyOptions"
+            @update:value="value => handleUpdateConfiguration('mode', value)"
+          />
+        </NFormItem>
+        <NFormItem label="开局分队">
+          <NSelect
+            :disabled="configurationDisabled.re"
+            :value="props.configurations.squad"
+            :options="
+              props.configurations.theme === RogueTheme.Phantom
+                ? phantomSquadOptions
+                : mizukiSquadOptions
+            "
+            @update:value="value => handleUpdateConfiguration('squad', value)"
+          />
+        </NFormItem>
+        <NFormItem label="开局职业">
+          <NSelect
+            :disabled="configurationDisabled.re"
+            :value="props.configurations.roles"
+            :options="rolesOptions"
+            @update:value="value => handleUpdateConfiguration('roles', value)"
+          />
+        </NFormItem>
+        <NFormItem label="开局干员">
+          <NTooltip trigger="hover">
+            <template #trigger>
+              <NInput
+                :disabled="configurationDisabled.re"
+                :value="props.configurations.core_char"
+                @update:value="value => handleUpdateConfiguration('core_char', value)"
+              />
+            </template>
+            仅支持单个干员中！文！名！。默认识别练度自动选择
+          </NTooltip>
+        </NFormItem>
+        <NFormItem label="作战次数">
+          <NInputNumber
+            :min="0"
+            :max="999"
+            :disabled="configurationDisabled.re"
+            :value="props.configurations.starts_count"
+            :update-value-on-input="false"
+            @update:value="handleUpdateStartsCount"
+          />
+        </NFormItem>
+        <NFormItem>
+          <NCheckbox
+            :disabled="configurationDisabled.re"
+            :checked="props.configurations.use_support"
+            @update:checked="value => handleUpdateConfiguration('use_support', value)"
+          >
+            开局干员使用助战
+          </NCheckbox>
+        </NFormItem>
+        <NFormItem>
+          <NTooltip trigger="hover">
+            <template #trigger>
+              <NCheckbox
+                :disabled="configurationDisabled.re"
+                :checked="props.configurations.use_nonfriend_support"
+                @update:checked="value => handleUpdateConfiguration('use_nonfriend_support', value)"
+              >
+                允许使用非好友助战
+              </NCheckbox>
+            </template>
+            是否可以是非好友助战干员，仅在勾选'开局干员使用助战'时有效
+          </NTooltip>
+        </NFormItem>
+      </NSpace>
+    </NForm>
+  </div>
 </template>
