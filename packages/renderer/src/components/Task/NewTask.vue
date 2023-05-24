@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NCollapse, NCollapseItem, NScrollbar, NSpace, useThemeVars, NDropdown } from 'naive-ui'
+import { NCollapse, NCollapseItem, NScrollbar, NSpace, useThemeVars, NDropdown, NText } from 'naive-ui'
 import { ref, nextTick } from 'vue'
 import router from '@/router'
 import useThemeStore from '@/store/theme'

@@ -70,8 +70,7 @@ export default abstract class InstallerBase implements Installer {
               this.status = 'exception'
               this.notifier.onException()
             },
-          }
-          ).then(() => {
+          }).then(() => {
             this.status = 'downloading'
           })
         }

@@ -175,7 +175,9 @@ onMounted(async () => {
               :value="drops.times"
               :min="0"
               :max="999"
-              @update:value="value => handleDropUpdate({ item_id: drops.item_id, times: value ?? undefined })"
+              @update:value="
+                value => handleDropUpdate({ item_id: drops.item_id, times: value ?? undefined })
+              "
             />
           </NInputGroup>
         </NFormItem>

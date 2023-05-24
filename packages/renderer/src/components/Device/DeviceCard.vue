@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import IconDisconnect from '@/assets/icons/disconnect.svg?component'
 import DeviceDetailPopover from '@/components/Device/DeviceDetailPopover.vue'
 import IconLink from '@/assets/icons/link.svg?component'
-import { NButton, NTooltip, NIcon, NSpace, NPopconfirm, useThemeVars } from 'naive-ui'
+import { NButton, NTooltip, NIcon, NSpace, NPopconfirm, useThemeVars, NPopover } from 'naive-ui'
 
 import useDeviceStore from '@/store/devices'
 import router from '@/router'
@@ -17,6 +17,8 @@ import type { InitCoreParam } from '@type/ipc'
 const props = defineProps<{
   device: Device
 }>()
+
+const showDetail = ref(false)
 
 const themeVars = useThemeVars()
 const deviceStore = useDeviceStore()
@@ -142,11 +144,16 @@ async function handleDeviceConnect() {
           })()
         }}
       </NTooltip>
-      <DeviceDetailPopover :device="props.device">
-        <div class="device-name">
-          {{ deviceDisplayName }}
-        </div>
-      </DeviceDetailPopover>
+      <NPopover v-model:show="showDetail" :duration="500">
+        <template #trigger>
+          <div class="device-name">
+            {{ deviceDisplayName }}
+          </div>
+        </template>
+        <template #default>
+          <DeviceDetailPopover :device="props.device" />
+        </template>
+      </NPopover>
     </NButton>
     <NSpace :align="'center'">
       <NPopconfirm

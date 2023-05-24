@@ -9,15 +9,15 @@ export interface UnzipHandle {
 
 export type UpdateStatus =
   | {
-    msg: 'failedAccessLatest'
-  }
+      msg: 'failedAccessLatest'
+    }
   | {
-    msg: 'alreadyLatest'
-  }
+      msg: 'alreadyLatest'
+    }
   | {
-    msg: 'haveUpdate'
-    update: Update
-  }
+      msg: 'haveUpdate'
+      update: Update
+    }
 
 export interface Installer {
   readonly sources: SourceMirror[]
