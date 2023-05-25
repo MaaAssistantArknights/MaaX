@@ -26,7 +26,7 @@ export async function unzipFile(src: string, dest: string) {
   for (const file of dir.files.filter(file => file.type === 'Directory')) {
     const dirpath = path.join(dest, file.path)
     if (!fs.existsSync(dirpath)) {
-      logger.debug(`[Extract Helper] create directory: ${dirpath}`)
+      // logger.debug(`[Extract Helper] create directory: ${dirpath}`)
       fs.mkdirSync(dirpath, { recursive: true })
     }
   }
@@ -40,10 +40,19 @@ export async function unzipFile(src: string, dest: string) {
           new Promise((resolve, reject) => {
             const dirpath = path.join(dest, path.dirname(file.path))
             if (!fs.existsSync(dirpath)) {
-              logger.debug(`[Extract Helper] create directory: ${dirpath}`)
+              // logger.debug(`[Extract Helper] create directory: ${dirpath}`)
               fs.mkdirSync(dirpath, { recursive: true })
             }
-            logger.debug(`[Extract Helper] create file: ${file.path}`)
+            // logger.debug(`[Extract Helper] create file: ${file.path}`)
+            const destFilePath = path.join(dest, file.path)
+            if (fs.existsSync(destFilePath)) {
+              try {
+                fs.accessSync(destFilePath, fs.constants.W_OK)
+              } catch (e) {
+                fs.unlinkSync(destFilePath)
+                logger.info(`[Extract Helper] no write access, remove file: ${destFilePath}`)
+              }
+            }
             const writeStream = fs.createWriteStream(
               path.join(dest, file.path),
               platform === 'windows'
