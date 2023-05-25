@@ -49,7 +49,7 @@
     "clipboard": "^2.0.11",
     "color2k": "^2.0.2",
     "date-fns": "^2.30.0",
-    "electron": "^24.3.1",
+    "electron": "^24.4.0",
     "electron-devtools-installer": "^3.2.0",
     "exponential-backoff": "^3.1.1",
     "less": "^4.1.3",
@@ -83,7 +83,6 @@
     "arknights"
   ],
   "dependencies": {
-    "@pyke/vibe": "^0.4.0",
     "@tigerconnect/ffi-napi": "4.0.3-tc3",
     "@tigerconnect/ref-napi": "4.0.0-tc8",
     "axios": "^0.27.2",

@@ -2,7 +2,6 @@ import { app, BrowserWindow, shell } from 'electron'
 import { release } from 'os'
 import { join } from 'path'
 import fs from 'fs'
-import vibe from '@pyke/vibe'
 
 import useDebug from '@main/utils/debug'
 import logger from '@main/utils/logger'
@@ -23,6 +22,8 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
 
 // Set application name for Windows 10+ notifications
 if (getPlatform() === 'windows') app.setAppUserModelId(app.getName())
+
+logger.info(`Electron version: ${process.versions.electron}`)
 
 if (!app.requestSingleInstanceLock()) {
   app.quit()
@@ -83,8 +84,6 @@ async function createApp(): Promise<void> {
     })
   })
 }
-
-vibe.setup(app)
 
 app.whenReady().then(createApp)
 
