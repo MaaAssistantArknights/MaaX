@@ -326,9 +326,11 @@ const currentTaskGroup = computed(() => taskStore.getCurrentTaskGroup(uuid.value
   }
 
   &.cards-grid :deep(.task-card) {
+    --gap-size: 10px;
+    --gap-percentage: 1%;
     display: inline-block;
-    width: 48%;
-    margin: min(1%, 10px);
+    width: calc(50% - calc(min(var(--gap-percentage), var(--gap-size)) * 2));
+    margin: min(var(--gap-percentage), var(--gap-size));
   }
 
   &.cards-grid :deep(.task-card:nth-child(odd)) {

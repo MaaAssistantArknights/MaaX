@@ -324,11 +324,6 @@ onMounted(() => {
       label-placement="left"
       :show-feedback="false"
       :label-style="{ justifyContent: 'center' }"
-      style="
-         {
-          margin-top: 110px;
-        }
-      "
     >
       <NTooltip v-if="props.configurations.mode === 10000" width="trigger" trigger="hover">
         <template #trigger>
