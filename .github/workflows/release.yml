@@ -38,8 +38,8 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ github.ref }}
-          prerelease: ${{ steps.pre-release.outputs.match != '' }}
-          draft: true
+          # prerelease: ${{ steps.pre-release.outputs.match != '' }}
+          # draft: true
   build:
     # see more environment https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idruns-on
     needs: release
