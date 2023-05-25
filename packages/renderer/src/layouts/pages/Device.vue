@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { NInput, NAlert, NButton, NIcon, NText, NForm, NFormItem, useDialog } from 'naive-ui'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
@@ -9,9 +9,12 @@ import useSettingStore from '@/store/settings'
 import IconLink from '@/assets/icons/link.svg?component'
 import _ from 'lodash'
 import { showMessage } from '@/utils/message'
+import type { Device } from '@type/device'
 
 const address = ref('')
 const deviceStore = useDeviceStore()
+const settingStore = useSettingStore()
+const touchMode = computed(() => settingStore.touchMode)
 
 function addressChecker(cs: string) {
   let [ip, port] = cs.split(':')
@@ -45,7 +48,7 @@ async function handleCustomConnect() {
     const loading = showMessage('正在连接', { type: 'loading', duration: 0 })
     if (deviceStore.devices.find(dev => dev.address === address.value)) {
       loading.destroy()
-      showMessage('设备已经存在了哦', { type: 'warning', duration: 5000 })
+      showMessage('设备已经存在了哦, 请点击左侧连接按钮吧', { type: 'warning', duration: 5000 })
       return
     }
     const uuid = await window.ipcRenderer.invoke('main.DeviceDetector:getDeviceUuid', address.value)
@@ -54,13 +57,24 @@ async function handleCustomConnect() {
       showMessage('连接失败，检查一下地址吧', { type: 'error', duration: 5000 })
       return
     }
-    deviceStore.mergeSearchResult([
+    await deviceStore.mergeSearchResult([
       {
         uuid: uuid as string,
         address: address.value,
         name: 'General',
       },
     ])
+    const device = deviceStore.getDevice(uuid as string)
+    if (device) {
+      deviceStore.updateDeviceStatus(device.uuid, 'connecting')
+      await window.ipcRenderer.invoke('main.CoreLoader:initCoreAsync', {
+        address: device.address,
+        uuid: device.uuid,
+        adb_path: device.adbPath,
+        config: 'General',
+        touch_mode: touchMode.value,
+      })
+    }
     loading.destroy()
   } else {
     showMessage('设备地址不对哦，检查一下吧', { type: 'error', duration: 5000 })

@@ -99,6 +99,16 @@ export async function runTasks(uuid: string): Promise<void> {
       }
       default: {
         // default -> core tasks
+        const initStatus = await window.ipcRenderer.invoke('main.CoreLoader:isCoreInited', { uuid })
+        if (!initStatus) {
+          showMessage(
+            `设备信息未知, 如果你希望自启动模拟器开始任务, 请在游戏任务前配置 '启动模拟器' 任务`,
+            { type: 'error', duration: 0, closable: true }
+          )
+          const deviceStore = useDeviceStore()
+          deviceStore.updateDeviceStatus(uuid, 'unknown')
+          return
+        }
         task.status = 'waiting'
         const taskId = await window.ipcRenderer.invoke('main.CoreLoader:appendTask', {
           uuid: uuid,

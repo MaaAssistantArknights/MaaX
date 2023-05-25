@@ -523,6 +523,10 @@ class CoreLoader {
     return true
   }
 
+  public IsCoreInited(uuid: string): boolean {
+    return this.MeoAsstPtr[uuid] !== undefined
+  }
+
   public async Upgrade(): Promise<void> {
     logger.info('Start upgrade core')
     const currentVersionFile = path.join(getAppBaseDir(), 'core', 'version')

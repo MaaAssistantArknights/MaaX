@@ -10,7 +10,7 @@ export interface DeviceState {
 }
 
 export interface DeviceAction {
-  mergeSearchResult: (devices: NativeDevice[]) => void
+  mergeSearchResult: (devices: NativeDevice[]) => Promise<void>
   updateDeviceStatus: (uuid: string, status: DeviceStatus) => void
   removeNotInUseDevice: () => void
   updateDeviceUuid: (oldUuid: string, newUuid: string) => void

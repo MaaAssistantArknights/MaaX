@@ -25,7 +25,7 @@ export async function initialStore(): Promise<void> {
       storage.devices = storage.devices.map(device => ({
         ...device,
         status: 'unknown',
-        address: '',
+        address: device.config === 'General' ? device.address : '', // General为手动创建连接的设备, 默认不重置地址
         pid: '',
       }))
       return storage

@@ -45,6 +45,7 @@ export type IpcMainHandleEventTypeAutoRegister = {
   'main.CoreLoader:asyncScreencap': (arg: { uuid: string }) => number | boolean
   // WARN: 该方法尚未实现
   'main.CoreLoader:getScreencap': (arg: { uuid: string }) => Promise<{ screenshot: string }>
+  'main.CoreLoader:isCoreInited': (arg: { uuid: string }) => boolean
 }
 
 export type IpcMainHandleEventType = IpcMainHandleEventTypeAutoRegister & {

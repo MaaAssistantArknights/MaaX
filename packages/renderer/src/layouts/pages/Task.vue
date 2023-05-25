@@ -143,6 +143,15 @@ async function handleStart() {
       config: device.config,
       touch_mode: touchMode.value,
     })
+  } else if (device && device.config === 'General') {
+    deviceStore.updateDeviceStatus(device.uuid as string, 'waitingTask')
+    await window.ipcRenderer.invoke('main.CoreLoader:initCoreAsync', {
+      address: device.address,
+      uuid: device.uuid,
+      adb_path: device.adbPath,
+      config: device.config,
+      touch_mode: touchMode.value,
+    })
   } else {
     await handleSubStart()
 

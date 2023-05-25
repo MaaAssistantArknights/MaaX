@@ -87,6 +87,9 @@ const asstHooks: {
   'main.CoreLoader:getScreencap': (_event, arg) => {
     throw 'IPC main.CoreLoader:getScreencap: Not Implement Yet'
   },
+  'main.CoreLoader:isCoreInited': (_event, arg) => {
+    return core.IsCoreInited(arg.uuid)
+  },
 }
 
 export default function useAsstHooks(): void {
