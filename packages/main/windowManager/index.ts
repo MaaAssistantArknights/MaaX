@@ -1,4 +1,4 @@
-import { type BrowserWindowConstructorOptions, BrowserWindow } from 'electron'
+import { BrowserWindow } from 'electron'
 import { join } from 'path'
 import { Singleton } from '@common/function/singletonDecorator'
 import useController from './control'
@@ -6,7 +6,6 @@ import useTheme from './theme'
 import Storage from '@main/storageManager'
 import { getPlatform } from '@main/utils/os'
 import type { Module } from '@type/misc'
-import vibe from '@pyke/vibe'
 
 @Singleton
 class WindowManager implements Module {
@@ -52,25 +51,8 @@ class WindowManager implements Module {
       this.window_.setVibrancy('under-window')
     }
     if (getPlatform() === 'windows' && storage.get('theme.acrylic')) {
-      vibe.applyEffect(this.window_, 'unified-acrylic')
+      this.window_.setBackgroundMaterial('mica')
     }
-    // if (getPlatform() === 'windows') {
-    //   switch (storage.get('theme.acrylic')) {
-    //     case 'none':
-    //     case false:
-    //       vibe.clearEffects(this.window_)
-    //       break
-    //     case 'acrylic':
-    //     case true:
-    //       vibe.applyEffect(this.window_, 'unified-acrylic')
-    //       break
-    //     case 'blur':
-    //       vibe.applyEffect(this.window_, 'blurbehind')
-    //       break
-    //     default:
-    //       break
-    //   }
-    // }
   }
 
   public get name(): string {

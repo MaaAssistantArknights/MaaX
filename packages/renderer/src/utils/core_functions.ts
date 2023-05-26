@@ -1,14 +1,18 @@
 import logger from '@/hooks/caller/logger'
 import { TouchMode, TouchModes } from '@type/misc'
 import type { ResourceType } from '@type/game'
+import { getPlatform } from '@/hooks/caller/os'
 
 /**
  * load core resources, include other server clients
  * @returns Promise<boolean>
  */
 export async function loadCoreResources(type: ResourceType): Promise<boolean> {
+  const platform = await getPlatform()
+  const separator = platform === 'windows' ? '\\' : '/'
   const basePath = await window.ipcRenderer.invoke('main.CoreLoader:getLibPath')
-  const resourcePath = type === 'CN' ? basePath : basePath + '\\resource' + '\\global' + '\\' + type
+  const resourcePath =
+    type === 'CN' ? basePath : [basePath, 'resource', 'global', type].join(separator)
   // WARN: 改变了原有逻辑, 按类型来看应该传对象而非字符串, 不知道原来是什么情况
   const status = await window.ipcRenderer.invoke('main.CoreLoader:loadResource', {
     path: resourcePath,

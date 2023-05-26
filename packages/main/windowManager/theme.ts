@@ -2,7 +2,6 @@ import { ipcMainHandle, ipcMainSend } from '@main/utils/ipc-main'
 import { nativeTheme, BrowserWindow } from 'electron'
 import { getPlatform } from '@main/utils/os'
 import Storage from '@main/storageManager'
-import vibe from '@pyke/vibe'
 
 export default function useTheme(window: BrowserWindow): void {
   const themeEvent = (): void => {
@@ -34,11 +33,7 @@ export default function useTheme(window: BrowserWindow): void {
       window.setVibrancy(isAcrylic ? 'under-window' : 'appearance-based')
     }
     if (getPlatform() === 'windows') {
-      if (isAcrylic) {
-        vibe.applyEffect(window, 'unified-acrylic')
-      } else {
-        vibe.clearEffects(window)
-      }
+      window.setBackgroundMaterial(isAcrylic ? 'mica' : 'auto')
     }
   })
 
