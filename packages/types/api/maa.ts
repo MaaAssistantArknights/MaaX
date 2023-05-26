@@ -32,6 +32,8 @@ export type GameServers = 'cn' | 'us' | 'jp' | 'kr'
 export type GameLocales = 'zh' | 'en' | 'ja' | 'ko'
 export type StageType = 'MAIN' | 'SUB' | 'ACTIVITY' | 'DAILY'
 export type ZoneType = 'MAINLINE'
+export type DiffGroupType = 'NONE' | 'NORMAL' | 'EASY' | 'TOUGH' | 'ALL'
+export type DifficultyType = 'NORMAL' | 'FOUR_STAR'
 
 export interface StageMetadata {
   stage_id: string
@@ -56,8 +58,9 @@ export interface Zone {
 
 export interface Stage {
   stageType: StageType
-  difficulty: string
+  difficulty: DifficultyType
   performanceStageFlag: string
+  diffGroup: DiffGroupType
   stageId: string
   levelId: string
   zoneId: string

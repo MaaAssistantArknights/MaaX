@@ -10,11 +10,17 @@ import useSettingStore from '@/store/settings'
 window.$message = useMessage()
 window.$dialog = useDialog()
 const settingStore = useSettingStore()
+const resourceStore = useResourceStore()
+import useResourceStore from '@/store/resource'
+
 const { t } = useI18n()
 
 onMounted(async () => {
   await asst.upgradeCore()
+  await resourceStore.updateResource()
+
   await asst.load()
+
   const coreVersion = await version.core()
   if (!coreVersion && settingStore.hintCoreNotInstalled) {
     window.$dialog.info({

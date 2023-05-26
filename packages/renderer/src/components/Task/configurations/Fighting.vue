@@ -3,24 +3,46 @@ import { ref, onMounted, computed, inject } from 'vue'
 import { NFormItem, NInputNumber, NSpace, NSelect, NInputGroup, NForm } from 'naive-ui'
 import { gamedata } from '@/api'
 import type { GetConfig } from './types'
+import _ from 'lodash'
+import useResrourceStore from '@/store/resource'
+import useSettingStore from '@/store/settings'
+import semver from 'semver'
 
 type FightConfig = GetConfig<'Fight'>
+type Stage = {
+  label: string
+  value: string
+}
 
-const { getAllItems } = gamedata
+const resourceStore = useResrourceStore()
+const settingStore = useSettingStore()
+const { getAllItems, getAllStages } = gamedata
 
-// FIXME: 不应该硬编码(
-// 最好也整成图片的选择形式?
-const supportStages = [
+// 标准 / 磨难
+const StageExtraSuffix = {
+  NORMAL: '-NORMAL',
+  TOUGH: '-HARD',
+}
+
+const basicSupportStages: Stage[] = [
   { label: '当前关卡/上次作战', value: '' },
-  { label: 'LE-5', value: 'LE-5' },
-  { label: 'LE-7', value: 'LE-7' },
-  { label: 'LE-8', value: 'LE-8' },
   { label: '1-7', value: '1-7' },
+  { label: '剿灭', value: 'Annihilation' },
   { label: '龙门币-6/5', value: 'CE-6' },
   { label: '经验-6/5', value: 'LS-6' },
   { label: '红票-5', value: 'AP-5' },
   { label: '技能-5', value: 'CA-5' },
+  { label: '重装/医疗-小', value: 'PR-A-1' },
+  { label: '重装/医疗-大', value: 'PR-A-2' },
+  { label: '狙击/术士-小', value: 'PR-B-1' },
+  { label: '狙击/术士-大', value: 'PR-B-2' },
+  { label: '辅助/先锋-小', value: 'PR-C-1' },
+  { label: '辅助/先锋-大', value: 'PR-C-2' },
+  { label: '特种/近卫-小', value: 'PR-D-1' },
+  { label: '特种/近卫-大', value: 'PR-D-2' },
 ]
+
+const supportStages: Stage[] = []
 
 const props = defineProps<{
   configurations: FightConfig
@@ -91,12 +113,57 @@ function handleDropUpdate(value: { item_id?: string; times?: number }) {
 }
 
 onMounted(async () => {
+  loading.value = true
+
+  const clientType = settingStore.clientType === 'CN' ? 'Official' : settingStore.clientType
+  const coreVersion = settingStore.version.core.current ?? ''
+
+  const UTCNow = new Date().toUTCString()
+  resourceStore.stageActivity?.[clientType]?.sideStoryStage
+    ?.filter(item => semver.gte(coreVersion, item.MinimumRequired))
+    .filter(item => {
+      if (
+        item.Activity.UtcExpireTime &&
+        new Date(item.Activity.UtcExpireTime).toISOString() < UTCNow
+      ) {
+        return false
+      }
+      return true
+    })
+    .map(item => {
+      supportStages.push({
+        label: item.Display,
+        value: item.Value,
+      })
+    })
+
+  supportStages.push(...basicSupportStages)
+  const stageResponse = await getAllStages()
+  const mainlineStages = Object.values(stageResponse.stages)
+    .filter(
+      item =>
+        item.stageType === 'MAIN' &&
+        item.difficulty === 'NORMAL' &&
+        item.canBattleReplay == true &&
+        ['NONE', 'NORMAL', 'TOUGH'].includes(item.diffGroup)
+    )
+    .map(item => {
+      const kv =
+        item.diffGroup === 'NONE'
+          ? item.code
+          : item.code + StageExtraSuffix[item.diffGroup as keyof typeof StageExtraSuffix]
+      return {
+        label: kv,
+        value: kv,
+      }
+    })
+
+  supportStages.push(...mainlineStages)
   if (!props.configurations.drops) {
     handleUpdateConfiguration('drops', {})
   }
-  loading.value = true
-  const response = await getAllItems()
-  allItems.value = Object.values(response.items)
+  const itemResponse = await getAllItems()
+  allItems.value = Object.values(itemResponse.items)
     .filter(item => item.stageDropList.length !== 0)
     .filter(item => !['ACTIVITY_ITEM', 'ET_STAGE'].includes(item.itemType))
     .map(item => ({

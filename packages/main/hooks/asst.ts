@@ -121,4 +121,8 @@ export default function useAsstHooks(): void {
     }
     core.dispose()
   })
+
+  ipcMainHandle('main.CoreLoader:updateTaskJson', async (_event, arg) => {
+    return core.UpdateTaskJson(arg.type, arg.data)
+  })
 }

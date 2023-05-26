@@ -5,6 +5,7 @@ import useDeviceStore, { type DeviceState } from './devices'
 import useSettingStore, { type SettingState } from './settings'
 import useTaskStore, { type TaskState } from './tasks'
 import useThemeStore, { type ThemeState } from './theme'
+import useResourceStore, { type ResourceState } from './resource'
 import logger from '@/hooks/caller/logger'
 import type { CoreTaskName, FrontTaskName } from '@type/task'
 import useComponentStore, { type ComponentStoreState } from './components'
@@ -18,6 +19,7 @@ export async function initialStore(): Promise<void> {
     tasks: useTaskStore(),
     theme: useThemeStore(),
     component: useComponentStore(),
+    resource: useResourceStore(),
   }
 
   const patcher: Record<string, Patcher<any>> = {
@@ -62,6 +64,9 @@ export async function initialStore(): Promise<void> {
       return storage
     },
     component: (storage: ComponentStoreState) => {
+      return storage
+    },
+    resource: (storage: ResourceState) => {
       return storage
     },
   }

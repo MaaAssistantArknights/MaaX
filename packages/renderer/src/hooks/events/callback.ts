@@ -89,12 +89,16 @@ export default function useCallbackEvents(): void {
                   .then(response => {
                     task.results.fightInfo[resultIndex].reported = true
                     const reportId = response.headers['x-penguin-set-penguinid']
+                    const reportHash = response.data.reportHash ?? ''
                     if (reportId) {
                       settingStore.penguinReportId = reportId
                       if (settingStore.yituliuReportId.trim() === '') {
                         settingStore.yituliuReportId = reportId
                       }
                     }
+                    logger.info(
+                      `[Report] report to penguin successfully. reportId:${settingStore.penguinReportId}, reportHash:${reportHash}`
+                    )
                   })
                   .catch(error => {
                     task.results.fightInfo[resultIndex].report_error = true
