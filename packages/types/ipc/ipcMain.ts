@@ -3,6 +3,7 @@ import type { Arch, Platform } from '@type/api/maa'
 import type { ComponentType, ComponentStatus } from '@type/componentManager'
 import type { DialogProperty, TouchMode } from '@type/misc'
 import type { Device, Emulator } from '@type/device'
+import type { ResourceType } from '@type/game'
 
 export interface InitCoreParam {
   address: string
@@ -54,7 +55,7 @@ export type IpcMainHandleEventType = IpcMainHandleEventTypeAutoRegister & {
   // 'main.CoreLoader:getCorePath'
   'main.CoreLoader:getCoreVersion': () => string | null
   'main.CoreLoader:upgrade': () => Promise<void>
-
+  'main.CoreLoader:updateTaskJson': (arg: { type: ResourceType; data: string }) => Promise<void>
   'main.ScheduleRunner:shutdown': (arg: {
     option: 'shutdownEmulator' | 'shutdownAll' | 'shutdownComputer'
     pid: string
@@ -82,6 +83,7 @@ export type IpcMainHandleEventType = IpcMainHandleEventTypeAutoRegister & {
   'main.Util:getSystemInformation': () => Promise<Systeminformation.StaticData>
   'main.Util:getSystemStatus': () => boolean
   'main.Util:generateIdempotentKey': () => string
+  'main.Util:isInDev': () => boolean
   'main.Util:LogSilly': (...params: any[]) => void
   'main.Util:LogDebug': (...params: any[]) => void
   'main.Util:LogTrace': (...params: any[]) => void

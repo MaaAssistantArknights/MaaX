@@ -3,7 +3,7 @@ import Storage from '@main/storageManager'
 import path from 'path'
 import _ from 'lodash'
 import logger from '@main/utils/logger'
-import { existsSync, mkdirSync, readFileSync, unlinkSync } from 'fs'
+import { existsSync, mkdirSync, readFileSync, rmdirSync, unlinkSync, writeFileSync } from 'fs'
 import ffi, { DynamicLibrary } from '@tigerconnect/ffi-napi'
 import ref from '@tigerconnect/ref-napi'
 import callbackHandle from './callback'
@@ -11,6 +11,7 @@ import { getAppBaseDir } from '@main/utils/path'
 import type { TouchMode } from '@type/misc'
 import { InstanceOptionKey } from '@type/misc'
 import { extractFile, unzipFile } from '@main/utils/extract'
+import type { ResourceType } from '@type/game'
 
 const storage = new Storage()
 
@@ -323,7 +324,8 @@ class CoreLoader {
    */
   public LoadResource(path: string = this.libPath): Boolean {
     if (!existsSync(path)) {
-      logger.error(`[LoadResource] path not exists ${path}`)
+      // cache文件夹可能不存在
+      logger.warn(`[LoadResource] path not exists ${path}`)
       return false
     }
     return this.MeoAsstLib.AsstLoadResource(path ?? this.libPath)
@@ -527,6 +529,17 @@ class CoreLoader {
     return this.MeoAsstPtr[uuid] !== undefined
   }
 
+  public UpdateTaskJson(type: ResourceType, data: string): void {
+    const dirPath = path.join(getAppBaseDir(), 'core', 'cache', type, 'resource')
+    if (!existsSync(dirPath)) {
+      logger.info(`Create dir ${dirPath}`)
+      mkdirSync(dirPath, { recursive: true })
+    }
+    const filePath = path.join(dirPath, 'tasks.json')
+    writeFileSync(filePath, data, 'utf-8')
+    logger.info(`[UpdateTaskJson] ${type} updated`)
+  }
+
   public async Upgrade(): Promise<void> {
     logger.info('Start upgrade core')
     const currentVersionFile = path.join(getAppBaseDir(), 'core', 'version')
@@ -551,6 +564,11 @@ class CoreLoader {
         const compressedFile = path.join(getAppBaseDir(), 'download', upgradeFileName)
         const dist = path.join(getAppBaseDir(), 'core')
         if (existsSync(compressedFile)) {
+          // 升级前删除cache文件夹
+          const cacheDir = path.join(getAppBaseDir(), 'core', 'cache')
+          if (existsSync(cacheDir)) {
+            rmdirSync(cacheDir, { recursive: true })
+          }
           await extractFile(compressedFile, dist)
         }
       }

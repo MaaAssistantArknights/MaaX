@@ -14,11 +14,17 @@ export async function loadCoreResources(type: ResourceType): Promise<boolean> {
   const resourcePath =
     type === 'CN' ? basePath : [basePath, 'resource', 'global', type].join(separator)
   // WARN: 改变了原有逻辑, 按类型来看应该传对象而非字符串, 不知道原来是什么情况
-  const status = await window.ipcRenderer.invoke('main.CoreLoader:loadResource', {
+  const resourceStatus = await window.ipcRenderer.invoke('main.CoreLoader:loadResource', {
     path: resourcePath,
   })
-  logger.info(`[LoadResource] type: ${type}, path: ${resourcePath}, status: ${status}`)
-  return status
+  const cachePath = [basePath, 'cache', type].join(separator)
+  const cacheStatus = await window.ipcRenderer.invoke('main.CoreLoader:loadResource', {
+    path: cachePath,
+  })
+  logger.info(
+    `[LoadResource] type: ${type}, path: ${resourcePath}, resourceStatus: ${resourceStatus}, cacheStatus: ${cacheStatus}`
+  )
+  return resourceStatus
 }
 
 export async function changeTouchMode(mode: TouchMode): Promise<boolean> {
