@@ -21,7 +21,10 @@ class ApiService {
       async request => {
         request.headers = {
           ...request.headers,
-          'User-Agent': getUA(),
+        }
+        const isInDev = await window.ipcRenderer.invoke('main.Util:isInDev')
+        if (!isInDev) {
+          request.headers['User-Agent'] = getUA()
         }
         return request
       },
@@ -40,7 +43,7 @@ class ApiService {
     )
   }
 
-  async get<T>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T> | Error> {
+  async get<T>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> {
     const response = await this._instance.get(url, config)
     if (_.isError(response)) {
       throw response

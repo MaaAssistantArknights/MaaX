@@ -5,6 +5,7 @@ import {
   getSystemInformation,
   reload,
   generateIdempotentKey,
+  isInDev,
 } from '@main/utils/os'
 
 export default function useOsHooks(): void {
@@ -13,4 +14,5 @@ export default function useOsHooks(): void {
   ipcMainHandle('main.Util:getSystemInformation', event => getSystemInformation())
   ipcMainHandle('main.Util:restart', event => reload())
   ipcMainHandle('main.Util:generateIdempotentKey', event => generateIdempotentKey())
+  ipcMainHandle('main.Util:isInDev', event => isInDev())
 }
