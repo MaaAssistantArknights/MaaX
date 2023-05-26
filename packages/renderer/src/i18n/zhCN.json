@@ -24,11 +24,11 @@
         "osNotSupport": "MAA 好像不支持这个系统 {0}",
         "getPackageFail": "服务器睡着惹(￣o￣) . z Z, 待会再试试吧.",
         "downloadingCore": "正在下载 MAA Core：{0}",
-        "updatingCore": "正在更新 MAA Core...",
-        "unpackingCore": "正在安装 MAA Core...",
+        "updatingCore": "正在更新 MAA Core…",
+        "unpackingCore": "正在安装 MAA Core…",
         "downloadingUI": "正在下载 MaaX：{0}",
-        "updatingUI": "正在更新 MaaX...",
-        "unpackingUI": "正在安装 MaaX..."
+        "updatingUI": "正在更新 MaaX…",
+        "unpackingUI": "正在安装 MaaX…"
     },
     "task": {
         "taskGroupName": "任务组名称",
@@ -55,9 +55,9 @@
         }
     },
     "device": {
-        "disconnecting": "{deviceName} 断开中...",
+        "disconnecting": "{deviceName} 断开中…",
         "disconnected": "{deviceName} 已断开连接",
-        "connecting": "{deviceName} 连接中...",
+        "connecting": "{deviceName} 连接中…",
         "connected": "{deviceName} 已连接",
         "disconnectFromTasking": "当前设备正在进行任务, 确定断开连接?",
         "disconnectFromOther": "确定断开连接?",
@@ -65,15 +65,15 @@
         "noDeviceAvailable": "自动搜索没有找到任何可用设备",
         "availableDeviceFound": "找到 {count} 台可用设备",
         "adbNotAvailable": "未下载 ADB, 请先前往设置界面下载 ADB",
-        "refreshingDevices": "正在刷新设备列表...",
+        "refreshingDevices": "正在刷新设备列表…",
         "refreshingError": "刷新设备列表失败, 请重试"
     },
     "deviceStatus": {
         "available": "点击右边按钮连接设备",
         "connected": "设备已连接",
-        "connecting": "设备正在连接中...",
+        "connecting": "设备正在连接中…",
         "disconnected": "设备已断开连接",
-        "tasking": "任务进行中...",
+        "tasking": "任务进行中…",
         "unknown": "设备状态未知"
     },
     "card": {
