@@ -30,7 +30,7 @@ export const i18n = createI18n({
 /**
  * 添加了键名检查的 `useI18n`
  */
-export const useCustomI81n = () => {
+export const useCustomI18n = () => {
   const { t: _t, ...rest } = useI18n()
   const t = (key: I18nKey, ...rest: GetFnRemoveFirstParams<typeof _t>) => _t(key, ...rest)
   return { t, ...rest }
