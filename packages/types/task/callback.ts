@@ -17,7 +17,7 @@ export const enum AsstMsg {
   ConnectionInfo, // 连接相关信息
 
   AllTasksCompleted, // 全部任务完成
-  // AsyncCallInfo, // 外部异步调用信息
+  AsyncCallInfo, // 外部异步调用信息
 
   /* TaskChain Info */
   TaskChainError = 10000, // 任务链执行/识别错误
@@ -59,6 +59,15 @@ export type CallbackMapper = {
   [AsstMsg.ConnectionInfo]: ConnectionInfoCallbackGenerator
   [AsstMsg.AllTasksCompleted]: TaskChainCallback & {
     finished_tasks: number[]
+  }
+  [AsstMsg.AsyncCallInfo]: {
+    uuid: string
+    what: string // 'Screencap'
+    async_call_id: number
+    details: {
+      ret: boolean
+      cost: number
+    }
   }
   [AsstMsg.TaskChainError]: TaskChainCallback
   [AsstMsg.TaskChainStart]: TaskChainCallback

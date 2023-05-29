@@ -69,6 +69,7 @@ class CoreLoader {
   public MeoAsstLib!: any
   private readonly DepLibs: DynamicLibrary[] = []
   MeoAsstPtr: Record<string, AsstInstancePtr> = {}
+  screenshotCache: Record<string, Buffer> = {}
 
   constructor() {
     // 在构造函数中创建core存储文件夹
@@ -466,15 +467,18 @@ class CoreLoader {
   }
 
   public GetImage(uuid: string): string {
-    const buf = Buffer.alloc(5114514)
+    if (!this.screenshotCache[uuid]) {
+      this.screenshotCache[uuid] = Buffer.alloc(5114514)
+    }
+    const buffer = this.screenshotCache[uuid]
     const len = this.MeoAsstLib.AsstGetImage(
       this.GetCoreInstanceByUUID(uuid),
-      buf as any,
-      buf.length
+      buffer,
+      buffer.length
     )
-    const buf2 = buf.slice(0, len as number)
-    const v2 = buf2.toString('base64')
-    return v2
+    const bufferImage = buffer.subarray(0, len as number)
+    const bufferBase64 = 'data:image/png;base64,' + bufferImage.toString('base64')
+    return bufferBase64
   }
 
   /**

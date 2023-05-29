@@ -33,7 +33,7 @@ export type IpcRendererOnEventType = {
     status: InstallerStatus
     progress: 0
   }) => void
-  'renderer.Device:getScreenshot': (arg: { uuid: string }) => void
+  // 'renderer.Device:getScreenshot': (arg: { uuid: string }) => void
 }
 
 // 通过ipcRenderer.on定义的事件名称
