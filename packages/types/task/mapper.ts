@@ -165,10 +165,6 @@ export type FrontTaskObjectMapper = {
     option: 'shutdownEmulator' | 'shutdownAll' | 'shutdownComputer'
     delay: number
   }
-  Idle: {
-    enable?: boolean
-    delay: number
-  }
 }
 
 export type CoreTaskName = keyof CoreTaskObjectMapper

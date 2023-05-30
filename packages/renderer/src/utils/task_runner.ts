@@ -68,17 +68,6 @@ async function runTaskShutdown(uuid: string, task: Task): Promise<void> {
   // TODO
 }
 
-async function runTaskIdle(uuid: string, task: GetTask<'Idle'>): Promise<void> {
-  const taskStore = useTaskStore()
-  task.task_id = genUiTaskId()
-  taskStore.updateTaskStatus(uuid, task.task_id, 'processing', 0)
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  task.schedule_id = setTimeout(async () => {
-    taskStore.updateTaskStatus(uuid, task.task_id, 'success', 0)
-    await runTasks(uuid)
-  }, task.configurations.delay * 1000)
-}
-
 export async function runTasks(uuid: string): Promise<void> {
   const taskStore = useTaskStore()
   const tasks = taskStore.getCurrentTaskGroup(uuid)?.tasks
@@ -91,10 +80,6 @@ export async function runTasks(uuid: string): Promise<void> {
         break
       }
       case 'Shutdown': {
-        break
-      }
-      case 'Idle': {
-        await runTaskIdle(uuid, task)
         break
       }
       default: {

@@ -9,7 +9,6 @@ import Recruit from './Recruit.vue'
 import Rogue from './Rogue.vue'
 import Mall from './Mall.vue'
 import Shutdown from './Shutdown.vue'
-import Idle from './Idle.vue'
 
 const components: Record<string, Component> = {
   Emulator: Emulator,
@@ -20,7 +19,6 @@ const components: Record<string, Component> = {
   Roguelike: Rogue,
   Mall: Mall,
   Shutdown: Shutdown,
-  Idle: Idle,
 }
 
 export default defineComponent({

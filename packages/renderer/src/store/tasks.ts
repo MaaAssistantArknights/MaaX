@@ -188,17 +188,6 @@ export const taskTemplate: {
     },
     results: {},
   },
-  Idle: {
-    name: 'Idle',
-    task_id: -1,
-    title: '挂机',
-    status: 'idle',
-    enable: false,
-    configurations: {
-      delay: 600,
-    },
-    results: {},
-  },
   // ReclamationAlgorithm: {
   //   name: 'ReclamationAlgorithm',
   //   task_id: -1,
@@ -228,7 +217,6 @@ const defaultTaskConf: typeof taskTemplate = {
   Award: _.cloneDeep(taskTemplate.Award),
   Roguelike: _.cloneDeep(taskTemplate.Roguelike),
   Shutdown: _.cloneDeep(taskTemplate.Shutdown),
-  Idle: _.cloneDeep(taskTemplate.Idle),
 }
 
 export const defaultTask = Object.values(defaultTaskConf)

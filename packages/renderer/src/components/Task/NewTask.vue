@@ -81,11 +81,7 @@ const options: DropdownMixedOption[] = [
     key: 'other_task',
     children: [
       {
-        label: '挂机',
-        key: 'Idle',
-      },
-      {
-        label: '每日一抽',
+        label: '这里暂时什么都没有哦',
         key: 'null',
       },
     ],
@@ -121,12 +117,9 @@ const handleClickOutside = () => {
     <template #arrow>
       <span />
     </template>
-    <div
-      class="task-card-inner"
-      :style="{
+    <div class="task-card-inner" :style="{
         border: `3px dashed ${themeVars.borderColor}`,
-      }"
-    >
+      }">
       <NCollapseItem name="1" display-directive="show">
         <template #header>
           <div class="card-header" />
@@ -138,15 +131,8 @@ const handleClickOutside = () => {
           <NText>点击鼠标右键创建新任务</NText>
         </NSpace>
       </div>
-      <NDropdown
-        trigger="manual"
-        :options="options"
-        @select="handleSelectNewTask"
-        :x="dropdownPosition.x"
-        :y="dropdownPosition.y"
-        :show="showDropdown"
-        :on-clickoutside="handleClickOutside"
-      >
+      <NDropdown trigger="manual" :options="options" @select="handleSelectNewTask" :x="dropdownPosition.x"
+        :y="dropdownPosition.y" :show="showDropdown" :on-clickoutside="handleClickOutside">
       </NDropdown>
     </div>
   </NCollapse>
