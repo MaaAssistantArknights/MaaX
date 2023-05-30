@@ -1,25 +1,25 @@
 <script setup lang="ts">
-import { NCollapse, NCollapseItem, NScrollbar, NSpace, useThemeVars, NDropdown, NText } from 'naive-ui'
+import { NCollapse, NCollapseItem, NSpace, useThemeVars, NDropdown, NText } from 'naive-ui'
 import { ref, nextTick } from 'vue'
 import router from '@/router'
-import useThemeStore from '@/store/theme'
 import type { DropdownMixedOption } from 'naive-ui/es/dropdown/src/interface'
 import logger from '@/hooks/caller/logger'
 import useTaskStore from '@/store/tasks'
 import type { Task } from '@type/task'
+import { computed } from 'vue'
 
 const themeVars = useThemeVars()
 
 const taskStore = useTaskStore()
-const uuid = router.currentRoute.value.params.uuid as string
+const uuid = computed(() => router.currentRoute.value.params.uuid as string)
 
 const props = defineProps<{
   isCollapsed: boolean
 }>()
 
 function handleSelectNewTask(key: Task['name']): void {
-  if (taskStore.copyTaskFromTemplate(uuid, key)) {
-    logger.info('copy task from template', key)
+  if (taskStore.copyTaskFromTemplate(uuid.value, key)) {
+    logger.info(`copy task from template, uuid: ${uuid.value}, key: ${key}`)
   }
 }
 

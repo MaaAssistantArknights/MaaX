@@ -307,6 +307,14 @@ export default function useCallbackEvents(): void {
       }
       taskStore.resetToIdle(data.uuid.trim())
     },
+    [AsstMsg.AsyncCallInfo]: data => {
+      switch (data.what) {
+        case 'Screencap': {
+          break
+          // 截图事件在组件内特殊处理
+        }
+      }
+    },
     [AsstMsg.TaskChainError]: data => {
       const taskStore = useTaskStore()
       taskStore.updateTaskStatus(data.uuid.trim(), data.taskid, 'exception', 0)
