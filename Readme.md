@@ -22,7 +22,7 @@
 
 ***注：正式版还未发布，以下列出的链接为测试版***
 
-[Windows](https://s3.maa-org.net:25240/maa-x/MaaAssistantArknights/MaaX/releases/download/v2.0.0-beta.8/maa-x-win32-x64-2.0.0-beta.8.zip)
+[Windows](https://s3.maa-org.net:25240/maa-x/MaaAssistantArknights/MaaX/releases/download/v2.0.0-beta.11/maa-x-win32-x64-2.0.0-beta.11.zip)
 
 **Linux**和**macOS**还在测试中，暂时不提供下载
 
