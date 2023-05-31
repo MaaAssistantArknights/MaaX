@@ -1,7 +1,7 @@
 /* eslint-disable import/no-duplicates */
 import { zhCN as NZhCN, dateZhCN as NDateZhCN } from 'naive-ui'
 import { enUS as NEnUS, dateEnUS as NDateEnUS } from 'naive-ui'
-import { createI18n, useI18n } from 'vue-i18n'
+import { createI18n, useI18n as useNativeI18n } from 'vue-i18n'
 
 import ZhCN from './zhCN.json'
 import EnUS from './enUS.json'
@@ -30,8 +30,8 @@ export const i18n = createI18n({
 /**
  * 添加了键名检查的 `useI18n`
  */
-export const useCustomI18n = () => {
-  const { t: _t, ...rest } = useI18n()
+export const useI18n = () => {
+  const { t: _t, ...rest } = useNativeI18n()
   const t = (key: I18nKey, ...rest: GetFnRemoveFirstParams<typeof _t>) => _t(key, ...rest)
   return { t, ...rest }
 }
