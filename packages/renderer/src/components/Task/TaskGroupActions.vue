@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, nextTick, watch } from 'vue'
 import { NIcon, NButton, NPopconfirm, NInput, NSpace, NText, useMessage } from 'naive-ui'
 import { useI18n } from 'vue-i18n'
 import { TrashOutline } from '@vicons/ionicons5'
@@ -18,6 +18,9 @@ const message = useMessage()
 const { t } = useI18n()
 
 const isEditing = ref(false)
+const taskGroupNameInputRef = ref<InstanceType<typeof NInput> | null>(null)
+// 进入编辑时获取焦点 autofocus 第二次编辑时有时没效果，所以手动操作
+watch(isEditing, (val) => val && nextTick(() => taskGroupNameInputRef.value?.focus()))
 
 const handleEditDone = (value: string) => {
   if (!props.taskGroup) return
@@ -44,7 +47,7 @@ const handleDelete = () => {
   <NSpace class="task-group" align="center">
     <NInput
       v-if="isEditing"
-      passively-activated
+      ref="taskGroupNameInputRef"
       :default-value="props.taskGroup?.name"
       :disabled="!props.taskGroup"
       @change="handleEditDone"
