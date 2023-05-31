@@ -116,10 +116,3 @@ export type IpcMainHandleEventType = IpcMainHandleEventTypeAutoRegister & {
 
 // 通过ipcMainHandle定义的事件名称
 export type IpcMainHandleEvent = keyof IpcMainHandleEventType
-
-export type IpcMainOnEventType = {
-  'main.WindowManager:closeWindow': () => void
-}
-
-// 通过send调用的事件
-export type IpcMainOnEvent = keyof IpcMainOnEventType

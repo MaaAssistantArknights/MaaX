@@ -1,16 +1,10 @@
-import { ipcMainHandle, ipcMainOn } from '@main/utils/ipc-main'
+import { ipcMainHandle } from '@main/utils/ipc-main'
 import type { DialogProperty } from '@type/misc'
 import type { BrowserWindow } from 'electron'
 import { ipcMain, dialog } from 'electron'
 import { getPlatform } from '@main/utils/os'
 
 export default function useController(window: BrowserWindow): void {
-  ipcMainOn('main.WindowManager:closeWindow', () => {
-    if (window.isClosable()) {
-      window.close()
-    }
-  })
-
   ipcMainHandle('main.WindowManager:toggleMaximized', event => {
     if (!window.isMaximized() && window.isMaximizable()) {
       window.maximize()

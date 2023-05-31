@@ -1,6 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { domReady } from './utils'
 import { useLoading } from './loading'
+import type { IpcMainHandleEvent, IpcRendererOnEvent } from '../types/ipc'
 
 const { appendLoading, removeLoading } = useLoading()
 
@@ -18,10 +19,6 @@ const ipc = {
   ): Electron.IpcRenderer => {
     ipcRenderer.send('main.Util:LogSilly', `ipcRenderer event "${channel}" registered`)
     return ipcRenderer.on(channel, listener)
-  },
-  send: (channel: IpcMainOnEvent, ...args: any[]): void => {
-    ipcRenderer.send('main.Util:LogSilly', `ipcMain event "${channel}" sent`)
-    ipcRenderer.send(channel, ...args)
   },
   invoke: (channel: IpcMainHandleEvent, ...args: any[]): Promise<any> => {
     ipcRenderer.send('main.Util:LogSilly', `ipcMain event "${channel}" invoked`)

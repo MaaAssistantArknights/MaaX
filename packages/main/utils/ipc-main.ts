@@ -5,8 +5,6 @@ import logger from '@main/utils/logger'
 import type {
   IpcMainHandleEvent,
   IpcMainHandleEventType,
-  IpcMainOnEvent,
-  IpcMainOnEventType,
   IpcRendererOnEvent,
   IpcRendererOnEventType,
 } from '@type/ipc'
@@ -25,16 +23,6 @@ export function ipcMainHandle<Key extends IpcMainHandleEvent>(
     logger.silly(`Receive ipcMain event: ${eventName}`)
     return listener(event, ...(args as Parameters<IpcMainHandleEventType[Key]>))
   })
-}
-
-/**
- * 添加 ipc 消息的处理事件
- */
-export function ipcMainOn<Key extends IpcMainOnEvent>(
-  eventName: Key,
-  listener: (event: IpcMainInvokeEvent, ...args: Parameters<IpcMainOnEventType[Key]>) => void
-): void {
-  ipcMain.on(eventName, listener as (e: IpcMainInvokeEvent, ...as: any[]) => void)
 }
 
 export const ipcMainRemove = (eventName: IpcMainHandleEvent): void => {
