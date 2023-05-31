@@ -32,7 +32,7 @@ const result = ref<DepotResult | null>(null)
 async function doDepot() {
   const arg: GetTask<'Depot'>['configurations'] = {}
   processing.value = true
-  taskId.value = await window.ipcRenderer.invoke('main.CoreLoader:appendTask', {
+  taskId.value = await window.main.CoreLoader.appendTask({
     uuid: currentUuid,
     type: 'Depot',
     params: {
@@ -69,7 +69,7 @@ async function doDepot() {
     }
     return false
   })
-  await window.ipcRenderer.invoke('main.CoreLoader:start', {
+  await window.main.CoreLoader.start({
     uuid: currentUuid,
   })
 }

@@ -2,63 +2,61 @@ import fs from 'fs'
 import path from 'path'
 import { app } from 'electron'
 import { manager } from '@main/utils/logger'
-import { ipcMainHandle } from '@main/utils/ipc-main'
 import { getAppBaseDir } from '@main/utils/path'
 
 export default function useClearHooks(): void {
-  ipcMainHandle('main.Util:GetCacheInfo', event => {
-    const info = {
-      log: 0,
-      download: 0,
-    }
-    const logFileNames = fs.readdirSync(manager.logFileDir)
-    for (const file of logFileNames) {
-      const stat = fs.statSync(path.join(manager.logFileDir, file))
-      if (stat.isFile()) {
-        info.log += stat.size
+  globalThis.main.Util = {
+    GetCacheInfo() {
+      const info = {
+        log: 0,
+        download: 0,
       }
-    }
-    const downloadDir = path.join(getAppBaseDir(), 'download')
-    const downloadFileNames = fs.readdirSync(downloadDir)
-
-    for (const file of downloadFileNames) {
-      const stat = fs.statSync(path.join(downloadDir, file))
-      if (stat.isFile()) {
-        info.download += stat.size
+      const logFileNames = fs.readdirSync(manager.logFileDir)
+      for (const file of logFileNames) {
+        const stat = fs.statSync(path.join(manager.logFileDir, file))
+        if (stat.isFile()) {
+          info.log += stat.size
+        }
       }
-    }
-    return info
-  })
+      const downloadDir = path.join(getAppBaseDir(), 'download')
+      const downloadFileNames = fs.readdirSync(downloadDir)
 
-  ipcMainHandle('main.Util:CleanLogs', event => {
-    const logFileNames = fs.readdirSync(manager.logFileDir)
-    for (const file of logFileNames) {
-      const filepath = path.join(manager.logFileDir, file)
-      if (filepath === manager.logFilePath) {
-        continue
+      for (const file of downloadFileNames) {
+        const stat = fs.statSync(path.join(downloadDir, file))
+        if (stat.isFile()) {
+          info.download += stat.size
+        }
       }
-      const stat = fs.statSync(filepath)
-      if (stat.isFile()) {
-        fs.rmSync(filepath)
+      return info
+    },
+    CleanLogs() {
+      const logFileNames = fs.readdirSync(manager.logFileDir)
+      for (const file of logFileNames) {
+        const filepath = path.join(manager.logFileDir, file)
+        if (filepath === manager.logFilePath) {
+          continue
+        }
+        const stat = fs.statSync(filepath)
+        if (stat.isFile()) {
+          fs.rmSync(filepath)
+        }
       }
-    }
-  })
+    },
+    CleanDownloadCache() {
+      const downloadDir = path.join(getAppBaseDir(), 'download')
+      const downloadFileNames = fs.readdirSync(downloadDir)
 
-  ipcMainHandle('main.Util:CleanDownloadCache', event => {
-    const downloadDir = path.join(getAppBaseDir(), 'download')
-    const downloadFileNames = fs.readdirSync(downloadDir)
-
-    for (const file of downloadFileNames) {
-      const filepath = path.join(downloadDir, file)
-      const stat = fs.statSync(filepath)
-      if (stat.isFile()) {
-        fs.rmSync(filepath)
+      for (const file of downloadFileNames) {
+        const filepath = path.join(downloadDir, file)
+        const stat = fs.statSync(filepath)
+        if (stat.isFile()) {
+          fs.rmSync(filepath)
+        }
       }
-    }
-  })
-
-  ipcMainHandle('main.Util:RemoveAllConfig', event => {
-    fs.writeFileSync(path.join(app.getPath('temp'), 'clearConfigToken'), '1')
-    app.quit()
-  })
+    },
+    RemoveAllConfig() {
+      fs.writeFileSync(path.join(app.getPath('temp'), 'clearConfigToken'), '1')
+      app.quit()
+    },
+  }
 }

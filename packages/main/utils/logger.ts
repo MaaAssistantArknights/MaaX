@@ -1,7 +1,6 @@
 import path from 'path'
 import { format } from 'date-fns'
 import tslog, { type ILogObject } from 'tslog'
-import { ipcMainHandle } from './ipc-main'
 import { createWriteStream, mkdirSync, existsSync, WriteStream } from 'fs'
 import { getAppBaseDir } from './path'
 
@@ -49,27 +48,29 @@ class Logger {
       'debug'
     )
 
-    ipcMainHandle('main.Util:LogSilly', (event, ...params) => {
-      this.renderer_.silly(...params)
-    })
-    ipcMainHandle('main.Util:LogDebug', (event, ...params) => {
-      this.renderer_.debug(...params)
-    })
-    ipcMainHandle('main.Util:LogTrace', (event, ...params) => {
-      this.renderer_.trace(...params)
-    })
-    ipcMainHandle('main.Util:LogInfo', (event, ...params) => {
-      this.renderer_.info(...params)
-    })
-    ipcMainHandle('main.Util:LogWarn', (event, ...params) => {
-      this.renderer_.warn(...params)
-    })
-    ipcMainHandle('main.Util:LogError', (event, ...params) => {
-      this.renderer_.error(...params)
-    })
-    ipcMainHandle('main.Util:LogFatal', (event, ...params) => {
-      this.renderer_.fatal(...params)
-    })
+    globalThis.main.Util = {
+      LogSilly: (...params) => {
+        this.renderer_.silly(...params)
+      },
+      LogDebug: (...params) => {
+        this.renderer_.debug(...params)
+      },
+      LogTrace: (...params) => {
+        this.renderer_.trace(...params)
+      },
+      LogInfo: (...params) => {
+        this.renderer_.info(...params)
+      },
+      LogWarn: (...params) => {
+        this.renderer_.warn(...params)
+      },
+      LogError: (...params) => {
+        this.renderer_.error(...params)
+      },
+      LogFatal: (...params) => {
+        this.renderer_.fatal(...params)
+      },
+    }
   }
 
   private readonly logToTransport = (logObject: ILogObject): void => {

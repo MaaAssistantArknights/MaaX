@@ -21,7 +21,7 @@ const interval = useIntervalFn(requestScreenshot, 3000, { immediate: false })
 
 async function requestScreenshot() {
   logger.info('send asyncScreencap')
-  await window.ipcRenderer.invoke('main.CoreLoader:asyncScreencap', {
+  await window.main.CoreLoader.asyncScreencap({
     uuid: props.device.uuid,
   })
 }
@@ -30,7 +30,7 @@ async function gotScreenshot(event: Electron.IpcRendererEvent, Callback: Callbac
   const { code, data } = Callback
   if (code === AsstMsg.AsyncCallInfo && data.what === 'Screencap') {
     if (data.uuid === props.device.uuid && data.details.ret === true) {
-      screenshot.value = await window.ipcRenderer.invoke('main.CoreLoader:getImage', {
+      screenshot.value = await window.main.CoreLoader.getImage({
         uuid: props.device.uuid,
       })
     }

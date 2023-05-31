@@ -8,11 +8,12 @@ import type {
   IpcRendererOnEvent,
   IpcRendererOnEventType,
 } from '@type/ipc'
+import { createCalleeProxy, createCallerProxy } from '@type/ipc/utils'
 
 /**
  * 添加 ipc 调用的处理事件
  */
-export function ipcMainHandle<Key extends IpcMainHandleEvent>(
+function ipcMainHandle<Key extends IpcMainHandleEvent>(
   eventName: Key,
   listener: (
     event: IpcMainInvokeEvent,
@@ -25,15 +26,30 @@ export function ipcMainHandle<Key extends IpcMainHandleEvent>(
   })
 }
 
-export const ipcMainRemove = (eventName: IpcMainHandleEvent): void => {
+function ipcMainRemove(eventName: IpcMainHandleEvent): void {
   ipcMain.removeHandler(eventName)
 }
 
-export function ipcMainSend<Key extends IpcRendererOnEvent>(
+function ipcMainSend<Key extends IpcRendererOnEvent>(
   eventName: Key,
   ...args: Parameters<IpcRendererOnEventType[Key]>
 ): void {
   const win = new WindowManager().getWindow()
   logger.silly(`Send ipcRenderer event: ${eventName}`)
   win.webContents.send(eventName, ...args)
+}
+
+export function setupProxy() {
+  globalThis.renderer = createCallerProxy<IpcRendererOnEventType, 'renderer'>(
+    'renderer',
+    (key, ...args) => {
+      ipcMainSend(key, ...args)
+    }
+  )
+
+  globalThis.main = createCalleeProxy<IpcMainHandleEventType, 'main'>(
+    'main',
+    ipcMainHandle,
+    ipcMainRemove
+  )
 }

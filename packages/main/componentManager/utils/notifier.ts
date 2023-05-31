@@ -1,4 +1,3 @@
-import { ipcMainSend } from '@main/utils/ipc-main'
 import type { ComponentType } from '@type/componentManager'
 import type { InstallerStatus } from '@type/misc'
 import type { Notifier } from '../types'
@@ -12,7 +11,7 @@ export function createNotifier(
   return {
     onStart() {},
     onProgress(progress: number) {
-      ipcMainSend('renderer.ComponentManager:updateStatus', {
+      globalThis.renderer.ComponentManager.updateStatus({
         type,
         status: status.status,
         progress,
@@ -20,14 +19,14 @@ export function createNotifier(
     },
     onCompleted() {
       status.status = 'done'
-      ipcMainSend('renderer.ComponentManager:installDone', {
+      globalThis.renderer.ComponentManager.installDone({
         type,
         status: 'done',
         progress: 0,
       })
     },
     onDownloadedUpgrade() {
-      ipcMainSend('renderer.ComponentManager:downloadUpgradeDone', {
+      globalThis.renderer.ComponentManager.downloadUpgradeDone({
         type,
         status: status.status,
         progress: 0,
@@ -35,7 +34,7 @@ export function createNotifier(
     },
     onException() {
       status.status = 'exception'
-      ipcMainSend('renderer.ComponentManager:installInterrupted', {
+      globalThis.renderer.ComponentManager.installInterrupted({
         type,
         status: 'exception',
         progress: 0,

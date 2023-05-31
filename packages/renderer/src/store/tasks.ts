@@ -234,7 +234,7 @@ const useTaskStore = defineStore<'tasks', TaskState, {}, TaskAction>('tasks', {
       if (task) {
         const configurations = _.set(task.configurations, key, value)
         if (task.task_id > 0 && ['processing', 'waiting'].includes(task.status)) {
-          window.ipcRenderer.invoke('main.CoreLoader:setTaskParams', {
+          window.main.CoreLoader.setTaskParams({
             uuid,
             task_id: task.task_id,
             params: configurations,

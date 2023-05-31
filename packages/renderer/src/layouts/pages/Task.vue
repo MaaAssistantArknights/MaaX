@@ -73,7 +73,7 @@ async function handleStartUnconnected(task: GetTask<'Emulator'>) {
     if (device) {
       // 设备活了
       logger.debug(device)
-      const status = await window.ipcRenderer.invoke('main.CoreLoader:initCore', {
+      const status = await window.main.CoreLoader.initCore({
         // 创建连接
         address: device.address,
         uuid: device.uuid,
@@ -105,14 +105,14 @@ async function handleSubStart() {
   deviceStore.updateDeviceStatus(uuid.value as string, 'tasking')
   await runTasks(uuid.value)
   // logger.info('in substart')
-  // await window.ipcRenderer.invoke('main.CoreLoader:start', {
+  // await window.main.CoreLoader.start({
   //   uuid: uuid.value,
   // })
 }
 
 async function handleSubStop() {
   actionLoading.value = true
-  const status = await window.ipcRenderer.invoke('main.CoreLoader:stop', {
+  const status = await window.main.CoreLoader.stop({
     uuid: uuid.value,
   }) // 等待core停止任务
   actionLoading.value = false
@@ -136,7 +136,7 @@ async function handleStart() {
   } else if (device && device.status === 'available') {
     // 设备可用但未连接, 先尝试连接再开始任务
     deviceStore.updateDeviceStatus(device.uuid as string, 'waitingTask')
-    await window.ipcRenderer.invoke('main.CoreLoader:initCoreAsync', {
+    await window.main.CoreLoader.initCoreAsync({
       address: device.address,
       uuid: device.uuid,
       adb_path: device.adbPath,
@@ -145,7 +145,7 @@ async function handleStart() {
     })
   } else if (device && device.config === 'General') {
     deviceStore.updateDeviceStatus(device.uuid as string, 'waitingTask')
-    await window.ipcRenderer.invoke('main.CoreLoader:initCoreAsync', {
+    await window.main.CoreLoader.initCoreAsync({
       address: device.address,
       uuid: device.uuid,
       adb_path: device.adbPath,
@@ -163,7 +163,7 @@ async function handleStart() {
     //     if (await deviceStore.wakeUpDevice(uuid.value)) {
     //       // 有启动参数, 且自启成功
     //       deviceStore.updateDeviceStatus(device.uuid as string, 'waitingTask')
-    //       await window.ipcRenderer.invoke('main.CoreLoader:initCore', {
+    //       await window.main.CoreLoader.initCore({
     //         address: device.address,
     //         uuid: device.uuid,
     //         adb_path: device.adbPath,

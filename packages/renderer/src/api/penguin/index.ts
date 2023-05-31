@@ -41,7 +41,7 @@ export async function postDrop(report: DropReport): Promise<AxiosResponse> {
     source: 'MeoAssistant',
     version: settingStore.version.core.current,
   }
-  const idempotentKey = await window.ipcRenderer.invoke('main.Util:generateIdempotentKey')
+  const idempotentKey = await window.main.Util.generateIdempotentKey()
   logger.silly(`[PostDrop] idempotentKey: ${idempotentKey}`)
 
   const headers: AxiosRequestHeaders = reportId ? { Authorization: `PenguinID ${reportId}` } : {}

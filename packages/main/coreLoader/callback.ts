@@ -1,7 +1,6 @@
 import ffi from '@tigerconnect/ffi-napi'
 import ref from '@tigerconnect/ref-napi'
 import logger from '@main/utils/logger'
-import { ipcMainSend } from '@main/utils/ipc-main'
 import type { AsstMsg } from '@type/task/callback'
 
 const callbackHandle = ffi.Callback(
@@ -10,10 +9,9 @@ const callbackHandle = ffi.Callback(
   (code: AsstMsg, data: string, customArgs) => {
     logger.silly(code)
     logger.silly(data)
-    ipcMainSend('renderer.CoreLoader:callback', {
+    globalThis.renderer.CoreLoader.callback({
       code,
       data: JSON.parse(data),
-      // customArgs,
     })
   }
 )

@@ -4,6 +4,7 @@ import type { ComponentType, ComponentStatus } from '@type/componentManager'
 import type { DialogProperty, TouchMode } from '@type/misc'
 import type { Device, Emulator } from '@type/device'
 import type { ResourceType } from '@type/game'
+import type { CalleeProxyObjectType, CallerProxyObjectType } from './utils'
 
 export interface InitCoreParam {
   address: string
@@ -116,3 +117,5 @@ export type IpcMainHandleEventType = IpcMainHandleEventTypeAutoRegister & {
 
 // 通过ipcMainHandle定义的事件名称
 export type IpcMainHandleEvent = keyof IpcMainHandleEventType
+export type IpcMainHandleEventProxy = CallerProxyObjectType<IpcMainHandleEventType, 'main'>
+export type IpcMainHandleEventCalleeProxy = CalleeProxyObjectType<IpcMainHandleEventType, 'main'>

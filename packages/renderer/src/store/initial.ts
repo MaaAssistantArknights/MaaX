@@ -38,24 +38,24 @@ export async function initialStore(): Promise<void> {
     tasks: (storage: TaskState) => {
       for (const taskGroups of Object.values(storage.deviceTasks)) {
         for (const taskGroup of taskGroups.groups) {
-          taskGroup.tasks = taskGroup.tasks.filter((task) => {
+          taskGroup.tasks = taskGroup.tasks.filter(task => {
             task.name = (task.name.slice(0, 1).toUpperCase() + task.name.slice(1)) as
               | CoreTaskName
-              | FrontTaskName;
+              | FrontTaskName
             if ((task.name as string) === 'Rogue') {
-              task.name = 'Roguelike';
+              task.name = 'Roguelike'
             }
             if ((task.name as string) === 'Idle') {
-              return false; // "delete" idle
+              return false // "delete" idle
             }
-            task.progress = 0;
-            task.startTime = undefined;
-            task.endTime = undefined;
-            task.status = 'idle';
-            task.results = {};
-            task.showResult = false;
-            return true; // keep the task
-          });
+            task.progress = 0
+            task.startTime = undefined
+            task.endTime = undefined
+            task.status = 'idle'
+            task.results = {}
+            task.showResult = false
+            return true // keep the task
+          })
         }
       }
       return storage

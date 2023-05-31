@@ -84,7 +84,7 @@ function handleWindowResize() {
 
 function handleAcrylicChange(value: boolean) {
   themeStore.updateAcrylic(value)
-  window.ipcRenderer.invoke('main.AppearanceManager:acrylicUpdated', value)
+  window.main.AppearanceManager.acrylicUpdated(value)
 }
 
 onMounted(() => {

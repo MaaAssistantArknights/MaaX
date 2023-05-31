@@ -1,18 +1,17 @@
 import fs from 'fs'
-import { ipcMainHandle } from '@main/utils/ipc-main'
 import logger from '@main/utils/logger'
 
 export default function useTaskHooks(): void {
-  ipcMainHandle('main.Task:readInfrastConfig', (event, args) => {
-    if (!fs.existsSync(args.filepath)) {
-      logger.error('readInfrastConfig error, file not exist', args.filepath)
+  globalThis.main.Task.readInfrastConfig = ({ filepath }) => {
+    if (!fs.existsSync(filepath)) {
+      logger.error('readInfrastConfig error, file not exist', filepath)
       return ''
     }
     try {
-      return fs.readFileSync(args.filepath, 'utf-8')
+      return fs.readFileSync(filepath, 'utf-8')
     } catch (error) {
-      logger.error('readInfrastConfig error', error, args.filepath)
+      logger.error('readInfrastConfig error', error, filepath)
       return ''
     }
-  })
+  }
 }

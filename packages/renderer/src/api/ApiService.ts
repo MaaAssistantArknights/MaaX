@@ -22,7 +22,7 @@ class ApiService {
         request.headers = {
           ...request.headers,
         }
-        const isInDev = await window.ipcRenderer.invoke('main.Util:isInDev')
+        const isInDev = await window.main.Util.isInDev()
         if (!isInDev) {
           request.headers['User-Agent'] = getUA()
         }

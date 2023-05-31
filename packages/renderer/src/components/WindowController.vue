@@ -4,14 +4,14 @@ import { ref, onMounted } from 'vue'
 const isMaximized = ref(false)
 
 onMounted(() => {
-  window.ipcRenderer.invoke('main.WindowManager:isMaximized').then(result => {
+  window.main.WindowManager.isMaximized().then(result => {
     isMaximized.value = result
   })
 })
 
-window.ipcRenderer.on('renderer.WindowManager:updateMaximized', (_, maximized) => {
+window.renderer.WindowManager.updateMaximized = maximized => {
   isMaximized.value = maximized
-})
+}
 </script>
 
 <template>

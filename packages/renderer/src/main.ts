@@ -8,6 +8,9 @@ import { initialStore } from '@/store/initial'
 import { i18n } from '@/i18n'
 
 import './App.less'
+import { setupHookProxy } from './hooks'
+
+setupHookProxy()
 
 const pinia = createPinia()
 pinia.use(watcher)

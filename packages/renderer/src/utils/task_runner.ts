@@ -33,7 +33,7 @@ async function runTaskEmulator(uuid: string, task: GetTask<'Emulator'>): Promise
   const device = deviceStore.getDevice(uuid) as Device
   task.task_id = genUiTaskId()
   taskStore.updateTaskStatus(uuid, task.task_id, 'processing', 0)
-  window.ipcRenderer.invoke('main.DeviceDetector:startEmulator', device.commandLine as string)
+  window.main.DeviceDetector.startEmulator(device.commandLine as string)
   task.schedule_id = setTimeout(async () => {
     // FIXME: Emulator无法转换为Device
     const devices: Device[] = await window.ipcRenderer.invoke('main.DeviceDetector:getEmulators') // 等待时间结束后进行一次设备搜索，但不合并结果
@@ -42,7 +42,7 @@ async function runTaskEmulator(uuid: string, task: GetTask<'Emulator'>): Promise
       // 设备活了
       logger.silly(`[runTaskEmulator] Emulator is alive, uuid: ${uuid}, address: ${device.address}`)
       deviceStore.updateDeviceStatus(uuid, 'waitingTask') // 修改状态为等待任务, 等连上后直接开始任务
-      await window.ipcRenderer.invoke('main.CoreLoader:initCoreAsync', {
+      await window.main.CoreLoader.initCoreAsync({
         // 创建连接
         address: device.address,
         uuid: device.uuid,
@@ -84,7 +84,7 @@ export async function runTasks(uuid: string): Promise<void> {
       }
       default: {
         // default -> core tasks
-        const initStatus = await window.ipcRenderer.invoke('main.CoreLoader:isCoreInited', { uuid })
+        const initStatus = await window.main.CoreLoader.isCoreInited({ uuid })
         if (!initStatus) {
           showMessage(
             `设备信息未知, 如果你希望自启动模拟器开始任务, 请在游戏任务前配置 '启动模拟器' 任务`,
@@ -95,7 +95,7 @@ export async function runTasks(uuid: string): Promise<void> {
           return
         }
         task.status = 'waiting'
-        const taskId = await window.ipcRenderer.invoke('main.CoreLoader:appendTask', {
+        const taskId = await window.main.CoreLoader.appendTask({
           uuid: uuid,
           type: task.name,
           params: convertToCoreTaskConfiguration(task.name, task),
@@ -109,6 +109,6 @@ export async function runTasks(uuid: string): Promise<void> {
     }
   } else {
     // 无任务, 认为可以开始执行了
-    await window.ipcRenderer.invoke('main.CoreLoader:start', { uuid })
+    await window.main.CoreLoader.start({ uuid })
   }
 }

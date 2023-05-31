@@ -147,7 +147,7 @@ async function infrastConfigParse(path: string | undefined) {
   }
   infrastConfig.path.value = path
   // eslint-disable-next-line vue/max-len
-  const raw_content = (await window.ipcRenderer.invoke('main.Task:readInfrastConfig', {
+  const raw_content = (await window.main.Task.readInfrastConfig({
     filepath: infrastConfig.path.value,
   })) as string
   if (raw_content.length < 1) {

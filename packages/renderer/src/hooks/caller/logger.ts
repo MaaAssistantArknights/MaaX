@@ -1,9 +1,9 @@
 export default {
-  silly: (...params: any[]) => window.ipcRenderer.invoke('main.Util:LogSilly', ...params),
-  debug: (...params: any[]) => window.ipcRenderer.invoke('main.Util:LogDebug', ...params),
-  trace: (...params: any[]) => window.ipcRenderer.invoke('main.Util:LogTrace', ...params),
-  info: (...params: any[]) => window.ipcRenderer.invoke('main.Util:LogInfo', ...params),
-  warn: (...params: any[]) => window.ipcRenderer.invoke('main.Util:LogWarn', ...params),
-  error: (...params: any[]) => window.ipcRenderer.invoke('main.Util:LogError', ...params),
-  fatal: (...params: any[]) => window.ipcRenderer.invoke('main.Util:LogFatal', ...params),
+  silly: (...params: any[]) => window.main.Util.LogSilly(...params),
+  debug: (...params: any[]) => window.main.Util.LogDebug(...params),
+  trace: (...params: any[]) => window.main.Util.LogTrace(...params),
+  info: (...params: any[]) => window.main.Util.LogInfo(...params),
+  warn: (...params: any[]) => window.main.Util.LogWarn(...params),
+  error: (...params: any[]) => window.main.Util.LogError(...params),
+  fatal: (...params: any[]) => window.main.Util.LogFatal(...params),
 }

@@ -2,7 +2,7 @@
 import { NSpace, NButton } from 'naive-ui'
 
 async function onClickOpenFolder(type: 'core' | 'core-log' | 'ui-log'): Promise<void> {
-  await window.ipcRenderer.invoke('main.Util:openFolder', type)
+  await window.main.Util.openFolder(type)
 }
 </script>
 

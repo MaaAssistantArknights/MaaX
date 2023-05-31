@@ -74,7 +74,7 @@ async function doRecruit(selectTags: string[] = []) {
     skip_robot: false,
   }
   processing.value = true
-  taskId.value = await window.ipcRenderer.invoke('main.CoreLoader:appendTask', {
+  taskId.value = await window.main.CoreLoader.appendTask({
     uuid: currentUuid,
     type: 'Recruit',
     params: {
@@ -104,7 +104,7 @@ async function doRecruit(selectTags: string[] = []) {
     }
     return false
   })
-  await window.ipcRenderer.invoke('main.CoreLoader:start', {
+  await window.main.CoreLoader.start({
     uuid: currentUuid,
   })
 }

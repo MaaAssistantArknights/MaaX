@@ -51,7 +51,7 @@ async function handleCustomConnect() {
       showMessage('设备已经存在了哦, 请点击左侧连接按钮吧', { type: 'warning', duration: 5000 })
       return
     }
-    const uuid = await window.ipcRenderer.invoke('main.DeviceDetector:getDeviceUuid', address.value)
+    const uuid = await window.main.DeviceDetector.getDeviceUuid(address.value)
     if (!(uuid as string | false)) {
       loading.destroy()
       showMessage('连接失败，检查一下地址吧', { type: 'error', duration: 5000 })
@@ -67,7 +67,7 @@ async function handleCustomConnect() {
     const device = deviceStore.getDevice(uuid as string)
     if (device) {
       deviceStore.updateDeviceStatus(device.uuid, 'connecting')
-      await window.ipcRenderer.invoke('main.CoreLoader:initCoreAsync', {
+      await window.main.CoreLoader.initCoreAsync({
         address: device.address,
         uuid: device.uuid,
         adb_path: device.adbPath,

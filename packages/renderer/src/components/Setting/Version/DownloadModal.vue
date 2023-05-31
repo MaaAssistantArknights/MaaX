@@ -83,15 +83,15 @@ const handleInstall = (component: ComponentType) => {
     case 'installed':
     case 'not-installed':
     case 'not-compatible': {
-      window.ipcRenderer.invoke('main.ComponentManager:install', component)
+      window.main.ComponentManager.install(component)
       break
     }
     case 'upgradable': {
-      window.ipcRenderer.invoke('main.ComponentManager:upgrade', component)
+      window.main.ComponentManager.upgrade(component)
       break
     }
     case 'need-restart': {
-      window.ipcRenderer.invoke('main.Util:restart') // , component)
+      window.main.Util.restart()
       break
     }
     default:

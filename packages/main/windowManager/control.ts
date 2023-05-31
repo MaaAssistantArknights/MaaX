@@ -1,51 +1,44 @@
-import { ipcMainHandle } from '@main/utils/ipc-main'
-import type { DialogProperty } from '@type/misc'
 import type { BrowserWindow } from 'electron'
-import { ipcMain, dialog } from 'electron'
-import { getPlatform } from '@main/utils/os'
+import { dialog } from 'electron'
 
 export default function useController(window: BrowserWindow): void {
-  ipcMainHandle('main.WindowManager:toggleMaximized', event => {
-    if (!window.isMaximized() && window.isMaximizable()) {
-      window.maximize()
-      return true
-    } else if (window.isMaximized()) {
-      window.unmaximize()
-      return false
-    } else {
-      return new Error('window is not maximizable')
-    }
-  })
-
-  ipcMainHandle('main.WindowManager:minimize', event => {
-    if (window.isMinimizable()) {
-      window.minimize()
-      return true
-    } else {
-      return false
-    }
-  })
-
-  ipcMainHandle('main.WindowManager:isMaximized', event => {
-    return window.isMaximized()
-  })
-
-  window.on('maximize', () => {
-    window.webContents.send('renderer.WindowManager:updateMaximized', window.isMaximized())
-  })
-
-  window.on('unmaximize', () => {
-    window.webContents.send('renderer.WindowManager:updateMaximized', window.isMaximized())
-  })
-
-  ipcMainHandle(
-    'main.WindowManager:openDialog',
-    async (event, title: string, properties: DialogProperty[], filters: Electron.FileFilter[]) => {
+  globalThis.main.WindowManager = {
+    toggleMaximized() {
+      if (!window.isMaximized() && window.isMaximizable()) {
+        window.maximize()
+        return true
+      } else if (window.isMaximized()) {
+        window.unmaximize()
+        return false
+      } else {
+        return new Error('window is not maximizable')
+      }
+    },
+    minimize() {
+      if (window.isMinimizable()) {
+        window.minimize()
+        return true
+      } else {
+        return false
+      }
+    },
+    isMaximized() {
+      return window.isMaximized()
+    },
+    async openDialog(title, properties, filters) {
       return await dialog.showOpenDialog(window, {
         title: title,
         properties: properties,
         filters: filters,
       })
-    }
-  )
+    },
+  }
+
+  window.on('maximize', () => {
+    globalThis.renderer.WindowManager.updateMaximized(window.isMaximized())
+  })
+
+  window.on('unmaximize', () => {
+    globalThis.renderer.WindowManager.updateMaximized(window.isMaximized())
+  })
 }

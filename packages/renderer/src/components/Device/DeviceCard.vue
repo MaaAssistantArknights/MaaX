@@ -67,7 +67,7 @@ function handleJumpToTask() {
 
 function handleDeviceDisconnect() {
   // task stop
-  window.ipcRenderer.invoke('main.CoreLoader:disconnectAndDestroy', {
+  window.main.CoreLoader.disconnectAndDestroy({
     uuid: props.device.uuid,
   })
   taskStore.stopAllTasks(props.device.uuid as string)
@@ -95,7 +95,7 @@ async function handleDeviceConnect() {
   }
 
   deviceStore.updateDeviceStatus(props.device.uuid as string, 'connecting')
-  await window.ipcRenderer.invoke('main.CoreLoader:initCoreAsync', {
+  await window.main.CoreLoader.initCoreAsync({
     address: props.device.address,
     uuid: props.device.uuid,
     adb_path: props.device.adbPath,

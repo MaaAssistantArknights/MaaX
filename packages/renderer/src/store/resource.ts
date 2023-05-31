@@ -23,7 +23,7 @@ const updateTaskJson = async () => {
         continue
       }
       const data = JSON.stringify(response.data)
-      await window.ipcRenderer.invoke('main.CoreLoader:updateTaskJson', {
+      await window.main.CoreLoader.updateTaskJson({
         type: type,
         data: data,
       })

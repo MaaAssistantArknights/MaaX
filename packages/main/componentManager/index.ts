@@ -1,5 +1,4 @@
 import { Singleton } from '@common/function/singletonDecorator'
-import { ipcMainHandle } from '@main/utils/ipc-main'
 import { getComponentAdb } from './components/adb'
 import { getComponentCore } from './components/core'
 import CoreLoader from '@main/coreLoader'
@@ -25,43 +24,36 @@ class ComponentManager implements Module {
   }
 
   constructor() {
-    ipcMainHandle(
-      'main.ComponentManager:getStatus',
-      async (event, componentName: ComponentType) => {
+    globalThis.main.ComponentManager = {
+      getStatus: async componentName => {
         this.components[componentName] = await this.updater[componentName]()
         return this.components[componentName]?.status
-      }
-    )
-
-    ipcMainHandle('main.ComponentManager:install', async (event, componentName: ComponentType) => {
-      // 按理说这个时候应该没有Core才会进入install, 但是先留着吧
-      if (componentName === 'Maa Core') {
-        const coreLoader = new CoreLoader()
-        // coreLoader.dispose()
-      }
-      this.components[componentName] = await this.updater[componentName]()
-      this.components[componentName]?.installer?.install()
-    })
-
-    ipcMainHandle('main.ComponentManager:upgrade', async (event, componentName: ComponentType) => {
-      // 安装文件时，需要dispose core，否则无法写入
-      // TODO core 卸载炸了
-      if (componentName === 'Maa Core') {
-        // const coreLoader = new CoreLoader()
-        // MAA 4.13后无法正常卸载
-        // coreLoader.dispose()
-        // return
-      }
-      this.components[componentName]?.installer?.install()
-    })
-
-    ipcMainHandle(
-      'main.ComponentManager:getAvailableMirrors',
-      async (event, componentName: ComponentType) => {
+      },
+      install: async componentName => {
+        // 按理说这个时候应该没有Core才会进入install, 但是先留着吧
+        if (componentName === 'Maa Core') {
+          const coreLoader = new CoreLoader()
+          // coreLoader.dispose()
+        }
+        this.components[componentName] = await this.updater[componentName]()
+        this.components[componentName]?.installer?.install()
+      },
+      upgrade: async componentName => {
+        // 安装文件时，需要dispose core，否则无法写入
+        // TODO core 卸载炸了
+        if (componentName === 'Maa Core') {
+          // const coreLoader = new CoreLoader()
+          // MAA 4.13后无法正常卸载
+          // coreLoader.dispose()
+          // return
+        }
+        this.components[componentName]?.installer?.install()
+      },
+      getAvailableMirrors: async componentName => {
         this.components[componentName] = await this.updater[componentName]()
         return this.components[componentName]?.installer?.sources.map(s => s.name) ?? []
-      }
-    )
+      },
+    }
   }
 }
 
