@@ -30,7 +30,7 @@ const useDeviceStore = defineStore<'device', DeviceState, {}, DeviceAction>('dev
   },
   actions: {
     async mergeSearchResult(devices) {
-      const defaultAdbPath = await window.ipcRenderer.invoke('main.DeviceDetector:getAdbPath')
+      const defaultAdbPath = await window.main.DeviceDetector.getAdbPath()
       this.lastUpdate = Date.now()
       for (const device of devices) {
         const origin = this.devices.find(dev => dev.uuid === device.uuid)
@@ -122,7 +122,7 @@ const useDeviceStore = defineStore<'device', DeviceState, {}, DeviceAction>('dev
         return false
       }
       origin.status = 'connecting'
-      window.ipcRenderer.invoke('main.DeviceDetector:startEmulator2', origin.commandLine)
+      window.main.DeviceDetector.startEmulator2(origin.commandLine)
       const timeout = timeoutGenerator()
       let device
       for (let i = 0; i < connectRetry; i++) {
@@ -130,9 +130,7 @@ const useDeviceStore = defineStore<'device', DeviceState, {}, DeviceAction>('dev
         logger.info(`wait ${to}ms for emulator ${origin.displayName as string} start`)
         await new Promise(resolve => setTimeout(resolve, to))
         // FIXME: Emulator无法转换为Device
-        const devices: Device[] = await window.ipcRenderer.invoke(
-          'main.DeviceDetector:getEmulators'
-        )
+        const devices: Device[] = await window.main.DeviceDetector.getEmulators()
         device = devices.find(d => d.uuid === origin.uuid)
         if (device) {
           origin.status = 'available'

@@ -23,9 +23,13 @@ export function initHook(): void {
 
 export function setupHookProxy() {
   window.main = createCallerProxy<IpcMainHandleEventType, 'main'>('main', (key, ...args) => {
-    window.ipcRenderer.invoke(key, ...args)
+    return window.ipcRenderer.invoke(key, ...args)
   })
-  window.renderer = createCalleeProxy<IpcRendererOnEventType, 'renderer'>(
+  window.renderer = createCalleeProxy<
+    IpcRendererOnEventType,
+    'renderer',
+    Electron.IpcRendererEvent
+  >(
     'renderer',
     (key, func) => {
       window.ipcRenderer.on(key, func)

@@ -39,7 +39,13 @@ function ipcMainSend<Key extends IpcRendererOnEvent>(
   win.webContents.send(eventName, ...args)
 }
 
-export function setupProxy() {
+let inited = false
+
+export function setupHookProxy() {
+  if (inited) {
+    return
+  }
+
   globalThis.renderer = createCallerProxy<IpcRendererOnEventType, 'renderer'>(
     'renderer',
     (key, ...args) => {
@@ -47,9 +53,11 @@ export function setupProxy() {
     }
   )
 
-  globalThis.main = createCalleeProxy<IpcMainHandleEventType, 'main'>(
+  globalThis.main = createCalleeProxy<IpcMainHandleEventType, 'main', Electron.IpcMainInvokeEvent>(
     'main',
     ipcMainHandle,
     ipcMainRemove
   )
+
+  inited = true
 }

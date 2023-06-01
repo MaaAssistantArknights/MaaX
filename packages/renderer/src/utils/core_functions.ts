@@ -10,7 +10,7 @@ import { getPlatform } from '@/hooks/caller/os'
 export async function loadCoreResources(type: ResourceType): Promise<boolean> {
   const platform = await getPlatform()
   const separator = platform === 'windows' ? '\\' : '/'
-  const basePath = await window.ipcRenderer.invoke('main.CoreLoader:getLibPath')
+  const basePath = await window.main.CoreLoader.getLibPath()
   const resourcePath =
     type === 'CN' ? basePath : [basePath, 'resource', 'global', type].join(separator)
   // WARN: 改变了原有逻辑, 按类型来看应该传对象而非字符串, 不知道原来是什么情况

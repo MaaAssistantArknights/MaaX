@@ -3,6 +3,7 @@ import { format } from 'date-fns'
 import tslog, { type ILogObject } from 'tslog'
 import { createWriteStream, mkdirSync, existsSync, WriteStream } from 'fs'
 import { getAppBaseDir } from './path'
+import { setupHookProxy } from './ipc-main'
 
 class Logger {
   public constructor() {
@@ -48,6 +49,8 @@ class Logger {
       'debug'
     )
 
+    // 提前初始化
+    setupHookProxy()
     globalThis.main.Util = {
       LogSilly: (...params) => {
         this.renderer_.silly(...params)

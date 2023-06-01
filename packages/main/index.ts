@@ -16,7 +16,7 @@ import CoreLoader from '@main/coreLoader'
 import DeviceDetector from '@main/deviceDetector'
 import DownloadManager from './downloadManager'
 import { getAppBaseDir } from './utils/path'
-import { setupProxy } from './utils/ipc-main'
+import { setupHookProxy } from './utils/ipc-main'
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()
@@ -32,7 +32,7 @@ if (!app.requestSingleInstanceLock()) {
 }
 
 async function createApp(): Promise<void> {
-  setupProxy()
+  setupHookProxy()
 
   const win = new WindowManager().getWindow()
   if (app.isPackaged || !isInDev()) {

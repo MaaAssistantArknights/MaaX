@@ -20,8 +20,7 @@ export async function runStartEmulator(uuid: string, task: GetTask<'Emulator'>):
   task.task_id = genUiTaskId()
   // 不await
   taskStore.updateTaskStatus(uuid, task.task_id, 'processing', 0)
-  window.ipcRenderer.invoke(
-    'main.DeviceDetector:startEmulator',
+  window.main.DeviceDetector.startEmulator(
     device.commandLine as string // 前置检查
   )
 }
@@ -36,7 +35,7 @@ async function runTaskEmulator(uuid: string, task: GetTask<'Emulator'>): Promise
   window.main.DeviceDetector.startEmulator(device.commandLine as string)
   task.schedule_id = setTimeout(async () => {
     // FIXME: Emulator无法转换为Device
-    const devices: Device[] = await window.ipcRenderer.invoke('main.DeviceDetector:getEmulators') // 等待时间结束后进行一次设备搜索，但不合并结果
+    const devices: Device[] = await window.main.DeviceDetector.getEmulators() // 等待时间结束后进行一次设备搜索，但不合并结果
     const device = devices.find(device => device.uuid === uuid) // 检查指定uuid的设备是否存在
     if (device) {
       // 设备活了

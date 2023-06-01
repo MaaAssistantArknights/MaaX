@@ -18,8 +18,8 @@ type CallerWrapper<Func extends (...args: any[]) => any> = (
   ...args: Parameters<Func>
 ) => CleanVoid<Promise<UnPromise<ReturnType<Func>>>>
 
-type CalleeWrapper<Func extends (...args: any[]) => any> = (
-  ...args: Parameters<Func>
+type CalleeWrapper<Func extends (...args: any[]) => any, Event> = (
+  ...args: [...args: Parameters<Func>, event: Event]
 ) => ReturnType<Func>
 
 export type CallerProxyObjectType<
@@ -35,11 +35,12 @@ export type CallerProxyObjectType<
 
 export type CalleeProxyObjectType<
   Event extends Record<string, (...args: any[]) => any>,
-  Scope extends 'renderer' | 'main'
+  Scope extends 'renderer' | 'main',
+  ExtEvent
 > = {
   [Cate in Category<Event, Scope>]: {
     [SubC in CategoryChild<Event, Scope, Cate>]?: `${Scope}.${Cate}:${SubC}` extends keyof Event
-      ? CalleeWrapper<Event[`${Scope}.${Cate}:${SubC}`]>
+      ? CalleeWrapper<Event[`${Scope}.${Cate}:${SubC}`], ExtEvent>
       : never
   }
 }
@@ -60,8 +61,7 @@ export function createCallerProxy<
                 if (!(subk in _target2)) {
                   _target2[subk] = (...args: any[]) => {
                     // @ts-ignore
-                    action(`${scope}.${key}:${subk}`, ...args)
-                    // window.ipcRenderer.invoke(`main.${key}:${subk}` as IpcMainHandleEvent, ...args)
+                    return action(`${scope}.${key}:${subk}`, ...args)
                   }
                 }
                 return _target2[subk]
@@ -77,12 +77,13 @@ export function createCallerProxy<
 
 export function createCalleeProxy<
   Event extends Record<string, (...args: any[]) => any>,
-  Scope extends 'renderer' | 'main'
+  Scope extends 'renderer' | 'main',
+  ExtEvent
 >(
   scope: Scope,
   add: <K extends keyof Event>(
     key: K,
-    func: (e: unknown, ...args: Parameters<Event[K]>) => ReturnType<Event[K]>
+    func: (e: ExtEvent, ...args: Parameters<Event[K]>) => ReturnType<Event[K]>
   ) => void,
   del: (key: keyof Event) => void
 ) {
@@ -95,7 +96,7 @@ export function createCalleeProxy<
             {},
             {
               set(_target2: Record<string, unknown>, subk: string, value: (...args: any[]) => any) {
-                add(`${scope}.${key}:${subk}`, (event: unknown, ...args: any[]) => {
+                add(`${scope}.${key}:${subk}`, (event: ExtEvent, ...args: any[]) => {
                   return value(...args, event)
                 })
                 return true
@@ -115,10 +116,13 @@ export function createCalleeProxy<
         value: Record<string, (...args: any[]) => any>
       ) {
         for (const subk in value) {
-          add(`${scope}.${key}:${subk}`, value[subk])
+          const func = value[subk]
+          add(`${scope}.${key}:${subk}`, (event: ExtEvent, ...args: any[]) => {
+            return func(...args, event)
+          })
         }
         return true
       },
     }
-  ) as CalleeProxyObjectType<Event, Scope>
+  ) as CalleeProxyObjectType<Event, Scope, ExtEvent>
 }

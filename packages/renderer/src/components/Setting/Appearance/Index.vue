@@ -36,8 +36,7 @@ const themeOptions = [
 ]
 
 async function openBgFileSelector(): Promise<URL | undefined> {
-  const { filePaths } = await window.ipcRenderer.invoke(
-    'main.WindowManager:openDialog',
+  const { filePaths } = await window.main.WindowManager.openDialog(
     '选择背景图片',
     ['openFile'],
     [

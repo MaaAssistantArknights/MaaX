@@ -360,7 +360,7 @@ export default function useCallbackEvents(): void {
     },
   }
 
-  window.ipcRenderer.on('renderer.CoreLoader:callback', (event, callback: Callback) => {
+  window.renderer.CoreLoader.callback = callback => {
     const { code } = callback
     if (callbackFn[code]) {
       logger.debug(`[callback] handle AsstMsg:${code}:`)
@@ -376,5 +376,5 @@ export default function useCallbackEvents(): void {
       logger.debug(`[callback] unhandle AsstMsg:${code}`)
       logger.debug(callback)
     }
-  })
+  }
 }

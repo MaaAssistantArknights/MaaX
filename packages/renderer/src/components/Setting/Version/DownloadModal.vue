@@ -146,8 +146,7 @@ onMounted(() => {
     components.map(
       component =>
         new Promise<void>(resolve => {
-          window.ipcRenderer
-            .invoke('main.ComponentManager:getStatus', component)
+          window.main.ComponentManager.getStatus(component)
             .then((status: ComponentStatus | undefined) => {
               if (status) {
                 componentStore.updateComponentStatus(component, {
@@ -164,8 +163,7 @@ onMounted(() => {
     components.map(
       component =>
         new Promise<void>(resolve => {
-          window.ipcRenderer
-            .invoke('main.ComponentManager:getAvailableMirrors', component)
+          window.main.ComponentManager.getAvailableMirrors(component)
             .then((sources: string[]) => {
               componentsSources.value[component] = sources
               resolve()

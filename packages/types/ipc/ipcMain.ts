@@ -118,4 +118,8 @@ export type IpcMainHandleEventType = IpcMainHandleEventTypeAutoRegister & {
 // 通过ipcMainHandle定义的事件名称
 export type IpcMainHandleEvent = keyof IpcMainHandleEventType
 export type IpcMainHandleEventProxy = CallerProxyObjectType<IpcMainHandleEventType, 'main'>
-export type IpcMainHandleEventCalleeProxy = CalleeProxyObjectType<IpcMainHandleEventType, 'main'>
+export type IpcMainHandleEventCalleeProxy = CalleeProxyObjectType<
+  IpcMainHandleEventType,
+  'main',
+  Electron.IpcMainInvokeEvent
+>

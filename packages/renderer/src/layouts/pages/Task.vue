@@ -68,7 +68,7 @@ async function handleStartUnconnected(task: GetTask<'Emulator'>) {
   deviceStore.updateDeviceStatus(uuid.value, 'tasking')
   await runStartEmulator(uuid.value, task)
   task.schedule_id = setTimeout(async () => {
-    const devices: any[] = await window.ipcRenderer.invoke('main.DeviceDetector:getEmulators') // 等待时间结束后进行一次设备搜索，但不合并结果
+    const devices: any[] = await window.main.DeviceDetector.getEmulators() // 等待时间结束后进行一次设备搜索，但不合并结果
     const device = devices.find(device => device.uuid === uuid.value) // 检查指定uuid的设备是否存在
     if (device) {
       // 设备活了

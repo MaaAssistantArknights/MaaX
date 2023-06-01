@@ -42,5 +42,6 @@ export type IpcRendererOnEvent = keyof IpcRendererOnEventType
 export type IpcRendererOnEventProxy = CallerProxyObjectType<IpcRendererOnEventType, 'renderer'>
 export type IpcRendererOnEventCalleeProxy = CalleeProxyObjectType<
   IpcRendererOnEventType,
-  'renderer'
+  'renderer',
+  Electron.IpcRendererEvent
 >

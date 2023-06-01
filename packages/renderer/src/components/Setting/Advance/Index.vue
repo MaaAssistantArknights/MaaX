@@ -42,7 +42,7 @@ async function removeAllConfigDialog() {
     negativeText: '取消',
     maskClosable: false,
     onPositiveClick: async () => {
-      await window.ipcRenderer.invoke('main.Util:RemoveAllConfig')
+      await window.main.Util.RemoveAllConfig()
     },
   })
 }

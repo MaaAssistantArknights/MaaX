@@ -85,6 +85,6 @@ export async function initialStore(): Promise<void> {
 
   Promise.all(promises).then(() => {
     logger.debug('finish loading store')
-    window.ipcRenderer.invoke('main.WindowManager:loaded')
+    window.main.WindowManager.loaded()
   })
 }

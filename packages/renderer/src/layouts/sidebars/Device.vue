@@ -74,7 +74,7 @@ function deviceInfoParser(devices: Device[]): any[] {
 }
 
 async function handleRefreshDevices() {
-  const is_exist = await window.ipcRenderer.invoke('main.DeviceDetector:isDefaultAdbExists')
+  const is_exist = await window.main.DeviceDetector.isDefaultAdbExists()
   if (!is_exist) {
     showMessage(t('device.adbNotAvailable'), {
       type: 'error',
@@ -89,8 +89,7 @@ async function handleRefreshDevices() {
     duration: 0,
   })
 
-  window.ipcRenderer
-    .invoke('main.DeviceDetector:getEmulators')
+  window.main.DeviceDetector.getEmulators()
     .then(ret => {
       // FIXME: Emulator无法转换为Device
       const devices = deviceInfoParser(ret)
