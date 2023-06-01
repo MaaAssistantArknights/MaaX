@@ -33,15 +33,22 @@ export type CallerProxyObjectType<
   }
 }
 
+type MetaDelete<K extends string> = `del\$${K}`
+
 export type CalleeProxyObjectType<
   Event extends Record<string, (...args: any[]) => any>,
   Scope extends 'renderer' | 'main',
   ExtEvent
 > = {
   [Cate in Category<Event, Scope>]: {
-    [SubC in CategoryChild<Event, Scope, Cate>]?: `${Scope}.${Cate}:${SubC}` extends keyof Event
-      ? CalleeWrapper<Event[`${Scope}.${Cate}:${SubC}`], ExtEvent>
-      : never
+    [SubC in CategoryChild<Event, Scope, Cate>]?: CalleeWrapper<
+      Event[`${Scope}.${Cate}:${SubC}`],
+      ExtEvent
+    >
+  } & {
+    readonly [SubC in MetaDelete<CategoryChild<Event, Scope, Cate>>]?: (
+      func: CalleeWrapper<Event[`${Scope}.${Cate}:${SubC}`], ExtEvent>
+    ) => void
   }
 }
 
@@ -85,20 +92,40 @@ export function createCalleeProxy<
     key: K,
     func: (e: ExtEvent, ...args: Parameters<Event[K]>) => ReturnType<Event[K]>
   ) => void,
-  del: (key: keyof Event) => void
+  del: (key: keyof Event) => void,
+  delOne: <K extends keyof Event>(
+    key: K,
+    func: (e: ExtEvent, ...args: Parameters<Event[K]>) => ReturnType<Event[K]>
+  ) => void
 ) {
   return new Proxy(
-    {},
+    {
+      $$mapper: new Map(),
+    },
     {
       get(_target: Record<string, unknown>, key: string) {
         if (!(key in _target)) {
           _target[key] = new Proxy(
             {},
             {
-              set(_target2: Record<string, unknown>, subk: string, value: (...args: any[]) => any) {
-                add(`${scope}.${key}:${subk}`, (event: ExtEvent, ...args: any[]) => {
-                  return value(...args, event)
-                })
+              get(_target2: Record<string, unknown>, subk: string) {
+                if (subk.startsWith('del$')) {
+                  const mapper = _target.$$mapper as Map<Function, Function>
+                  return (func: any) => {
+                    if (mapper.has(func)) {
+                      // @ts-ignore
+                      delOne(subk.substring(4), mapper.get(func))
+                    }
+                  }
+                }
+              },
+              set(_target2: Record<string, unknown>, subk: string, func: (...args: any[]) => any) {
+                const mapper = _target.$$mapper as Map<Function, Function>
+                const wfunc = (event: ExtEvent, ...args: any[]) => {
+                  return func(...args, event)
+                }
+                mapper.set(func, wfunc)
+                add(`${scope}.${key}:${subk}`, wfunc)
                 return true
               },
               deleteProperty(_target: unknown, subk: string) {
@@ -116,10 +143,13 @@ export function createCalleeProxy<
         value: Record<string, (...args: any[]) => any>
       ) {
         for (const subk in value) {
+          const mapper = _target.$$mapper as Map<Function, Function>
           const func = value[subk]
-          add(`${scope}.${key}:${subk}`, (event: ExtEvent, ...args: any[]) => {
+          const wfunc = (event: ExtEvent, ...args: any[]) => {
             return func(...args, event)
-          })
+          }
+          mapper.set(func, wfunc)
+          add(`${scope}.${key}:${subk}`, wfunc)
         }
         return true
       },

@@ -56,7 +56,8 @@ export function setupHookProxy() {
   globalThis.main = createCalleeProxy<IpcMainHandleEventType, 'main', Electron.IpcMainInvokeEvent>(
     'main',
     ipcMainHandle,
-    ipcMainRemove
+    ipcMainRemove,
+    () => void 0
   )
 
   inited = true

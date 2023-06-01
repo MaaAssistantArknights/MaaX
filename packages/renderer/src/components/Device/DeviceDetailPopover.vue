@@ -26,7 +26,7 @@ async function requestScreenshot() {
   })
 }
 
-async function gotScreenshot(event: Electron.IpcRendererEvent, Callback: Callback) {
+async function gotScreenshot(Callback: Callback) {
   const { code, data } = Callback
   if (code === AsstMsg.AsyncCallInfo && data.what === 'Screencap') {
     if (data.uuid === props.device.uuid && data.details.ret === true) {
@@ -47,14 +47,14 @@ const updateCommandLine = (commandLine: string) => {
 
 onMounted(() => {
   // register event
-  window.ipcRenderer.on('renderer.CoreLoader:callback', gotScreenshot)
+  window.renderer.CoreLoader.callback = gotScreenshot
   // start timer
   interval.resume()
 })
 
 onBeforeUnmount(() => {
   // unregister event
-  window.ipcRenderer.off('renderer.CoreLoader:callback', gotScreenshot)
+  window.renderer.CoreLoader.del$callback?.(gotScreenshot)
   // stop timer
   interval.pause()
 })

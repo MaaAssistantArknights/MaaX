@@ -36,6 +36,9 @@ export function setupHookProxy() {
     },
     key => {
       window.ipcRenderer.removeAllListeners(key)
+    },
+    (key, func) => {
+      window.ipcRenderer.off(key, func)
     }
   )
 }
