@@ -114,7 +114,7 @@ export function createCalleeProxy<
                   return (func: any) => {
                     if (mapper.has(func)) {
                       // @ts-ignore
-                      delOne(subk.substring(4), mapper.get(func))
+                      delOne(`${scope}.${key}:${subk.substring(4)}`, mapper.get(func))
                     }
                   }
                 }
