@@ -31,6 +31,10 @@ const ipc = {
     ipcRenderer.send('main.Util:LogSilly', `ipcRenderer event "${channel}" unregistered`)
     return ipcRenderer.off(channel, listener)
   },
+  offAll: (channel: IpcRendererOnEvent): Electron.IpcRenderer => {
+    ipcRenderer.send('main.Util:LogSilly', `ipcRenderer event "${channel}" all unregistered`)
+    return ipcRenderer.removeAllListeners(channel)
+  }
 }
 
 contextBridge.exposeInMainWorld('removeLoading', removeLoading)
