@@ -3,6 +3,7 @@ import logger from '@/hooks/caller/logger'
 import { runStartEmulator } from '@/utils/task_runner'
 import { showMessage } from '@/utils/message'
 import type { Device, NativeDevice, DeviceStatus } from '@type/device'
+import type { MessageType } from 'naive-ui'
 
 export interface DeviceState {
   devices: Device[]
@@ -112,13 +113,17 @@ const useDeviceStore = defineStore<'device', DeviceState, {}, DeviceAction>('dev
         duration: 0,
       })
 
-      if (!origin.commandLine || origin.commandLine === '') {
-        wakeUpMessage.content = `设备 ${
-          origin.displayName as string
-        } 未配置启动命令, 请手动刷新设备`
-        wakeUpMessage.type = 'warning'
-        wakeUpMessage.duration = 3000
+      // 更新神谕
+      const updateWakeUpMessage = (content: string, type: MessageType, duration: number = 3000) => {
         wakeUpMessage.closable = true
+        wakeUpMessage.content = content
+        wakeUpMessage.type = type
+        // 源码里貌似直接修改duration不会重新生成定时器，所以这里手动关闭
+        duration && setTimeout(() => { try { wakeUpMessage?.destroy?.() } catch (e) {} }, duration)
+      }
+
+      if (!origin.commandLine || origin.commandLine === '') {
+        updateWakeUpMessage(`设备 ${ origin.displayName as string } 未配置启动命令, 请手动刷新设备`, 'warning')
         return false
       }
       origin.status = 'connecting'
@@ -140,20 +145,14 @@ const useDeviceStore = defineStore<'device', DeviceState, {}, DeviceAction>('dev
           origin.adbPath = device.adbPath
           origin.config = device.config
           origin.commandLine = device.commandLine
-
-          wakeUpMessage.content = `设备 ${origin.displayName as string} 启动成功`
-          wakeUpMessage.type = 'success'
-          wakeUpMessage.duration = 3000
-          wakeUpMessage.closable = true
+          updateWakeUpMessage(`设备 ${origin.displayName as string} 启动成功`, 'success')
           return true // start successfull
         }
       }
       // fail
       origin.status = 'unknown'
       origin.address = ''
-      wakeUpMessage.content = `设备 ${origin.displayName as string} 启动失败`
-      wakeUpMessage.type = 'error'
-      wakeUpMessage.closable = true
+      updateWakeUpMessage(`设备 ${origin.displayName as string} 启动失败`, 'error', 0)
       return false
     },
   },
