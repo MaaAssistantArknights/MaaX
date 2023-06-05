@@ -13,3 +13,7 @@ export const openFolder = (type: 'core' | 'ui-log' | 'core-log'): void => {
     shell.openPath(path.join(baseAppDir, 'core', 'debug'))
   }
 }
+
+export const openExternal = (url: string) => {
+  shell.openExternal(url)
+}
