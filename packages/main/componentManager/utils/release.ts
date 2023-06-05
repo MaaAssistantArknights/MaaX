@@ -13,7 +13,7 @@ async function tryRequest(url: string, component: ComponentType, retryCount = Ma
   for (let i = 0; i < retryCount; i++) {
     try {
       const response = await axios.get(url, {
-        adapter: require('axios/lib/adapters/http.js'),
+        // adapter: require('axios/lib/adapters/http.js'),
         proxy,
       })
       return response
@@ -24,7 +24,7 @@ async function tryRequest(url: string, component: ComponentType, retryCount = Ma
       logger.error(
         `[Component Installer | ${component}] Error request on URL: ${url}, attempts: ${
           i + 1
-        }/${retryCount},  Error: ${errorText}`
+        }/${retryCount},  Error: ${errorText}\n${error.stack}`
       )
     }
   }
