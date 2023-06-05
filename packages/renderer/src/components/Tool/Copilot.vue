@@ -179,6 +179,10 @@ function openExt(url: string) {
   window.main.Util.openExternal(url)
 }
 
+function openExtMap() {
+  window.main.Util.openExternal(`https://map.ark-nights.com/map/${data.value?.stage_name}`)
+}
+
 // 先写着备用
 function serializeReq(req: OperatorReq) {
   let res = ''
@@ -347,6 +351,9 @@ function stop() {
               </div>
             </template>
             <template v-else>
+              <div>
+                <NButton @click="openExtMap()"> 打开地图: {{ data.stage_name }} </NButton>
+              </div>
               <div>
                 <NCheckbox v-model:checked="useAutoFormation">
                   <span style="white-space: nowrap"> 自动编队 </span>
