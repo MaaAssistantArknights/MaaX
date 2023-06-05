@@ -102,6 +102,19 @@ export type SubTaskExtraInfoMapper = {
       rarity: OneToSix
     }[]
   }
+  CopilotAction: {
+    doc?: string
+    doc_color?: string
+    action: string
+    target: string
+  }
+  SSSStage: {
+    stage: string
+  }
+  SSSSettlement: {
+    why: string
+  }
+  SSSGamePass: {}
   UnsupportedLevel: {}
 }
 
