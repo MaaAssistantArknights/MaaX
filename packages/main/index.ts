@@ -39,9 +39,13 @@ async function createApp(): Promise<void> {
     win.loadFile(join(__dirname, '../renderer/index.html'))
   } else {
     // 🚧 Use ['ENV_NAME'] avoid vite:define plugin
-    const host = process.env.VITE_DEV_SERVER_HOST
+    let rawHost = process.env.VITE_DEV_SERVER_HOST ?? 'localhost'
+    if (!(rawHost === 'localhost' || /^\d+\.\d+\.\d+\.\d+$/.test(rawHost))) {
+      rawHost = `[${rawHost}]`
+    }
+    // const host = null
     const port = process.env.VITE_DEV_SERVER_PORT
-    const url = `http://${host ?? 'localhost'}:${port ?? '3344'}`
+    const url = `http://${rawHost}:${port ?? '3344'}`
     win.loadURL(url)
   }
   const modulesCtor = [
@@ -64,7 +68,9 @@ async function createApp(): Promise<void> {
   useHooks()
   if (isInDev()) {
     logger.warn('You are in development mode')
-    useDebug(win)
+    win.webContents.on('did-frame-finish-load', () => {
+      useDebug(win)
+    })
   }
 
   // Make all links open with the browser, not with the application
