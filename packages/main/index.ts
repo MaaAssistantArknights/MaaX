@@ -39,13 +39,9 @@ async function createApp(): Promise<void> {
     win.loadFile(join(__dirname, '../renderer/index.html'))
   } else {
     // 🚧 Use ['ENV_NAME'] avoid vite:define plugin
-    let rawHost = process.env.VITE_DEV_SERVER_HOST ?? 'localhost'
-    if (!(rawHost === 'localhost' || /^\d+\.\d+\.\d+\.\d+$/.test(rawHost))) {
-      rawHost = `[${rawHost}]`
-    }
-    // const host = null
+    const host = process.env.VITE_DEV_SERVER_HOST
     const port = process.env.VITE_DEV_SERVER_PORT
-    const url = `http://${rawHost}:${port ?? '3344'}`
+    const url = `http://${host ?? 'localhost'}:${port ?? '3344'}`
     win.loadURL(url)
   }
   const modulesCtor = [
