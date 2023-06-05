@@ -19,6 +19,7 @@ const props = defineProps<{
 
 function handleSelectNewTask(key: Task['name']): void {
   if (taskStore.copyTaskFromTemplate(uuid.value, key)) {
+    showDropdown.value = false
     logger.info(`copy task from template, uuid: ${uuid.value}, key: ${key}`)
   }
 }
