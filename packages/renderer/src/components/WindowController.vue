@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { setupHookProxy } from '@/hooks'
 import { ref, onMounted } from 'vue'
 
 const isMaximized = ref(false)
@@ -9,6 +10,7 @@ onMounted(() => {
   })
 })
 
+setupHookProxy()
 window.renderer.WindowManager.updateMaximized = maximized => {
   isMaximized.value = maximized
 }

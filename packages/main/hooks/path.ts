@@ -1,5 +1,8 @@
-import { openFolder } from '@main/utils/path'
+import { openFolder, openExternal } from '@main/utils/path'
 
 export default function usePathHooks(): void {
-  globalThis.main.Util.openFolder = openFolder
+  globalThis.main.Util = {
+    openFolder,
+    openExternal,
+  }
 }
