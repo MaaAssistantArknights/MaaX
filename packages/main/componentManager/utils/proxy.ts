@@ -10,10 +10,12 @@ export async function getProxy() {
       host: hostname,
       port: Number(port),
       protocol,
-      auth: {
+    }
+    if (username || password) {
+      cfg.auth = {
         username,
         password,
-      },
+      }
     }
     return cfg
   }

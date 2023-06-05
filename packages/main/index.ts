@@ -64,7 +64,9 @@ async function createApp(): Promise<void> {
   useHooks()
   if (isInDev()) {
     logger.warn('You are in development mode')
-    useDebug(win)
+    win.webContents.on('did-frame-finish-load', () => {
+      useDebug(win)
+    })
   }
 
   // Make all links open with the browser, not with the application
