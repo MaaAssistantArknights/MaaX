@@ -60,7 +60,7 @@ const menuOptions: MenuOption[] = [
 
 <template>
   <div>
-    <NButton text style="font-size: 24px" @click="$router.back()">
+    <NButton text style="font-size: 24px" @click="$router.replace(`/task/${currentUuid}`)">
       <NIcon>
         <IconChevronLeft />
       </NIcon>
