@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite'
 import path from 'path'
 import vue from '@vitejs/plugin-vue'
-import vueI18n from '@intlify/vite-plugin-vue-i18n'
+import vueI18n from '@intlify/unplugin-vue-i18n/vite'
 import svgLoader from 'vite-svg-loader'
 import renderer from 'vite-plugin-electron-renderer'
 
@@ -16,7 +16,7 @@ export default defineConfig({
     renderer(),
     svgLoader(),
     vueI18n({
-      include: path.resolve(__dirname, 'src/i18n/**'),
+      include: path.resolve(__dirname, 'src/i18n/**.json'),
     }),
   ],
   base: './',
