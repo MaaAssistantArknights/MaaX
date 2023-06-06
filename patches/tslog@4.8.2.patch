@@ -1,0 +1,52 @@
+diff --git a/dist/cjs/index.js b/dist/cjs/index.js
+index d6555406417f946e9315c633cbdb07a14419c2b9..1277f6b55ef7d0491b2645a2c17887e73319c071 100644
+--- a/dist/cjs/index.js
++++ b/dist/cjs/index.js
+@@ -3,6 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
+ exports.Logger = exports.BaseLogger = void 0;
+ const BaseLogger_js_1 = require("./BaseLogger.js");
+ Object.defineProperty(exports, "BaseLogger", { enumerable: true, get: function () { return BaseLogger_js_1.BaseLogger; } });
++const { transportFormattedOnly } = require("./runtime/nodejs/index.js");
++exports.transportFormattedOnly = transportFormattedOnly
+ class Logger extends BaseLogger_js_1.BaseLogger {
+     constructor(settings, logObj) {
+         super(settings, logObj, 5);
+diff --git a/dist/cjs/runtime/nodejs/index.js b/dist/cjs/runtime/nodejs/index.js
+index 267e8cdb1856a42f85c5ecb8599f284b26978977..5f03f38e69a0890c5867b9b3e32242a1fa9a1121 100644
+--- a/dist/cjs/runtime/nodejs/index.js
++++ b/dist/cjs/runtime/nodejs/index.js
+@@ -98,6 +98,12 @@ function transportFormatted(logMetaMarkup, logArgs, logErrors, settings) {
+     console.log(logMetaMarkup + (0, util_1.formatWithOptions)(settings.prettyInspectOptions, ...logArgs) + logErrorsStr);
+ }
+ exports.transportFormatted = transportFormatted;
++function transportFormattedOnly(logMetaMarkup, logArgs, logErrors, settings) {
++    const logErrorsStr = (logErrors.length > 0 && logArgs.length > 0 ? "\n" : "") + logErrors.join("\n");
++    settings.prettyInspectOptions.colors = settings.stylePrettyLogs;
++    return logMetaMarkup + (0, util_1.formatWithOptions)(settings.prettyInspectOptions, ...logArgs) + logErrorsStr;
++}
++exports.transportFormattedOnly = transportFormattedOnly;
+ function transportJSON(json) {
+     console.log(jsonStringifyRecursive(json));
+     function jsonStringifyRecursive(obj) {
+diff --git a/dist/types/index.d.ts b/dist/types/index.d.ts
+index c0a7dd4507c2a39a2cc4e99b27e95aa1fed94206..13d21461d7e361b5886e5764a6109e3939a592d5 100644
+--- a/dist/types/index.d.ts
++++ b/dist/types/index.d.ts
+@@ -1,5 +1,6 @@
+ import { BaseLogger, ILogObjMeta, ISettingsParam, ILogObj, IMeta } from "./BaseLogger.js";
+ export { ISettingsParam, BaseLogger, ILogObj, IMeta };
++export { transportFormattedOnly } from './runtime/nodejs/index.js'
+ export declare class Logger<LogObj> extends BaseLogger<LogObj> {
+     constructor(settings?: ISettingsParam<LogObj>, logObj?: LogObj);
+     /**
+diff --git a/dist/types/runtime/nodejs/index.d.ts b/dist/types/runtime/nodejs/index.d.ts
+index 6ea37a4fdf109a99a8d06150e01bdb3e03a19f3e..818478f250459945da9e9efe6a10ade7497a04d8 100644
+--- a/dist/types/runtime/nodejs/index.d.ts
++++ b/dist/types/runtime/nodejs/index.d.ts
+@@ -24,5 +24,6 @@ export declare function prettyFormatLogObj<LogObj>(maskedArgs: unknown[], settin
+ };
+ export declare function prettyFormatErrorObj<LogObj>(error: Error, settings: ISettings<LogObj>): string;
+ export declare function transportFormatted<LogObj>(logMetaMarkup: string, logArgs: unknown[], logErrors: string[], settings: ISettings<LogObj>): void;
++export declare function transportFormattedOnly<LogObj>(logMetaMarkup: string, logArgs: unknown[], logErrors: string[], settings: ISettings<LogObj>): string;
+ export declare function transportJSON<LogObj>(json: LogObj & ILogObjMeta): void;
+ export declare function isBuffer(arg: unknown): boolean;

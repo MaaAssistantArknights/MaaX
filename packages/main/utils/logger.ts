@@ -1,16 +1,16 @@
 import path from 'path'
 import { format } from 'date-fns'
-import tslog, { type ILogObject } from 'tslog'
-import { createWriteStream, mkdirSync, existsSync, WriteStream } from 'fs'
+import { Logger as TSLogger, type ILogObj, transportFormattedOnly } from 'tslog'
+import { createWriteStream, mkdirSync, existsSync, WriteStream, appendFileSync } from 'fs'
 import { getAppBaseDir } from './path'
 import { setupHookProxy } from './ipc-main'
 
 class Logger {
   public constructor() {
-    this.main_ = new tslog.Logger({
+    this.main_ = new TSLogger({
       name: 'main',
     })
-    this.renderer_ = new tslog.Logger({
+    this.renderer_ = new TSLogger({
       name: 'renderer',
     })
 
@@ -23,70 +23,57 @@ class Logger {
 
     this.log_file_ = createWriteStream(this.log_file_path_, { flags: 'a' })
 
-    this.main_.attachTransport(
-      {
-        silly: this.logToTransport,
-        debug: this.logToTransport,
-        trace: this.logToTransport,
-        info: this.logToTransport,
-        warn: this.logToTransport,
-        error: this.logToTransport,
-        fatal: this.logToTransport,
-      },
-      'debug'
-    )
+    const newTransformFormatted = (...args: Parameters<typeof transportFormattedOnly<ILogObj>>) => {
+      const text = transportFormattedOnly(...args)
+      console.log(text)
+      this.log_file_.write(text.replace(/\033\[\d+m/g, '') + '\n')
+    }
 
-    this.renderer_.attachTransport(
-      {
-        silly: this.logToTransport,
-        debug: this.logToTransport,
-        trace: this.logToTransport,
-        info: this.logToTransport,
-        warn: this.logToTransport,
-        error: this.logToTransport,
-        fatal: this.logToTransport,
+    this.main_ = new TSLogger({
+      name: 'main',
+      overwrite: {
+        transportFormatted: newTransformFormatted,
       },
-      'debug'
-    )
+    })
+    this.renderer_ = new TSLogger({
+      name: 'renderer',
+      overwrite: {
+        transportFormatted: newTransformFormatted,
+      },
+    })
 
     // 提前初始化
     setupHookProxy()
     globalThis.main.Util = {
       LogSilly: (...params) => {
+        params.pop()
         this.renderer_.silly(...params)
       },
       LogDebug: (...params) => {
+        params.pop()
         this.renderer_.debug(...params)
       },
       LogTrace: (...params) => {
+        params.pop()
         this.renderer_.trace(...params)
       },
       LogInfo: (...params) => {
+        params.pop()
         this.renderer_.info(...params)
       },
       LogWarn: (...params) => {
+        params.pop()
         this.renderer_.warn(...params)
       },
       LogError: (...params) => {
+        params.pop()
         this.renderer_.error(...params)
       },
       LogFatal: (...params) => {
+        params.pop()
         this.renderer_.fatal(...params)
       },
     }
-  }
-
-  private readonly logToTransport = (logObject: ILogObject): void => {
-    this.main_
-      .getChildLogger({
-        colorizePrettyLogs: false,
-        dateTimeTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        prettyInspectOptions: {
-          colors: false,
-          depth: 20,
-        },
-      })
-      .printPrettyLog(this.log_file_, logObject)
   }
 
   public get logFilePath(): string {
@@ -97,14 +84,14 @@ class Logger {
     return this.log_file_dir_
   }
 
-  public get main(): tslog.Logger {
+  public get main() {
     return this.main_
   }
 
   private readonly log_file_path_: string
 
-  private readonly main_: tslog.Logger
-  private readonly renderer_: tslog.Logger
+  private readonly main_: TSLogger<ILogObj>
+  private readonly renderer_: TSLogger<ILogObj>
 
   private readonly log_file_: WriteStream
 
