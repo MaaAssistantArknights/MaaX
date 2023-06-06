@@ -2,6 +2,8 @@ import { spawn } from 'child_process'
 import { createServer, build } from 'vite'
 import electron from 'electron'
 
+let aliveInst = 0
+
 /**
  * @type {(server: import('vite').ViteDevServer) => Promise<import('rollup').RollupWatcher>}
  */
@@ -23,10 +25,17 @@ function watchMain(server) {
       {
         name: 'electron-main-watcher',
         writeBundle() {
+          aliveInst += 1
           electronProcess && electronProcess.kill()
           electronProcess = spawn(electron, ['.', '--inspect'], {
             stdio: 'inherit',
             env,
+          })
+          electronProcess.on('exit', () => {
+            aliveInst -= 1
+            if (aliveInst === 0) {
+              process.exit(0)
+            }
           })
         },
       },
