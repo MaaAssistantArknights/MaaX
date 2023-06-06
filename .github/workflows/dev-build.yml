@@ -30,7 +30,7 @@ jobs:
         arch: ["amd64", "arm64"]
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      NODE_OPTIONS: "--max_old_space_size=4096"
+      NODE_OPTIONS: "--max_old_space_size=6144"
     steps:
       - uses: actions/checkout@v3
         with:
