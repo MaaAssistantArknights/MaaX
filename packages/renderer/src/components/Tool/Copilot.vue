@@ -6,6 +6,7 @@ import {
   NCheckbox,
   NInput,
   NInputNumber,
+  NModal,
   NUpload,
   NUploadDragger,
   type UploadFileInfo,
@@ -88,15 +89,20 @@ interface SSSCopilotObject {
 
 const maaLink = ref<string>('')
 const data = ref<CopilotObject | SSSCopilotObject | null>(null)
+const showPreview = ref(false)
+const mapPreview = ref<string>('')
 const useAutoFormation = ref(false)
 const useSSSLoop = ref(false)
 const SSSLoopTimes = ref(1)
+
 const processing = ref(false)
 const taskId = ref(-1)
 const logs = ref<string[]>([])
 
 function updateData(obj: CopilotObject | SSSCopilotObject | null) {
   // check ver.
+  showPreview.value = false
+  mapPreview.value = ''
   data.value = obj
 }
 
@@ -181,6 +187,11 @@ function openExt(url: string) {
 
 function openExtMap() {
   window.main.Util.openExternal(`https://map.ark-nights.com/map/${data.value?.stage_name}`)
+}
+
+function popupPreview() {
+  mapPreview.value = data.value?.stage_name ?? ''
+  showPreview.value = !!mapPreview.value
 }
 
 // 先写着备用
@@ -352,7 +363,17 @@ function stop() {
             </template>
             <template v-else>
               <div>
-                <NButton @click="openExtMap()"> 打开地图: {{ data.stage_name }} </NButton>
+                <span> {{ data.stage_name }} </span>
+                <NButton @click="openExtMap()"> prts.map </NButton>
+                <NButton @click="popupPreview()"> theresa.wiki </NButton>
+                <NModal v-model:show="showPreview" display-directive="show">
+                  <iframe
+                    :src="`https://theresa.wiki/widget/map/${mapPreview}/scene`"
+                    style="border: none"
+                    width="400"
+                    height="225"
+                  ></iframe>
+                </NModal>
               </div>
               <div>
                 <NCheckbox v-model:checked="useAutoFormation">
