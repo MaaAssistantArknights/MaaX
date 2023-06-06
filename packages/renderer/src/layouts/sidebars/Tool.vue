@@ -22,6 +22,7 @@ const menuOptions: MenuOption[] = [
         RouterLink,
         {
           to: `/tool/${currentUuid}/copilot`,
+          replace: true,
         },
         {
           default: () => 'MAA Copilot',
@@ -35,6 +36,7 @@ const menuOptions: MenuOption[] = [
         RouterLink,
         {
           to: `/tool/${currentUuid}/item`,
+          replace: true,
         },
         {
           default: () => '仓库识别',
@@ -48,6 +50,7 @@ const menuOptions: MenuOption[] = [
         RouterLink,
         {
           to: `/tool/${currentUuid}/recruit`,
+          replace: true,
         },
         {
           default: () => '公招识别',
