@@ -17,8 +17,8 @@ import { getProfessionImage } from '@/utils/game_image'
 import OperItem from './OperItem.vue'
 import { useSeperateTaskStore } from '@/store/seperateTask'
 import { AsstMsg, type CallbackMapper } from '@type/task/callback'
-import { reactive } from 'vue'
-import { mainModule } from 'process'
+import TMap from '../External/TheresaWiki/TMap.vue'
+import type { TileClickData } from '../External/TheresaWiki/types'
 
 const route = useRoute()
 const seperateTaskStore = useSeperateTaskStore()
@@ -318,6 +318,21 @@ function stop() {
     uuid: currentUuid,
   })
 }
+
+const tmapLoading = ref(true)
+const tmap = ref<InstanceType<typeof TMap> | null>(null)
+
+function previewTileClick(tile: TileClickData) {
+  console.log(tile)
+  tmap.value?.setMapState({
+    activeTiles: [
+      {
+        x: tile.maaLocation[0],
+        y: tile.maaLocation[1],
+      },
+    ],
+  })
+}
 </script>
 
 <template>
@@ -366,13 +381,17 @@ function stop() {
                 <span> {{ data.stage_name }} </span>
                 <NButton @click="openExtMap()"> prts.map </NButton>
                 <NButton @click="popupPreview()"> theresa.wiki </NButton>
-                <NModal v-model:show="showPreview" display-directive="show">
-                  <iframe
-                    :src="`https://theresa.wiki/widget/map/${mapPreview}/scene`"
-                    style="border: none"
-                    width="400"
-                    height="225"
-                  ></iframe>
+                <NModal v-model:show="showPreview">
+                  <div>
+                    <TMap
+                      ref="tmap"
+                      v-show="!tmapLoading"
+                      @tileClick="previewTileClick"
+                      @mapReady="tmapLoading = false"
+                      :stageId="mapPreview"
+                    ></TMap>
+                    <span v-show="tmapLoading"> Loading... </span>
+                  </div>
                 </NModal>
               </div>
               <div>
