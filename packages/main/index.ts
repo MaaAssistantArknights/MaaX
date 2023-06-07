@@ -65,6 +65,7 @@ async function createApp(): Promise<void> {
   if (isInDev()) {
     logger.warn('You are in development mode')
     win.webContents.on('did-frame-finish-load', () => {
+      require('source-map-support').install()
       useDebug(win)
     })
   }
