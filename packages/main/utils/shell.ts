@@ -1,7 +1,13 @@
-import execa, { type ExecaError } from 'execa'
+import { execa as EXECA, type ExecaError } from 'execa'
 import iconv from 'iconv-lite'
 import logger from '@main/utils/logger'
 import { getPlatform } from '@main/utils/os'
+
+let execa: typeof EXECA = () => void 0 as any
+
+import('execa').then(({ execa: e }) => {
+  execa = e
+})
 
 interface ProcessOutput {
   stdout: string
