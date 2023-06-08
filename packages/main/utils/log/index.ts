@@ -2,20 +2,34 @@ import { format, formatWithOptions } from 'util'
 import type { TLogLevel, TLogger, TLoggerEnv } from './types'
 import chalk from 'chalk'
 
+let pathAlias = (p: string) => p
+
+export type { TLogger, TLoggerEnv }
+
 const LogLevel: TLogLevel = ['SILLY', 'DEBUG', 'TRACE', 'INFO', 'WARN', 'ERROR', 'FATAL']
 
-function createLogger(name: string, output: (env: TLoggerEnv) => void): TLogger {
+export function initLogger(proj = process.cwd()) {
+  chalk.level = 3
+  pathAlias = p => {
+    return p.replace(proj, '')
+  }
+}
+
+export function createLogger(name: string, output: (env: TLoggerEnv) => void): TLogger {
   function log(level: number, ...args: any[]) {
     const now = new Date()
     const stack = new Error().stack?.split('\n')[3] ?? ''
 
-    const match = /^\s+at\s+([\s\S]+?)(?:\s+\(([\s\S]+)\))$/.exec(stack)
+    const match = /^\s*at\s+([\s\S]+?)(?:\s+\(([\s\S]+?)\))?\s*$/.exec(stack)
+
+    const file = pathAlias(match?.[2] ?? match?.[1] ?? 'unknown')
+    const func = (match?.[2] ? match?.[1] : null) ?? '<anonymous>'
 
     const env: TLoggerEnv = {
       name,
       source: {
-        file: match?.[2] ?? 'Unknown file',
-        func: match?.[1] ?? 'Unknown function',
+        file,
+        func,
         stack,
       },
       date: {
@@ -71,11 +85,15 @@ export function createPresetFormatter(output: (out: { pretty: string; mono: stri
       pretty: [
         time,
         chalk.bold(env.level),
-        env.source.file,
-        chalk.bold(env.name),
+        `[${chalk.bold(env.name)} ${env.source.file} ${env.source.func}]`,
         env.content.pretty,
       ].join('\t'),
-      mono: [time, env.level, env.source.file, env.name, env.content.mono].join('\t'),
+      mono: [
+        time,
+        env.level,
+        `[${env.name} ${env.source.file} ${env.source.func}]`,
+        env.content.mono,
+      ].join('\t'),
     })
   }
 }

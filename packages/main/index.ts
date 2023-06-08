@@ -18,6 +18,8 @@ import DownloadManager from './downloadManager'
 import { getAppBaseDir } from './utils/path'
 import { setupHookProxy } from './utils/ipc-main'
 
+require('source-map-support').install()
+
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()
 
@@ -65,7 +67,6 @@ async function createApp(): Promise<void> {
   if (isInDev()) {
     logger.warn('You are in development mode')
     win.webContents.on('did-frame-finish-load', () => {
-      require('source-map-support').install()
       useDebug(win)
     })
   }

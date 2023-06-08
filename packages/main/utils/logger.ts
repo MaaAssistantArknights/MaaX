@@ -1,19 +1,12 @@
 import path from 'path'
 import { format } from 'date-fns'
-import { Logger as TSLogger, type ILogObj, transportFormattedOnly } from 'tslog'
 import { createWriteStream, mkdirSync, existsSync, WriteStream, appendFileSync } from 'fs'
 import { getAppBaseDir } from './path'
 import { setupHookProxy } from './ipc-main'
+import { createLogger, createPresetFormatter, initLogger, type TLogger } from './log'
 
 class Logger {
   public constructor() {
-    this.main_ = new TSLogger({
-      name: 'main',
-    })
-    this.renderer_ = new TSLogger({
-      name: 'renderer',
-    })
-
     if (!existsSync(this.log_file_dir_)) {
       mkdirSync(this.log_file_dir_)
     }
@@ -23,24 +16,15 @@ class Logger {
 
     this.log_file_ = createWriteStream(this.log_file_path_, { flags: 'a' })
 
-    const newTransformFormatted = (...args: Parameters<typeof transportFormattedOnly<ILogObj>>) => {
-      const text = transportFormattedOnly(...args)
-      console.log(text)
-      this.log_file_.write(text.replace(/\033\[\d+m/g, '') + '\n')
-    }
+    const formatter = createPresetFormatter(out => {
+      console.log(out.pretty)
+      this.log_file_.write(out.mono + '\n')
+    })
 
-    this.main_ = new TSLogger({
-      name: 'main',
-      overwrite: {
-        transportFormatted: newTransformFormatted,
-      },
-    })
-    this.renderer_ = new TSLogger({
-      name: 'renderer',
-      overwrite: {
-        transportFormatted: newTransformFormatted,
-      },
-    })
+    initLogger()
+
+    this.main_ = createLogger('main', formatter)
+    this.renderer_ = createLogger('renderer', formatter)
 
     // 提前初始化
     setupHookProxy()
@@ -90,8 +74,8 @@ class Logger {
 
   private readonly log_file_path_: string
 
-  private readonly main_: TSLogger<ILogObj>
-  private readonly renderer_: TSLogger<ILogObj>
+  private readonly main_: TLogger
+  private readonly renderer_: TLogger
 
   private readonly log_file_: WriteStream
 

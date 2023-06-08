@@ -89,7 +89,7 @@
     "@tigerconnect/ffi-napi": "4.0.3-tc3",
     "@tigerconnect/ref-napi": "4.0.0-tc8",
     "axios": "^1.4.0",
-    "chalk": "^5.2.0",
+    "chalk": "4",
     "crypto-js": "^4.1.1",
     "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^8.1.0",
@@ -100,12 +100,6 @@
     "semver": "^7.5.1",
     "systeminformation": "^5.17.17",
     "tar": "^6.1.15",
-    "tslog": "^4.8.2",
     "unzipper": "^0.10.14"
-  },
-  "pnpm": {
-    "patchedDependencies": {
-      "tslog@4.8.2": "patches/tslog@4.8.2.patch"
-    }
   }
 }
