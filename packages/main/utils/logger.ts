@@ -23,8 +23,11 @@ class Logger {
 
     initLogger()
 
-    this.main_ = createLogger('main', formatter)
-    this.renderer_ = createLogger('renderer', formatter)
+    const [ml, mc] = createLogger('main', formatter)
+    this.main_ = ml
+
+    const [rl, rc] = createLogger('renderer', formatter)
+    this.renderer_ = rl
 
     // 提前初始化
     setupHookProxy()

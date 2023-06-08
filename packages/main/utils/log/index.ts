@@ -1,5 +1,5 @@
 import { format, formatWithOptions } from 'util'
-import type { TLogLevel, TLogger, TLoggerEnv } from './types'
+import type { TLogLevel, TLogger, TLoggerController, TLoggerEnv } from './types'
 import chalk from 'chalk'
 
 let pathAlias = (p: string) => p
@@ -15,8 +15,17 @@ export function initLogger(proj = process.cwd()) {
   }
 }
 
-export function createLogger(name: string, output: (env: TLoggerEnv) => void): TLogger {
+export function createLogger(name: string, output: (env: TLoggerEnv) => void) {
+  const ctrl: TLoggerController = {
+    level: 0,
+    inspect: {},
+  }
+
   function log(level: number, ...args: any[]) {
+    if (level < ctrl.level) {
+      return
+    }
+
     const now = new Date()
     const stack = new Error().stack?.split('\n')[3] ?? ''
 
@@ -45,6 +54,7 @@ export function createLogger(name: string, output: (env: TLoggerEnv) => void): T
       content: {
         pretty: formatWithOptions(
           {
+            ...ctrl.inspect,
             colors: true,
           },
           '',
@@ -52,6 +62,7 @@ export function createLogger(name: string, output: (env: TLoggerEnv) => void): T
         ).slice(1),
         mono: formatWithOptions(
           {
+            ...ctrl.inspect,
             colors: false,
           },
           '',
@@ -62,13 +73,13 @@ export function createLogger(name: string, output: (env: TLoggerEnv) => void): T
     output(env)
   }
 
-  const res = {} as TLogger
+  const logger = {} as TLogger
   for (const [l, s] of LogLevel.entries()) {
-    res[s.toLowerCase() as Lowercase<typeof s>] = (...args) => {
+    logger[s.toLowerCase() as Lowercase<typeof s>] = (...args) => {
       log(l, ...args)
     }
   }
-  return res
+  return [logger, ctrl] as const
 }
 
 export function createPresetFormatter(output: (out: { pretty: string; mono: string }) => void) {

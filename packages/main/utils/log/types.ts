@@ -1,3 +1,5 @@
+import type { InspectOptions } from 'node:util'
+
 type LowerAll<Ks extends string[]> = Ks extends [infer X, ...infer YS]
   ? X extends string
     ? YS extends string[]
@@ -36,4 +38,9 @@ export interface TLoggerEnv {
     pretty: string
     mono: string
   }
+}
+
+export interface TLoggerController {
+  level: number // greater equal
+  inspect: InspectOptions
 }
