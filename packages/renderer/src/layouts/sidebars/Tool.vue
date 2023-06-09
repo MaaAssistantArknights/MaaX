@@ -49,6 +49,20 @@ const menuOptions: MenuOption[] = [
       h(
         RouterLink,
         {
+          to: `/tool/${currentUuid}/oper`,
+          replace: true,
+        },
+        {
+          default: () => '干员识别',
+        }
+      ),
+    key: 'oper',
+  },
+  {
+    label: () =>
+      h(
+        RouterLink,
+        {
           to: `/tool/${currentUuid}/recruit`,
           replace: true,
         },

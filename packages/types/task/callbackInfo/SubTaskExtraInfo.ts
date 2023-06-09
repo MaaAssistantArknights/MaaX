@@ -84,9 +84,9 @@ export type SubTaskExtraInfoMapper = {
     arkplanner: DepotResult<Depot_ArkPlanner>
     lolicon: DepotResult<Depot_Lolicon>
   }
-  OperBox: {
+  OperBoxInfo: {
     done: boolean
-    all_oper: {
+    all_opers: {
       id: string
       name: string
       own: boolean
