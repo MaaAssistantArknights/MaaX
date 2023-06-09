@@ -7,9 +7,8 @@ import { getItemBorderedImage, getOperatorAvatar } from '@/utils/game_image'
 import { showMessage } from '@/utils/message'
 import { AsstMsg, type CallbackMapper, type SubTaskExtraInfoMapper } from '@type/task/callback'
 import type { GetTask } from '@type/task'
-import { items } from '@common/ArknightsGameData/zh_CN/gamedata/excel/item_table.json'
 import type { OneToSix } from '@type/game'
-import { OperFilter, OperOrder } from './operOrder'
+import { OperFilter, OperOrder, RealLimited } from './opers'
 
 type OperBoxResult = SubTaskExtraInfoMapper['OperBoxInfo']
 
@@ -33,12 +32,16 @@ const result = ref<OperBoxResult | null>(null)
 
 const onlyShowHighlight = ref(true)
 const highlightOwned = ref(true)
+const hideRealLimited = ref(true)
 
 function isHighlight(own: boolean) {
   return own ? highlightOwned.value : !highlightOwned.value
 }
 
-function isShow(own: boolean) {
+function isShow(own: boolean, limited: boolean) {
+  if (!own && limited && hideRealLimited.value) {
+    return false
+  }
   return !onlyShowHighlight.value || isHighlight(own)
 }
 
@@ -52,6 +55,7 @@ const owned = computed(() => {
       name: string
       own: boolean
       id: number
+      lim: boolean
     }[]
   > = {
     1: [],
@@ -68,6 +72,7 @@ const owned = computed(() => {
         name: oper.name,
         own: oper.own,
         id: OperOrder.indexOf(oper.name),
+        lim: RealLimited.includes(oper.name),
       })
     })
   for (let i = 1; i <= 6; i++) {
@@ -140,6 +145,10 @@ async function doOperBox() {
             <span>仅显示高亮</span>
             <NSwitch v-model:value="onlyShowHighlight"></NSwitch>
           </div>
+          <div>
+            <span>隐藏真限定</span>
+            <NSwitch v-model:value="hideRealLimited"></NSwitch>
+          </div>
           <NButton @click="doOperBox()" :disabled="processing">识别</NButton>
         </div>
       </div>
@@ -158,14 +167,14 @@ async function doOperBox() {
             v-for="oper in owned?.[(7 - i) as OneToSix] ?? []"
             :key="oper.name"
             :class="{
-              Hide: !isShow(oper.own),
+              Hide: !isShow(oper.own, oper.lim),
             }"
             class="OperBoxResultContentItem"
           >
             <NTooltip trigger="hover">
               <template #trigger>
                 <NAvatar
-                  v-show="isShow(oper.own)"
+                  v-show="isShow(oper.own, oper.lim)"
                   :src="getOperatorAvatar(oper.name)"
                   :style="{
                         border: `2px solid ${operColor[(7-i) as OneToSix]}`,

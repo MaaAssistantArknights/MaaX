@@ -13,6 +13,18 @@ export const OperFilter = [
   '阿米娅-WARRIOR',
 ]
 
+export const RealLimited = [
+  '战车',
+  '闪击',
+  '霜华',
+  '灰烬',
+  '九色鹿',
+  '罗小黑',
+  '泰拉大陆调查团',
+  '火龙S黑角',
+  '麒麟X夜刀',
+]
+
 /*
 https://prts.wiki/w/%E5%B9%B2%E5%91%98%E4%B8%8A%E7%BA%BF%E6%97%B6%E9%97%B4%E4%B8%80%E8%A7%88
 Array.from(document.querySelectorAll('#mw-content-text > div > table > tbody > tr > td:nth-child(1) > a')).map(x => x.innerText)
