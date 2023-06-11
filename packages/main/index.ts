@@ -18,6 +18,8 @@ import DownloadManager from './downloadManager'
 import { getAppBaseDir } from './utils/path'
 import { setupHookProxy } from './utils/ipc-main'
 
+require('source-map-support').install()
+
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()
 

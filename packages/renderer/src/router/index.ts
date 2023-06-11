@@ -14,6 +14,7 @@ import PageTool from '@/layouts/pages/Tool.vue'
 
 import ToolCopilot from '@/components/Tool/Copilot.vue'
 import ToolItem from '@/components/Tool/Item.vue'
+import ToolOperBox from '@/components/Tool/OperBox.vue'
 import ToolRecruit from '@/components/Tool/Recruit.vue'
 
 const routes: RouteRecordRaw[] = [
@@ -52,6 +53,10 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'item',
         component: ToolItem,
+      },
+      {
+        path: 'oper',
+        component: ToolOperBox,
       },
       {
         path: 'recruit',

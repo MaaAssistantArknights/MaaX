@@ -1,11 +1,29 @@
 <script setup lang="ts">
-import { NAvatar, NCard, NInput, NUpload, NUploadDragger, type UploadFileInfo } from 'naive-ui'
+import {
+  NAvatar,
+  NButton,
+  NCard,
+  NCheckbox,
+  NInput,
+  NInputNumber,
+  NModal,
+  NUpload,
+  NUploadDragger,
+  type UploadFileInfo,
+} from 'naive-ui'
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { getProfessionImage } from '@/utils/game_image'
 import OperItem from './OperItem.vue'
+import { useSeperateTaskStore } from '@/store/seperateTask'
+import { AsstMsg, type CallbackMapper } from '@type/task/callback'
+import TMap from '../External/TheresaWiki/TMap.vue'
+import type { TileClickData } from '../External/TheresaWiki/types'
 
 const route = useRoute()
+const seperateTaskStore = useSeperateTaskStore()
+
+const currentUuid = route.params.uuid as string
 
 interface OperatorReq {
   elite?: 0 | 1 | 2
@@ -71,9 +89,20 @@ interface SSSCopilotObject {
 
 const maaLink = ref<string>('')
 const data = ref<CopilotObject | SSSCopilotObject | null>(null)
+const showPreview = ref(false)
+const mapPreview = ref<string>('')
+const useAutoFormation = ref(false)
+const useSSSLoop = ref(false)
+const SSSLoopTimes = ref(1)
+
+const processing = ref(false)
+const taskId = ref(-1)
+const logs = ref<string[]>([])
 
 function updateData(obj: CopilotObject | SSSCopilotObject | null) {
   // check ver.
+  showPreview.value = false
+  mapPreview.value = ''
   data.value = obj
 }
 
@@ -86,7 +115,7 @@ async function parseInfo(option: { file: UploadFileInfo }) {
 }
 
 async function fetchInfo(url: string) {
-  console.log(url)
+  // console.log(url)
   const m = /^maa:\/\/(\d+)$/.exec(url)
   if (!m) {
     return
@@ -109,8 +138,8 @@ function startFetch() {
   fetchInfo(maaLink.value)
 }
 
-if (route.query.id) {
-  fetchInfo('maa://' + (route.query.id as string))
+if (route.params.id) {
+  fetchInfo('maa://' + (route.params.id as string))
 }
 
 function track(text: string) {
@@ -156,6 +185,15 @@ function openExt(url: string) {
   window.main.Util.openExternal(url)
 }
 
+function openExtMap() {
+  window.main.Util.openExternal(`https://map.ark-nights.com/map/${data.value?.stage_name}`)
+}
+
+function popupPreview() {
+  mapPreview.value = data.value?.stage_name ?? ''
+  showPreview.value = !!mapPreview.value
+}
+
 // 先写着备用
 function serializeReq(req: OperatorReq) {
   let res = ''
@@ -175,6 +213,125 @@ function serializeReq(req: OperatorReq) {
     res += `${req.potentiality}潜`
   }
   return res
+}
+
+async function start() {
+  if (!data.value) {
+    return
+  }
+  const filename = await window.main.Util.saveTempJson(JSON.stringify(data.value))
+  processing.value = true
+  logs.value = []
+  const type = data.value.type === 'SSS' ? 'SSS' : 'NORM'
+  if (data.value.type === 'SSS') {
+    taskId.value = await window.main.CoreLoader.appendTask({
+      uuid: currentUuid,
+      type: 'SSSCopilot',
+      params: {
+        enable: true,
+        filename,
+        loop_times: useSSSLoop.value ? SSSLoopTimes.value : undefined,
+      },
+    })
+  } else {
+    taskId.value = await window.main.CoreLoader.appendTask({
+      uuid: currentUuid,
+      type: 'Copilot',
+      params: {
+        enable: true,
+        filename,
+        formation: useAutoFormation.value,
+      },
+    })
+  }
+
+  const tc = type === 'SSS' ? 'SSSCopilot' : 'Copilot'
+  const h = seperateTaskStore.register(currentUuid, taskId.value, (msg, data) => {
+    if (data.taskchain !== tc) {
+      return false
+    }
+    // console.log(msg, data)
+    switch (msg) {
+      case AsstMsg.SubTaskExtraInfo: {
+        const d = data as CallbackMapper[AsstMsg.SubTaskExtraInfo]
+        switch (d.what) {
+          case 'CopilotAction':
+            if (d.details.doc) {
+              logs.value.push(d.details.doc)
+            }
+            logs.value.push(`当前步骤: ${d.details.action} ${d.details.target}`)
+            return true
+          case 'SSSStage':
+            logs.value.push(`进入关卡: ${d.details.stage}`)
+            return true
+          case 'SSSSettlement':
+            logs.value.push(`${d.details.why}`)
+            return true
+          case 'SSSGamePass':
+            logs.value.push('通关了?')
+            return true
+          case 'UnsupportedLevel':
+            logs.value.push(`不支持的关卡!`)
+            return true
+        }
+        return false
+      }
+      case AsstMsg.SubTaskError:
+        console.warn(msg, data)
+        // WTF?
+        if ((data as any).first[0] === 'BattleStartPre') {
+          return false
+        }
+        seperateTaskStore.unregister(currentUuid, taskId.value, h)
+        processing.value = false
+        return true
+      case AsstMsg.SubTaskCompleted: {
+        const d = data as CallbackMapper[AsstMsg.SubTaskCompleted]
+        if (type === 'SSS') {
+          if (d.subtask === 'SSSStageManagerTask') {
+            console.warn(msg, data)
+            seperateTaskStore.unregister(currentUuid, taskId.value, h)
+            processing.value = false
+            return true
+          }
+        } else {
+          if (d.subtask === 'BattleProcessTask') {
+            console.warn(msg, data)
+            seperateTaskStore.unregister(currentUuid, taskId.value, h)
+            processing.value = false
+            return true
+          }
+        }
+      }
+    }
+    return false
+  })
+
+  await window.main.CoreLoader.start({
+    uuid: currentUuid,
+  })
+}
+
+function stop() {
+  processing.value = false
+  window.main.CoreLoader.stop({
+    uuid: currentUuid,
+  })
+}
+
+const tmapLoading = ref(true)
+const tmap = ref<InstanceType<typeof TMap> | null>(null)
+
+function previewTileClick(tile: TileClickData) {
+  console.log(tile)
+  tmap.value?.setMapState({
+    activeTiles: [
+      {
+        x: tile.maaLocation[0],
+        y: tile.maaLocation[1],
+      },
+    ],
+  })
 }
 </script>
 
@@ -204,6 +361,57 @@ function serializeReq(req: OperatorReq) {
     </div>
 
     <div class="CopilotContent" v-if="data">
+      <NCard v-if="data" embedded style="grid-column: span 2">
+        <template #header>
+          <span> 控制 </span>
+        </template>
+
+        <div class="CopilotControl">
+          <template v-if="!processing">
+            <template v-if="data.type === 'SSS'">
+              <div>
+                <NCheckbox v-model:checked="useSSSLoop">
+                  <span style="white-space: nowrap"> 循环次数 </span>
+                </NCheckbox>
+                <NInputNumber :disabled="!useSSSLoop" v-model:value="SSSLoopTimes"></NInputNumber>
+              </div>
+            </template>
+            <template v-else>
+              <div>
+                <span> {{ data.stage_name }} </span>
+                <NButton @click="openExtMap()"> prts.map </NButton>
+                <NButton @click="popupPreview()"> theresa.wiki </NButton>
+                <NModal v-model:show="showPreview">
+                  <div>
+                    <TMap
+                      ref="tmap"
+                      v-show="!tmapLoading"
+                      @tileClick="previewTileClick"
+                      @mapReady="tmapLoading = false"
+                      :stageId="mapPreview"
+                    ></TMap>
+                    <span v-show="tmapLoading"> Loading... </span>
+                  </div>
+                </NModal>
+              </div>
+              <div>
+                <NCheckbox v-model:checked="useAutoFormation">
+                  <span style="white-space: nowrap"> 自动编队 </span>
+                </NCheckbox>
+              </div>
+            </template>
+          </template>
+          <div style="justify-content: center">
+            <NButton v-if="!processing" @click="start" size="large">开始</NButton>
+            <NButton v-else @click="stop" size="large">停止</NButton>
+          </div>
+          <div style="flex-direction: column">
+            <span v-for="(log, idx) in logs" :key="idx">
+              {{ log }}
+            </span>
+          </div>
+        </div>
+      </NCard>
       <NCard embedded>
         <template #header>
           <span> {{ data.doc?.title ?? data.stage_name }} </span>
@@ -278,7 +486,7 @@ function serializeReq(req: OperatorReq) {
         </template>
       </template>
     </div>
-    {{ data }}
+    <!-- {{ data }} -->
   </NCard>
 </template>
 
@@ -292,6 +500,18 @@ function serializeReq(req: OperatorReq) {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 8px;
+
+  .CopilotControl {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    & > div {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+  }
 
   .CopilotDetail {
     display: flex;
