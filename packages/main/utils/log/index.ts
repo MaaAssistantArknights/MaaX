@@ -88,7 +88,7 @@ export function createPresetFormatter(output: (out: { pretty: string; mono: stri
       .toString()
       .padStart(2, '0')}-${env.date.date.toString().padStart(2, '0')} ${env.date.hour
       .toString()
-      .padStart(2, '0')}-${env.date.minute.toString().padStart(2, '0')}:${env.date.second
+      .padStart(2, '0')}:${env.date.minute.toString().padStart(2, '0')}:${env.date.second
       .toString()
       .padStart(2, '0')}.${env.date.msec.toString().padStart(3, '0')}`
 
