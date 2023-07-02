@@ -251,7 +251,7 @@ class WindowsAdapter implements EmulatorAdapter {
     const cmd = await getCommandLine(e.pid) // 启动命令, 提取出--startvm选项, 然后和emuPathExp拼接得到实际启动命令.
     const startvm = cmd.match(/--startvm ([^\s]+)/) // FIXME: 写错了
     if (startvm) {
-      e.commandLine = '"' + emuPathExp + '" -m ' + startvm[1] // 实际命令行启动指令
+      e.commandLine = `${emuPathExp} ${startvm[1]}` // 实际命令行启动指令
     }
     e.displayName = 'MuMu模拟器'
     e.config = 'MuMuEmulator'
