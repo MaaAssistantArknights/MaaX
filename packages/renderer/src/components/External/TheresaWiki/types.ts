@@ -35,7 +35,7 @@ export type RecvMsg = {
     }
 )
 
-export type MapState {
+export type MapState = {
   activeTiles: {
     x: number
     y: number
