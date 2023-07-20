@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { inject } from 'vue'
 import _ from 'lodash'
-import { RogueTheme, type MizukiSquadType, type PhantomSquadType, type RolesType } from '@type/game'
+import { RogueTheme, type MizukiSquadType, type PhantomSquadType, type SamiSquadType, type RolesType } from '@type/game'
 import {
   NForm,
   NFormItem,
@@ -123,6 +123,66 @@ const mizukiSquadOptions: {
   },
 ]
 
+const samiSquadOptions: {
+  label: string
+  value: SamiSquadType
+}[] = [
+  {
+    label: '指挥分队',
+    value: '指挥分队',
+  },
+  {
+    label: '集群分队',
+    value: '集群分队',
+  },
+  {
+    label: '后勤分队',
+    value: '后勤分队',
+  },
+  {
+    label: '特训分队',
+    value: '特训分队',
+  },
+  {
+    label: '矛头分队',
+    value: '矛头分队',
+  },
+  {
+    label: '突击战术分队',
+    value: '突击战术分队',
+  },
+  {
+    label: '堡垒战术分队',
+    value: '堡垒战术分队',
+  },
+  {
+    label: '远程战术分队',
+    value: '远程战术分队',
+  },
+  {
+    label: '破坏战术分队',
+    value: '破坏战术分队',
+  },
+  {
+    label: '高规格分队',
+    value: '高规格分队',
+  },
+  {
+    label: '永恒狩猎分队',
+    value: '永恒狩猎分队',
+  },
+  {
+    label: '生活至上分队',
+    value: '生活至上分队',
+  },
+  {
+    label: '科学主义分队',
+    value: '科学主义分队',
+  },
+]
+
+
+
 const rolesOptions: {
   label: string
   value: RolesType
@@ -171,6 +231,10 @@ const themeOptions: {
     label: '水月',
     value: 'Mizuki',
   },
+  {
+    label: '萨米',
+    value: 'Sami',
+  }
 ]
 
 const props = defineProps<{
@@ -204,9 +268,18 @@ function handleUpdateRogueTheme(value: string) {
       })
       handleUpdateConfiguration('squad', '指挥分队')
     }
-  } else {
+  } else if (value === RogueTheme.Mizuki) {
     if (!mizukiSquadOptions.find(item => item.value === props.configurations.squad)) {
       showMessage('当前分队不支持水月主题, 已自动切换到指挥分队', {
+        type: 'info',
+        duration: 5000,
+        closable: true,
+      })
+      handleUpdateConfiguration('squad', '指挥分队')
+    }
+  } else { //if (value === RougeTheme.Sami)
+    if (!samiSquadOptions.find(item => item.value === props.configurations.squad)) {
+      showMessage('当前分队不支持萨米主题，以自动切换到指挥分队', {
         type: 'info',
         duration: 5000,
         closable: true,
@@ -255,7 +328,9 @@ function handleUpdateStartsCount(value: number | null) {
             :options="
               props.configurations.theme === RogueTheme.Phantom
                 ? phantomSquadOptions
-                : mizukiSquadOptions
+                : props.configurations.theme === RogueTheme.Mizuki
+                  ? mizukiSquadOptions
+                  : samiSquadOptions
             "
             @update:value="value => handleUpdateConfiguration('squad', value)"
           />
