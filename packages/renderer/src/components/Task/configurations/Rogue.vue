@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject } from 'vue'
+import { inject, computed } from 'vue'
 import _ from 'lodash'
 import { RogueTheme, type MizukiSquadType, type PhantomSquadType, type SamiSquadType, type RolesType } from '@type/game'
 import {
@@ -293,6 +293,18 @@ function handleUpdateStartsCount(value: number | null) {
   if (value === null) value = 999
   handleUpdateConfiguration('starts_count', value)
 }
+
+const squadOptionsSelector = computed(() => {
+  switch (props.configurations.theme){
+    case RogueTheme.Phantom:
+      return phantomSquadOptions;
+    case RogueTheme.Mizuki:
+      return mizukiSquadOptions;
+    default: //case RogueTheme.Sami
+      return samiSquadOptions;
+  }
+})
+
 </script>
 
 <template>
@@ -325,13 +337,7 @@ function handleUpdateStartsCount(value: number | null) {
           <NSelect
             :disabled="configurationDisabled.re"
             :value="props.configurations.squad"
-            :options="
-              props.configurations.theme === RogueTheme.Phantom
-                ? phantomSquadOptions
-                : props.configurations.theme === RogueTheme.Mizuki
-                  ? mizukiSquadOptions
-                  : samiSquadOptions
-            "
+            :options="squadOptionsSelector"
             @update:value="value => handleUpdateConfiguration('squad', value)"
           />
         </NFormItem>
