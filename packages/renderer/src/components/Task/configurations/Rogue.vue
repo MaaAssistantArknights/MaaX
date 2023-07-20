@@ -279,7 +279,7 @@ function handleUpdateRogueTheme(value: string) {
     }
   } else { //if (value === RougeTheme.Sami)
     if (!samiSquadOptions.find(item => item.value === props.configurations.squad)) {
-      showMessage('当前分队不支持萨米主题，以自动切换到指挥分队', {
+      showMessage('当前分队不支持萨米主题，已自动切换到指挥分队', {
         type: 'info',
         duration: 5000,
         closable: true,
