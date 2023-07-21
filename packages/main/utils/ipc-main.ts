@@ -20,6 +20,8 @@ function ipcMainHandle<Key extends IpcMainHandleEvent>(
     ...args: Parameters<IpcMainHandleEventType[Key]>
   ) => ReturnType<IpcMainHandleEventType[Key]>
 ): void {
+  // re-register handler
+  ipcMain.removeHandler(eventName)
   ipcMain.handle(eventName, (event, ...args) => {
     logger.silly(`Receive ipcMain event: ${eventName}`)
     return listener(event, ...(args as Parameters<IpcMainHandleEventType[Key]>))
