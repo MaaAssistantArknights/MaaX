@@ -17,7 +17,6 @@ import DropdownMenu from './DropdownMenu.vue'
 import router from '@/router'
 import useThemeStore from '@/store/theme'
 import Timer from './Timer.vue'
-import { SettingsOutline as IconSettings } from '@vicons/ionicons5'
 import IconAdd from '@/assets/icons/add.svg?component'
 import IconRemove from '@/assets/icons/remove.svg?component'
 import useDeviceStore from '@/store/devices'
@@ -73,6 +72,12 @@ const handleTogglePanel = (panelType: string) => {
   }
 }
 
+const handleToggleInnerCollapse = () => {
+  if (props.isCollapsed) { // 详细模式下不允许inner折叠
+    innerCollapse.value = !innerCollapse.value
+  }
+}
+
 const progressBarColor = (taskStatus: TaskStatus) => {
   switch (taskStatus) {
     case 'idle':
@@ -117,76 +122,50 @@ provide(
 </script>
 
 <template>
-  <NCollapse
-    :expanded-names="_isCollapsed ? null : '1'"
-    class="task-card"
-    :class="props.taskInfo.status === 'idle' ? '' : 'undraggable'"
-  >
+  <NCollapse :expanded-names="_isCollapsed ? null : '1'" class="task-card"
+    :class="props.taskInfo.status === 'idle' ? '' : 'undraggable'">
     <template #arrow>
       <span />
     </template>
-    <NCollapseItem
-      class="task-card-inner"
-      :class="[
-        _isCollapsed ? 'collapsed' : '',
-        `task-card__status-${props.taskInfo.status}`,
-        !innerCollapse && props.isCollapsed ? 'inner-expanded' : '',
-      ]"
-      name="1"
-      display-directive="show"
-      :style="{
-        border: themeStore.currentTheme === 'maa-dark' ? `1px solid ${themeVars.primaryColor}` : '',
-        '--breathe-color': themeVars.primaryColor,
-      }"
-    >
+    <NCollapseItem class="task-card-inner" :class="[
+      _isCollapsed ? 'collapsed' : '',
+      `task-card__status-${props.taskInfo.status}`,
+      !innerCollapse && props.isCollapsed ? 'inner-expanded' : '',
+      !props.isCollapsed ? 'expanded' : '',
+    ]" name="1" display-directive="show" :style="{
+  border: themeStore.currentTheme === 'maa-dark' ? `1px solid ${themeVars.primaryColor}` : '',
+  '--breathe-color': themeVars.primaryColor,
+}">
       <template #header>
-        <div style="width: 100%">
-          <div ref="cardHeaderRef" class="card-header">
+        <div style="width: 100%" @click="handleToggleInnerCollapse">
+          <div class="card-header">
             <NSpace>
               <span class="card-title">{{ props.taskInfo.title || '' }}</span>
-              <div
-                v-if="
-                  deviceStatus === 'tasking' && !['idle', 'waiting'].includes(props.taskInfo.status)
-                "
-                justify="end"
-              >
+              <div v-if="deviceStatus === 'tasking' && !['idle', 'waiting'].includes(props.taskInfo.status)
+                " justify="end">
                 <NText type="primary">
-                  <Timer
-                    :start-time="props.taskInfo.startTime"
-                    :end-time="props.taskInfo.endTime"
-                  />
+                  <Timer :start-time="props.taskInfo.startTime" :end-time="props.taskInfo.endTime" />
                 </NText>
               </div>
             </NSpace>
             <NSpace justify="end" align="center">
-              <NTooltip v-if="props.isCollapsed">
+              <!-- <NTooltip v-if="props.isCollapsed">
                 <template #trigger>
-                  <NButton
-                    text
-                    style="font-size: 25px"
-                    @click="
-                      () => {
-                        innerCollapse = !innerCollapse
-                      }
-                    "
-                  >
+                  <NButton text style="font-size: 25px" @click="() => {
+                    innerCollapse = !innerCollapse
+                  }
+                    ">
                     <NIcon>
                       <IconSettings />
                     </NIcon>
                   </NButton>
                 </template>
                 {{ _isCollapsed ? '展开' : '折叠' }}设置
-              </NTooltip>
+              </NTooltip> -->
               <NTooltip>
                 <template #trigger>
-                  <NButton
-                    text
-                    style="font-size: 25px"
-                    :disabled="
-                      deviceStatus === 'tasking' && !['idle'].includes(props.taskInfo.status)
-                    "
-                    @click="() => $emit('copy')"
-                  >
+                  <NButton text style="font-size: 25px" :disabled="deviceStatus === 'tasking' && !['idle'].includes(props.taskInfo.status)
+                    " @click="() => $emit('copy')">
                     <NIcon>
                       <IconAdd />
                     </NIcon>
@@ -196,14 +175,8 @@ provide(
               </NTooltip>
               <NTooltip>
                 <template #trigger>
-                  <NButton
-                    text
-                    style="font-size: 25px"
-                    :disabled="
-                      deviceStatus === 'tasking' && !['idle'].includes(props.taskInfo.status)
-                    "
-                    @click="() => $emit('delete')"
-                  >
+                  <NButton text style="font-size: 25px" :disabled="deviceStatus === 'tasking' && !['idle'].includes(props.taskInfo.status)
+                    " @click="() => $emit('delete')">
                     <NIcon>
                       <IconRemove />
                     </NIcon>
@@ -212,14 +185,9 @@ provide(
                 删除当前任务
               </NTooltip>
               <div class="card-progress-wrapper">
-                <span
-                  v-if="
-                    deviceStatus === 'tasking' &&
-                    !['idle', 'waiting'].includes(props.taskInfo.status)
-                  "
-                  class="card-progress-hint"
-                  :style="{ color: themeVars.primaryColor }"
-                >
+                <span v-if="deviceStatus === 'tasking' &&
+                  !['idle', 'waiting'].includes(props.taskInfo.status)
+                  " class="card-progress-hint" :style="{ color: themeVars.primaryColor }">
                   {{
                     (() => {
                       switch (props.taskInfo.status) {
@@ -243,38 +211,24 @@ provide(
                     })()
                   }}
                 </span>
-                <NSwitch
-                  v-else
-                  :value="props.taskInfo.enable"
-                  @update:value="
-                    enabled => {
-                      $emit('update:enable', enabled)
-                      resetTaskProgress(props.taskInfo)
-                    }
-                  "
-                />
+                <NSwitch v-else :value="props.taskInfo.enable" @update:value="enabled => {
+                  $emit('update:enable', enabled)
+                  resetTaskProgress(props.taskInfo)
+                }
+                  " />
               </div>
             </NSpace>
           </div>
-          <NProgress
-            :percentage="props.taskInfo.progress"
-            :color="progressBarColor(props.taskInfo.status)"
-            :border-radius="0"
-            :height="4"
-            :show-indicator="false"
-          />
+          <NProgress :percentage="props.taskInfo.progress" :color="progressBarColor(props.taskInfo.status)"
+            :border-radius="0" :height="4" :show-indicator="false" />
         </div>
       </template>
       <div class="card-content">
         <NScrollbar @contextmenu="handleShowDropdown">
           <slot />
         </NScrollbar>
-        <DropdownMenu
-          v-model:show="showDropdown"
-          :x="dropdownPosition.x"
-          :y="dropdownPosition.y"
-          @select="handleTogglePanel"
-        />
+        <DropdownMenu v-model:show="showDropdown" :x="dropdownPosition.x" :y="dropdownPosition.y"
+          @select="handleTogglePanel" />
       </div>
     </NCollapseItem>
   </NCollapse>
@@ -285,11 +239,13 @@ provide(
   from {
     box-shadow: 0 2px 6px 0 rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.1), 0 0 5px 0 transparent;
   }
+
   to {
     box-shadow: 0 2px 6px 0 rgb(0 0 0 / 0.1), 0 2px 4px -1px rgb(0 0 0 / 0.1),
       0 0 10px var(--breathe-color);
   }
 }
+
 .task-card {
   user-select: none;
   transition: width 0.3s var(--n-bezier);
@@ -311,9 +267,9 @@ provide(
   }
 
   &.inner-expanded .card-content {
-    height: auto;
-    min-height: auto;
-    aspect-ratio: auto;
+    height: unset;
+    min-height: unset;
+    aspect-ratio: unset;
   }
 
   &.task-card__status-processing {
@@ -349,6 +305,9 @@ provide(
   max-width: 100%;
   padding: 0 12px;
   transition: height 0.3s var(--n-bezier);
+}
+
+.expanded .card-content {
   aspect-ratio: 9 / 4;
   min-height: 120px;
 }
