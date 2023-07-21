@@ -17,8 +17,6 @@ import DropdownMenu from './DropdownMenu.vue'
 import router from '@/router'
 import useThemeStore from '@/store/theme'
 import Timer from './Timer.vue'
-import IconAdd from '@/assets/icons/add.svg?component'
-import IconRemove from '@/assets/icons/remove.svg?component'
 import useDeviceStore from '@/store/devices'
 import type { Task, TaskStatus } from '@type/task'
 
@@ -45,19 +43,19 @@ const _isCollapsed = computed(() => {
   return props.isCollapsed && innerCollapse.value
 })
 
-const dropdownPosition = ref({
+const contentMenuPosition = ref({
   x: 0,
   y: 0,
 })
 
-const showDropdown = ref(false)
+const showContentMenu = ref(false)
 
-const handleShowDropdown = (e: MouseEvent) => {
+const handleShowContentMenu = (e: MouseEvent) => {
   e.preventDefault()
-  showDropdown.value = false
+  showContentMenu.value = false
   nextTick().then(() => {
-    showDropdown.value = true
-    dropdownPosition.value = {
+    showContentMenu.value = true
+    contentMenuPosition.value = {
       x: e.clientX,
       y: e.clientY,
     }
@@ -162,7 +160,7 @@ provide(
                 </template>
                 {{ _isCollapsed ? '展开' : '折叠' }}设置
               </NTooltip> -->
-              <NTooltip>
+              <!-- <NTooltip>
                 <template #trigger>
                   <NButton text style="font-size: 25px" :disabled="deviceStatus === 'tasking' && !['idle'].includes(props.taskInfo.status)
                     " @click="() => $emit('copy')">
@@ -172,18 +170,19 @@ provide(
                   </NButton>
                 </template>
                 复制当前任务
-              </NTooltip>
-              <NTooltip>
+              </NTooltip> -->
+              <!-- <NTooltip>
                 <template #trigger>
-                  <NButton text style="font-size: 25px" :disabled="deviceStatus === 'tasking' && !['idle'].includes(props.taskInfo.status)
-                    " @click="() => $emit('delete')">
+                  <NButton text style="font-size: 20px" type="error"
+                    :disabled="deviceStatus === 'tasking' && !['idle'].includes(props.taskInfo.status)"
+                    @click="() => $emit('delete')">
                     <NIcon>
-                      <IconRemove />
+                      <TrashOutline />
                     </NIcon>
                   </NButton>
                 </template>
                 删除当前任务
-              </NTooltip>
+              </NTooltip> -->
               <div class="card-progress-wrapper">
                 <span v-if="deviceStatus === 'tasking' &&
                   !['idle', 'waiting'].includes(props.taskInfo.status)
@@ -224,10 +223,10 @@ provide(
         </div>
       </template>
       <div class="card-content">
-        <NScrollbar @contextmenu="handleShowDropdown">
+        <NScrollbar @contextmenu="handleShowContentMenu">
           <slot />
         </NScrollbar>
-        <DropdownMenu v-model:show="showDropdown" :x="dropdownPosition.x" :y="dropdownPosition.y"
+        <DropdownMenu v-model:show="showContentMenu" :x="contentMenuPosition.x" :y="contentMenuPosition.y"
           @select="handleTogglePanel" />
       </div>
     </NCollapseItem>
