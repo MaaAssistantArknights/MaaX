@@ -2,10 +2,11 @@ export type DeviceStatus =
   | 'available'
   | 'connecting'
   | 'connected'
-  | 'wakingUp' // 正在尝试启动
-  | 'waitingTask' // 等待设备链接后自动开始任务
-  | 'waitingTaskEnd' // 链接成功, 可以开始任务
+  | 'wakingUp'
+  | 'waitingTask'
+  | 'waitingTaskEnd'
   | 'tasking'
+  | 'scheduled'
   | 'disconnected'
   | 'unknown'
 
@@ -39,6 +40,10 @@ export interface Device {
    * @available 设备存在且可用，未连接
    * @connecting 正在连接设备
    * @connected 已连接设备
+   * @wakingUp 正在尝试启动
+   * @waitingTask 等待设备链接后自动开始任务
+   * @waitingTaskEnd 链接成功, 可以开始任务
+   * @scheduled 设备已经被定时任务调度
    * @tasking 连接设备且正在执行任务
    * @disconnected 因为某些原因与设备断开
    */

@@ -7,8 +7,10 @@ import TaskCard from '@/components/Task/TaskCard.vue'
 import NewTask from '@/components/Task/NewTask.vue'
 import IconList from '@/assets/icons/list.svg?component'
 import IconGrid from '@/assets/icons/grid.svg?component'
+import IconEdit from '@/assets/icons/edit.svg?component'
+import IconTimer from '@/assets/icons/timer.svg?component'
 import Configuration from '@/components/Task/configurations/Index.vue'
-import TaskGroupActions from '@/components/Task/TaskGroupActions.vue'
+import TaskGroupEditModal from '@/components/Task/TaskGroupEditModal.vue'
 
 import useTaskStore from '@/store/tasks'
 import useDeviceStore from '@/store/devices'
@@ -29,6 +31,8 @@ const settingStore = useSettingStore()
 const touchMode = computed(() => settingStore.touchMode)
 const isGrid = ref(false)
 const actionLoading = ref(false)
+const showTaskGroupEdit = ref(false)
+const showTimerEdit = ref(false)
 
 const uuid = computed(() => router.currentRoute.value.params.uuid as string)
 const device = computed(() => deviceStore.devices.find(device => device.uuid === uuid.value))
@@ -216,6 +220,10 @@ function handleChangeTaskGroupIndex(value: number) {
   taskStore.deviceTasks[uuid.value].currentId = value
 }
 
+function handleChangeTaskGroupName(value: string) {
+  taskStore.changeTaskGroupName(uuid.value, currentTaskGroupIndexValue.value, value)
+}
+
 const taskGroupOptions = computed(() => {
   const options: SelectOption[] = []
   taskStore.deviceTasks[uuid.value]?.groups.forEach(v => {
@@ -241,18 +249,28 @@ const currentTaskGroup = computed(() => taskStore.getCurrentTaskGroup(uuid.value
     <NSpace justify="space-between" align="center">
       <h2>任务</h2>
       <NSpace align="center">
-        <TaskGroupActions :device-uuid="uuid" :task-group="currentTaskGroup" />
-        <NSelect
-          v-model:value="currentTaskGroupIndexValue"
-          :options="taskGroupOptions"
-          :consistent-menu-width="false"
-          @update:value="handleChangeTaskGroupIndex"
-        >
+        <TaskGroupEditModal :name="currentTaskGroup?.name ?? ''" v-model:show="showTaskGroupEdit"
+          @change:name="handleChangeTaskGroupName" />
+        <NSelect v-model:value="currentTaskGroupIndexValue" :options="taskGroupOptions" :consistent-menu-width="false"
+          @update:value="handleChangeTaskGroupIndex">
           <template #action>
             <NButton text @click="handleCreateNewTaskGroup"> 点此新建任务组 </NButton>
           </template>
         </NSelect>
-
+        <NButton size="small" quaternary circle @click="showTaskGroupEdit = true">
+          <template #icon>
+            <NIcon>
+              <IconEdit />
+            </NIcon>
+          </template>
+        </NButton>
+        <NButton size="small" quaternary circle>
+          <template #icon>
+            <NIcon>
+              <IconTimer />
+            </NIcon>
+          </template>
+        </NButton>
         <NTooltip class="detail-toggle-switch">
           <template #trigger>
             <NSwitch v-model:value="isGrid" size="large">
@@ -277,31 +295,14 @@ const currentTaskGroup = computed(() => taskStore.getCurrentTaskGroup(uuid.value
       </NSpace>
     </NSpace>
 
-    <Draggable
-      :list="tasks"
-      :animation="200"
-      :filter="'.undraggable'"
-      class="cards"
-      item-key="task_id"
-      :class="isGrid ? 'cards-grid' : ''"
-      @move="handleDragMove"
-    >
+    <Draggable :list="tasks" :animation="200" :filter="'.undraggable'" class="cards" item-key="task_id"
+      :class="isGrid ? 'cards-grid' : ''" @move="handleDragMove">
       <template #item="{ element: task, index }">
-        <TaskCard
-          v-model:showResult="task.showResult"
-          :is-collapsed="!isGrid"
-          :task-info="task"
-          @update:enable="enabled => (task.enable = enabled)"
-          @copy="() => handleTaskCopy(index)"
-          @delete="() => handleTaskDelete(index)"
-        >
+        <TaskCard v-model:showResult="task.showResult" :is-collapsed="!isGrid" :task-info="task"
+          @update:enable="enabled => (task.enable = enabled)" @copy="() => handleTaskCopy(index)"
+          @delete="() => handleTaskDelete(index)">
           <Result v-if="task.showResult" :name="task.name" :results="task.results" />
-          <Configuration
-            v-else
-            :name="task.name"
-            :configurations="task.configurations"
-            :task-index="index"
-          />
+          <Configuration v-else :name="task.name" :configurations="task.configurations" :task-index="index" />
         </TaskCard>
       </template>
     </Draggable>
