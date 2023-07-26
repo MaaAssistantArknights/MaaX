@@ -47,7 +47,7 @@ export const getDownloadUrlSuffix = (): string => {
       ret = '-win-x64'
       break
     case 'macos':
-      ret = '-macos'
+      ret = '-macos-runtime-universal'
       break
     case 'linux':
       if (arch === 'x64') {
