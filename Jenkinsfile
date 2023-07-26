@@ -15,6 +15,7 @@ podTemplate(
             containerEnvVar(key: 'TZ', value: 'Asia/Shanghai'),
             containerEnvVar(key: 'OWNER', value: 'MaaAssistantArknights'),
             containerEnvVar(key: 'REPO', value: 'MaaX'),
+            containerEnvVar(key: 'FILE_PATTERN', value: '.*'),
             containerEnvVar(key: 'RELEASE_TAG', value: params.release_tag)
         ]
     )
