@@ -49,6 +49,12 @@ const useComponentStore = defineStore<'component', ComponentStoreState, {}, Comp
     },
     actions: {
       updateComponentStatus(component, status) {
+        if (status?.componentStatus === 'installed') {
+          status = {
+            ...status,
+            installerStatus: 'done',
+          }
+        }
         this[component] = { ...this[component], ...status }
       },
     },
