@@ -75,10 +75,7 @@ const hooks: IpcMainHandleEventCalleeProxy['CoreLoader'] = {
     return core.ChangeTouchMode(mode)
   },
   asyncScreencap({ uuid }) {
-    return core.AsyncScreencap(uuid)
-  },
-  getScreencap() {
-    throw 'IPC main.CoreLoader:getScreencap: Not Implement Yet'
+    core.AsyncScreencap(uuid)
   },
   isCoreInited({ uuid }) {
     return core.IsCoreInited(uuid)

@@ -28,7 +28,7 @@ export type IpcMainHandleEventTypeAutoRegister = {
     config: string
   }) => boolean
   'main.CoreLoader:initCore': (arg: InitCoreParam) => boolean
-  'main.CoreLoader:initCoreAsync': (arg: InitCoreParam) => number
+  'main.CoreLoader:initCoreAsync': (arg: InitCoreParam) => void
   'main.CoreLoader:disconnectAndDestroy': (arg: { uuid: string }) => boolean
   'main.CoreLoader:appendTask': (arg: {
     uuid: string
@@ -44,9 +44,7 @@ export type IpcMainHandleEventTypeAutoRegister = {
   'main.CoreLoader:stop': (arg: { uuid: string }) => boolean
   'main.CoreLoader:supportedStages': () => string[]
   'main.CoreLoader:changeTouchMode': (arg: { mode: TouchMode }) => boolean
-  'main.CoreLoader:asyncScreencap': (arg: { uuid: string }) => number | boolean
-  // WARN: 该方法尚未实现
-  'main.CoreLoader:getScreencap': (arg: { uuid: string }) => Promise<{ screenshot: string }>
+  'main.CoreLoader:asyncScreencap': (arg: { uuid: string }) => void
   'main.CoreLoader:isCoreInited': (arg: { uuid: string }) => boolean
 }
 
