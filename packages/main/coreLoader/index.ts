@@ -53,7 +53,11 @@ class CoreLoader {
   private readonly dependences: Record<string, string[]> = {
     win32: ['opencv_world4_maa.dll', 'onnxruntime_maa.dll', 'MaaDerpLearning.dll'],
     linux: ['libopencv_world4.so.407', 'libonnxruntime.so.1.14.1', 'libMaaDerpLearning.so'],
-    darwin: ['libopencv_world4.dylib', 'libonnxruntime.dylib', 'libMaaDerpLearning.dylib'],
+    darwin: [
+      'libopencv_world4.407.dylib',
+      'libonnxruntime.1.14.1.dylib',
+      'libMaaDerpLearning.dylib',
+    ],
   }
 
   private readonly libName: Record<string, string> = {
