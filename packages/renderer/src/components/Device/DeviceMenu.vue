@@ -13,7 +13,7 @@ const props = defineProps<{
 }>()
 const taskStore = useTaskStore()
 
-const routeUuid = computed(() => router.currentRoute.value.params.uuid as string | undefined)
+const uuid = computed(() => props.device.uuid)
 
 const menuOptions: MenuOption[] = [{
   label: () => h(DeviceCard, { device: props.device }),
@@ -25,7 +25,7 @@ const menuOptions: MenuOption[] = [{
         h(
           RouterLink,
           {
-            to: `/task/${routeUuid}`,
+            to: `/task/${uuid.value}`,
             replace: true,
           },
           {
@@ -39,7 +39,7 @@ const menuOptions: MenuOption[] = [{
         h(
           RouterLink,
           {
-            to: `/task/${routeUuid}/copilot`,
+            to: `/task/${uuid.value}/copilot`,
             replace: true,
           },
           {
@@ -53,7 +53,7 @@ const menuOptions: MenuOption[] = [{
         h(
           RouterLink,
           {
-            to: `/task/${routeUuid}/item`,
+            to: `/task/${uuid.value}/item`,
             replace: true,
           },
           {
@@ -67,7 +67,7 @@ const menuOptions: MenuOption[] = [{
         h(
           RouterLink,
           {
-            to: `/task/${routeUuid}/oper`,
+            to: `/task/${uuid.value}/oper`,
             replace: true,
           },
           {
@@ -81,7 +81,7 @@ const menuOptions: MenuOption[] = [{
         h(
           RouterLink,
           {
-            to: `/task/${routeUuid}/recruit`,
+            to: `/task/${uuid.value}/recruit`,
             replace: true,
           },
           {
@@ -103,5 +103,5 @@ function handleJumpToTask(device: Device) {
 </script>
 
 <template>
-  <NMenu :options="menuOptions" :root-indent="0" />
+  <NMenu :options="menuOptions" :root-indent="0" :indent="48" />
 </template>
