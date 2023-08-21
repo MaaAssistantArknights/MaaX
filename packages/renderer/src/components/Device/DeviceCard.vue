@@ -47,17 +47,6 @@ const disconnectedStatus: Set<DeviceStatus> = new Set([
 // function connectDevice (uuid: string) {}
 
 function handleJumpToTask() {
-  // 未连接的设备也可以查看任务
-  // 2023.4.19: 先不做支持了，这会导致一些ui上的问题，比如正在连接的消息框无法关闭
-  //            理想方案是把正在连接的消息框变成全局唯一实例
-
-  // FIXME: feature要! 框的bug再修
-
-  // if (!connectedStatus.has(props.device.status)) {
-  //   // TODO: 提示设备未连接
-  //   return
-  // }
-  // 4.20完成了
   if (!taskStore.getCurrentTaskGroup(props.device.uuid)) {
     taskStore.initDeviceTask(props.device.uuid)
   }
@@ -90,11 +79,15 @@ async function handleDeviceConnect() {
   // 无地址, 尝试唤醒模拟器
   if (!props.device.address || props.device.address.length === 0) {
     if (!(await deviceStore.wakeUpDevice(props.device.uuid))) {
+      showMessage('无法连接模拟器', {
+        type: 'error',
+        duration: 3000,
+      })
       return
     }
   }
 
-  deviceStore.updateDeviceStatus(props.device.uuid as string, 'connecting')
+  deviceStore.updateDeviceStatus(props.device.uuid, 'connecting')
   await window.main.CoreLoader.initCoreAsync({
     address: props.device.address,
     uuid: props.device.uuid,
@@ -106,21 +99,10 @@ async function handleDeviceConnect() {
 </script>
 
 <template>
-  <div
-    v-if="device"
-    class="device-card"
-    :class="isCurrent ? 'current' : ''"
-    :style="{
-      backgroundColor: isCurrent ? themeVars.hoverColor : 'transparent',
-    }"
-  >
-    <NButton
-      class="device-info"
-      text
-      :focusable="false"
-      @click="handleJumpToTask"
-      @dblclick="handleDeviceConnect"
-    >
+  <div v-if="device" class="device-card" :class="isCurrent ? 'current' : ''" :style="{
+    backgroundColor: isCurrent ? themeVars.hoverColor : 'transparent',
+  }">
+    <NButton class="device-info" text :focusable="false" @click="handleJumpToTask" @dblclick="handleDeviceConnect">
       <NTooltip>
         <template #trigger>
           <div class="device-status" :data-status="device?.status" />
@@ -156,12 +138,8 @@ async function handleDeviceConnect() {
       </NPopover>
     </NButton>
     <NSpace :align="'center'">
-      <NPopconfirm
-        v-if="connectedStatus.has(device?.status ?? 'unknown')"
-        positive-text="确定"
-        negative-text="取消"
-        @positive-click="handleDeviceDisconnect"
-      >
+      <NPopconfirm v-if="connectedStatus.has(device?.status ?? 'unknown')" positive-text="确定" negative-text="取消"
+        @positive-click="handleDeviceDisconnect">
         <template #trigger>
           <NButton class="operation" text :focusable="false" style="font-size: 24px">
             <NIcon>
@@ -171,15 +149,8 @@ async function handleDeviceConnect() {
         </template>
         {{ (device?.status === 'tasking' ? '当前设备正在进行任务，' : '') + '确定断开连接？' }}
       </NPopconfirm>
-      <NButton
-        v-if="disconnectedStatus.has(device?.status ?? 'unknown')"
-        class="operation"
-        text
-        :focusable="false"
-        style="font-size: 24px"
-        :disabled="'connecting' === device?.status"
-        @click="handleDeviceConnect"
-      >
+      <NButton v-if="disconnectedStatus.has(device?.status ?? 'unknown')" class="operation" text :focusable="false"
+        style="font-size: 24px" :disabled="'connecting' === device?.status" @click="handleDeviceConnect">
         <NIcon>
           <IconLink />
         </NIcon>
@@ -225,14 +196,18 @@ async function handleDeviceConnect() {
 
   &::before {
     content: '';
+    box-sizing: border-box;
     position: absolute;
     border-radius: 100%;
-    background-color: gray;
     height: 100%;
     width: 100%;
     top: 0;
     left: 0;
     transition: background-color 0.3s var(--n-bezier);
+  }
+
+  &[data-status='unknown']::before {
+    border: 2px solid #a8aaaf;
   }
 
   &[data-status='available']::before {

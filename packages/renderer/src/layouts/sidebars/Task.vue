@@ -4,6 +4,7 @@ import IconDevices from '@/assets/icons/devices.svg?component'
 import IconTool from '@/assets/icons/tool.svg?component'
 import { NIcon, NSpace, NButton, NTooltip } from 'naive-ui'
 import DeviceCard from '@/components/Device/DeviceCard.vue'
+import DeviceMenu from '@/components/Device/DeviceMenu.vue'
 import router from '@/router'
 
 import useDeviceStore from '@/store/devices'
@@ -31,12 +32,8 @@ const otherDevices = computed(() =>
       <NSpace>
         <NTooltip>
           <template #trigger>
-            <NButton
-              :disabled="currentDevice?.status !== 'connected'"
-              text
-              style="font-size: 24px"
-              @click="$router.push({ path: `/tool/${currentUuid}` })"
-            >
+            <NButton :disabled="currentDevice?.status !== 'connected'" text style="font-size: 24px"
+              @click="$router.push({ path: `/tool/${currentUuid}` })">
               <NIcon>
                 <IconTool />
               </NIcon>
@@ -57,7 +54,7 @@ const otherDevices = computed(() =>
       </NSpace>
     </NSpace>
     <div class="current-device">
-      <DeviceCard :device="currentDevice!" />
+      <DeviceMenu :device="currentDevice!" />
     </div>
     <h2>其他设备</h2>
     <div class="other-devices">
