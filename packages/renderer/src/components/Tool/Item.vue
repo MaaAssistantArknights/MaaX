@@ -76,7 +76,7 @@ async function doDepot() {
 </script>
 
 <template>
-  <NCard>
+  <NCard :bordered="false">
     <template #header>
       <div class="DepotResultHeader">
         <div class="DepotResultTitle">仓库识别</div>
@@ -88,31 +88,20 @@ async function doDepot() {
     </template>
 
     <div class="DepotResultPanel">
-      <div
-        class="DepotResultLayer"
-        :class="{
-          __Processing: processing,
-        }"
-      ></div>
+      <div class="DepotResultLayer" :class="{
+        __Processing: processing,
+      }"></div>
       <div class="DepotResultContent">
-        <div
-          class="DepotResultItem"
-          v-for="item in result?.arkplanner.object.items
-            // .sort((a, b) => (items[b.id as keyof typeof items].rarity - items[a.id as keyof typeof items].rarity))
-            .sort((a, b) => (items[a.id as keyof typeof items].sortId - items[b.id as keyof typeof items].sortId))
-            // .sort((a, b) => a.id.localeCompare(b.id))
-             ?? []"
-          :key="item.id"
-        >
+        <div class="DepotResultItem" v-for="item in result?.arkplanner.object.items
+          // .sort((a, b) => (items[b.id as keyof typeof items].rarity - items[a.id as keyof typeof items].rarity))
+          .sort((a, b) => (items[a.id as keyof typeof items].sortId - items[b.id as keyof typeof items].sortId))
+          // .sort((a, b) => a.id.localeCompare(b.id))
+          ?? []" :key="item.id">
           <NTooltip trigger="hover">
             <template #trigger>
-              <NAvatar
-                :src="getItemBorderedImage(item.name)"
-                :style="{
-                  border: `2px solid ${rareColor[items[item.id as keyof typeof items].rarity as keyof typeof rareColor] ?? 'wheat'}`,
-                }"
-                size="large"
-              ></NAvatar>
+              <NAvatar :src="getItemBorderedImage(item.name)" :style="{
+                border: `2px solid ${rareColor[items[item.id as keyof typeof items].rarity as keyof typeof rareColor] ?? 'wheat'}`,
+              }" size="large"></NAvatar>
             </template>
 
             {{ item.name }}
@@ -171,6 +160,7 @@ async function doDepot() {
     display: grid;
     gap: 8px;
     grid-template-columns: repeat(6, 1fr);
+
     & .DepotResultItem {
       display: flex;
       gap: 4px;

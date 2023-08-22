@@ -7,6 +7,8 @@ import {
   NInput,
   NInputNumber,
   NModal,
+  NGrid,
+  NGridItem,
   NUpload,
   NUploadDragger,
   type UploadFileInfo,
@@ -146,14 +148,14 @@ function track(text: string) {
   const pat = /BV[0-9a-zA-Z]+/
   const res: (
     | {
-        type: 'text'
-        text: string
-      }
+      type: 'text'
+      text: string
+    }
     | {
-        type: 'link'
-        text: string
-        url: string
-      }
+      type: 'link'
+      text: string
+      url: string
+    }
   )[] = []
   while (text.length > 0) {
     const m = pat.exec(text)
@@ -336,29 +338,23 @@ function previewTileClick(tile: TileClickData) {
 </script>
 
 <template>
-  <NCard>
+  <NCard :bordered="false">
     <template #header>
       <span class="CopilotHeader"> 自动战斗 </span>
     </template>
-    <div class="CopilotConfig">
-      <NInput
-        placeholder="神秘链接 maa://"
-        v-model:value="maaLink"
-        @blur="startFetch"
-        @change="startFetch"
-      ></NInput>
-      <NUpload
-        :default-upload="false"
-        :show-file-list="false"
-        :multiple="false"
-        accept=".json"
-        @change="parseInfo"
-      >
-        <NUploadDragger style="display: block">
-          <span> 选择作业 </span>
-        </NUploadDragger>
-      </NUpload>
-    </div>
+    <NGrid class="CopilotConfig" :cols="1" :y-gap="16">
+      <NGridItem>
+        <NInput placeholder="神秘链接 maa://" v-model:value="maaLink" @blur="startFetch" @change="startFetch"></NInput>
+      </NGridItem>
+      <NGridItem>
+        <NUpload :default-upload="false" :show-file-list="false" :multiple="false" accept=".json" @change="parseInfo">
+          <NUploadDragger style="display: block">
+            <span> 选择本地作业 </span>
+          </NUploadDragger>
+        </NUpload>
+      </NGridItem>
+
+    </NGrid>
 
     <div class="CopilotContent" v-if="data">
       <NCard v-if="data" embedded style="grid-column: span 2">
@@ -383,13 +379,8 @@ function previewTileClick(tile: TileClickData) {
                 <NButton @click="popupPreview()"> theresa.wiki </NButton>
                 <NModal v-model:show="showPreview">
                   <div>
-                    <TMap
-                      ref="tmap"
-                      v-show="!tmapLoading"
-                      @tileClick="previewTileClick"
-                      @mapReady="tmapLoading = false"
-                      :stageId="mapPreview"
-                    ></TMap>
+                    <TMap ref="tmap" v-show="!tmapLoading" @tileClick="previewTileClick" @mapReady="tmapLoading = false"
+                      :stageId="mapPreview"></TMap>
                     <span v-show="tmapLoading"> Loading... </span>
                   </div>
                 </NModal>
@@ -474,10 +465,7 @@ function previewTileClick(tile: TileClickData) {
             </template>
             <div class="SSSCopilotToolMen">
               <template v-for="toolmen in Object.entries(data.tool_men)" :key="toolmen[0]">
-                <NAvatar
-                  size="small"
-                  :src="getProfessionImage(toolmen[0].replace('术士', '术师'))"
-                ></NAvatar>
+                <NAvatar size="small" :src="getProfessionImage(toolmen[0].replace('术士', '术师'))"></NAvatar>
                 <span> {{ toolmen[0] }} </span>
                 <span> {{ toolmen[1] }} </span>
               </template>
@@ -506,7 +494,7 @@ function previewTileClick(tile: TileClickData) {
     flex-direction: column;
     gap: 8px;
 
-    & > div {
+    &>div {
       display: flex;
       align-items: center;
       gap: 4px;

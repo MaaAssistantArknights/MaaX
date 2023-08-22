@@ -111,7 +111,7 @@ async function doRecruit(selectTags: string[] = []) {
 </script>
 
 <template>
-  <NCard>
+  <NCard :bordered="false">
     <template #header>
       <div class="RecruitResultHeader">
         <div class="RecruitResultTitle">公招计算</div>
@@ -128,12 +128,9 @@ async function doRecruit(selectTags: string[] = []) {
     </template>
 
     <div class="RecruitResultPanel">
-      <div
-        class="RecruitResultLayer"
-        :class="{
-          __Processing: processing,
-        }"
-      ></div>
+      <div class="RecruitResultLayer" :class="{
+        __Processing: processing,
+      }"></div>
       <template v-if="result">
         <div class="RecruitTag">
           <div>识别结果</div>
@@ -158,12 +155,9 @@ async function doRecruit(selectTags: string[] = []) {
               <template v-if="useAvatar">
                 <NTooltip v-for="oper in res.opers" :key="oper.name" trigger="hover">
                   <template #trigger>
-                    <NAvatar
-                      :src="getOperatorAvatar(oper.name)"
-                      :style="{
-                        border: `2px solid ${operColor[oper.level]}`,
-                      }"
-                    ></NAvatar>
+                    <NAvatar :src="getOperatorAvatar(oper.name)" :style="{
+                      border: `2px solid ${operColor[oper.level]}`,
+                    }"></NAvatar>
                   </template>
 
                   {{ oper.name }}
@@ -172,23 +166,16 @@ async function doRecruit(selectTags: string[] = []) {
               <template v-else>
                 <NTooltip v-for="oper in res.opers" :key="oper.name" trigger="hover">
                   <template #trigger>
-                    <NTag
-                      :color="{
-                        textColor: operColor[oper.level],
-                        borderColor: operColor[oper.level],
-                      }"
-                    >
-                      {{ oper.name }}</NTag
-                    >
+                    <NTag :color="{
+                      textColor: operColor[oper.level],
+                      borderColor: operColor[oper.level],
+                    }">
+                      {{ oper.name }}</NTag>
                   </template>
 
-                  <NAvatar
-                    size="large"
-                    :src="getOperatorAvatar(oper.name)"
-                    :style="{
-                      border: `2px solid ${operColor[oper.level]}`,
-                    }"
-                  ></NAvatar>
+                  <NAvatar size="large" :src="getOperatorAvatar(oper.name)" :style="{
+                    border: `2px solid ${operColor[oper.level]}`,
+                  }"></NAvatar>
                 </NTooltip>
               </template>
             </div>

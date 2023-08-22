@@ -131,7 +131,7 @@ async function doOperBox() {
 </script>
 
 <template>
-  <NCard>
+  <NCard :bordered="false">
     <template #header>
       <div class="OperBoxResultHeader">
         <div class="OperBoxResultTitle">干员识别</div>
@@ -155,33 +155,21 @@ async function doOperBox() {
     </template>
 
     <div class="OperBoxResultPanel">
-      <div
-        class="OperBoxResultLayer"
-        :class="{
-          __Processing: processing,
-        }"
-      ></div>
+      <div class="OperBoxResultLayer" :class="{
+        __Processing: processing,
+      }"></div>
       <div class="OperBoxResultContent">
         <div v-for="i in 6" :key="i" class="OperBoxResultContentRow">
-          <div
-            v-for="oper in owned?.[(7 - i) as OneToSix] ?? []"
-            :key="oper.name"
-            :class="{
-              Hide: !isShow(oper.own, oper.lim),
-            }"
-            class="OperBoxResultContentItem"
-          >
+          <div v-for="oper in owned?.[(7 - i) as OneToSix] ?? []" :key="oper.name" :class="{
+            Hide: !isShow(oper.own, oper.lim),
+          }" class="OperBoxResultContentItem">
             <NTooltip trigger="hover">
               <template #trigger>
-                <NAvatar
-                  v-show="isShow(oper.own, oper.lim)"
-                  :src="getOperatorAvatar(oper.name)"
-                  :style="{
-                        border: `2px solid ${operColor[(7-i) as OneToSix]}`,
-                        opacity: isHighlight(oper.own) ? 1 : 0.4,
-                        transition: 'opacity 0.5s',
-                      }"
-                ></NAvatar>
+                <NAvatar v-show="isShow(oper.own, oper.lim)" :src="getOperatorAvatar(oper.name)" :style="{
+                  border: `2px solid ${operColor[(7 - i) as OneToSix]}`,
+                  opacity: isHighlight(oper.own) ? 1 : 0.4,
+                  transition: 'opacity 0.5s',
+                }"></NAvatar>
               </template>
 
               {{ oper.name }}
@@ -210,7 +198,7 @@ async function doOperBox() {
     width: 100%;
     justify-content: space-around;
 
-    & > div {
+    &>div {
       display: flex;
       align-items: center;
       gap: 4px;
@@ -248,11 +236,11 @@ async function doOperBox() {
     flex-direction: column;
     gap: 16px;
 
-    & > .OperBoxResultContentRow {
+    &>.OperBoxResultContentRow {
       display: flex;
       flex-wrap: wrap;
 
-      & > .OperBoxResultContentItem {
+      &>.OperBoxResultContentItem {
         margin-right: 8px;
         width: 50px;
         transition: width 0.5s, margin 0.5s;

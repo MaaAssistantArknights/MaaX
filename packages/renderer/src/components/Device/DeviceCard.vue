@@ -99,10 +99,8 @@ async function handleDeviceConnect() {
 </script>
 
 <template>
-  <div v-if="device" class="device-card" :class="isCurrent ? 'current' : ''" :style="{
-    backgroundColor: isCurrent ? themeVars.hoverColor : 'transparent',
-  }">
-    <NButton class="device-info" text :focusable="false" @click="handleJumpToTask" @dblclick="handleDeviceConnect">
+  <div v-if="device" class="device-card" :class="isCurrent ? 'current' : ''">
+    <NButton class=" device-info" text :focusable="false" @click="handleJumpToTask" @dblclick="handleDeviceConnect">
       <NTooltip>
         <template #trigger>
           <div class="device-status" :data-status="device?.status" />

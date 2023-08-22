@@ -105,3 +105,9 @@ function handleJumpToTask(device: Device) {
 <template>
   <NMenu :options="menuOptions" :root-indent="0" :indent="48" />
 </template>
+
+<style lang="less" scoped>
+.n-menu :deep(.n-menu-item-content::before) {
+  left: 0;
+}
+</style>
