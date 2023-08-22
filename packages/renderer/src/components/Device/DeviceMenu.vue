@@ -29,7 +29,7 @@ const menuOptions: MenuOption[] = [{
             replace: true,
           },
           {
-            default: () => '任务',
+            default: () => '一键长草',
           }
         ),
       key: 'task',
