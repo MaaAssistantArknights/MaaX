@@ -27,6 +27,8 @@ if (release().startsWith('6.1')) app.disableHardwareAcceleration()
 if (getPlatform() === 'windows') app.setAppUserModelId(app.getName())
 
 logger.info(`Electron version: ${process.versions.electron}`)
+logger.info(`Chromium version: ${process.versions.chrome}`)
+logger.info(`Node version: ${process.versions.node}`)
 
 if (!app.requestSingleInstanceLock()) {
   app.quit()

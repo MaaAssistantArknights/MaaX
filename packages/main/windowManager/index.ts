@@ -31,7 +31,7 @@ class WindowManager implements Module {
     useController(this.window_)
     useTheme(this.window_)
     if (getPlatform() === 'macos') {
-      this.window_.setTrafficLightPosition({
+      this.window_.setWindowButtonPosition({
         x: 12,
         y: 12,
       })
