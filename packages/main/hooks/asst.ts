@@ -20,17 +20,6 @@ const hooks: IpcMainHandleEventCalleeProxy['CoreLoader'] = {
     core.Destroy(uuid)
     return true
   },
-  connect({ address, uuid, adb_path, config }) {
-    return core.Connect(address, uuid, adb_path, config)
-  },
-  /** @Deprecated */
-  initCore(arg) {
-    const createStatus = core.CreateEx(arg.uuid) ?? false
-    if (!createStatus) logger.warn(`重复创建 ${JSON.stringify(arg)}`)
-    if (!core.SetTouchMode(arg.uuid, arg.touch_mode))
-      logger.warn('Set touch mode failed', arg.touch_mode)
-    return core.Connect(arg.address, arg.uuid, arg.adb_path, arg.config)
-  },
   initCoreAsync(arg) {
     const createStatus = core.CreateEx(arg.uuid) ?? false
     if (!createStatus) logger.warn(`重复创建 ${JSON.stringify(arg)}`)

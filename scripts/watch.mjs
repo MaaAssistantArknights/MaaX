@@ -1,6 +1,10 @@
 import { spawn } from 'child_process'
 import { createServer, build } from 'vite'
 import electron from 'electron'
+import path from 'path'
+import fs from 'fs-extra'
+import { fileURLToPath } from 'url';
+
 
 let aliveInst = 0
 let quitTimer = null
@@ -52,6 +56,7 @@ function watchMain(server) {
               startQuit()
             }
           })
+
         },
       },
     ],
@@ -82,6 +87,13 @@ function watchPreload(server) {
   })
 }
 
+function installKoffiBinaries() {
+  const currentDir = path.dirname(fileURLToPath(import.meta.url));
+  console.log(currentDir)
+  fs.copySync(path.resolve(currentDir, '../node_modules/koffi/build'), path.resolve(currentDir, '../node_modules/electron/dist/resources'));
+}
+
+installKoffiBinaries()
 // bootstrap
 const server = await createServer({
   configFile: 'packages/renderer/vite.config.ts',
