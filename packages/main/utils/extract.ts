@@ -82,7 +82,7 @@ export async function unzipFile(src: string, dest: string) {
 }
 
 export async function untarFile(src: string, dest: string) {
-  tar.x({
+  await tar.x({
     file: src,
     cwd: dest,
   })

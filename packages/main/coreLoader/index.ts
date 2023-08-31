@@ -10,7 +10,7 @@ import callbackHandle from './callback'
 import { getAppBaseDir } from '@main/utils/path'
 import type { TouchMode } from '@type/misc'
 import { InstanceOptionKey } from '@type/misc'
-import { extractFile, unzipFile } from '@main/utils/extract'
+import { extractFile } from '@main/utils/extract'
 import type { ResourceType } from '@type/game'
 
 const storage = new Storage()
