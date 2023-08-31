@@ -553,12 +553,12 @@ class CoreLoader {
     const currentVersionFile = path.join(getAppBaseDir(), 'core', 'version')
     const currentVersion = existsSync(currentVersionFile)
       ? readFileSync(currentVersionFile, 'utf-8')
-      : 'CUR_NOT_FOUND'
+      : null
     const upgradeVersionFile = path.join(getAppBaseDir(), 'core', 'upgradable')
     const upgradeVersion = existsSync(upgradeVersionFile)
       ? readFileSync(upgradeVersionFile, 'utf-8')
-      : 'UPG_NOT_FOUND'
-    if (currentVersion !== upgradeVersion) {
+      : null
+    if (currentVersion && upgradeVersion && currentVersion !== upgradeVersion) {
       const upgradeFilePath = path.join(getAppBaseDir(), 'core', 'upgrade')
       const upgradeFileName = existsSync(upgradeFilePath)
         ? readFileSync(upgradeFilePath, 'utf-8')
