@@ -19,7 +19,7 @@ type CallerWrapper<Func extends (...args: any[]) => any> = (
 ) => CleanVoid<Promise<UnPromise<ReturnType<Func>>>>
 
 type CalleeWrapper<Func extends (...args: any[]) => any, Event> = (
-  ...args: [...args: Parameters<Func>, event: Event]
+  ...args: [...args: Parameters<Func>]
 ) => ReturnType<Func>
 
 export type CallerProxyObjectType<
@@ -122,7 +122,7 @@ export function createCalleeProxy<
               set(_target2: Record<string, unknown>, subk: string, func: (...args: any[]) => any) {
                 const mapper = _target.$$mapper as Map<Function, Function>
                 const wfunc = (event: ExtEvent, ...args: any[]) => {
-                  return func(...args, event)
+                  return func(...args)
                 }
                 mapper.set(func, wfunc)
                 add(`${scope}.${key}:${subk}`, wfunc)
@@ -146,7 +146,7 @@ export function createCalleeProxy<
           const mapper = _target.$$mapper as Map<Function, Function>
           const func = value[subk]
           const wfunc = (event: ExtEvent, ...args: any[]) => {
-            return func(...args, event)
+            return func(...args)
           }
           mapper.set(func, wfunc)
           add(`${scope}.${key}:${subk}`, wfunc)
