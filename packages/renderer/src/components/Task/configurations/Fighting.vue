@@ -118,8 +118,10 @@ onMounted(async () => {
   const clientType = settingStore.clientType === 'CN' ? 'Official' : settingStore.clientType
   const coreVersion = settingStore.version.core.current ?? ''
 
+  supportStages.push(...basicSupportStages)
+
   const _now = Date.now()
-  resourceStore.stageActivity?.[clientType]?.sideStoryStage
+  const _sideStoryStage = (resourceStore.stageActivity?.[clientType]?.sideStoryStage ?? [])
     ?.filter(item => semver.gte(coreVersion, item.MinimumRequired))
     .filter(item => {
       if (
@@ -130,14 +132,12 @@ onMounted(async () => {
       }
       return true
     })
-    .map(item => {
-      supportStages.push({
-        label: item.Display,
-        value: item.Value,
-      })
-    })
-
-  supportStages.push(...basicSupportStages)
+    .map(item => ({
+      label: item.Display,
+      value: item.Value,
+    }))
+  // 往 "当前/上次" 后插入活动关卡
+  supportStages.splice(1, 0, ..._sideStoryStage)
   const stageResponse = await getAllStages()
   const mainlineStages = Object.values(stageResponse.stages)
     .filter(
