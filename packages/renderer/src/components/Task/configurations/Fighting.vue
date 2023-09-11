@@ -118,13 +118,13 @@ onMounted(async () => {
   const clientType = settingStore.clientType === 'CN' ? 'Official' : settingStore.clientType
   const coreVersion = settingStore.version.core.current ?? ''
 
-  const UTCNow = new Date().toUTCString()
+  const _now = Date.now()
   resourceStore.stageActivity?.[clientType]?.sideStoryStage
     ?.filter(item => semver.gte(coreVersion, item.MinimumRequired))
     .filter(item => {
       if (
         item.Activity.UtcExpireTime &&
-        new Date(item.Activity.UtcExpireTime).toISOString() < UTCNow
+        new Date(item.Activity.UtcExpireTime).getTime() < _now
       ) {
         return false
       }
