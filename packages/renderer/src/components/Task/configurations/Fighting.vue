@@ -42,7 +42,7 @@ const basicSupportStages: Stage[] = [
   { label: '特种/近卫-大', value: 'PR-D-2' },
 ]
 
-const supportStages: Stage[] = []
+const supportStages = ref<Stage[]>([])
 
 const props = defineProps<{
   configurations: FightConfig
@@ -118,7 +118,7 @@ onMounted(async () => {
   const clientType = settingStore.clientType === 'CN' ? 'Official' : settingStore.clientType
   const coreVersion = settingStore.version.core.current ?? ''
 
-  supportStages.push(...basicSupportStages)
+  supportStages.value.push(...basicSupportStages)
 
   const _now = Date.now()
   const _sideStoryStage = (resourceStore.stageActivity?.[clientType]?.sideStoryStage ?? [])
@@ -137,7 +137,7 @@ onMounted(async () => {
       value: item.Value,
     }))
   // 往 "当前/上次" 后插入活动关卡
-  supportStages.splice(1, 0, ..._sideStoryStage)
+  supportStages.value.splice(1, 0, ..._sideStoryStage)
   const stageResponse = await getAllStages()
   const mainlineStages = Object.values(stageResponse.stages)
     .filter(
@@ -158,7 +158,7 @@ onMounted(async () => {
       }
     })
 
-  supportStages.push(...mainlineStages)
+  supportStages.value.push(...mainlineStages)
   if (!props.configurations.drops) {
     handleUpdateConfiguration('drops', {})
   }
@@ -189,6 +189,8 @@ onMounted(async () => {
             :disabled="configurationDisabled.nre"
             :value="props.configurations.stage"
             :options="supportStages"
+              filterable
+              :loading="loading"
             @update:value="value => handleUpdateConfiguration('stage', value)"
           />
         </NFormItem>
