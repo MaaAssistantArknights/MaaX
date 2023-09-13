@@ -224,6 +224,10 @@ function handleChangeTaskGroupName(value: string) {
   taskStore.changeTaskGroupName(uuid.value, currentTaskGroupIndexValue.value, value)
 }
 
+function handleDeleteTaskGroup() {
+  taskStore.deleteTaskGroup(uuid.value, currentTaskGroup.value!.id)
+}
+
 const taskGroupOptions = computed(() => {
   const options: SelectOption[] = []
   taskStore.deviceTasks[uuid.value]?.groups.forEach(v => {
@@ -249,8 +253,8 @@ const currentTaskGroup = computed(() => taskStore.getCurrentTaskGroup(uuid.value
     <NSpace justify="space-between" align="center">
       <h2>任务</h2>
       <NSpace align="center">
-        <TaskGroupEditModal :name="currentTaskGroup?.name ?? ''" v-model:show="showTaskGroupEdit"
-          @change:name="handleChangeTaskGroupName" />
+        <TaskGroupEditModal v-model:show="showTaskGroupEdit" :name="currentTaskGroup?.name ?? ''"
+          @change:name="handleChangeTaskGroupName" @delete="handleDeleteTaskGroup" />
         <NSelect v-model:value="currentTaskGroupIndexValue" :options="taskGroupOptions" :consistent-menu-width="false"
           @update:value="handleChangeTaskGroupIndex">
           <template #action>

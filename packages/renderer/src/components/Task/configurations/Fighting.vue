@@ -42,7 +42,7 @@ const basicSupportStages: Stage[] = [
   { label: '特种/近卫-大', value: 'PR-D-2' },
 ]
 
-const supportStages: Stage[] = []
+const supportStages = ref<Stage[]>([])
 
 const props = defineProps<{
   configurations: FightConfig
@@ -118,26 +118,26 @@ onMounted(async () => {
   const clientType = settingStore.clientType === 'CN' ? 'Official' : settingStore.clientType
   const coreVersion = settingStore.version.core.current ?? ''
 
-  const UTCNow = new Date().toUTCString()
-  resourceStore.stageActivity?.[clientType]?.sideStoryStage
+  supportStages.value.push(...basicSupportStages)
+
+  const _now = Date.now()
+  const _sideStoryStage = (resourceStore.stageActivity?.[clientType]?.sideStoryStage ?? [])
     ?.filter(item => semver.gte(coreVersion, item.MinimumRequired))
     .filter(item => {
       if (
         item.Activity.UtcExpireTime &&
-        new Date(item.Activity.UtcExpireTime).toISOString() < UTCNow
+        new Date(item.Activity.UtcExpireTime).getTime() < _now
       ) {
         return false
       }
       return true
     })
-    .map(item => {
-      supportStages.push({
-        label: item.Display,
-        value: item.Value,
-      })
-    })
-
-  supportStages.push(...basicSupportStages)
+    .map(item => ({
+      label: item.Display,
+      value: item.Value,
+    }))
+  // 往 "当前/上次" 后插入活动关卡
+  supportStages.value.splice(1, 0, ..._sideStoryStage)
   const stageResponse = await getAllStages()
   const mainlineStages = Object.values(stageResponse.stages)
     .filter(
@@ -158,7 +158,7 @@ onMounted(async () => {
       }
     })
 
-  supportStages.push(...mainlineStages)
+  supportStages.value.push(...mainlineStages)
   if (!props.configurations.drops) {
     handleUpdateConfiguration('drops', {})
   }
@@ -189,6 +189,8 @@ onMounted(async () => {
             :disabled="configurationDisabled.nre"
             :value="props.configurations.stage"
             :options="supportStages"
+              filterable
+              :loading="loading"
             @update:value="value => handleUpdateConfiguration('stage', value)"
           />
         </NFormItem>
