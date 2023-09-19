@@ -4,10 +4,10 @@ import path from 'path'
 import logger from '@main/utils/logger'
 import type { ReleaseObject, SourceMirror, UpdateStatus } from '../types'
 import type { ComponentType } from '@type/componentManager'
-import { getAppBaseDir } from '@main/utils/path'
+import { getComponentBaseDir } from './path'
 
 export function infoPathOf(componentDir: string) {
-  const dir = path.join(getAppBaseDir(), componentDir)
+  const dir = path.join(getComponentBaseDir(), componentDir)
   return {
     installRoot: dir,
     currentVersion: path.join(dir, 'version'),

@@ -100,6 +100,7 @@ export type IpcMainHandleEventType = IpcMainHandleEventTypeAutoRegister & {
   'main.Util:restart': () => void
   'main.Util:openExternal': (url: string) => void
   'main.Util:saveTempJson': (data: string) => string
+  'main.Util:moveComponentBaseDir': (dir: string) => void
   'main.Task:readInfrastConfig': (args: { filepath: string }) => string
   'main.StorageManager:get': (key: string) => any
   'main.StorageManager:set': (key: string, val: any) => boolean
