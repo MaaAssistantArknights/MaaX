@@ -8,8 +8,8 @@ import CoreLoader from '@main/coreLoader'
 
 export function getComponentBaseDir() {
   const storage = new Storage()
-  const componentDir = storage.get('setting.componentDir') as string | undefined
-  return componentDir ?? getAppBaseDir()
+  const componentDir = storage.get('setting.componentDir') as string
+  return componentDir.length === 0 ? getAppBaseDir() : componentDir
 }
 
 export async function moveComponentBaseDir(dir: string) {
@@ -19,7 +19,6 @@ export async function moveComponentBaseDir(dir: string) {
     coreLoader.dispose()
   }
 
-  const storage = new Storage()
   const sourceBaseDir = getComponentBaseDir()
   const adbComponent = await getComponentAdb()
   const coreComponent = await getComponentCore()
@@ -37,6 +36,4 @@ export async function moveComponentBaseDir(dir: string) {
   if (fs.existsSync(coreSourceDir)) {
     fs.renameSync(coreSourceDir, coreTargetDir)
   }
-
-  storage.set('setting.componentDir', dir)
 }

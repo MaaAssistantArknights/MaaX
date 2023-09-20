@@ -9,17 +9,26 @@ import {
   NAlert,
   NTooltip,
   NPopconfirm,
-  NPopselect,
   NSelect,
+  NCollapse,
+  NCollapseItem,
+  useMessage,
 } from 'naive-ui'
+import { useI18n } from 'vue-i18n'
 import useComponentStore from '@/store/components'
 import useDeviceStore from '@/store/devices'
+import useSettingStore from '@/store/settings'
 import type { ComponentType, ComponentStatus } from '@type/componentManager'
 import type { InstallerStatus } from '@type/misc'
 import type { Ref } from 'vue'
+import { removeComponent, moveComponentBaseDir } from '@/hooks/caller/component'
+import logger from '@/hooks/caller/logger'
 
+const { t } = useI18n()
+const message = useMessage()
 const componentStore = useComponentStore()
 const deviceStore = useDeviceStore()
+const settingStore = useSettingStore()
 
 const isTasking = computed(() => deviceStore.devices.some(device => device.status === 'tasking'))
 
@@ -60,6 +69,8 @@ const installButtonText = (status: ComponentStatus) => {
       return '正在更新'
     case 'need-restart':
       return '重启'
+    case 'uninstalling':
+      return '正在卸载'
   }
 }
 
@@ -141,6 +152,21 @@ const componentsSources: Ref<ComponentSources> = ref({
   'Android Platform Tools': [],
 })
 
+async function uninstallComponent(component: ComponentType) {
+  try {
+    componentStore.updateComponentStatus(component, {
+      componentStatus: 'uninstalling',
+    })
+    await removeComponent(component)
+    componentStore.updateComponentStatus(component, {
+      componentStatus: 'not-installed',
+    })
+    message.success(`${t(`download["${component}"]`)}已卸载`)
+  } catch (e) {
+    logger.error(`Error while uninstall ${component}: ${e}`)
+  }
+}
+
 onMounted(() => {
   Promise.all(
     components.map(
@@ -176,105 +202,97 @@ onMounted(() => {
 </script>
 
 <template>
-  <NModal
-    :show="props.show"
-    :closable="false"
-    :style="{ width: '600px' }"
-    @update:show="value => $emit('update:show', value)"
-  >
-    <NCard title="组件安装">
+  <NModal :show="props.show" :closable="false" :style="{ width: '600px' }"
+    @update:show="value => $emit('update:show', value)">
+    <NCard title="组件安装和升级">
       <NSpace vertical>
+        <div class="download-card">
+          <NCollapse class="download-info">
+            <NCollapseItem>
+              <template #header>
+                <span>安装位置</span>
+              </template>
+              <template #header-extra>
+                <NButton type="primary" size="small" class="collapse-header-button"
+                  @click="event => { event.stopPropagation(); }">
+                  移动
+                </NButton>
+              </template>
+              <template #default>
+                当前安装位置：{{ !!settingStore.componentDir?.length ? settingStore.componentDir : '默认' }}
+              </template>
+            </NCollapseItem>
+          </NCollapse>
+        </div>
         <NAlert type="info">
           {{ $t('download.needInstallAll') }}
         </NAlert>
-        <div
-          v-for="component of components"
-          :key="component"
-          class="download-card"
-          @mouseenter="event => handleMouseEnter(event, component)"
-          @mouseleave="handleMouseLeave"
-        >
-          <NProgress
-            :percentage="componentStore[component].installerProgress * 100"
-            :border-radius="0"
-            :height="4"
-            :show-indicator="false"
-            :rail-color="'transparent'"
-          />
-          <div class="download-info">
-            <NSpace class="download-title" align="center">
-              <!-- <NSpace v-if="componentsSources[component].length > 1" align="center" size="small">
-                <span>从</span>
-                <NSelect
-                  style="width: 120px"
-                  v-model:value="componentStore[component].installMirror"
-                  size="small"
-                  placeholder="选择镜像"
-                  :options="
-                    componentsSources[component].map(source => ({ label: source, value: source }))
-                  "
-                />
-                <span>下载</span>
-              </NSpace> -->
-              <span>{{ $t(`download["${component}"]`) }}</span>
-              <NPopselect
-                v-if="componentsSources[component].length > 1"
-                v-model:value="componentStore[component].installMirror"
-                :options="
-                  componentsSources[component].map(source => ({ label: source, value: source }))
-                "
-                trigger="click"
-              >
-                <NButton secondary type="primary">
-                  下载源：{{ componentStore[component].installMirror }}
-                </NButton>
-              </NPopselect>
-            </NSpace>
-            <div
-              v-if="
-                ['installing', 'upgrading', 'installed'].includes(
+        <div v-for="component of components" :key="component" class="download-card"
+          @mouseenter="event => handleMouseEnter(event, component)" @mouseleave="handleMouseLeave">
+          <NProgress :percentage="componentStore[component].installerProgress * 100" :border-radius="0" :height="4"
+            :show-indicator="false" :rail-color="'transparent'" />
+          <NCollapse class="download-info">
+            <NCollapseItem>
+              <template #header>
+                <NSpace class="download-title" align="center">
+                  <span>{{ $t(`download["${component}"]`) }}</span>
+                </NSpace>
+              </template>
+              <template #header-extra>
+                <div v-if="['installing', 'upgrading', 'installed'].includes(
                   componentStore[component].componentStatus
                 )
-              "
-              class="download-status"
-            >
-              {{
-                [
-                  installButtonText(componentStore[component].componentStatus),
-                  installerStatusText(componentStore[component].installerStatus),
-                ]
-                  .filter(text => !!text)
-                  .join(' - ')
-              }}
-            </div>
-            <NPopconfirm
-              v-else
-              :disabled="!isTasking"
-              @positive-click="() => handleInstall(component)"
-            >
-              <template #trigger>
-                <NButton
-                  type="primary"
-                  :secondary="componentStore[component].componentStatus === 'installed'"
-                  size="small"
-                  @click="() => handleInstallButtonClick(component)"
-                >
-                  {{ installButtonText(componentStore[component].componentStatus) }}
-                </NButton>
+                  " class="download-status">
+                  {{
+                    [
+                      installButtonText(componentStore[component].componentStatus),
+                      installerStatusText(componentStore[component].installerStatus),
+                    ]
+                      .filter(text => !!text)
+                      .join(' - ')
+                  }}
+                </div>
+                <NPopconfirm v-else :disabled="!isTasking" @positive-click="() => handleInstall(component)">
+                  <template #trigger>
+                    <NButton type="primary" :secondary="componentStore[component].componentStatus === 'installed'"
+                      size="small" @click="(event) => { event.stopPropagation(); handleInstallButtonClick(component) }"
+                      class="collapse-header-button">
+                      {{ installButtonText(componentStore[component].componentStatus) }}
+                    </NButton>
+                  </template>
+                </NPopconfirm>
               </template>
-            </NPopconfirm>
-          </div>
+              <template #default>
+                <div class="advanced-options">
+                  <NSpace align="center">
+                    <span>下载源：</span>
+                    <NSelect v-model:value="componentStore[component].installMirror" size="small" placeholder="选择镜像"
+                      :options="componentsSources[component].map(source => ({ label: source, value: source }))
+                        " />
+                  </NSpace>
+                  <NSpace v-if="component !== 'Maa App'">
+                    <NPopconfirm @positive-click="() => uninstallComponent(component)">
+                      <template #trigger>
+                        <NButton type="error" :disabled="componentStore[component].componentStatus !== 'installed'"
+                          :loading="componentStore[component].componentStatus === 'uninstalling'">
+                          卸载
+                        </NButton>
+                      </template>
+                      <template #default>
+                        <span>确认卸载 {{ $t(`download["${component}"]`) }} 吗？</span>
+                      </template>
+                    </NPopconfirm>
+                  </NSpace>
+                </div>
+              </template>
+            </NCollapseItem>
+          </NCollapse>
         </div>
       </NSpace>
-      <NTooltip
-        trigger="manual"
-        :x="tooltipPosition.x + getInstallProgress(showTooltip) * tooltipPosition.width"
-        :y="tooltipPosition.y"
-        :show="
-          !!showTooltip &&
+      <NTooltip trigger="manual" :x="tooltipPosition.x + getInstallProgress(showTooltip) * tooltipPosition.width"
+        :y="tooltipPosition.y" :show="!!showTooltip &&
           ['installing', 'upgrading'].includes(componentStore[showTooltip].componentStatus)
-        "
-      >
+          ">
         {{ Math.ceil(getInstallProgress(showTooltip) * 100) }}%
       </NTooltip>
     </NCard>
@@ -290,10 +308,13 @@ onMounted(() => {
 }
 
 .download-info {
+  padding: 12px 20px;
+  box-sizing: border-box;
+}
+
+.advanced-options {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 20px;
-  height: 20px;
 }
 </style>

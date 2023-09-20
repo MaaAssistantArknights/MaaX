@@ -10,6 +10,7 @@ export type ComponentStatus =
   | 'upgradable'
   | 'upgrading'
   | 'need-restart'
+  | 'uninstalling'
 
 export interface Component {
   type: ComponentType
