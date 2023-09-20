@@ -519,7 +519,7 @@ class CoreLoader {
   }
 
   public UpdateTaskJson(type: ResourceType, data: string): void {
-    const dirPath = path.join(getAppBaseDir(), 'core', 'cache', type, 'resource')
+    const dirPath = path.join(getComponentBaseDir(), 'core', 'cache', type, 'resource')
     if (!existsSync(dirPath)) {
       logger.info(`Create dir ${dirPath}`)
       mkdirSync(dirPath, { recursive: true })
@@ -531,16 +531,16 @@ class CoreLoader {
 
   public async Upgrade(): Promise<void> {
     logger.info('Start upgrade core')
-    const currentVersionFile = path.join(getAppBaseDir(), 'core', 'version')
+    const currentVersionFile = path.join(getComponentBaseDir(), 'core', 'version')
     const currentVersion = existsSync(currentVersionFile)
       ? readFileSync(currentVersionFile, 'utf-8')
       : null
-    const upgradeVersionFile = path.join(getAppBaseDir(), 'core', 'upgradable')
+    const upgradeVersionFile = path.join(getComponentBaseDir(), 'core', 'upgradable')
     const upgradeVersion = existsSync(upgradeVersionFile)
       ? readFileSync(upgradeVersionFile, 'utf-8')
       : null
     if (currentVersion && upgradeVersion && currentVersion !== upgradeVersion) {
-      const upgradeFilePath = path.join(getAppBaseDir(), 'core', 'upgrade')
+      const upgradeFilePath = path.join(getComponentBaseDir(), 'core', 'upgrade')
       const upgradeFileName = existsSync(upgradeFilePath)
         ? readFileSync(upgradeFilePath, 'utf-8')
         : null
@@ -551,10 +551,10 @@ class CoreLoader {
         )
         unlinkSync(upgradeFilePath) // 提前删除, 防止因为压缩包损坏导致重复尝试更新
         const compressedFile = path.join(getAppBaseDir(), 'download', upgradeFileName)
-        const dist = path.join(getAppBaseDir(), 'core')
+        const dist = path.join(getComponentBaseDir(), 'core')
         if (existsSync(compressedFile)) {
           // 升级前删除cache文件夹
-          const cacheDir = path.join(getAppBaseDir(), 'core', 'cache')
+          const cacheDir = path.join(getComponentBaseDir(), 'core', 'cache')
           if (existsSync(cacheDir)) {
             rmdirSync(cacheDir, { recursive: true })
           }
