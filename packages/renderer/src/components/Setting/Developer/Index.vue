@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { NSpace } from 'naive-ui'
+
 import SystemInformation from './SystemInformation.vue'
 </script>
 

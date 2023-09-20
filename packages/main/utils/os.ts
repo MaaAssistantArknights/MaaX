@@ -1,9 +1,8 @@
-import SystemInformation from 'systeminformation'
+import type { Arch, Platform } from '@type/api/maa'
+import crypto from 'crypto'
 import electron, { app } from 'electron'
 import process from 'process'
-import crypto from 'crypto'
-
-import type { Arch, Platform } from '@type/api/maa'
+import SystemInformation from 'systeminformation'
 
 export const getArch = (): Arch => {
   let arch: Arch = 'noArch'

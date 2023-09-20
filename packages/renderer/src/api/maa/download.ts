@@ -1,5 +1,6 @@
+import type { Arch, Component, Platform } from '@type/api/maa'
+
 import service from './service'
-import type { Platform, Arch, Component } from '@type/api/maa'
 
 export default {
   async getCompletePackage(platform: Platform, arch: Arch, version: string, component: Component) {

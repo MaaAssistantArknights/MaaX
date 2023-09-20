@@ -1,13 +1,12 @@
-import fs from 'fs'
-import path from 'path'
-import type { BrowserWindow } from 'electron'
-
 import { Singleton } from '@main/../common/function/singletonDecorator'
+import logger from '@main/utils/logger'
+import { getAppBaseDir } from '@main/utils/path'
 import WindowManager from '@main/windowManager'
 import type { DownloadHandle, DownloadTask } from '@type/downloadManager'
 import type { Module } from '@type/misc'
-import { getAppBaseDir } from '@main/utils/path'
-import logger from '@main/utils/logger'
+import type { BrowserWindow } from 'electron'
+import fs from 'fs'
+import path from 'path'
 
 @Singleton
 export default class DownloadManager implements Module {

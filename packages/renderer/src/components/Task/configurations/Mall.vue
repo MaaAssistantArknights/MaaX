@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, inject } from 'vue'
-import { NButton, NFormItem, NCheckbox } from 'naive-ui'
+import { NButton, NCheckbox, NFormItem } from 'naive-ui'
+import { inject, ref } from 'vue'
 
 import MallSelect from '../MallSelect.vue'
 import type { GetConfig } from './types'

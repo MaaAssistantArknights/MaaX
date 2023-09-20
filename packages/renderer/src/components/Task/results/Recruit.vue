@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NSpace, NText, NGrid, NGridItem, NButton, NList, NListItem } from 'naive-ui'
+import { NButton, NGrid, NGridItem, NList, NListItem, NSpace, NText } from 'naive-ui'
 
 interface RecruitResult {
   tags: string[]

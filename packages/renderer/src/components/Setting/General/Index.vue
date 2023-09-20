@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { NSelect, NFormItem, NSpace } from 'naive-ui'
 import useSettingStore, { Locale } from '@/store/settings'
-import { ref, inject } from 'vue'
-import type { ResourceType } from '@type/game'
 import { loadCoreResources } from '@/utils/core_functions'
 import { showMessage } from '@/utils/message'
+import type { ResourceType } from '@type/game'
+import { NFormItem, NSelect, NSpace } from 'naive-ui'
+import { inject, ref } from 'vue'
 
 const settingStore = useSettingStore()
 

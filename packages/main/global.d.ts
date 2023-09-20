@@ -1,4 +1,4 @@
-import type { IpcRendererOnEventProxy, IpcMainHandleEventCalleeProxy } from '@type/ipc'
+import type { IpcMainHandleEventCalleeProxy, IpcRendererOnEventProxy } from '@type/ipc'
 
 export {}
 

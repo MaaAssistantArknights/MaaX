@@ -1,5 +1,5 @@
-import {} from 'cron-parser'
 import { Singleton } from '@common/function/singletonDecorator'
+import 'cron-parser'
 
 import { Ticker } from './ticker'
 

@@ -1,14 +1,14 @@
 <script lang="ts" setup>
-import { NImage, NDescriptions, NDescriptionsItem, NDivider, NTooltip, NText } from 'naive-ui'
-import { type Callback, AsstMsg, type CallbackMapper } from '@type/task/callback'
-import { useIntervalFn } from '@vueuse/core'
-import useDeviceStore from '@/store/devices'
-import { ref, onMounted, onBeforeUnmount } from 'vue'
-import logger from '@/hooks/caller/logger'
 import IconPencilAlt from '@/assets/icons/pencil-alt.svg?component'
-import type { Device } from '@type/device'
 import ClickToEdit from '@/components/UtilComponents/ClickToEdit.vue'
+import logger from '@/hooks/caller/logger'
+import useDeviceStore from '@/store/devices'
+import type { Device } from '@type/device'
+import { AsstMsg, type Callback, type CallbackMapper } from '@type/task/callback'
 import { Call } from '@vicons/ionicons5'
+import { useIntervalFn } from '@vueuse/core'
+import { NDescriptions, NDescriptionsItem, NDivider, NImage, NText, NTooltip } from 'naive-ui'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 
 const deviceStore = useDeviceStore()
 

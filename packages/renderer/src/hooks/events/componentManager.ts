@@ -1,4 +1,5 @@
 import useComponentStore from '@/store/components'
+
 import asst from '../caller/asst'
 
 export default function useComponentManagerEvents(): void {

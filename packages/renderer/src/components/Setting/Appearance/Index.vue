@@ -1,20 +1,20 @@
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
+import { getPlatform } from '@/hooks/caller/os'
+import useThemeStore from '@/store/theme'
+import { type Platform } from '@type/api/maa'
 import _ from 'lodash'
 import {
-  NFormItem,
-  NForm,
-  NSwitch,
-  NImage,
-  NSlider,
-  NSelect,
-  NInputNumber,
-  NDivider,
   NCard,
+  NDivider,
+  NForm,
+  NFormItem,
+  NImage,
+  NInputNumber,
+  NSelect,
+  NSlider,
+  NSwitch,
 } from 'naive-ui'
-import useThemeStore from '@/store/theme'
-import { getPlatform } from '@/hooks/caller/os'
-import { type Platform } from '@type/api/maa'
+import { onMounted, ref } from 'vue'
 
 const themeStore = useThemeStore()
 

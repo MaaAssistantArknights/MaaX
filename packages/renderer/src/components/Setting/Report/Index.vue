@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import useSettingStore from '@/store/settings'
-import { NSpace, NTooltip, NInput, NFormItem, NSwitch } from 'naive-ui'
+import { NFormItem, NInput, NSpace, NSwitch, NTooltip } from 'naive-ui'
 
 const settingStore = useSettingStore()
 

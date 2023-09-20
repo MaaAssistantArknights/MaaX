@@ -1,9 +1,9 @@
-import { defineConfig } from 'vite'
-import path from 'path'
-import vue from '@vitejs/plugin-vue'
 import vueI18n from '@intlify/unplugin-vue-i18n/vite'
-import svgLoader from 'vite-svg-loader'
+import vue from '@vitejs/plugin-vue'
+import path from 'path'
+import { defineConfig } from 'vite'
 import renderer from 'vite-plugin-electron-renderer'
+import svgLoader from 'vite-svg-loader'
 
 import pkg from '../../package.json'
 

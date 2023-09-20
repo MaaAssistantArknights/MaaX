@@ -1,11 +1,12 @@
-import { BrowserWindow } from 'electron'
-import { join } from 'path'
 import { Singleton } from '@common/function/singletonDecorator'
-import useController from './control'
-import useTheme from './theme'
 import Storage from '@main/storageManager'
 import { getPlatform } from '@main/utils/os'
 import type { Module } from '@type/misc'
+import { BrowserWindow } from 'electron'
+import { join } from 'path'
+
+import useController from './control'
+import useTheme from './theme'
 
 @Singleton
 class WindowManager implements Module {

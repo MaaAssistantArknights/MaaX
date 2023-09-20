@@ -1,9 +1,9 @@
-import { defineStore } from 'pinia'
 import logger from '@/hooks/caller/logger'
-import { runStartEmulator } from '@/utils/task_runner'
 import { showMessage } from '@/utils/message'
-import type { Device, NativeDevice, DeviceStatus } from '@type/device'
+import { runStartEmulator } from '@/utils/task_runner'
+import type { Device, DeviceStatus, NativeDevice } from '@type/device'
 import type { MessageType } from 'naive-ui'
+import { defineStore } from 'pinia'
 
 export interface DeviceState {
   devices: Device[]
@@ -119,11 +119,19 @@ const useDeviceStore = defineStore<'device', DeviceState, {}, DeviceAction>('dev
         wakeUpMessage.content = content
         wakeUpMessage.type = type
         // 源码里貌似直接修改duration不会重新生成定时器，所以这里手动关闭
-        duration && setTimeout(() => { try { wakeUpMessage?.destroy?.() } catch (e) {} }, duration)
+        duration &&
+          setTimeout(() => {
+            try {
+              wakeUpMessage?.destroy?.()
+            } catch (e) {}
+          }, duration)
       }
 
       if (!origin.commandLine || origin.commandLine === '') {
-        updateWakeUpMessage(`设备 ${ origin.displayName as string } 未配置启动命令, 请手动刷新设备`, 'warning')
+        updateWakeUpMessage(
+          `设备 ${origin.displayName as string} 未配置启动命令, 请手动刷新设备`,
+          'warning'
+        )
         return false
       }
       origin.status = 'connecting'

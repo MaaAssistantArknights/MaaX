@@ -1,14 +1,14 @@
+import logger from '@/hooks/caller/logger'
 import storage from '@/hooks/caller/storage'
+import type { CoreTaskName, FrontTaskName } from '@type/task'
 import { type Store } from 'pinia'
 
+import useComponentStore, { type ComponentStoreState } from './components'
 import useDeviceStore, { type DeviceState } from './devices'
+import useResourceStore, { type ResourceState } from './resource'
 import useSettingStore, { type SettingState } from './settings'
 import useTaskStore, { type TaskState } from './tasks'
 import useThemeStore, { type ThemeState } from './theme'
-import useResourceStore, { type ResourceState } from './resource'
-import logger from '@/hooks/caller/logger'
-import type { CoreTaskName, FrontTaskName } from '@type/task'
-import useComponentStore, { type ComponentStoreState } from './components'
 
 type Patcher<T> = (storage: T) => T
 

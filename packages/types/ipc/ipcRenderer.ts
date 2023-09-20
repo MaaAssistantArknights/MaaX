@@ -1,8 +1,9 @@
 import type { ComponentType } from '@type/componentManager'
-import type { Callback } from '@type/task/callback'
 import type { DeviceStatus, NativeDevice } from '@type/device'
 import type { InstallerStatus } from '@type/misc'
+import type { Callback } from '@type/task/callback'
 import type { MessageOptions } from 'naive-ui'
+
 import type { CalleeProxyObjectType, CallerProxyObjectType } from './utils'
 
 export type IpcRendererOnEventType = {

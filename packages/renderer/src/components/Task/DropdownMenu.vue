@@ -1,8 +1,8 @@
 <script lang="ts" setup>
+import InProgressIcon from '@/assets/icons/in-progress.svg'
+import SettingsIcon from '@/assets/icons/settings.svg'
 import { NDropdown, NIcon } from 'naive-ui'
 import { h } from 'vue'
-import SettingsIcon from '@/assets/icons/settings.svg'
-import InProgressIcon from '@/assets/icons/in-progress.svg'
 
 const props = defineProps<{
   x: number

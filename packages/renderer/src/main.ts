@@ -1,11 +1,10 @@
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
-
-import router from '@/router'
 import App from '@/App.vue'
-import watcher from '@/store/plugin/watcher'
-import { initialStore } from '@/store/initial'
 import { i18n } from '@/i18n'
+import router from '@/router'
+import { initialStore } from '@/store/initial'
+import watcher from '@/store/plugin/watcher'
+import { createPinia } from 'pinia'
+import { createApp } from 'vue'
 
 import './App.less'
 import { setupHookProxy } from './hooks'

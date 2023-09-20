@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
-import { NText, NInput, NTooltip } from 'naive-ui'
+import { NInput, NText, NTooltip } from 'naive-ui'
 import type { InputInst } from 'naive-ui'
+import { ref } from 'vue'
+
 const isEditing = ref(false)
 const input = ref<InputInst | null>(null)
 

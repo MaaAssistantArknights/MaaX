@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { NPopover, NImage, NScrollbar, NText } from 'naive-ui'
-import ItemCard from './ItemCard.vue'
 import { getItemBorderedImage } from '@/utils/game_image'
+import { NImage, NPopover, NScrollbar, NText } from 'naive-ui'
+
+import ItemCard from './ItemCard.vue'
 
 const props = defineProps<{
   name: string

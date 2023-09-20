@@ -2,7 +2,8 @@
 import { onUnmounted } from 'vue'
 import { onMounted } from 'vue'
 import { ref } from 'vue'
-import type { RecvMsg, TileClickData, SendMsg, MapState } from './types'
+
+import type { MapState, RecvMsg, SendMsg, TileClickData } from './types'
 
 defineProps<{
   stageId: string

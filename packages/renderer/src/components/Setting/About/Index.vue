@@ -1,16 +1,16 @@
 <script setup lang="ts">
+import AppIcon from '@common/resources/icon.png'
 import {
   NButton,
-  NSpace,
-  NText,
   NCollapseTransition,
+  NH3,
+  NImage,
   NList,
   NListItem,
+  NSpace,
   NTag,
-  NImage,
-  NH3,
+  NText,
 } from 'naive-ui'
-import AppIcon from '@common/resources/icon.png'
 
 const credits = [
   {

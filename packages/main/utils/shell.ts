@@ -1,7 +1,7 @@
-import { execa as EXECA, type ExecaError } from 'execa'
-import iconv from 'iconv-lite'
 import logger from '@main/utils/logger'
 import { getPlatform } from '@main/utils/os'
+import { execa as EXECA, type ExecaError } from 'execa'
+import iconv from 'iconv-lite'
 
 let execa: typeof EXECA = () => void 0 as any
 

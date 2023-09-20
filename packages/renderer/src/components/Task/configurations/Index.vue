@@ -1,14 +1,15 @@
 <script lang="ts">
-import { defineComponent, h, type Component } from 'vue'
+import { type Component, defineComponent, h } from 'vue'
+
 import Emulator from './Emulator.vue'
-import StartUp from './StartUp.vue'
 import Fighting from './Fighting.vue'
 import Infrast from './Infrast.vue'
+import Mall from './Mall.vue'
 import NoConfiguration from './NoConfiguration.vue'
 import Recruit from './Recruit.vue'
 import Rogue from './Rogue.vue'
-import Mall from './Mall.vue'
 import Shutdown from './Shutdown.vue'
+import StartUp from './StartUp.vue'
 
 const components: Record<string, Component> = {
   Emulator: Emulator,

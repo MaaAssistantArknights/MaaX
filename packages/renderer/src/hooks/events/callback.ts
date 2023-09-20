@@ -1,15 +1,10 @@
-import useDeviceStore from '@/store/devices'
-import useTaskStore from '@/store/tasks'
-import useSettingStore from '@/store/settings'
-
-import { showMessage } from '@/utils/message'
-import type { MessageReactive } from 'naive-ui'
-
+import { type DropInfo, postDrop } from '@/api/penguin'
 import logger from '@/hooks/caller/logger'
-import _ from 'lodash'
-
-import { postDrop, type DropInfo } from '@/api/penguin'
+import useDeviceStore from '@/store/devices'
 import { useSeperateTaskStore } from '@/store/seperateTask'
+import useSettingStore from '@/store/settings'
+import useTaskStore from '@/store/tasks'
+import { showMessage } from '@/utils/message'
 import type { CoreTaskName, GetTask, TaskStatus } from '@type/task'
 import {
   AsstMsg,
@@ -17,6 +12,8 @@ import {
   type CallbackMapper,
   type SubTaskRelatedMsg,
 } from '@type/task/callback'
+import _ from 'lodash'
+import type { MessageReactive } from 'naive-ui'
 
 const messages: Record<string, MessageReactive> = {}
 

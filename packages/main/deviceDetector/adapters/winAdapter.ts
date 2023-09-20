@@ -1,13 +1,13 @@
 /* eslint-disable vue/max-len */
 import { Singleton } from '@common/function/singletonDecorator'
-import path from 'path'
-import { readFileSync, existsSync } from 'fs'
-import { assert } from 'console'
-import _ from 'lodash'
-import { $ } from '@main/utils/shell'
-import logger from '@main/utils/logger'
 import { defaultAdbPath, getDeviceUuid } from '@main/deviceDetector/utils'
-import type { EmulatorAdapter, Emulator, Device } from '@type/device'
+import logger from '@main/utils/logger'
+import { $ } from '@main/utils/shell'
+import type { Device, Emulator, EmulatorAdapter } from '@type/device'
+import { assert } from 'console'
+import { existsSync, readFileSync } from 'fs'
+import _ from 'lodash'
+import path from 'path'
 
 const inUsePorts: string[] = [] // 本次识别已被使用的端口，将会在此暂存。
 

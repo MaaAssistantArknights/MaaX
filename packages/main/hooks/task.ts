@@ -1,5 +1,5 @@
-import fs from 'fs'
 import logger from '@main/utils/logger'
+import fs from 'fs'
 
 export default function useTaskHooks(): void {
   globalThis.main.Task.readInfrastConfig = ({ filepath }) => {

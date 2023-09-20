@@ -1,6 +1,6 @@
+import useSettingStore from '@/store/settings'
 import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from 'axios'
 import _ from 'lodash'
-import useSettingStore from '@/store/settings'
 
 const getUA = (): string => {
   const settingStore = useSettingStore()

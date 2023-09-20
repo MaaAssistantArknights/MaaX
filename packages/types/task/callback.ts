@@ -1,11 +1,12 @@
 import type { CoreTaskName } from '@type/task'
+
 import type {
-  ConnectionInfoMapper,
   ConnectionInfoCallbackGenerator,
+  ConnectionInfoMapper,
 } from './callbackInfo/ConnectionInfo'
 import type {
-  SubTaskExtraInfoMapper,
   SubTaskExtraInfoCallbackGenerator,
+  SubTaskExtraInfoMapper,
 } from './callbackInfo/SubTaskExtraInfo'
 
 export type { ConnectionInfoMapper, SubTaskExtraInfoMapper }

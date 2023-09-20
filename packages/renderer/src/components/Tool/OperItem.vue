@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { NAvatar } from 'naive-ui'
 import { getOperatorAvatar, getSkillImage } from '@/utils/game_image'
-import { getCharSkillCount, getCharSkillName, type Operator } from './utils'
+import { NAvatar } from 'naive-ui'
 import { computed } from 'vue'
+
+import { type Operator, getCharSkillCount, getCharSkillName } from './utils'
 
 const props = defineProps<{
   oper: Operator

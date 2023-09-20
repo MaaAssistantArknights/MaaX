@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { NCheckbox, NFormItem, NSelect } from 'naive-ui'
 import { inject } from 'vue'
+
 import type { GetConfig } from './types'
 
 type StartUpConfig = GetConfig<'StartUp'>

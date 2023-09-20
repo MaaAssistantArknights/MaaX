@@ -1,10 +1,9 @@
+import logger from '@main/utils/logger'
+import type { ComponentType } from '@type/componentManager'
 import axios from 'axios'
 
-import { getProxy } from './proxy'
-import logger from '@main/utils/logger'
-
-import type { ComponentType } from '@type/componentManager'
 import type { ReleaseObject } from '../types'
+import { getProxy } from './proxy'
 
 const MaxRetryTimes = 3
 

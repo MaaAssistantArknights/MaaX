@@ -1,13 +1,14 @@
 <script lang="ts">
-import { defineComponent, h, type Component } from 'vue'
-import NoProgress from './NoProgress.vue'
+import { type Component, defineComponent, h } from 'vue'
+
 import Emulator from './Emulator.vue'
-import Game from './Game.vue'
 import Fighting from './Fighting.vue'
+import Game from './Game.vue'
 import Infrast from './Infrast.vue'
+import Mall from './Mall.vue'
+import NoProgress from './NoProgress.vue'
 import Recruit from './Recruit.vue'
 import Rogue from './Rogue.vue'
-import Mall from './Mall.vue'
 import Shutdown from './Shutdown.vue'
 
 const components: Record<string, Component> = {

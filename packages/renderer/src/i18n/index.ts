@@ -1,13 +1,13 @@
 /* eslint-disable import/no-duplicates */
-import { zhCN as NZhCN, dateZhCN as NDateZhCN } from 'naive-ui'
-import { enUS as NEnUS, dateEnUS as NDateEnUS } from 'naive-ui'
-import { createI18n, useI18n as useNativeI18n } from 'vue-i18n'
-
-import ZhCN from './zhCN.json'
-import EnUS from './enUS.json'
 import type { BooleanDisplayOption } from '@type/i18n/boolean'
 import type { I18nKey } from '@type/i18n/utils'
 import type { GetFnRemoveFirstParams } from '@type/utils'
+import { dateZhCN as NDateZhCN, zhCN as NZhCN } from 'naive-ui'
+import { dateEnUS as NDateEnUS, enUS as NEnUS } from 'naive-ui'
+import { createI18n, useI18n as useNativeI18n } from 'vue-i18n'
+
+import EnUS from './enUS.json'
+import ZhCN from './zhCN.json'
 
 export const naiveUiLocale = {
   NZhCN,

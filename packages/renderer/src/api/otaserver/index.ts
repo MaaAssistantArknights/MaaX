@@ -1,7 +1,8 @@
-import type { AxiosRequestHeaders, AxiosResponse } from 'axios'
-import service from './service'
 import logger from '@/hooks/caller/logger'
 import { type ResourceType } from '@type/game'
+import type { AxiosRequestHeaders, AxiosResponse } from 'axios'
+
+import service from './service'
 
 export async function getActivityStage(): Promise<AxiosResponse> {
   return await service.get<AxiosResponse>('/MaaAssistantArknights/api/gui/StageActivity.json')

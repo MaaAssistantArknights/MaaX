@@ -1,28 +1,26 @@
 <script setup lang="ts">
-import { computed, ref, provide, watch } from 'vue'
-import { NSpace, NButton, NSwitch, NIcon, NTooltip, NSelect, type SelectOption } from 'naive-ui'
-import _ from 'lodash'
-import Draggable from 'vuedraggable'
-import TaskCard from '@/components/Task/TaskCard.vue'
-import NewTask from '@/components/Task/NewTask.vue'
-import IconList from '@/assets/icons/list.svg?component'
-import IconGrid from '@/assets/icons/grid.svg?component'
 import IconEdit from '@/assets/icons/edit.svg?component'
+import IconGrid from '@/assets/icons/grid.svg?component'
+import IconList from '@/assets/icons/list.svg?component'
 import IconTimer from '@/assets/icons/timer.svg?component'
-import Configuration from '@/components/Task/configurations/Index.vue'
+import NewTask from '@/components/Task/NewTask.vue'
+import TaskCard from '@/components/Task/TaskCard.vue'
 import TaskGroupEditModal from '@/components/Task/TaskGroupEditModal.vue'
-
-import useTaskStore from '@/store/tasks'
-import useDeviceStore from '@/store/devices'
-import useSettingStore from '@/store/settings'
-import { showMessage } from '@/utils/message'
-
-import router from '@/router'
+import Configuration from '@/components/Task/configurations/Index.vue'
 import Result from '@/components/Task/results/Index.vue'
 import logger from '@/hooks/caller/logger'
-import { runTasks, runStartEmulator } from '@/utils/task_runner'
+import router from '@/router'
+import useDeviceStore from '@/store/devices'
+import useSettingStore from '@/store/settings'
+import useTaskStore from '@/store/tasks'
+import { showMessage } from '@/utils/message'
+import { runStartEmulator, runTasks } from '@/utils/task_runner'
 import type { InitCoreParam } from '@type/ipc'
 import type { GetTask } from '@type/task'
+import _ from 'lodash'
+import { NButton, NIcon, NSelect, NSpace, NSwitch, NTooltip, type SelectOption } from 'naive-ui'
+import { computed, provide, ref, watch } from 'vue'
+import Draggable from 'vuedraggable'
 
 const taskStore = useTaskStore()
 const deviceStore = useDeviceStore()
@@ -253,10 +251,18 @@ const currentTaskGroup = computed(() => taskStore.getCurrentTaskGroup(uuid.value
     <NSpace justify="space-between" align="center">
       <h2>任务</h2>
       <NSpace align="center">
-        <TaskGroupEditModal v-model:show="showTaskGroupEdit" :name="currentTaskGroup?.name ?? ''"
-          @change:name="handleChangeTaskGroupName" @delete="handleDeleteTaskGroup" />
-        <NSelect v-model:value="currentTaskGroupIndexValue" :options="taskGroupOptions" :consistent-menu-width="false"
-          @update:value="handleChangeTaskGroupIndex">
+        <TaskGroupEditModal
+          v-model:show="showTaskGroupEdit"
+          :name="currentTaskGroup?.name ?? ''"
+          @change:name="handleChangeTaskGroupName"
+          @delete="handleDeleteTaskGroup"
+        />
+        <NSelect
+          v-model:value="currentTaskGroupIndexValue"
+          :options="taskGroupOptions"
+          :consistent-menu-width="false"
+          @update:value="handleChangeTaskGroupIndex"
+        >
           <template #action>
             <NButton text @click="handleCreateNewTaskGroup"> 点此新建任务组 </NButton>
           </template>
@@ -299,14 +305,31 @@ const currentTaskGroup = computed(() => taskStore.getCurrentTaskGroup(uuid.value
       </NSpace>
     </NSpace>
 
-    <Draggable :list="tasks" :animation="200" :filter="'.undraggable'" class="cards" item-key="task_id"
-      :class="isGrid ? 'cards-grid' : ''" @move="handleDragMove">
+    <Draggable
+      :list="tasks"
+      :animation="200"
+      :filter="'.undraggable'"
+      class="cards"
+      item-key="task_id"
+      :class="isGrid ? 'cards-grid' : ''"
+      @move="handleDragMove"
+    >
       <template #item="{ element: task, index }">
-        <TaskCard v-model:showResult="task.showResult" :is-collapsed="!isGrid" :task-info="task"
-          @update:enable="enabled => (task.enable = enabled)" @copy="() => handleTaskCopy(index)"
-          @delete="() => handleTaskDelete(index)">
+        <TaskCard
+          v-model:showResult="task.showResult"
+          :is-collapsed="!isGrid"
+          :task-info="task"
+          @update:enable="enabled => (task.enable = enabled)"
+          @copy="() => handleTaskCopy(index)"
+          @delete="() => handleTaskDelete(index)"
+        >
           <Result v-if="task.showResult" :name="task.name" :results="task.results" />
-          <Configuration v-else :name="task.name" :configurations="task.configurations" :task-index="index" />
+          <Configuration
+            v-else
+            :name="task.name"
+            :configurations="task.configurations"
+            :task-index="index"
+          />
         </TaskCard>
       </template>
     </Draggable>

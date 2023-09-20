@@ -1,11 +1,12 @@
 import logger from '@/hooks/caller/logger'
-import useTaskStore from '@/store/tasks'
 import useDeviceStore from '@/store/devices'
-import { showMessage } from './message'
-import { convertToCoreTaskConfiguration } from './task_helper'
+import useSettingStore from '@/store/settings'
+import useTaskStore from '@/store/tasks'
 import type { Device } from '@type/device'
 import type { GetTask, Task } from '@type/task'
-import useSettingStore from '@/store/settings'
+
+import { showMessage } from './message'
+import { convertToCoreTaskConfiguration } from './task_helper'
 
 let selfIncreasedId = 1000000
 const genUiTaskId = (): number => {

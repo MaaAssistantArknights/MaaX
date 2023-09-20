@@ -1,6 +1,6 @@
-import type { MessageApiInjection } from 'naive-ui/lib/message/src/MessageProvider'
+import type { IpcMainHandleEventProxy, IpcRenderer, IpcRendererOnEventCalleeProxy } from '@type/ipc'
 import type { DialogApiInjection } from 'naive-ui/lib/dialog/src/DialogProvider'
-import type { IpcRenderer, IpcMainHandleEventProxy, IpcRendererOnEventCalleeProxy } from '@type/ipc'
+import type { MessageApiInjection } from 'naive-ui/lib/message/src/MessageProvider'
 
 export {}
 

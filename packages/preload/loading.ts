@@ -4,8 +4,8 @@
  * https://projects.lukehaas.me/css-loaders
  * https://matejkustec.github.io/SpinThatShit
  */
-
 import { createApp } from 'vue'
+
 import Loading from './Loading.vue'
 
 export function useLoading() {

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
 import { gamedata } from '@/api'
-import { NCard, NText, NTag, NSkeleton } from 'naive-ui'
 import type { Item, Stage } from '@type/api/maa'
+import { NCard, NSkeleton, NTag, NText } from 'naive-ui'
+import { onMounted, ref } from 'vue'
 
 const props = defineProps<{
   name: string

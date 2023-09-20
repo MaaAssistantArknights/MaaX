@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { ref, onMounted, computed, inject } from 'vue'
-import { NFormItem, NInputNumber, NSpace, NSelect, NInputGroup, NForm } from 'naive-ui'
 import { gamedata } from '@/api'
-import type { GetConfig } from './types'
-import _ from 'lodash'
 import useResrourceStore from '@/store/resource'
 import useSettingStore from '@/store/settings'
+import _ from 'lodash'
+import { NForm, NFormItem, NInputGroup, NInputNumber, NSelect, NSpace } from 'naive-ui'
 import semver from 'semver'
+import { computed, inject, onMounted, ref } from 'vue'
+
+import type { GetConfig } from './types'
 
 type FightConfig = GetConfig<'Fight'>
 type Stage = {
@@ -124,10 +125,7 @@ onMounted(async () => {
   const _sideStoryStage = (resourceStore.stageActivity?.[clientType]?.sideStoryStage ?? [])
     ?.filter(item => semver.gte(coreVersion, item.MinimumRequired))
     .filter(item => {
-      if (
-        item.Activity.UtcExpireTime &&
-        new Date(item.Activity.UtcExpireTime).getTime() < _now
-      ) {
+      if (item.Activity.UtcExpireTime && new Date(item.Activity.UtcExpireTime).getTime() < _now) {
         return false
       }
       return true
@@ -189,8 +187,8 @@ onMounted(async () => {
             :disabled="configurationDisabled.nre"
             :value="props.configurations.stage"
             :options="supportStages"
-              filterable
-              :loading="loading"
+            filterable
+            :loading="loading"
             @update:value="value => handleUpdateConfiguration('stage', value)"
           />
         </NFormItem>

@@ -1,11 +1,10 @@
 <script lang="ts" setup>
-import { type MessageReactive, useMessage } from 'naive-ui'
-import { useI18n } from 'vue-i18n'
-
-import useDeviceStore from '@/store/devices'
 import useComponentStore from '@/store/components'
+import useDeviceStore from '@/store/devices'
 import useTaskStore from '@/store/tasks'
+import { type MessageReactive, useMessage } from 'naive-ui'
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 const message = useMessage()

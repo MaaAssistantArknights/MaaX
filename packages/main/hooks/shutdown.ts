@@ -1,7 +1,7 @@
-import { $ } from '@main/utils/shell'
-import { getPlatform } from '@main/utils/os'
-import WindowManager from '@main/windowManager'
 import logger from '@main/utils/logger'
+import { getPlatform } from '@main/utils/os'
+import { $ } from '@main/utils/shell'
+import WindowManager from '@main/windowManager'
 
 async function shutdownEmulator(pid: string): Promise<void> {
   logger.silly('Shutdown Emulator')

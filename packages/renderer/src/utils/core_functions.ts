@@ -1,7 +1,7 @@
 import logger from '@/hooks/caller/logger'
-import { TouchMode, TouchModes } from '@type/misc'
-import type { ResourceType } from '@type/game'
 import { getPlatform } from '@/hooks/caller/os'
+import type { ResourceType } from '@type/game'
+import { TouchMode, TouchModes } from '@type/misc'
 
 /**
  * load core resources, include other server clients

@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { inject } from 'vue'
-import { NFormItem, NInput, NSelect, NSpace, NTimePicker } from 'naive-ui'
 import router from '@/router'
 import useDeviceStore from '@/store/devices'
-import type { GetConfig } from './types'
-import { secondsToFormattedDuration, formattedDurationToSeconds } from '@/utils/time_picker'
+import { formattedDurationToSeconds, secondsToFormattedDuration } from '@/utils/time_picker'
 import _ from 'lodash'
+import { NFormItem, NInput, NSelect, NSpace, NTimePicker } from 'naive-ui'
+import { inject } from 'vue'
+
+import type { GetConfig } from './types'
 
 const deviceStore = useDeviceStore()
 

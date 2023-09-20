@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import _ from 'lodash'
-import { ref, onMounted } from 'vue'
-import { useI18n } from 'vue-i18n'
-import { NEllipsis, NTable, NCollapse, NCollapseItem, NAlert } from 'naive-ui'
 import { getSystemInformation } from '@/hooks/caller/os'
 import { showBoolean } from '@/i18n'
+import _ from 'lodash'
+import { NAlert, NCollapse, NCollapseItem, NEllipsis, NTable } from 'naive-ui'
+import { onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const siRef = ref<any>(null)
 const siLoading = ref(false)

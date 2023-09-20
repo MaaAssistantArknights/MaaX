@@ -1,26 +1,27 @@
 <script setup lang="ts">
+import { useSeperateTaskStore } from '@/store/seperateTask'
+import { getProfessionImage } from '@/utils/game_image'
+import { AsstMsg, type CallbackMapper } from '@type/task/callback'
 import {
   NAvatar,
   NButton,
   NCard,
   NCheckbox,
+  NGrid,
+  NGridItem,
   NInput,
   NInputNumber,
   NModal,
-  NGrid,
-  NGridItem,
   NUpload,
   NUploadDragger,
   type UploadFileInfo,
 } from 'naive-ui'
 import { ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { getProfessionImage } from '@/utils/game_image'
-import OperItem from './OperItem.vue'
-import { useSeperateTaskStore } from '@/store/seperateTask'
-import { AsstMsg, type CallbackMapper } from '@type/task/callback'
+
 import TMap from '../External/TheresaWiki/TMap.vue'
 import type { TileClickData } from '../External/TheresaWiki/types'
+import OperItem from './OperItem.vue'
 
 const route = useRoute()
 const seperateTaskStore = useSeperateTaskStore()
@@ -148,14 +149,14 @@ function track(text: string) {
   const pat = /BV[0-9a-zA-Z]+/
   const res: (
     | {
-      type: 'text'
-      text: string
-    }
+        type: 'text'
+        text: string
+      }
     | {
-      type: 'link'
-      text: string
-      url: string
-    }
+        type: 'link'
+        text: string
+        url: string
+      }
   )[] = []
   while (text.length > 0) {
     const m = pat.exec(text)
@@ -344,16 +345,26 @@ function previewTileClick(tile: TileClickData) {
     </template>
     <NGrid class="CopilotConfig" :cols="1" :y-gap="16">
       <NGridItem>
-        <NInput placeholder="神秘链接 maa://" v-model:value="maaLink" @blur="startFetch" @change="startFetch"></NInput>
+        <NInput
+          placeholder="神秘链接 maa://"
+          v-model:value="maaLink"
+          @blur="startFetch"
+          @change="startFetch"
+        ></NInput>
       </NGridItem>
       <NGridItem>
-        <NUpload :default-upload="false" :show-file-list="false" :multiple="false" accept=".json" @change="parseInfo">
+        <NUpload
+          :default-upload="false"
+          :show-file-list="false"
+          :multiple="false"
+          accept=".json"
+          @change="parseInfo"
+        >
           <NUploadDragger style="display: block">
             <span> 选择本地作业 </span>
           </NUploadDragger>
         </NUpload>
       </NGridItem>
-
     </NGrid>
 
     <div class="CopilotContent" v-if="data">
@@ -379,8 +390,13 @@ function previewTileClick(tile: TileClickData) {
                 <NButton @click="popupPreview()"> theresa.wiki </NButton>
                 <NModal v-model:show="showPreview">
                   <div>
-                    <TMap ref="tmap" v-show="!tmapLoading" @tileClick="previewTileClick" @mapReady="tmapLoading = false"
-                      :stageId="mapPreview"></TMap>
+                    <TMap
+                      ref="tmap"
+                      v-show="!tmapLoading"
+                      @tileClick="previewTileClick"
+                      @mapReady="tmapLoading = false"
+                      :stageId="mapPreview"
+                    ></TMap>
                     <span v-show="tmapLoading"> Loading... </span>
                   </div>
                 </NModal>
@@ -465,7 +481,10 @@ function previewTileClick(tile: TileClickData) {
             </template>
             <div class="SSSCopilotToolMen">
               <template v-for="toolmen in Object.entries(data.tool_men)" :key="toolmen[0]">
-                <NAvatar size="small" :src="getProfessionImage(toolmen[0].replace('术士', '术师'))"></NAvatar>
+                <NAvatar
+                  size="small"
+                  :src="getProfessionImage(toolmen[0].replace('术士', '术师'))"
+                ></NAvatar>
                 <span> {{ toolmen[0] }} </span>
                 <span> {{ toolmen[1] }} </span>
               </template>
@@ -494,7 +513,7 @@ function previewTileClick(tile: TileClickData) {
     flex-direction: column;
     gap: 8px;
 
-    &>div {
+    & > div {
       display: flex;
       align-items: center;
       gap: 4px;

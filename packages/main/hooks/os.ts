@@ -1,10 +1,10 @@
 import {
+  generateIdempotentKey,
   getArch,
   getPlatform,
   getSystemInformation,
-  reload,
-  generateIdempotentKey,
   isInDev,
+  reload,
 } from '@main/utils/os'
 
 export default function useOsHooks(): void {

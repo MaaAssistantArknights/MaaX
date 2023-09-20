@@ -1,4 +1,5 @@
-import type { Platform, Arch, Component } from '@type/api/maa'
+import type { Arch, Component, Platform } from '@type/api/maa'
+
 import service from './service'
 
 interface ComponentInfo {

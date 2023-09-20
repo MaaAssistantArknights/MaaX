@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
-import {
-  NButton,
-  NModal,
-  NCard,
-  NSpace,
-  NProgress,
-  NAlert,
-  NTooltip,
-  NPopconfirm,
-  NPopselect,
-  NSelect,
-} from 'naive-ui'
 import useComponentStore from '@/store/components'
 import useDeviceStore from '@/store/devices'
-import type { ComponentType, ComponentStatus } from '@type/componentManager'
+import type { ComponentStatus, ComponentType } from '@type/componentManager'
 import type { InstallerStatus } from '@type/misc'
+import {
+  NAlert,
+  NButton,
+  NCard,
+  NModal,
+  NPopconfirm,
+  NPopselect,
+  NProgress,
+  NSelect,
+  NSpace,
+  NTooltip,
+} from 'naive-ui'
+import { computed, onMounted, ref } from 'vue'
 import type { Ref } from 'vue'
 
 const componentStore = useComponentStore()

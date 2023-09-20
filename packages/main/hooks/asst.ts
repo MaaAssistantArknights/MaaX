@@ -1,8 +1,8 @@
-import path from 'path'
-import fs from 'fs'
 import CoreLoader from '@main/coreLoader'
 import logger from '@main/utils/logger'
 import type { IpcMainHandleEventCalleeProxy } from '@type/ipc'
+import fs from 'fs'
+import path from 'path'
 
 const core = new CoreLoader()
 

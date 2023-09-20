@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import IconSettings from '@/assets/icons/settings.svg?component'
 import IconDevices from '@/assets/icons/devices.svg?component'
+import IconSettings from '@/assets/icons/settings.svg?component'
 import IconTool from '@/assets/icons/tool.svg?component'
-import { NIcon, NSpace, NButton, NTooltip } from 'naive-ui'
 import DeviceCard from '@/components/Device/DeviceCard.vue'
 import DeviceMenu from '@/components/Device/DeviceMenu.vue'
 import router from '@/router'
-
 import useDeviceStore from '@/store/devices'
+import { NButton, NIcon, NSpace, NTooltip } from 'naive-ui'
 import { computed } from 'vue'
 
 const deviceStore = useDeviceStore()
@@ -32,8 +31,12 @@ const otherDevices = computed(() =>
       <NSpace>
         <NTooltip>
           <template #trigger>
-            <NButton :disabled="currentDevice?.status !== 'connected'" text style="font-size: 24px"
-              @click="$router.push({ path: `/tool/${currentUuid}` })">
+            <NButton
+              :disabled="currentDevice?.status !== 'connected'"
+              text
+              style="font-size: 24px"
+              @click="$router.push({ path: `/tool/${currentUuid}` })"
+            >
               <NIcon>
                 <IconTool />
               </NIcon>

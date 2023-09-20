@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NSpace, NButton } from 'naive-ui'
+import { NButton, NSpace } from 'naive-ui'
 import { onMounted, ref } from 'vue'
 
 const loading = ref(false)

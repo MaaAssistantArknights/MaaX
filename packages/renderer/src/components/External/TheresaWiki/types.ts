@@ -22,7 +22,6 @@ export type TileClickData = {
   }
 }
 
-
 export type RecvMsg = {
   id: string
 } & (

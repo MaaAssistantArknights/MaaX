@@ -1,18 +1,16 @@
 <script setup lang="ts">
-import { provide, computed } from 'vue'
-import { NForm } from 'naive-ui'
-
-import Developer from '@/components/Setting/Developer'
-import Version from '@/components/Setting/Version'
-import Appearance from '@/components/Setting/Appearance'
 import About from '@/components/Setting/About'
-import Clear from '@/components/Setting/Clear/Index.vue'
-import Report from '@/components/Setting/Report/Index.vue'
-import General from '@/components/Setting/General/Index.vue'
 import Advance from '@/components/Setting/Advance/Index.vue'
+import Appearance from '@/components/Setting/Appearance'
+import Clear from '@/components/Setting/Clear/Index.vue'
+import Developer from '@/components/Setting/Developer'
+import General from '@/components/Setting/General/Index.vue'
 import Other from '@/components/Setting/Other/Index.vue'
-
+import Report from '@/components/Setting/Report/Index.vue'
+import Version from '@/components/Setting/Version'
 import useDeviceStore from '@/store/devices'
+import { NForm } from 'naive-ui'
+import { computed, provide } from 'vue'
 
 const deviceStore = useDeviceStore()
 

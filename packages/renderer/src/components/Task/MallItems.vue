@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import Draggable from 'vuedraggable'
-import { NText, NImage } from 'naive-ui'
 import router from '@/router'
 import { getItemBorderedImage } from '@/utils/game_image'
+import { NImage, NText } from 'naive-ui'
+import Draggable from 'vuedraggable'
 
 const uuid = router.currentRoute.value.params.uuid as string
 

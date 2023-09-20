@@ -1,8 +1,8 @@
-import { defineStore } from 'pinia'
-import _ from 'lodash'
-import { compareObjKey } from '@/utils/task_helper'
 import logger from '@/hooks/caller/logger'
+import { compareObjKey } from '@/utils/task_helper'
 import type { GetTask, Task, TaskGroup, TaskGroups, TaskStatus } from '@type/task'
+import _ from 'lodash'
+import { defineStore } from 'pinia'
 
 export interface TaskState {
   deviceTasks: Record<string, TaskGroups>

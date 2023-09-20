@@ -1,8 +1,8 @@
-import fs from 'fs'
-import path from 'path'
-import { app } from 'electron'
 import { manager } from '@main/utils/logger'
 import { getAppBaseDir } from '@main/utils/path'
+import { app } from 'electron'
+import fs from 'fs'
+import path from 'path'
 
 export default function useClearHooks(): void {
   globalThis.main.Util = {

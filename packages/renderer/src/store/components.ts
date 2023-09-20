@@ -1,4 +1,4 @@
-import type { ComponentType, ComponentStatus } from '@type/componentManager'
+import type { ComponentStatus, ComponentType } from '@type/componentManager'
 import type { InstallerStatus } from '@type/misc'
 import { defineStore } from 'pinia'
 
