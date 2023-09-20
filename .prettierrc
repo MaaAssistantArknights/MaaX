@@ -4,5 +4,13 @@
   "singleQuote": true,
   "arrowParens": "avoid",
   "vueIndentScriptAndStyle": false,
-  "printWidth": 100
+  "printWidth": 100,
+
+  "importOrderParserPlugins": ["typescript", "decorators-legacy"],
+
+  "importOrder": ["^\\."],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true,
+
+  "plugins": ["@trivago/prettier-plugin-sort-imports"]
 }

@@ -29,6 +29,7 @@
     "@electron-forge/publisher-github": "^6.4.0",
     "@electron-forge/publisher-s3": "^6.4.0",
     "@intlify/unplugin-vue-i18n": "^0.11.0",
+    "@trivago/prettier-plugin-sort-imports": "^4.2.0",
     "@types/animejs": "^3.1.7",
     "@types/crypto-js": "^4.1.1",
     "@types/ffi-napi": "^4.0.7",
