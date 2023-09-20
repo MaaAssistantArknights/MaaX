@@ -23,6 +23,7 @@ import type { InstallerStatus } from '@type/misc'
 import type { Ref } from 'vue'
 import { removeComponent, moveComponentBaseDir } from '@/hooks/caller/component'
 import logger from '@/hooks/caller/logger'
+import { openDialog } from '@/hooks/caller/util'
 
 const { t } = useI18n()
 const message = useMessage()
@@ -167,6 +168,17 @@ async function uninstallComponent(component: ComponentType) {
   }
 }
 
+async function moveComponentDir() {
+  const result = await openDialog('选择目录', ['openDirectory'], [])
+  if (result.canceled) {
+    return
+  }
+  const path = result.filePaths[0]
+  await moveComponentBaseDir(path)
+  settingStore.updateComponentBaseDir(path)
+  message.success('移动成功')
+}
+
 onMounted(() => {
   Promise.all(
     components.map(
@@ -214,7 +226,7 @@ onMounted(() => {
               </template>
               <template #header-extra>
                 <NButton type="primary" size="small" class="collapse-header-button"
-                  @click="event => { event.stopPropagation(); }">
+                  @click="event => { event.stopPropagation(); moveComponentDir() }">
                   移动
                 </NButton>
               </template>

@@ -12,6 +12,7 @@ import type { TouchMode } from '@type/misc'
 import { InstanceOptionKey } from '@type/misc'
 import { extractFile } from '@main/utils/extract'
 import type { ResourceType } from '@type/game'
+import { getComponentBaseDir } from '@main/componentManager/utils/path'
 
 const storage = new Storage()
 
@@ -67,9 +68,6 @@ class CoreLoader {
   }
 
   private DLib!: ffi.DynamicLibrary
-  private static libPath: string
-  private static readonly libPathKey = 'libPath'
-  private static readonly defaultLibPath = path.join(getAppBaseDir(), 'core')
   private static loadStatus: boolean // core加载状态
   public MeoAsstLib!: any
   private readonly DepLibs: DynamicLibrary[] = []
@@ -79,16 +77,6 @@ class CoreLoader {
   constructor() {
     // 在构造函数中创建core存储文件夹
     CoreLoader.loadStatus = false
-    CoreLoader.libPath = storage.get(CoreLoader.libPathKey) as string
-    if (!_.isString(CoreLoader.libPath) || !existsSync(CoreLoader.libPath)) {
-      logger.error(`Update resource folder: ${CoreLoader.libPath} --> ${CoreLoader.defaultLibPath}`)
-      CoreLoader.libPath = CoreLoader.defaultLibPath
-      if (!existsSync(CoreLoader.libPath)) mkdirSync(CoreLoader.libPath)
-    }
-    if (path.isAbsolute(CoreLoader.libPath)) {
-      CoreLoader.libPath = path.resolve(CoreLoader.libPath)
-      storage.set(CoreLoader.libPathKey, CoreLoader.libPath)
-    }
   }
 
   /**
@@ -107,13 +95,6 @@ class CoreLoader {
 
   public get loadStatus(): boolean {
     return CoreLoader.loadStatus
-  }
-
-  /**
-   * @description 返回core所在目录
-   */
-  public get libPath(): string {
-    return CoreLoader.libPath
   }
 
   /**
@@ -150,10 +131,10 @@ class CoreLoader {
     try {
       CoreLoader.loadStatus = true
       this.dependences[process.platform].forEach(lib => {
-        this.DepLibs.push(ffi.DynamicLibrary(path.join(this.libPath, lib)))
+        this.DepLibs.push(ffi.DynamicLibrary(path.join(getComponentBaseDir(), 'core', lib)))
       })
       this.DLib = ffi.DynamicLibrary(
-        path.join(this.libPath, this.libName[process.platform]),
+        path.join(getComponentBaseDir(), 'core', this.libName[process.platform]),
         ffi.RTLD_NOW
       )
       this.MeoAsstLib = {
@@ -327,13 +308,13 @@ class CoreLoader {
    * @param path? 未指定就用libPath
    * @returns
    */
-  public LoadResource(path: string = this.libPath): Boolean {
-    if (!existsSync(path)) {
+  public LoadResource(corePath: string = path.join(getComponentBaseDir(), 'core')): Boolean {
+    if (!existsSync(corePath)) {
       // cache文件夹可能不存在
       logger.warn(`[LoadResource] path not exists ${path}`)
       return false
     }
-    return this.MeoAsstLib.AsstLoadResource(path ?? this.libPath)
+    return this.MeoAsstLib.AsstLoadResource(corePath)
   }
 
   /**
