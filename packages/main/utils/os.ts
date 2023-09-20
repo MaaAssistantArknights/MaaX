@@ -77,6 +77,23 @@ export const getDownloadUrlExtension = (): string => {
   return ret
 }
 
+export const getDownloadQueryPlat = (): string => {
+  let ret = ''
+  const platform = getPlatform()
+  switch (platform) {
+    case 'windows':
+      ret = 'win'
+      break
+    case 'macos':
+      ret = 'mac'
+      break
+    case 'linux':
+      ret = 'linux'
+      break
+  }
+  return ret
+}
+
 export const isInDev = (): boolean => {
   // https://github.com/sindresorhus/electron-is-dev/blob/main/index.js
   const isEnvSet = 'ELECTRON_IS_DEV' in process.env

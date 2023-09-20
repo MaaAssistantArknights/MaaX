@@ -1,81 +1,49 @@
 import type { SourceMirror, UpdateStatus } from '../types'
 import { Singleton } from '@common/function/singletonDecorator'
-import { createGetRelease } from '../utils/release'
-import { getDownloadUrlExtension, getDownloadUrlSuffix } from '@main/utils/os'
-import { createCheckUpdate } from '../utils/update'
+import {
+  getArch,
+  getDownloadQueryPlat,
+  getDownloadUrlExtension,
+  getDownloadUrlSuffix,
+} from '@main/utils/os'
+import { tryRequest, createCheckUpdate, createVersionSaver } from '../utils/query'
 import CoreLoader from '@main/coreLoader'
 import InstallerBase from '../installer'
 import Storage from '@main/storageManager'
 
 @Singleton
 export default class CoreInstaller extends InstallerBase {
-  public readonly sources: SourceMirror[] = [
-    {
-      name: 'GitHub',
-      urlReplacer: oldUrl => {
-        const urlMatches =
-          /^https:\/\/(.+)\/MaaAssistantArknights\/MaaAssistantArknights\/releases\/download\/(.+)\/(.+)$/.exec(
-            oldUrl
-          )
-        if (!urlMatches) {
-          throw new Error(`Invalid update url: ${oldUrl}`)
-        }
-        const [, host, version, filename] = urlMatches
-        return `https://github.com/MaaAssistantArknights/MaaAssistantArknights/releases/download/${version}/${filename}`
-      },
-    },
-    {
-      name: '国内镜像',
-      urlReplacer: oldUrl => {
-        const urlMatches =
-          /^https:\/\/(.+)\/MaaAssistantArknights\/MaaAssistantArknights\/releases\/download\/(.+)\/(.+)$/.exec(
-            oldUrl
-          )
-        if (!urlMatches) {
-          throw new Error(`Invalid update url: ${oldUrl}`)
-        }
-        const [, host, version, filename] = urlMatches
-        return `https://s3.maa-org.net:25240/maa-release/MaaAssistantArknights/MaaAssistantArknights/releases/download/${version}/${filename}`
-      },
-    },
-    // TODO: Maa R2 Bucket Replacer
-    // {
-    //   name: 'Maa R2 Bucket',
-    //   urlReplacer: oldUrl => {
-    //     return oldUrl
-    //   }
-    // }
-  ]
   checkUpdate: () => Promise<UpdateStatus>
 
   constructor() {
     super('Maa Core', 'core')
-    const storage = new Storage()
 
-    const getRelease = createGetRelease(
-      [
-        'https://gh.cirno.xyz/api.github.com/repos/MaaAssistantArknights/MaaAssistantArknights/releases',
-        'https://api.github.com/repos/MaaAssistantArknights/MaaAssistantArknights/releases',
-      ],
-      this.componentType
-    )
+    const plat = getDownloadQueryPlat()
+    const arch = getArch()
 
-    const suffix = getDownloadUrlSuffix()
-    const ext = getDownloadUrlExtension()
-
-    this.checkUpdate = createCheckUpdate(
-      getRelease,
-      {
-        OTA: (cur, late) => `MAAComponent-OTA-${cur}_${late}${suffix}${ext}`,
-        Full: () => new RegExp(`MAA-v(.+)${suffix}${ext.replaceAll('.', '\\.')}`, 'g'),
-      },
-      this.componentType,
-      this.componentDir,
-      () =>
-        this.sources.find(
-          s => s.name === storage.get(['component', this.componentType, 'installMirror'])
-        ) || this.sources[0]
-    )
+    this.checkUpdate = createCheckUpdate(async now => {
+      const res = await tryRequest(
+        'https://release.maa-org.net/v1/release',
+        {
+          channel: 'stable',
+          clientVersion: now ?? '',
+          clientOs: plat ?? '',
+          clientArch: arch,
+        },
+        this.componentType
+      )
+      if (!res) {
+        return false
+      }
+      const result = JSON.parse(res.data)
+      if (!result.data) {
+        return true // alreadyLatest
+      }
+      return {
+        ver: result.data.version,
+        url: result.data.mirrors,
+      }
+    }, createVersionSaver(this.componentDir))
   }
 
   beforeExtractCheck() {

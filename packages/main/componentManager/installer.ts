@@ -12,7 +12,7 @@ import { extractFile } from '@main/utils/extract'
 export default abstract class InstallerBase implements Installer {
   public readonly componentType: ComponentType
   public readonly componentDir: string
-  public abstract readonly sources: SourceMirror[]
+  // public abstract readonly sources: SourceMirror[]
   public status: InstallerStatus
   private notifier: Notifier
 
@@ -39,7 +39,9 @@ export default abstract class InstallerBase implements Installer {
           return
         case 'haveUpdate': {
           const dm = new DownloadManager()
-          const { url, postUpgrade } = info.update
+          const { url: urls, post } = info.update
+
+          const url = urls[0]
 
           dm.download(url, {
             handleDownloadUpdate: task => {
@@ -57,7 +59,7 @@ export default abstract class InstallerBase implements Installer {
                 extractFile(task.savePath, path.join(getAppBaseDir(), this.componentDir))
                   .then(() => {
                     this.status = 'done'
-                    postUpgrade() // 更新版本信息
+                    post() // 更新版本信息
                     this.notifier.onCompleted()
                   })
                   .catch(() => {

@@ -16,11 +16,14 @@ export type UpdateStatus =
     }
   | {
       msg: 'haveUpdate'
-      update: Update
+      update: {
+        url: string[]
+        post: () => void
+      }
     }
 
 export interface Installer {
-  readonly sources: SourceMirror[]
+  // readonly sources: SourceMirror[]
   readonly componentType: ComponentType
   readonly componentDir: string
 
@@ -47,5 +50,5 @@ export interface Notifier {
 
 export interface SourceMirror {
   readonly name: string
-  readonly urlReplacer: (oldUrl: string) => string
+  readonly url: string
 }

@@ -51,7 +51,8 @@ class ComponentManager implements Module {
       },
       getAvailableMirrors: async componentName => {
         this.components[componentName] = await this.updater[componentName]()
-        return this.components[componentName]?.installer?.sources.map(s => s.name) ?? []
+        // return this.components[componentName]?.installer?.sources.map(s => s.name) ?? []
+        return ['main']
       },
     }
   }
