@@ -13,6 +13,7 @@ import {
   NCollapse,
   NCollapseItem,
   useMessage,
+  useDialog,
 } from 'naive-ui'
 import { useI18n } from 'vue-i18n'
 import useComponentStore from '@/store/components'
@@ -27,6 +28,7 @@ import { openDialog } from '@/hooks/caller/util'
 
 const { t } = useI18n()
 const message = useMessage()
+const dialog = useDialog()
 const componentStore = useComponentStore()
 const deviceStore = useDeviceStore()
 const settingStore = useSettingStore()
@@ -174,9 +176,23 @@ async function moveComponentDir() {
     return
   }
   const path = result.filePaths[0]
-  await moveComponentBaseDir(path)
+  const withError = await moveComponentBaseDir(path)
   settingStore.updateComponentBaseDir(path)
-  message.success('移动成功')
+  if (withError) {
+    message.warning('在移动过程中出现错误，这并不会影响组件的使用，但是可能会存在残留，需要退出MaaX后手动删除')
+  } else {
+    message.success('移动成功')
+  }
+
+  dialog.info({
+    title: '提示',
+    content: '需要重启MaaX才能生效',
+    positiveText: '现在重启',
+    negativeText: '以后再说',
+    onPositiveClick: () => {
+      window.main.Util.restart()
+    },
+  })
 }
 
 onMounted(() => {

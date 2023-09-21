@@ -5,14 +5,18 @@ import { getComponentCore } from '../components/core'
 import fs from 'fs'
 import path from 'path'
 import CoreLoader from '@main/coreLoader'
+import _ from 'lodash'
+import logger from '@main/utils/logger'
 
 export function getComponentBaseDir() {
   const storage = new Storage()
   const componentDir = storage.get('setting.componentDir') as string
-  return componentDir.length === 0 ? getAppBaseDir() : componentDir
+
+  return _.isEmpty(componentDir) ? getAppBaseDir() : componentDir
 }
 
-export async function moveComponentBaseDir(dir: string) {
+export async function moveComponentBaseDir(dir: string): Promise<boolean> {
+  let withError = false
   const coreLoader = new CoreLoader()
   const coreStatus = coreLoader.loadStatus
   if (coreStatus) {
@@ -31,9 +35,22 @@ export async function moveComponentBaseDir(dir: string) {
   fs.mkdirSync(dir, { recursive: true })
 
   if (fs.existsSync(adbSourceDir)) {
-    fs.renameSync(adbSourceDir, adbTargetDir)
+    await fs.promises.cp(adbSourceDir, adbTargetDir, { recursive: true })
+    try {
+      await fs.promises.rm(adbSourceDir, { recursive: true })
+    } catch (e) {
+      withError = true
+      logger.error(e)
+    }
   }
   if (fs.existsSync(coreSourceDir)) {
-    fs.renameSync(coreSourceDir, coreTargetDir)
+    await fs.promises.cp(coreSourceDir, coreTargetDir, { recursive: true })
+    try {
+      await fs.promises.rm(coreSourceDir, { recursive: true })
+    } catch (e) {
+      withError = true
+      logger.error(e)
+    }
   }
+  return withError
 }
