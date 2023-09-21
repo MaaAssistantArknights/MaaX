@@ -28,6 +28,7 @@ export interface SettingState {
   monsters: boolean
   touchMode: TouchMode
   hintCoreNotInstalled: boolean
+  componentDir?: string
 }
 
 export interface SettingAction {
@@ -41,6 +42,7 @@ export interface SettingAction {
   setTouchMode: (mode: TouchMode) => void
   dontShowCoreNotInstalled: () => void
   changeReportToPenguin(checked: boolean): void
+  updateComponentBaseDir(dir: string): void
 }
 
 export interface SettingGetters {
@@ -65,6 +67,7 @@ const useSettingStore = defineStore<'setting', SettingState, SettingGetters, Set
         monsters: false,
         touchMode: TouchMode.minitouch,
         hintCoreNotInstalled: true,
+        componentDir: '',
       }
     },
     getters: {
@@ -114,6 +117,9 @@ const useSettingStore = defineStore<'setting', SettingState, SettingGetters, Set
       },
       changeReportToPenguin(checked: boolean) {
         this.report_to_penguin = checked
+      },
+      updateComponentBaseDir(dir: string) {
+        this.componentDir = dir
       },
     },
   }

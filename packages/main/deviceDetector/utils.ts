@@ -5,12 +5,12 @@ import { getPlatform } from '@main/utils/os'
 import { $, $$ } from '@main/utils/shell'
 import fs from 'fs'
 import logger from '@main/utils/logger'
+import { getComponentBaseDir } from '@main/componentManager/utils/path'
 
 const executableSuffix = getPlatform() === 'windows' ? '.exe' : ''
 
 export const defaultAdbPath = path.join(
-  app.getPath('appData'),
-  app.getName(),
+  getComponentBaseDir(),
   'platform-tools',
   `adb${executableSuffix}`
 )

@@ -24,7 +24,7 @@ async function shutdownMAA(): Promise<void> {
 }
 
 async function shutdownComputer(): Promise<void> {
-  logger.silly('Shutdown MAA')
+  logger.silly('Shutdown Computer')
   const platform = getPlatform()
 
   if (platform === 'windows') {
