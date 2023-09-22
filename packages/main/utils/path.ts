@@ -1,3 +1,4 @@
+import { getComponentBaseDir } from '@main/componentManager/utils/path'
 import { MD5 } from 'crypto-js'
 import { app, shell } from 'electron'
 import fs from 'fs'
@@ -8,11 +9,11 @@ export const getAppBaseDir = (): string => path.join(app.getPath('appData'), app
 export const openFolder = (type: 'core' | 'ui-log' | 'core-log'): void => {
   const baseAppDir = getAppBaseDir()
   if (type === 'core') {
-    shell.openPath(path.join(baseAppDir, 'core'))
+    shell.openPath(path.join(getComponentBaseDir(), 'core'))
   } else if (type === 'ui-log') {
     shell.openPath(path.join(baseAppDir, 'logs'))
   } else if (type === 'core-log') {
-    shell.openPath(path.join(baseAppDir, 'core', 'debug'))
+    shell.openPath(path.join(getComponentBaseDir(), 'core', 'debug'))
   }
 }
 

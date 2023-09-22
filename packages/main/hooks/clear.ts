@@ -1,8 +1,15 @@
 import { manager } from '@main/utils/logger'
 import { getAppBaseDir } from '@main/utils/path'
+
 import { app } from 'electron'
 import fs from 'fs'
 import path from 'path'
+
+import type { ComponentType } from '@type/componentManager'
+import { getComponentBaseDir } from '@main/componentManager/utils/path'
+import { getComponentAdb } from '@main/componentManager/components/adb'
+import { getComponentCore } from '@main/componentManager/components/core'
+import CoreLoader from '@main/coreLoader'
 
 export default function useClearHooks(): void {
   globalThis.main.Util = {
@@ -57,6 +64,26 @@ export default function useClearHooks(): void {
     RemoveAllConfig() {
       fs.writeFileSync(path.join(app.getPath('temp'), 'clearConfigToken'), '1')
       app.quit()
+    },
+    async removeComponent(component: ComponentType) {
+      const sourceBaseDir = getComponentBaseDir()
+
+      if (component === 'Android Platform Tools') {
+        const adbComponent = await getComponentAdb()
+        const adbSourceDir = path.join(sourceBaseDir, adbComponent.installer!.componentDir)
+
+        fs.rmSync(adbSourceDir, { recursive: true })
+      } else if (component === 'Maa Core') {
+        const coreLoader = new CoreLoader()
+        const coreStatus = coreLoader.loadStatus
+        if (coreStatus) {
+          coreLoader.dispose()
+        }
+        const coreComponent = await getComponentCore()
+        const coreSourceDir = path.join(sourceBaseDir, coreComponent.installer!.componentDir)
+
+        fs.rmSync(coreSourceDir, { recursive: true })
+      }
     },
   }
 }

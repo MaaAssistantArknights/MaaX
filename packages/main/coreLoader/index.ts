@@ -14,6 +14,10 @@ import path from 'path'
 
 import callbackHandle from './callback'
 
+import type { ResourceType } from '@type/game'
+import { getComponentBaseDir } from '@main/componentManager/utils/path'
+
+
 const storage = new Storage()
 
 /** Some types for core */
@@ -68,9 +72,6 @@ class CoreLoader {
   }
 
   private DLib!: ffi.DynamicLibrary
-  private static libPath: string
-  private static readonly libPathKey = 'libPath'
-  private static readonly defaultLibPath = path.join(getAppBaseDir(), 'core')
   private static loadStatus: boolean // core加载状态
   public MeoAsstLib!: any
   private readonly DepLibs: DynamicLibrary[] = []
@@ -80,16 +81,6 @@ class CoreLoader {
   constructor() {
     // 在构造函数中创建core存储文件夹
     CoreLoader.loadStatus = false
-    CoreLoader.libPath = storage.get(CoreLoader.libPathKey) as string
-    if (!_.isString(CoreLoader.libPath) || !existsSync(CoreLoader.libPath)) {
-      logger.error(`Update resource folder: ${CoreLoader.libPath} --> ${CoreLoader.defaultLibPath}`)
-      CoreLoader.libPath = CoreLoader.defaultLibPath
-      if (!existsSync(CoreLoader.libPath)) mkdirSync(CoreLoader.libPath)
-    }
-    if (path.isAbsolute(CoreLoader.libPath)) {
-      CoreLoader.libPath = path.resolve(CoreLoader.libPath)
-      storage.set(CoreLoader.libPathKey, CoreLoader.libPath)
-    }
   }
 
   /**
@@ -108,13 +99,6 @@ class CoreLoader {
 
   public get loadStatus(): boolean {
     return CoreLoader.loadStatus
-  }
-
-  /**
-   * @description 返回core所在目录
-   */
-  public get libPath(): string {
-    return CoreLoader.libPath
   }
 
   /**
@@ -151,10 +135,10 @@ class CoreLoader {
     try {
       CoreLoader.loadStatus = true
       this.dependences[process.platform].forEach(lib => {
-        this.DepLibs.push(ffi.DynamicLibrary(path.join(this.libPath, lib)))
+        this.DepLibs.push(ffi.DynamicLibrary(path.join(getComponentBaseDir(), 'core', lib)))
       })
       this.DLib = ffi.DynamicLibrary(
-        path.join(this.libPath, this.libName[process.platform]),
+        path.join(getComponentBaseDir(), 'core', this.libName[process.platform]),
         ffi.RTLD_NOW
       )
       this.MeoAsstLib = {
@@ -328,13 +312,13 @@ class CoreLoader {
    * @param path? 未指定就用libPath
    * @returns
    */
-  public LoadResource(path: string = this.libPath): Boolean {
-    if (!existsSync(path)) {
+  public LoadResource(corePath: string = path.join(getComponentBaseDir(), 'core')): Boolean {
+    if (!existsSync(corePath)) {
       // cache文件夹可能不存在
       logger.warn(`[LoadResource] path not exists ${path}`)
       return false
     }
-    return this.MeoAsstLib.AsstLoadResource(path ?? this.libPath)
+    return this.MeoAsstLib.AsstLoadResource(corePath)
   }
 
   /**
@@ -539,7 +523,7 @@ class CoreLoader {
   }
 
   public UpdateTaskJson(type: ResourceType, data: string): void {
-    const dirPath = path.join(getAppBaseDir(), 'core', 'cache', type, 'resource')
+    const dirPath = path.join(getComponentBaseDir(), 'core', 'cache', type, 'resource')
     if (!existsSync(dirPath)) {
       logger.info(`Create dir ${dirPath}`)
       mkdirSync(dirPath, { recursive: true })
@@ -551,16 +535,16 @@ class CoreLoader {
 
   public async Upgrade(): Promise<void> {
     logger.info('Start upgrade core')
-    const currentVersionFile = path.join(getAppBaseDir(), 'core', 'version')
+    const currentVersionFile = path.join(getComponentBaseDir(), 'core', 'version')
     const currentVersion = existsSync(currentVersionFile)
       ? readFileSync(currentVersionFile, 'utf-8')
       : null
-    const upgradeVersionFile = path.join(getAppBaseDir(), 'core', 'upgradable')
+    const upgradeVersionFile = path.join(getComponentBaseDir(), 'core', 'upgradable')
     const upgradeVersion = existsSync(upgradeVersionFile)
       ? readFileSync(upgradeVersionFile, 'utf-8')
       : null
     if (currentVersion && upgradeVersion && currentVersion !== upgradeVersion) {
-      const upgradeFilePath = path.join(getAppBaseDir(), 'core', 'upgrade')
+      const upgradeFilePath = path.join(getComponentBaseDir(), 'core', 'upgrade')
       const upgradeFileName = existsSync(upgradeFilePath)
         ? readFileSync(upgradeFilePath, 'utf-8')
         : null
@@ -571,10 +555,10 @@ class CoreLoader {
         )
         unlinkSync(upgradeFilePath) // 提前删除, 防止因为压缩包损坏导致重复尝试更新
         const compressedFile = path.join(getAppBaseDir(), 'download', upgradeFileName)
-        const dist = path.join(getAppBaseDir(), 'core')
+        const dist = path.join(getComponentBaseDir(), 'core')
         if (existsSync(compressedFile)) {
           // 升级前删除cache文件夹
-          const cacheDir = path.join(getAppBaseDir(), 'core', 'cache')
+          const cacheDir = path.join(getComponentBaseDir(), 'core', 'cache')
           if (existsSync(cacheDir)) {
             rmdirSync(cacheDir, { recursive: true })
           }

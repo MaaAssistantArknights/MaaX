@@ -5,6 +5,7 @@ import fs from 'fs'
 import path from 'path'
 
 import { infoPathOf } from '../utils/update'
+import { getComponentBaseDir } from '../utils/path'
 
 export const getComponentCore = async (): Promise<Component> => {
   const coreLoader = new CoreLoader()
@@ -16,7 +17,7 @@ export const getComponentCore = async (): Promise<Component> => {
     installer,
   }
 
-  const installed = fs.existsSync(path.join(coreLoader.libPath, 'core_version'))
+  const installed = fs.existsSync(path.join(getComponentBaseDir(), 'core', 'core_version'))
   if (installed) {
     componentCore.status = 'not-compatible'
   }

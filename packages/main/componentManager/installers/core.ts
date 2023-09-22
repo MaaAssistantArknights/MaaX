@@ -55,8 +55,8 @@ export default class CoreInstaller extends InstallerBase {
 
     const getRelease = createGetRelease(
       [
-        'https://gh.cirno.xyz/api.github.com/repos/MaaAssistantArknights/MaaAssistantArknights/releases',
-        'https://api.github.com/repos/MaaAssistantArknights/MaaAssistantArknights/releases',
+        'https://gh.cirno.xyz/api.github.com/repos/MaaAssistantArknights/MaaRelease/releases',
+        'https://api.github.com/repos/MaaAssistantArknights/MaaRelease/releases',
       ],
       this.componentType
     )

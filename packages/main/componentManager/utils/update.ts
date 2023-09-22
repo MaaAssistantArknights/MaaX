@@ -3,11 +3,11 @@ import { getAppBaseDir } from '@main/utils/path'
 import type { ComponentType } from '@type/componentManager'
 import fs from 'fs'
 import path from 'path'
-
 import type { ReleaseObject, SourceMirror, UpdateStatus } from '../types'
+import { getComponentBaseDir } from './path'
 
 export function infoPathOf(componentDir: string) {
-  const dir = path.join(getAppBaseDir(), componentDir)
+  const dir = path.join(getComponentBaseDir(), componentDir)
   return {
     installRoot: dir,
     currentVersion: path.join(dir, 'version'),
