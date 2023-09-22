@@ -17,11 +17,7 @@ import {
 } from 'naive-ui'
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import useComponentStore from '@/store/components'
-import useDeviceStore from '@/store/devices'
 import useSettingStore from '@/store/settings'
-import type { ComponentType, ComponentStatus } from '@type/componentManager'
-import type { InstallerStatus } from '@type/misc'
 
 import type { Ref } from 'vue'
 import { removeComponent, moveComponentBaseDir } from '@/hooks/caller/component'
