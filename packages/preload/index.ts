@@ -1,7 +1,8 @@
 import { contextBridge, ipcRenderer } from 'electron'
-import { domReady } from './utils'
-import { useLoading } from './loading'
+
 import type { IpcMainHandleEvent, IpcRendererOnEvent } from '../types/ipc'
+import { useLoading } from './loading'
+import { domReady } from './utils'
 
 const { appendLoading, removeLoading } = useLoading()
 
@@ -34,7 +35,7 @@ const ipc = {
   offAll: (channel: IpcRendererOnEvent): Electron.IpcRenderer => {
     ipcRenderer.send('main.Util:LogSilly', `ipcRenderer event "${channel}" all unregistered`)
     return ipcRenderer.removeAllListeners(channel)
-  }
+  },
 }
 
 contextBridge.exposeInMainWorld('removeLoading', removeLoading)

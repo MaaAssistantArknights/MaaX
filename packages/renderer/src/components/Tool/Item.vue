@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
-import { NAvatar, NButton, NCard, NSwitch, NTag, NTooltip } from 'naive-ui'
-import { ref } from 'vue'
 import { useSeperateTaskStore } from '@/store/seperateTask'
 import { getItemBorderedImage, getOperatorAvatar } from '@/utils/game_image'
 import { showMessage } from '@/utils/message'
-import { AsstMsg, type CallbackMapper, type SubTaskExtraInfoMapper } from '@type/task/callback'
-import type { GetTask } from '@type/task'
 import { items } from '@common/ArknightsGameData/zh_CN/gamedata/excel/item_table.json'
+import type { GetTask } from '@type/task'
+import { AsstMsg, type CallbackMapper, type SubTaskExtraInfoMapper } from '@type/task/callback'
+import { NAvatar, NButton, NCard, NSwitch, NTag, NTooltip } from 'naive-ui'
+import { ref } from 'vue'
+import { useRoute } from 'vue-router'
 
 type DepotResult = SubTaskExtraInfoMapper['DepotInfo']
 
@@ -88,20 +88,31 @@ async function doDepot() {
     </template>
 
     <div class="DepotResultPanel">
-      <div class="DepotResultLayer" :class="{
-        __Processing: processing,
-      }"></div>
+      <div
+        class="DepotResultLayer"
+        :class="{
+          __Processing: processing,
+        }"
+      ></div>
       <div class="DepotResultContent">
-        <div class="DepotResultItem" v-for="item in result?.arkplanner.object.items
+        <div
+          class="DepotResultItem"
+          v-for="item in result?.arkplanner.object.items
           // .sort((a, b) => (items[b.id as keyof typeof items].rarity - items[a.id as keyof typeof items].rarity))
           .sort((a, b) => (items[a.id as keyof typeof items].sortId - items[b.id as keyof typeof items].sortId))
           // .sort((a, b) => a.id.localeCompare(b.id))
-          ?? []" :key="item.id">
+          ?? []"
+          :key="item.id"
+        >
           <NTooltip trigger="hover">
             <template #trigger>
-              <NAvatar :src="getItemBorderedImage(item.name)" :style="{
+              <NAvatar
+                :src="getItemBorderedImage(item.name)"
+                :style="{
                 border: `2px solid ${rareColor[items[item.id as keyof typeof items].rarity as keyof typeof rareColor] ?? 'wheat'}`,
-              }" size="large"></NAvatar>
+              }"
+                size="large"
+              ></NAvatar>
             </template>
 
             {{ item.name }}

@@ -1,10 +1,11 @@
-import type { SourceMirror, UpdateStatus } from '../types'
 import { Singleton } from '@common/function/singletonDecorator'
-import { createFixedGetRelease } from '../utils/release'
-import { getPlatform } from '@main/utils/os'
-import { createCheckUpdate } from '../utils/update'
-import InstallerBase from '../installer'
 import Storage from '@main/storageManager'
+import { getPlatform } from '@main/utils/os'
+
+import InstallerBase from '../installer'
+import type { SourceMirror, UpdateStatus } from '../types'
+import { createFixedGetRelease } from '../utils/release'
+import { createCheckUpdate } from '../utils/update'
 
 @Singleton
 export default class AdbInstaller extends InstallerBase {

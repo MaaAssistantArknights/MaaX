@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { NInputNumber, NCheckbox, NFormItem } from 'naive-ui'
 import _ from 'lodash'
+import { NCheckbox, NFormItem, NInputNumber } from 'naive-ui'
 import { inject } from 'vue'
+
 import type { GetConfig } from './types'
 
 type RecruitConfig = GetConfig<'Recruit'>

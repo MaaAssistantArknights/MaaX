@@ -1,11 +1,12 @@
 import type {
-  RecruitTag,
-  OneToSix,
-  Facility,
   DepotResult,
   Depot_ArkPlanner,
   Depot_Lolicon,
+  Facility,
+  OneToSix,
+  RecruitTag,
 } from '@type/game'
+
 import type { CoreTaskName } from '../mapper'
 
 type DropType = 'NORMAL_DROP' | 'SPECIAL_DROP' | 'EXTRA_DROP' | 'FURNITURE'

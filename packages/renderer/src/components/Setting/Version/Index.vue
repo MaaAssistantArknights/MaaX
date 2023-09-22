@@ -1,10 +1,12 @@
 <script lang="ts" setup>
-import { onMounted, computed, ref } from 'vue'
-import { useRoute } from 'vue-router'
-import useSettingStore from '@/store/settings'
-import { NSpace, NIcon, NTooltip, NButton, NText, useThemeVars } from 'naive-ui'
 import IconBinary from '@/assets/icons/binary.svg?component'
 import IconWindowUi from '@/assets/icons/window-ui.svg?component'
+
+import useSettingStore from '@/store/settings'
+import { NButton, NIcon, NSpace, NText, NTooltip, useThemeVars } from 'naive-ui'
+import { computed, onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
+
 import IconFolder from '@/assets/icons/folder.svg?component'
 import IconInfo from '@/assets/icons/info.svg?component'
 import DownloadModal from './DownloadModal.vue'

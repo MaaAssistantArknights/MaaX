@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import useComponentStore from '@/store/components'
+import useDeviceStore from '@/store/devices'
+import type { ComponentStatus, ComponentType } from '@type/componentManager'
+import type { InstallerStatus } from '@type/misc'
 import {
-  NButton,
-  NModal,
-  NCard,
-  NSpace,
-  NProgress,
   NAlert,
-  NTooltip,
+  NButton,
+  NCard,
+  NModal,
   NPopconfirm,
   NSelect,
   NCollapse,
@@ -15,12 +15,14 @@ import {
   useMessage,
   useDialog,
 } from 'naive-ui'
+import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import useComponentStore from '@/store/components'
 import useDeviceStore from '@/store/devices'
 import useSettingStore from '@/store/settings'
 import type { ComponentType, ComponentStatus } from '@type/componentManager'
 import type { InstallerStatus } from '@type/misc'
+
 import type { Ref } from 'vue'
 import { removeComponent, moveComponentBaseDir } from '@/hooks/caller/component'
 import logger from '@/hooks/caller/logger'

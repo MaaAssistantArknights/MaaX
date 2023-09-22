@@ -1,5 +1,5 @@
 import useDeviceStore from '@/store/devices'
-import type { NativeDevice, DeviceStatus } from '@type/device'
+import type { DeviceStatus, NativeDevice } from '@type/device'
 
 export default function useDeviceEvents(): void {
   const deviceStore = useDeviceStore()

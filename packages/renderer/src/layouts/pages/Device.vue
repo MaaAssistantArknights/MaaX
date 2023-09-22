@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
-import { NInput, NAlert, NButton, NIcon, NText, NForm, NFormItem, useDialog } from 'naive-ui'
-import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
-import useDeviceStore from '@/store/devices'
-import useSettingStore from '@/store/settings'
 // import { uuidV4 } from "@common/uuid";
 import IconLink from '@/assets/icons/link.svg?component'
-import _ from 'lodash'
+import useDeviceStore from '@/store/devices'
+import useSettingStore from '@/store/settings'
 import { showMessage } from '@/utils/message'
 import type { Device } from '@type/device'
+import _ from 'lodash'
+import { NAlert, NButton, NForm, NFormItem, NIcon, NInput, NText, useDialog } from 'naive-ui'
+import { computed, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 
 const address = ref('')
 const deviceStore = useDeviceStore()

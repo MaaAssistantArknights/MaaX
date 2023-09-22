@@ -1,18 +1,22 @@
 import { Singleton } from '@common/function/singletonDecorator'
 import Storage from '@main/storageManager'
-import path from 'path'
-import _ from 'lodash'
+import { extractFile } from '@main/utils/extract'
 import logger from '@main/utils/logger'
-import { existsSync, mkdirSync, readFileSync, rmdirSync, unlinkSync, writeFileSync } from 'fs'
+import { getAppBaseDir } from '@main/utils/path'
 import ffi, { DynamicLibrary } from '@tigerconnect/ffi-napi'
 import ref from '@tigerconnect/ref-napi'
-import callbackHandle from './callback'
-import { getAppBaseDir } from '@main/utils/path'
+import type { ResourceType } from '@type/game'
 import type { TouchMode } from '@type/misc'
 import { InstanceOptionKey } from '@type/misc'
-import { extractFile } from '@main/utils/extract'
+import { existsSync, mkdirSync, readFileSync, rmdirSync, unlinkSync, writeFileSync } from 'fs'
+import _ from 'lodash'
+import path from 'path'
+
+import callbackHandle from './callback'
+
 import type { ResourceType } from '@type/game'
 import { getComponentBaseDir } from '@main/componentManager/utils/path'
+
 
 const storage = new Storage()
 

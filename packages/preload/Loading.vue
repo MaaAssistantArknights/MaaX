@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import Icon from '../renderer/src/assets/logo/icon.png'
-import { NImage } from 'naive-ui'
-import { getTip } from './tips'
-import { ref, onMounted } from 'vue'
 import anime from 'animejs'
+import { NImage } from 'naive-ui'
+import { onMounted, ref } from 'vue'
+
+import Icon from '../renderer/src/assets/logo/icon.png'
+import { getTip } from './tips'
 
 const loadingText = ref('Loading...')
 

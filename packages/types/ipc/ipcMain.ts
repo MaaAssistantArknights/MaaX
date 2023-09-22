@@ -1,9 +1,10 @@
-import type { Systeminformation } from 'systeminformation'
 import type { Arch, Platform } from '@type/api/maa'
-import type { ComponentType, ComponentStatus } from '@type/componentManager'
-import type { DialogProperty, TouchMode } from '@type/misc'
+import type { ComponentStatus, ComponentType } from '@type/componentManager'
 import type { Device, Emulator } from '@type/device'
 import type { ResourceType } from '@type/game'
+import type { DialogProperty, TouchMode } from '@type/misc'
+import type { Systeminformation } from 'systeminformation'
+
 import type { CalleeProxyObjectType, CallerProxyObjectType } from './utils'
 
 export interface InitCoreParam {

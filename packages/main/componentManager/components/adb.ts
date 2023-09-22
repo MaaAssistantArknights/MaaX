@@ -1,7 +1,7 @@
-import fs from 'fs'
-
 import AdbInstaller from '@main/componentManager/installers/adb'
 import type { Component } from '@type/componentManager'
+import fs from 'fs'
+
 import { infoPathOf } from '../utils/update'
 
 export const getComponentAdb = async (): Promise<Component> => {

@@ -1,5 +1,6 @@
 import type { ComponentType } from '@type/componentManager'
 import type { InstallerStatus } from '@type/misc'
+
 import type { Notifier } from '../types'
 
 export function createNotifier(

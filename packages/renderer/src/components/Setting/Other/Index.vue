@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NSpace, NButton } from 'naive-ui'
+import { NButton, NSpace } from 'naive-ui'
 
 async function onClickOpenFolder(type: 'core' | 'core-log' | 'ui-log'): Promise<void> {
   await window.main.Util.openFolder(type)

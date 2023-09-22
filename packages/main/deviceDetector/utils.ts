@@ -1,9 +1,12 @@
-import _ from 'lodash'
-import { app } from 'electron'
-import path from 'path'
+import logger from '@main/utils/logger'
 import { getPlatform } from '@main/utils/os'
 import { $, $$ } from '@main/utils/shell'
+import { app } from 'electron'
 import fs from 'fs'
+
+import _ from 'lodash'
+import path from 'path'
+
 import logger from '@main/utils/logger'
 import { getComponentBaseDir } from '@main/componentManager/utils/path'
 

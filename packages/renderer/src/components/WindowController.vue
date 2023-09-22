@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { setupHookProxy } from '@/hooks'
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 
 const isMaximized = ref(false)
 

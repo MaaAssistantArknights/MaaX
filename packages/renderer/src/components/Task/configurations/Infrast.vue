@@ -1,20 +1,21 @@
 <script setup lang="ts">
-import { inject, computed, ref, onMounted } from 'vue'
+import { showMessage } from '@/utils/message'
+import _ from 'lodash'
 import {
   NCheckbox,
   NFormItem,
   NSelect,
   NSlider,
   NSpace,
-  NUpload,
-  NUploadDragger,
   NText,
   NTooltip,
+  NUpload,
+  NUploadDragger,
   type UploadFileInfo,
 } from 'naive-ui'
+import { computed, inject, onMounted, ref } from 'vue'
 import Draggable from 'vuedraggable'
-import _ from 'lodash'
-import { showMessage } from '@/utils/message'
+
 import type { GetConfig } from './types'
 
 type InfrastConfig = GetConfig<'Infrast'>

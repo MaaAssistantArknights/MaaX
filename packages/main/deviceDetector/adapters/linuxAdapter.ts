@@ -1,6 +1,6 @@
-import psList from 'ps-list'
 import { Singleton } from '@common/function/singletonDecorator'
 import type { Device, Emulator, EmulatorAdapter } from '@type/device'
+import psList from 'ps-list'
 
 @Singleton
 class LinuxEmulator implements EmulatorAdapter {

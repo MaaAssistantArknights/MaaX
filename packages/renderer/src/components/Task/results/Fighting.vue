@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
-import ItemCircle from '../ItemCircle.vue'
-import { NSpace } from 'naive-ui'
 import _ from 'lodash'
+import { NSpace } from 'naive-ui'
+import { computed } from 'vue'
+
+import ItemCircle from '../ItemCircle.vue'
 
 interface DropItem {
   itemId: string

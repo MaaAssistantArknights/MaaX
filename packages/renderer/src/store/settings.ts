@@ -1,8 +1,8 @@
-import { defineStore } from 'pinia'
 import version from '@/hooks/caller/version'
-import { TouchMode } from '@type/misc'
-import type { ResourceType } from '@type/game'
 import { i18n } from '@/i18n'
+import type { ResourceType } from '@type/game'
+import { TouchMode } from '@type/misc'
+import { defineStore } from 'pinia'
 
 export enum Locale {
   zhCN = 'ZhCN',

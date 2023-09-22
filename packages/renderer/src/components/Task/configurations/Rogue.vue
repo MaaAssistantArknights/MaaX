@@ -1,18 +1,25 @@
 <script setup lang="ts">
-import { inject, computed } from 'vue'
-import _ from 'lodash'
-import { RogueTheme, type MizukiSquadType, type PhantomSquadType, type SamiSquadType, type RolesType } from '@type/game'
+import { showMessage } from '@/utils/message'
 import {
+  type MizukiSquadType,
+  type PhantomSquadType,
+  RogueTheme,
+  type RolesType,
+  type SamiSquadType,
+} from '@type/game'
+import _ from 'lodash'
+import {
+  NCheckbox,
   NForm,
   NFormItem,
+  NInput,
+  NInputNumber,
   NSelect,
   NSpace,
-  NInputNumber,
-  NCheckbox,
-  NInput,
   NTooltip,
 } from 'naive-ui'
-import { showMessage } from '@/utils/message'
+import { computed, inject } from 'vue'
+
 import type { GetConfig } from './types'
 
 // import logger from '@/hooks/caller/logger'
@@ -181,8 +188,6 @@ const samiSquadOptions: {
   },
 ]
 
-
-
 const rolesOptions: {
   label: string
   value: RolesType
@@ -234,7 +239,7 @@ const themeOptions: {
   {
     label: '萨米',
     value: 'Sami',
-  }
+  },
 ]
 
 const props = defineProps<{
@@ -277,7 +282,8 @@ function handleUpdateRogueTheme(value: string) {
       })
       handleUpdateConfiguration('squad', '指挥分队')
     }
-  } else { //if (value === RougeTheme.Sami)
+  } else {
+    //if (value === RougeTheme.Sami)
     if (!samiSquadOptions.find(item => item.value === props.configurations.squad)) {
       showMessage('当前分队不支持萨米主题，已自动切换到指挥分队', {
         type: 'info',
@@ -295,16 +301,15 @@ function handleUpdateStartsCount(value: number | null) {
 }
 
 const squadOptionsSelector = computed(() => {
-  switch (props.configurations.theme){
+  switch (props.configurations.theme) {
     case RogueTheme.Phantom:
-      return phantomSquadOptions;
+      return phantomSquadOptions
     case RogueTheme.Mizuki:
-      return mizukiSquadOptions;
+      return mizukiSquadOptions
     default: //case RogueTheme.Sami
-      return samiSquadOptions;
+      return samiSquadOptions
   }
 })
-
 </script>
 
 <template>

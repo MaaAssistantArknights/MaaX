@@ -1,6 +1,6 @@
-import type { PiniaPluginContext } from 'pinia'
-import _ from 'lodash'
 import storage from '@/hooks/caller/storage'
+import _ from 'lodash'
+import type { PiniaPluginContext } from 'pinia'
 
 export default function watcher(context: PiniaPluginContext): void {
   context.store.$subscribe(

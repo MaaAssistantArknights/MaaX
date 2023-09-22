@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { NFormItem, NInput, NSelect, NSpace } from 'naive-ui'
 import _ from 'lodash'
+import { NFormItem, NInput, NSelect, NSpace } from 'naive-ui'
 
 interface StartUpResultProps {}
 

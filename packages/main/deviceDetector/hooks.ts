@@ -1,7 +1,8 @@
-import { defaultAdbPath, getDeviceUuid, isDefaultAdbExists } from './utils'
-import { $$, $ } from '@main/utils/shell'
 import { parseArguments } from '@main/utils/arguments'
+import { $, $$ } from '@main/utils/shell'
 import type { EmulatorAdapter } from '@type/device'
+
+import { defaultAdbPath, getDeviceUuid, isDefaultAdbExists } from './utils'
 
 export function useEmulatorHooks(adapter: Promise<EmulatorAdapter>): void {
   globalThis.main.DeviceDetector = {

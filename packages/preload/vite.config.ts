@@ -1,7 +1,8 @@
+import vue from '@vitejs/plugin-vue'
 import { builtinModules } from 'module'
 import { defineConfig } from 'vite'
+
 import pkg from '../../package.json'
-import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
   root: __dirname,

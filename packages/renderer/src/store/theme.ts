@@ -1,4 +1,4 @@
-import type { Theme, SystemTheme } from '@type/misc'
+import type { SystemTheme, Theme } from '@type/misc'
 import { defineStore } from 'pinia'
 
 export interface ThemeState {

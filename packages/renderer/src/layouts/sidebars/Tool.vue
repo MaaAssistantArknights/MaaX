@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { NButton, NIcon, NMenu, type MenuOption } from 'naive-ui'
-import { h, ref, computed } from 'vue'
-import DeviceCard from '@/components/Device/DeviceCard.vue'
-import useDeviceStore from '@/store/devices'
-import router from '@/router'
-import { RouterLink } from 'vue-router'
 import IconChevronLeft from '@/assets/icons/chevron-left.svg?component'
+import DeviceCard from '@/components/Device/DeviceCard.vue'
+import router from '@/router'
+import useDeviceStore from '@/store/devices'
+import { type MenuOption, NButton, NIcon, NMenu } from 'naive-ui'
+import { computed, h, ref } from 'vue'
+import { RouterLink } from 'vue-router'
 
 const deviceStore = useDeviceStore()
 

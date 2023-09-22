@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
-import { NAvatar, NButton, NCard, NSwitch, NTag, NTooltip } from 'naive-ui'
-import { ref } from 'vue'
 import { useSeperateTaskStore } from '@/store/seperateTask'
 import { getOperatorAvatar } from '@/utils/game_image'
 import { showMessage } from '@/utils/message'
-import { AsstMsg, type CallbackMapper, type SubTaskExtraInfoMapper } from '@type/task/callback'
 import type { GetTask } from '@type/task'
+import { AsstMsg, type CallbackMapper, type SubTaskExtraInfoMapper } from '@type/task/callback'
+import { NAvatar, NButton, NCard, NSwitch, NTag, NTooltip } from 'naive-ui'
+import { ref } from 'vue'
+import { useRoute } from 'vue-router'
 
 type RecruitResult = SubTaskExtraInfoMapper['RecruitResult']
 
@@ -128,9 +128,12 @@ async function doRecruit(selectTags: string[] = []) {
     </template>
 
     <div class="RecruitResultPanel">
-      <div class="RecruitResultLayer" :class="{
-        __Processing: processing,
-      }"></div>
+      <div
+        class="RecruitResultLayer"
+        :class="{
+          __Processing: processing,
+        }"
+      ></div>
       <template v-if="result">
         <div class="RecruitTag">
           <div>识别结果</div>
@@ -155,9 +158,12 @@ async function doRecruit(selectTags: string[] = []) {
               <template v-if="useAvatar">
                 <NTooltip v-for="oper in res.opers" :key="oper.name" trigger="hover">
                   <template #trigger>
-                    <NAvatar :src="getOperatorAvatar(oper.name)" :style="{
-                      border: `2px solid ${operColor[oper.level]}`,
-                    }"></NAvatar>
+                    <NAvatar
+                      :src="getOperatorAvatar(oper.name)"
+                      :style="{
+                        border: `2px solid ${operColor[oper.level]}`,
+                      }"
+                    ></NAvatar>
                   </template>
 
                   {{ oper.name }}
@@ -166,16 +172,23 @@ async function doRecruit(selectTags: string[] = []) {
               <template v-else>
                 <NTooltip v-for="oper in res.opers" :key="oper.name" trigger="hover">
                   <template #trigger>
-                    <NTag :color="{
-                      textColor: operColor[oper.level],
-                      borderColor: operColor[oper.level],
-                    }">
-                      {{ oper.name }}</NTag>
+                    <NTag
+                      :color="{
+                        textColor: operColor[oper.level],
+                        borderColor: operColor[oper.level],
+                      }"
+                    >
+                      {{ oper.name }}</NTag
+                    >
                   </template>
 
-                  <NAvatar size="large" :src="getOperatorAvatar(oper.name)" :style="{
-                    border: `2px solid ${operColor[oper.level]}`,
-                  }"></NAvatar>
+                  <NAvatar
+                    size="large"
+                    :src="getOperatorAvatar(oper.name)"
+                    :style="{
+                      border: `2px solid ${operColor[oper.level]}`,
+                    }"
+                  ></NAvatar>
                 </NTooltip>
               </template>
             </div>

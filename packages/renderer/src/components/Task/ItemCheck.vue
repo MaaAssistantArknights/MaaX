@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import { getItemBorderedImage } from '@/utils/game_image'
 import { NCheckbox, NPopover, NScrollbar } from 'naive-ui'
+
 // import { maa as MaaApi } from '@/api'
 import ItemCard from './ItemCard.vue'
-import { getItemBorderedImage } from '@/utils/game_image'
 
 const props = defineProps<{
   name: string

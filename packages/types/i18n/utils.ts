@@ -1,4 +1,5 @@
 import type { NestedPath } from '@type/utils'
+
 import ZhCN from '../../renderer/src/i18n/zhCN.json'
 
 /**

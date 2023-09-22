@@ -1,13 +1,13 @@
-import path from 'path'
-
 import DownloadManager from '@main/downloadManager'
-import type { Installer, Notifier, SourceMirror, UpdateStatus } from './types'
-import type { ComponentType } from '@type/componentManager'
+import { extractFile } from '@main/utils/extract'
 import logger from '@main/utils/logger'
 import { getAppBaseDir } from '@main/utils/path'
-import { createNotifier } from './utils/notifier'
+import type { ComponentType } from '@type/componentManager'
 import type { InstallerStatus } from '@type/misc'
-import { extractFile } from '@main/utils/extract'
+import path from 'path'
+
+import type { Installer, Notifier, SourceMirror, UpdateStatus } from './types'
+import { createNotifier } from './utils/notifier'
 
 export default abstract class InstallerBase implements Installer {
   public readonly componentType: ComponentType

@@ -1,5 +1,6 @@
-import installExtension from 'electron-devtools-installer'
 import { BrowserWindow } from 'electron'
+import installExtension from 'electron-devtools-installer'
+
 import logger from './logger'
 
 function useDebug(window: BrowserWindow): void {

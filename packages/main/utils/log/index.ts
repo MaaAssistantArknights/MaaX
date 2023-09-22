@@ -1,6 +1,7 @@
-import { format, formatWithOptions } from 'util'
-import type { TLogLevel, TLogger, TLoggerController, TLoggerEnv } from './types'
 import chalk from 'chalk'
+import { format, formatWithOptions } from 'util'
+
+import type { TLogLevel, TLogger, TLoggerController, TLoggerEnv } from './types'
 
 let pathAlias = (p: string) => p
 

@@ -1,9 +1,10 @@
 import { Singleton } from '@common/function/singletonDecorator'
+import CoreLoader from '@main/coreLoader'
+import type { Component, ComponentType } from '@type/componentManager'
+import type { Module } from '@type/misc'
+
 import { getComponentAdb } from './components/adb'
 import { getComponentCore } from './components/core'
-import CoreLoader from '@main/coreLoader'
-import type { Module } from '@type/misc'
-import type { Component, ComponentType } from '@type/componentManager'
 
 @Singleton
 class ComponentManager implements Module {

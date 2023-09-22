@@ -1,8 +1,9 @@
-import type { AxiosRequestHeaders, AxiosResponse } from 'axios'
-import { backOff, type IBackOffOptions } from 'exponential-backoff'
-import useSettingStore from '@/store/settings'
-import service from './service'
 import logger from '@/hooks/caller/logger'
+import useSettingStore from '@/store/settings'
+import type { AxiosRequestHeaders, AxiosResponse } from 'axios'
+import { type IBackOffOptions, backOff } from 'exponential-backoff'
+
+import service from './service'
 
 export interface DropInfo {
   dropType: string

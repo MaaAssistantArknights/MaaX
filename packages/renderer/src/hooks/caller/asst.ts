@@ -1,6 +1,6 @@
 import useSettingStore from '@/store/settings'
 import { loadCoreResources } from '@/utils/core_functions'
-import type { ComponentType, ComponentStatus } from '@type/componentManager'
+import type { ComponentStatus, ComponentType } from '@type/componentManager'
 
 export default {
   load: async function (showTip = true) {

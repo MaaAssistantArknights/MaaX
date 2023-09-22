@@ -1,18 +1,17 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
 import IconDisconnect from '@/assets/icons/disconnect.svg?component'
-import DeviceDetailPopover from '@/components/Device/DeviceDetailPopover.vue'
 import IconLink from '@/assets/icons/link.svg?component'
-import { NButton, NTooltip, NIcon, NSpace, NPopconfirm, useThemeVars, NPopover } from 'naive-ui'
-
-import useDeviceStore from '@/store/devices'
+import DeviceDetailPopover from '@/components/Device/DeviceDetailPopover.vue'
 import router from '@/router'
-import useTaskStore from '@/store/tasks'
+import useDeviceStore from '@/store/devices'
 import useSettingStore from '@/store/settings'
+import useTaskStore from '@/store/tasks'
 // import useTaskIdStore from '@/store/taskId'
 import { showMessage } from '@/utils/message'
 import type { Device, DeviceStatus } from '@type/device'
 import type { InitCoreParam } from '@type/ipc'
+import { NButton, NIcon, NPopconfirm, NPopover, NSpace, NTooltip, useThemeVars } from 'naive-ui'
+import { computed, ref } from 'vue'
 
 const props = defineProps<{
   device: Device
@@ -100,7 +99,13 @@ async function handleDeviceConnect() {
 
 <template>
   <div v-if="device" class="device-card" :class="isCurrent ? 'current' : ''">
-    <NButton class=" device-info" text :focusable="false" @click="handleJumpToTask" @dblclick="handleDeviceConnect">
+    <NButton
+      class="device-info"
+      text
+      :focusable="false"
+      @click="handleJumpToTask"
+      @dblclick="handleDeviceConnect"
+    >
       <NTooltip>
         <template #trigger>
           <div class="device-status" :data-status="device?.status" />
@@ -136,8 +141,12 @@ async function handleDeviceConnect() {
       </NPopover>
     </NButton>
     <NSpace :align="'center'">
-      <NPopconfirm v-if="connectedStatus.has(device?.status ?? 'unknown')" positive-text="确定" negative-text="取消"
-        @positive-click="handleDeviceDisconnect">
+      <NPopconfirm
+        v-if="connectedStatus.has(device?.status ?? 'unknown')"
+        positive-text="确定"
+        negative-text="取消"
+        @positive-click="handleDeviceDisconnect"
+      >
         <template #trigger>
           <NButton class="operation" text :focusable="false" style="font-size: 24px">
             <NIcon>
@@ -147,8 +156,15 @@ async function handleDeviceConnect() {
         </template>
         {{ (device?.status === 'tasking' ? '当前设备正在进行任务，' : '') + '确定断开连接？' }}
       </NPopconfirm>
-      <NButton v-if="disconnectedStatus.has(device?.status ?? 'unknown')" class="operation" text :focusable="false"
-        style="font-size: 24px" :disabled="'connecting' === device?.status" @click="handleDeviceConnect">
+      <NButton
+        v-if="disconnectedStatus.has(device?.status ?? 'unknown')"
+        class="operation"
+        text
+        :focusable="false"
+        style="font-size: 24px"
+        :disabled="'connecting' === device?.status"
+        @click="handleDeviceConnect"
+      >
         <NIcon>
           <IconLink />
         </NIcon>

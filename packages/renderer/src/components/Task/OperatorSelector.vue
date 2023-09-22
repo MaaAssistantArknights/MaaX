@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { ref, onMounted, h, type VNode, computed } from 'vue'
-import _ from 'lodash'
-import { NBadge, NModal, NCard, NSkeleton, NScrollbar, NTabs, NTabPane, NAvatar } from 'naive-ui'
 import gamedataApi from '@/api/gamedata'
-import type { Operator as _Operator, OperatorProfession } from '@/api/gamedata/types'
-import { getOperatorAvatar, getProfessionImage } from '@/utils/game_image'
+import type { OperatorProfession, Operator as _Operator } from '@/api/gamedata/types'
 import useThemeStore from '@/store/theme'
+import { getOperatorAvatar, getProfessionImage } from '@/utils/game_image'
+import _ from 'lodash'
+import { NAvatar, NBadge, NCard, NModal, NScrollbar, NSkeleton, NTabPane, NTabs } from 'naive-ui'
+import { type VNode, computed, h, onMounted, ref } from 'vue'
 
 interface Operator extends _Operator {
   image?: string

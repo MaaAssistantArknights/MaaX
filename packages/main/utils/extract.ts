@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
-import unzipper from 'unzipper'
 import tar from 'tar'
+import unzipper from 'unzipper'
 
 import logger from './logger'
 import { getPlatform } from './os'

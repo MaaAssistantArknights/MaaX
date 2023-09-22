@@ -1,6 +1,6 @@
 import { spawn } from 'child_process'
-import { createServer, build } from 'vite'
 import electron from 'electron'
+import { build, createServer } from 'vite'
 
 let aliveInst = 0
 let quitTimer = null

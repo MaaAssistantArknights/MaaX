@@ -1,8 +1,9 @@
 import { Singleton } from '@common/function/singletonDecorator'
-import { useEmulatorHooks } from './hooks'
-import adapters from './adapters'
-import type { EmulatorAdapter, Emulator, Device } from '@type/device'
+import type { Device, Emulator, EmulatorAdapter } from '@type/device'
 import type { Module } from '@type/misc'
+
+import adapters from './adapters'
+import { useEmulatorHooks } from './hooks'
 
 @Singleton
 class DeviceDetector implements Module {

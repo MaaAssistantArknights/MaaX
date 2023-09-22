@@ -1,9 +1,10 @@
-import path from 'path'
 import { format } from 'date-fns'
-import { createWriteStream, mkdirSync, existsSync, WriteStream, appendFileSync } from 'fs'
-import { getAppBaseDir } from './path'
+import { WriteStream, appendFileSync, createWriteStream, existsSync, mkdirSync } from 'fs'
+import path from 'path'
+
 import { setupHookProxy } from './ipc-main'
-import { createLogger, createPresetFormatter, initLogger, type TLogger } from './log'
+import { type TLogger, createLogger, createPresetFormatter, initLogger } from './log'
+import { getAppBaseDir } from './path'
 
 class Logger {
   public constructor() {

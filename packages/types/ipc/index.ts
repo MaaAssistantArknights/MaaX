@@ -1,4 +1,4 @@
-import type { IpcMainHandleEventType, IpcMainHandleEvent } from './ipcMain'
+import type { IpcMainHandleEvent, IpcMainHandleEventType } from './ipcMain'
 import type { IpcRendererOnEvent, IpcRendererOnEventType } from './ipcRenderer'
 
 export type * from './ipcMain'

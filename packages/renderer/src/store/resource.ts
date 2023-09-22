@@ -1,9 +1,9 @@
 // 存一些从ota server上拉的东西, 比如活动关导航..
-import { defineStore } from 'pinia'
+import { getActivityStage, getActivityTaskJson, getLastUpdateTime } from '@/api/otaserver'
 import logger from '@/hooks/caller/logger'
-import type { StageActivity } from '@type/resource'
-import { getActivityStage, getLastUpdateTime, getActivityTaskJson } from '@/api/otaserver'
 import type { ResourceType } from '@type/game'
+import type { StageActivity } from '@type/resource'
+import { defineStore } from 'pinia'
 
 export interface ResourceState {
   lastUpdate: number

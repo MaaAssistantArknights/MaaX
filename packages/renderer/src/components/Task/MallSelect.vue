@@ -1,9 +1,8 @@
 <script lang="ts" setup>
-import { NModal, NCard, NDivider } from 'naive-ui'
-
 import MallItems from '@/components/Task/MallItems.vue'
-import { ref } from 'vue'
 import _ from 'lodash'
+import { NCard, NDivider, NModal } from 'naive-ui'
+import { ref } from 'vue'
 
 const socialShopItems = [
   '龙门币',

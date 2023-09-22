@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, defineComponent, getCurrentInstance, h, ref, watch, type PropType } from 'vue'
+import { type PropType, computed, defineComponent, getCurrentInstance, h, ref, watch } from 'vue'
 
 interface Time {
   hours: number

@@ -1,7 +1,18 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { NCard, NButton, NModal, NForm, NFormItem, NInput, NRow, NCol, NText, useMessage } from 'naive-ui'
 import { useVModel } from '@vueuse/core'
+import {
+  NButton,
+  NCard,
+  NCol,
+  NForm,
+  NFormItem,
+  NInput,
+  NModal,
+  NRow,
+  NText,
+  useMessage,
+} from 'naive-ui'
+import { computed, ref } from 'vue'
 
 const message = useMessage()
 
@@ -26,22 +37,23 @@ function handleConfirmDelete() {
     message.error('请输入正确的任务组名称')
   }
 }
-
 </script>
 
 <template>
   <NModal v-model:show="show">
-    <NCard style="width: 50%;">
+    <NCard style="width: 50%">
       <NForm label-placement="left" label-width="auto">
         <NFormItem label="任务组名称">
-          <NInput passively-activated :default-value="props.name" @change="value => emit('change:name', value)" />
+          <NInput
+            passively-activated
+            :default-value="props.name"
+            @change="value => emit('change:name', value)"
+          />
         </NFormItem>
         <NRow :gutter="[0, 24]">
           <NCol :span="24">
             <div :style="{ display: 'flex', justifyContent: 'flex-end' }">
-              <NButton type="error" @click="showConfirmDeleteModal = true">
-                删除此任务组
-              </NButton>
+              <NButton type="error" @click="showConfirmDeleteModal = true"> 删除此任务组 </NButton>
             </div>
           </NCol>
         </NRow>
@@ -49,9 +61,10 @@ function handleConfirmDelete() {
     </NCard>
   </NModal>
   <NModal v-model:show="showConfirmDeleteModal">
-    <NCard style="width: 50%;">
+    <NCard style="width: 50%">
       <NForm>
-        <NText>如果你要删除此任务组，请输入
+        <NText
+          >如果你要删除此任务组，请输入
           <NText strong>{{ props.name }}</NText>
           确认删除
         </NText>

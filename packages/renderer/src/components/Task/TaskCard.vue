@@ -1,24 +1,25 @@
 <script setup lang="ts">
+import router from '@/router'
+import useDeviceStore from '@/store/devices'
+import useThemeStore from '@/store/theme'
+import type { Task, TaskStatus } from '@type/task'
 import {
-  NProgress,
-  NSwitch,
+  NButton,
   NCollapse,
   NCollapseItem,
+  NIcon,
+  NProgress,
   NScrollbar,
   NSpace,
-  useThemeVars,
-  NIcon,
-  NTooltip,
-  NButton,
+  NSwitch,
   NText,
+  NTooltip,
+  useThemeVars,
 } from 'naive-ui'
-import { ref, nextTick, computed, provide } from 'vue'
+import { computed, nextTick, provide, ref } from 'vue'
+
 import DropdownMenu from './DropdownMenu.vue'
-import router from '@/router'
-import useThemeStore from '@/store/theme'
 import Timer from './Timer.vue'
-import useDeviceStore from '@/store/devices'
-import type { Task, TaskStatus } from '@type/task'
 
 const themeVars = useThemeVars()
 const themeStore = useThemeStore()
@@ -71,7 +72,8 @@ const handleTogglePanel = (panelType: string) => {
 }
 
 const handleToggleInnerCollapse = () => {
-  if (props.isCollapsed) { // 详细模式下不允许inner折叠
+  if (props.isCollapsed) {
+    // 详细模式下不允许inner折叠
     innerCollapse.value = !innerCollapse.value
   }
 }
@@ -120,29 +122,45 @@ provide(
 </script>
 
 <template>
-  <NCollapse :expanded-names="_isCollapsed ? null : '1'" class="task-card"
-    :class="props.taskInfo.status === 'idle' ? '' : 'undraggable'">
+  <NCollapse
+    :expanded-names="_isCollapsed ? null : '1'"
+    class="task-card"
+    :class="props.taskInfo.status === 'idle' ? '' : 'undraggable'"
+  >
     <template #arrow>
       <span />
     </template>
-    <NCollapseItem class="task-card-inner" :class="[
-      _isCollapsed ? 'collapsed' : '',
-      `task-card__status-${props.taskInfo.status}`,
-      !innerCollapse && props.isCollapsed ? 'inner-expanded' : '',
-      !props.isCollapsed ? 'expanded' : '',
-    ]" name="1" display-directive="show" :style="{
-  border: themeStore.currentTheme === 'maa-dark' ? `1px solid ${themeVars.primaryColor}` : '',
-  '--breathe-color': themeVars.primaryColor,
-}">
+    <NCollapseItem
+      class="task-card-inner"
+      :class="[
+        _isCollapsed ? 'collapsed' : '',
+        `task-card__status-${props.taskInfo.status}`,
+        !innerCollapse && props.isCollapsed ? 'inner-expanded' : '',
+        !props.isCollapsed ? 'expanded' : '',
+      ]"
+      name="1"
+      display-directive="show"
+      :style="{
+        border: themeStore.currentTheme === 'maa-dark' ? `1px solid ${themeVars.primaryColor}` : '',
+        '--breathe-color': themeVars.primaryColor,
+      }"
+    >
       <template #header>
         <div style="width: 100%" @click="handleToggleInnerCollapse">
           <div class="card-header">
             <NSpace>
               <span class="card-title">{{ props.taskInfo.title || '' }}</span>
-              <div v-if="deviceStatus === 'tasking' && !['idle', 'waiting'].includes(props.taskInfo.status)
-                " justify="end">
+              <div
+                v-if="
+                  deviceStatus === 'tasking' && !['idle', 'waiting'].includes(props.taskInfo.status)
+                "
+                justify="end"
+              >
                 <NText type="primary">
-                  <Timer :start-time="props.taskInfo.startTime" :end-time="props.taskInfo.endTime" />
+                  <Timer
+                    :start-time="props.taskInfo.startTime"
+                    :end-time="props.taskInfo.endTime"
+                  />
                 </NText>
               </div>
             </NSpace>
@@ -184,9 +202,14 @@ provide(
                 删除当前任务
               </NTooltip> -->
               <div class="card-progress-wrapper">
-                <span v-if="deviceStatus === 'tasking' &&
-                  !['idle', 'waiting'].includes(props.taskInfo.status)
-                  " class="card-progress-hint" :style="{ color: themeVars.primaryColor }">
+                <span
+                  v-if="
+                    deviceStatus === 'tasking' &&
+                    !['idle', 'waiting'].includes(props.taskInfo.status)
+                  "
+                  class="card-progress-hint"
+                  :style="{ color: themeVars.primaryColor }"
+                >
                   {{
                     (() => {
                       switch (props.taskInfo.status) {
@@ -210,24 +233,38 @@ provide(
                     })()
                   }}
                 </span>
-                <NSwitch v-else :value="props.taskInfo.enable" @update:value="enabled => {
-                  $emit('update:enable', enabled)
-                  resetTaskProgress(props.taskInfo)
-                }
-                  " />
+                <NSwitch
+                  v-else
+                  :value="props.taskInfo.enable"
+                  @update:value="
+                    enabled => {
+                      $emit('update:enable', enabled)
+                      resetTaskProgress(props.taskInfo)
+                    }
+                  "
+                />
               </div>
             </NSpace>
           </div>
-          <NProgress :percentage="props.taskInfo.progress" :color="progressBarColor(props.taskInfo.status)"
-            :border-radius="0" :height="4" :show-indicator="false" />
+          <NProgress
+            :percentage="props.taskInfo.progress"
+            :color="progressBarColor(props.taskInfo.status)"
+            :border-radius="0"
+            :height="4"
+            :show-indicator="false"
+          />
         </div>
       </template>
       <div class="card-content">
         <NScrollbar @contextmenu="handleShowContentMenu">
           <slot />
         </NScrollbar>
-        <DropdownMenu v-model:show="showContentMenu" :x="contentMenuPosition.x" :y="contentMenuPosition.y"
-          @select="handleTogglePanel" />
+        <DropdownMenu
+          v-model:show="showContentMenu"
+          :x="contentMenuPosition.x"
+          :y="contentMenuPosition.y"
+          @select="handleTogglePanel"
+        />
       </div>
     </NCollapseItem>
   </NCollapse>

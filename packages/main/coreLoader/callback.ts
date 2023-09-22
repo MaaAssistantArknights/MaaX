@@ -1,6 +1,6 @@
+import logger from '@main/utils/logger'
 import ffi from '@tigerconnect/ffi-napi'
 import ref from '@tigerconnect/ref-napi'
-import logger from '@main/utils/logger'
 import type { AsstMsg } from '@type/task/callback'
 
 const callbackHandle = ffi.Callback(

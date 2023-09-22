@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
-import { NAvatar, NButton, NCard, NSwitch, NTag, NTooltip } from 'naive-ui'
-import { computed, ref } from 'vue'
 import { useSeperateTaskStore } from '@/store/seperateTask'
 import { getItemBorderedImage, getOperatorAvatar } from '@/utils/game_image'
 import { showMessage } from '@/utils/message'
-import { AsstMsg, type CallbackMapper, type SubTaskExtraInfoMapper } from '@type/task/callback'
-import type { GetTask } from '@type/task'
 import type { OneToSix } from '@type/game'
+import type { GetTask } from '@type/task'
+import { AsstMsg, type CallbackMapper, type SubTaskExtraInfoMapper } from '@type/task/callback'
+import { NAvatar, NButton, NCard, NSwitch, NTag, NTooltip } from 'naive-ui'
+import { computed, ref } from 'vue'
+import { useRoute } from 'vue-router'
+
 import { OperFilter, OperOrder, RealLimited } from './opers'
 
 type OperBoxResult = SubTaskExtraInfoMapper['OperBoxInfo']
@@ -155,21 +156,33 @@ async function doOperBox() {
     </template>
 
     <div class="OperBoxResultPanel">
-      <div class="OperBoxResultLayer" :class="{
-        __Processing: processing,
-      }"></div>
+      <div
+        class="OperBoxResultLayer"
+        :class="{
+          __Processing: processing,
+        }"
+      ></div>
       <div class="OperBoxResultContent">
         <div v-for="i in 6" :key="i" class="OperBoxResultContentRow">
-          <div v-for="oper in owned?.[(7 - i) as OneToSix] ?? []" :key="oper.name" :class="{
-            Hide: !isShow(oper.own, oper.lim),
-          }" class="OperBoxResultContentItem">
+          <div
+            v-for="oper in owned?.[(7 - i) as OneToSix] ?? []"
+            :key="oper.name"
+            :class="{
+              Hide: !isShow(oper.own, oper.lim),
+            }"
+            class="OperBoxResultContentItem"
+          >
             <NTooltip trigger="hover">
               <template #trigger>
-                <NAvatar v-show="isShow(oper.own, oper.lim)" :src="getOperatorAvatar(oper.name)" :style="{
+                <NAvatar
+                  v-show="isShow(oper.own, oper.lim)"
+                  :src="getOperatorAvatar(oper.name)"
+                  :style="{
                   border: `2px solid ${operColor[(7 - i) as OneToSix]}`,
                   opacity: isHighlight(oper.own) ? 1 : 0.4,
                   transition: 'opacity 0.5s',
-                }"></NAvatar>
+                }"
+                ></NAvatar>
               </template>
 
               {{ oper.name }}
@@ -198,7 +211,7 @@ async function doOperBox() {
     width: 100%;
     justify-content: space-around;
 
-    &>div {
+    & > div {
       display: flex;
       align-items: center;
       gap: 4px;
@@ -236,11 +249,11 @@ async function doOperBox() {
     flex-direction: column;
     gap: 16px;
 
-    &>.OperBoxResultContentRow {
+    & > .OperBoxResultContentRow {
       display: flex;
       flex-wrap: wrap;
 
-      &>.OperBoxResultContentItem {
+      & > .OperBoxResultContentItem {
         margin-right: 8px;
         width: 50px;
         transition: width 0.5s, margin 0.5s;

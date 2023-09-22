@@ -1,11 +1,12 @@
-import type { SourceMirror, UpdateStatus } from '../types'
 import { Singleton } from '@common/function/singletonDecorator'
-import { createGetRelease } from '../utils/release'
-import { getDownloadUrlExtension, getDownloadUrlSuffix } from '@main/utils/os'
-import { createCheckUpdate } from '../utils/update'
 import CoreLoader from '@main/coreLoader'
-import InstallerBase from '../installer'
 import Storage from '@main/storageManager'
+import { getDownloadUrlExtension, getDownloadUrlSuffix } from '@main/utils/os'
+
+import InstallerBase from '../installer'
+import type { SourceMirror, UpdateStatus } from '../types'
+import { createGetRelease } from '../utils/release'
+import { createCheckUpdate } from '../utils/update'
 
 @Singleton
 export default class CoreInstaller extends InstallerBase {

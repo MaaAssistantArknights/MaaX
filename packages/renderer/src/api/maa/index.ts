@@ -1,6 +1,6 @@
-import version from './version'
-import download from './download'
 import component from './component'
+import download from './download'
+import version from './version'
 
 export default {
   version,

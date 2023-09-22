@@ -1,22 +1,21 @@
-import { app, BrowserWindow, shell } from 'electron'
-import { release } from 'os'
-import { join } from 'path'
-import fs from 'fs'
-
-import useDebug from '@main/utils/debug'
-import logger from '@main/utils/logger'
-import useHooks from '@main/hooks'
-import { getPlatform, isInDev } from '@main/utils/os'
-
-// modules
-import WindowManager from '@main/windowManager'
-import StorageManager from '@main/storageManager'
 import ComponentManager from '@main/componentManager'
 import CoreLoader from '@main/coreLoader'
 import DeviceDetector from '@main/deviceDetector'
+import useHooks from '@main/hooks'
+import StorageManager from '@main/storageManager'
+import useDebug from '@main/utils/debug'
+import logger from '@main/utils/logger'
+import { getPlatform, isInDev } from '@main/utils/os'
+// modules
+import WindowManager from '@main/windowManager'
+import { BrowserWindow, app, shell } from 'electron'
+import fs from 'fs'
+import { release } from 'os'
+import { join } from 'path'
+
 import DownloadManager from './downloadManager'
-import { getAppBaseDir } from './utils/path'
 import { setupHookProxy } from './utils/ipc-main'
+import { getAppBaseDir } from './utils/path'
 
 require('source-map-support').install()
 

@@ -1,9 +1,9 @@
+import logger from '@main/utils/logger'
+import { getAppBaseDir } from '@main/utils/path'
+import type { ComponentType } from '@type/componentManager'
 import fs from 'fs'
 import path from 'path'
-
-import logger from '@main/utils/logger'
 import type { ReleaseObject, SourceMirror, UpdateStatus } from '../types'
-import type { ComponentType } from '@type/componentManager'
 import { getComponentBaseDir } from './path'
 
 export function infoPathOf(componentDir: string) {

@@ -1,6 +1,6 @@
-import { nativeTheme, BrowserWindow } from 'electron'
-import { getPlatform } from '@main/utils/os'
 import Storage from '@main/storageManager'
+import { getPlatform } from '@main/utils/os'
+import { BrowserWindow, nativeTheme } from 'electron'
 
 export default function useTheme(window: BrowserWindow): void {
   const themeEvent = (): void => {

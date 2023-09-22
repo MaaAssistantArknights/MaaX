@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import { NScrollbar, useMessage, useDialog } from 'naive-ui'
 import asst from '@/hooks/caller/asst'
-import { onMounted } from 'vue'
-import router from '@/router'
-import { useI18n } from 'vue-i18n'
 import version from '@/hooks/caller/version'
+import router from '@/router'
+import useResourceStore from '@/store/resource'
 import useSettingStore from '@/store/settings'
+import { NScrollbar, useDialog, useMessage } from 'naive-ui'
+import { onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 window.$message = useMessage()
 window.$dialog = useDialog()
 const settingStore = useSettingStore()
 const resourceStore = useResourceStore()
-import useResourceStore from '@/store/resource'
 
 const { t } = useI18n()
 
