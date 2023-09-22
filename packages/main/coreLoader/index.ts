@@ -1,4 +1,5 @@
 import { Singleton } from '@common/function/singletonDecorator'
+import { getComponentBaseDir } from '@main/componentManager/utils/path'
 import Storage from '@main/storageManager'
 import { extractFile } from '@main/utils/extract'
 import logger from '@main/utils/logger'
@@ -13,10 +14,6 @@ import _ from 'lodash'
 import path from 'path'
 
 import callbackHandle from './callback'
-
-import type { ResourceType } from '@type/game'
-import { getComponentBaseDir } from '@main/componentManager/utils/path'
-
 
 const storage = new Storage()
 

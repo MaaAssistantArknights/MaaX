@@ -1,15 +1,13 @@
+import { getComponentAdb } from '@main/componentManager/components/adb'
+import { getComponentCore } from '@main/componentManager/components/core'
+import { getComponentBaseDir } from '@main/componentManager/utils/path'
+import CoreLoader from '@main/coreLoader'
 import { manager } from '@main/utils/logger'
 import { getAppBaseDir } from '@main/utils/path'
-
+import type { ComponentType } from '@type/componentManager'
 import { app } from 'electron'
 import fs from 'fs'
 import path from 'path'
-
-import type { ComponentType } from '@type/componentManager'
-import { getComponentBaseDir } from '@main/componentManager/utils/path'
-import { getComponentAdb } from '@main/componentManager/components/adb'
-import { getComponentCore } from '@main/componentManager/components/core'
-import CoreLoader from '@main/coreLoader'
 
 export default function useClearHooks(): void {
   globalThis.main.Util = {

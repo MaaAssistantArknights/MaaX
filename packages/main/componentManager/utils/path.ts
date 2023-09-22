@@ -1,12 +1,13 @@
+import CoreLoader from '@main/coreLoader'
 import Storage from '@main/storageManager'
+import logger from '@main/utils/logger'
 import { getAppBaseDir } from '@main/utils/path'
+import fs from 'fs'
+import _ from 'lodash'
+import path from 'path'
+
 import { getComponentAdb } from '../components/adb'
 import { getComponentCore } from '../components/core'
-import fs from 'fs'
-import path from 'path'
-import CoreLoader from '@main/coreLoader'
-import _ from 'lodash'
-import logger from '@main/utils/logger'
 
 export function getComponentBaseDir() {
   const storage = new Storage()

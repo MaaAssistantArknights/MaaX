@@ -4,8 +4,8 @@ import type { Component } from '@type/componentManager'
 import fs from 'fs'
 import path from 'path'
 
-import { infoPathOf } from '../utils/update'
 import { getComponentBaseDir } from '../utils/path'
+import { infoPathOf } from '../utils/update'
 
 export const getComponentCore = async (): Promise<Component> => {
   const coreLoader = new CoreLoader()

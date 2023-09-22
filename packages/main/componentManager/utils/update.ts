@@ -3,6 +3,7 @@ import { getAppBaseDir } from '@main/utils/path'
 import type { ComponentType } from '@type/componentManager'
 import fs from 'fs'
 import path from 'path'
+
 import type { ReleaseObject, SourceMirror, UpdateStatus } from '../types'
 import { getComponentBaseDir } from './path'
 

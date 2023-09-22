@@ -1,28 +1,27 @@
 <script setup lang="ts">
+import { moveComponentBaseDir, removeComponent } from '@/hooks/caller/component'
+import logger from '@/hooks/caller/logger'
+import { openDialog } from '@/hooks/caller/util'
 import useComponentStore from '@/store/components'
 import useDeviceStore from '@/store/devices'
+import useSettingStore from '@/store/settings'
 import type { ComponentStatus, ComponentType } from '@type/componentManager'
 import type { InstallerStatus } from '@type/misc'
 import {
   NAlert,
   NButton,
   NCard,
+  NCollapse,
+  NCollapseItem,
   NModal,
   NPopconfirm,
   NSelect,
-  NCollapse,
-  NCollapseItem,
-  useMessage,
   useDialog,
+  useMessage,
 } from 'naive-ui'
 import { computed, onMounted, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
-import useSettingStore from '@/store/settings'
-
 import type { Ref } from 'vue'
-import { removeComponent, moveComponentBaseDir } from '@/hooks/caller/component'
-import logger from '@/hooks/caller/logger'
-import { openDialog } from '@/hooks/caller/util'
+import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 const message = useMessage()
@@ -177,7 +176,9 @@ async function moveComponentDir() {
   const withError = await moveComponentBaseDir(path)
   settingStore.updateComponentBaseDir(path)
   if (withError) {
-    message.warning('在移动过程中出现错误，这并不会影响组件的使用，但是可能会存在残留，需要退出MaaX后手动删除')
+    message.warning(
+      '在移动过程中出现错误，这并不会影响组件的使用，但是可能会存在残留，需要退出MaaX后手动删除'
+    )
   } else {
     message.success('移动成功')
   }
@@ -228,8 +229,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <NModal :show="props.show" :closable="false" :style="{ width: '600px' }"
-    @update:show="value => $emit('update:show', value)">
+  <NModal
+    :show="props.show"
+    :closable="false"
+    :style="{ width: '600px' }"
+    @update:show="value => $emit('update:show', value)"
+  >
     <NCard title="组件安装和升级">
       <NSpace vertical>
         <div class="download-card">
@@ -239,13 +244,24 @@ onMounted(() => {
                 <span>安装位置</span>
               </template>
               <template #header-extra>
-                <NButton type="primary" size="small" class="collapse-header-button"
-                  @click="event => { event.stopPropagation(); moveComponentDir() }">
+                <NButton
+                  type="primary"
+                  size="small"
+                  class="collapse-header-button"
+                  @click="
+                    event => {
+                      event.stopPropagation()
+                      moveComponentDir()
+                    }
+                  "
+                >
                   移动
                 </NButton>
               </template>
               <template #default>
-                当前安装位置：{{ !!settingStore.componentDir?.length ? settingStore.componentDir : '默认' }}
+                当前安装位置：{{
+                  !!settingStore.componentDir?.length ? settingStore.componentDir : '默认'
+                }}
               </template>
             </NCollapseItem>
           </NCollapse>
@@ -253,10 +269,20 @@ onMounted(() => {
         <NAlert type="info">
           {{ $t('download.needInstallAll') }}
         </NAlert>
-        <div v-for="component of components" :key="component" class="download-card"
-          @mouseenter="event => handleMouseEnter(event, component)" @mouseleave="handleMouseLeave">
-          <NProgress :percentage="componentStore[component].installerProgress * 100" :border-radius="0" :height="4"
-            :show-indicator="false" :rail-color="'transparent'" />
+        <div
+          v-for="component of components"
+          :key="component"
+          class="download-card"
+          @mouseenter="event => handleMouseEnter(event, component)"
+          @mouseleave="handleMouseLeave"
+        >
+          <NProgress
+            :percentage="componentStore[component].installerProgress * 100"
+            :border-radius="0"
+            :height="4"
+            :show-indicator="false"
+            :rail-color="'transparent'"
+          />
           <NCollapse class="download-info">
             <NCollapseItem>
               <template #header>
@@ -265,10 +291,14 @@ onMounted(() => {
                 </NSpace>
               </template>
               <template #header-extra>
-                <div v-if="['installing', 'upgrading', 'installed'].includes(
-                  componentStore[component].componentStatus
-                )
-                  " class="download-status">
+                <div
+                  v-if="
+                    ['installing', 'upgrading', 'installed'].includes(
+                      componentStore[component].componentStatus
+                    )
+                  "
+                  class="download-status"
+                >
                   {{
                     [
                       installButtonText(componentStore[component].componentStatus),
@@ -278,11 +308,24 @@ onMounted(() => {
                       .join(' - ')
                   }}
                 </div>
-                <NPopconfirm v-else :disabled="!isTasking" @positive-click="() => handleInstall(component)">
+                <NPopconfirm
+                  v-else
+                  :disabled="!isTasking"
+                  @positive-click="() => handleInstall(component)"
+                >
                   <template #trigger>
-                    <NButton type="primary" :secondary="componentStore[component].componentStatus === 'installed'"
-                      size="small" @click="(event) => { event.stopPropagation(); handleInstallButtonClick(component) }"
-                      class="collapse-header-button">
+                    <NButton
+                      type="primary"
+                      :secondary="componentStore[component].componentStatus === 'installed'"
+                      size="small"
+                      @click="
+                        event => {
+                          event.stopPropagation()
+                          handleInstallButtonClick(component)
+                        }
+                      "
+                      class="collapse-header-button"
+                    >
                       {{ installButtonText(componentStore[component].componentStatus) }}
                     </NButton>
                   </template>
@@ -292,15 +335,26 @@ onMounted(() => {
                 <div class="advanced-options">
                   <NSpace align="center">
                     <span>下载源：</span>
-                    <NSelect v-model:value="componentStore[component].installMirror" size="small" placeholder="选择镜像"
-                      :options="componentsSources[component].map(source => ({ label: source, value: source }))
-                        " />
+                    <NSelect
+                      v-model:value="componentStore[component].installMirror"
+                      size="small"
+                      placeholder="选择镜像"
+                      :options="
+                        componentsSources[component].map(source => ({
+                          label: source,
+                          value: source,
+                        }))
+                      "
+                    />
                   </NSpace>
                   <NSpace v-if="component !== 'Maa App'">
                     <NPopconfirm @positive-click="() => uninstallComponent(component)">
                       <template #trigger>
-                        <NButton type="error" :disabled="componentStore[component].componentStatus !== 'installed'"
-                          :loading="componentStore[component].componentStatus === 'uninstalling'">
+                        <NButton
+                          type="error"
+                          :disabled="componentStore[component].componentStatus !== 'installed'"
+                          :loading="componentStore[component].componentStatus === 'uninstalling'"
+                        >
                           卸载
                         </NButton>
                       </template>
@@ -315,10 +369,15 @@ onMounted(() => {
           </NCollapse>
         </div>
       </NSpace>
-      <NTooltip trigger="manual" :x="tooltipPosition.x + getInstallProgress(showTooltip) * tooltipPosition.width"
-        :y="tooltipPosition.y" :show="!!showTooltip &&
+      <NTooltip
+        trigger="manual"
+        :x="tooltipPosition.x + getInstallProgress(showTooltip) * tooltipPosition.width"
+        :y="tooltipPosition.y"
+        :show="
+          !!showTooltip &&
           ['installing', 'upgrading'].includes(componentStore[showTooltip].componentStatus)
-          ">
+        "
+      >
         {{ Math.ceil(getInstallProgress(showTooltip) * 100) }}%
       </NTooltip>
     </NCard>

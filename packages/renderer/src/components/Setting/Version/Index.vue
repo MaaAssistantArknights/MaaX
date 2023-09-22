@@ -1,14 +1,13 @@
 <script lang="ts" setup>
 import IconBinary from '@/assets/icons/binary.svg?component'
+import IconFolder from '@/assets/icons/folder.svg?component'
+import IconInfo from '@/assets/icons/info.svg?component'
 import IconWindowUi from '@/assets/icons/window-ui.svg?component'
-
 import useSettingStore from '@/store/settings'
 import { NButton, NIcon, NSpace, NText, NTooltip, useThemeVars } from 'naive-ui'
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
-import IconFolder from '@/assets/icons/folder.svg?component'
-import IconInfo from '@/assets/icons/info.svg?component'
 import DownloadModal from './DownloadModal.vue'
 
 const themeVars = useThemeVars()
@@ -68,8 +67,12 @@ onMounted(async () => {
     <NSpace vertical>
       <NTooltip>
         <template #trigger>
-          <NButton quaternary :focusable="false" :type="needUpdate(versionCore) ? 'info' : 'default'"
-            @click="showDownloadModal">
+          <NButton
+            quaternary
+            :focusable="false"
+            :type="needUpdate(versionCore) ? 'info' : 'default'"
+            @click="showDownloadModal"
+          >
             <NSpace justify="center" align="center">
               <NIcon size="18px" :color="themeVars.infoColor">
                 <IconBinary />
@@ -79,12 +82,18 @@ onMounted(async () => {
             </NSpace>
           </NButton>
         </template>
-        <span>{{ needUpdate(versionCore) ? `Core可更新至${versionCore.latest}，点击以更新` : '点击来管理' }}</span>
+        <span>{{
+          needUpdate(versionCore) ? `Core可更新至${versionCore.latest}，点击以更新` : '点击来管理'
+        }}</span>
       </NTooltip>
       <NTooltip>
         <template #trigger>
-          <NButton quaternary :focusable="false" :type="needUpdate(versionUi) ? 'info' : 'default'"
-            @click="showDownloadModal">
+          <NButton
+            quaternary
+            :focusable="false"
+            :type="needUpdate(versionUi) ? 'info' : 'default'"
+            @click="showDownloadModal"
+          >
             <NSpace justify="center" align="center">
               <NIcon size="18px" :color="themeVars.infoColor">
                 <IconWindowUi />
@@ -94,7 +103,9 @@ onMounted(async () => {
             </NSpace>
           </NButton>
         </template>
-        <span>{{ needUpdate(versionUi) ? `UI可更新至${versionUi.latest}，点击以更新` : '点击来管理' }}</span>
+        <span>{{
+          needUpdate(versionUi) ? `UI可更新至${versionUi.latest}，点击以更新` : '点击来管理'
+        }}</span>
       </NTooltip>
       <NTooltip>
         <template #trigger>
@@ -104,7 +115,9 @@ onMounted(async () => {
                 <IconFolder />
               </NIcon>
               <NText type="info">安装位置: </NText>
-              <span>{{ !!settingStore.componentDir?.length ? settingStore.componentDir : '默认' }}</span>
+              <span>{{
+                !!settingStore.componentDir?.length ? settingStore.componentDir : '默认'
+              }}</span>
             </NSpace>
           </NButton>
         </template>
