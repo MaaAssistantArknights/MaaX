@@ -2,6 +2,7 @@ import { getComponentBaseDir } from '@main/componentManager/utils/path'
 import logger from '@main/utils/logger'
 import { getPlatform } from '@main/utils/os'
 import { $, $$ } from '@main/utils/shell'
+import type { Device } from '@type/device'
 import { app } from 'electron'
 import fs from 'fs'
 import _ from 'lodash'
@@ -37,4 +38,28 @@ export async function getDeviceUuid(
     if (ret) return _.trim(ret.stdout)
   }
   return false
+}
+
+export function parseAdbDevice(stdout: string): Device[] {
+  const lines = stdout.trim().split('\n')
+  lines.shift()
+
+  if (lines.length === 0) {
+    return []
+  }
+
+  const connected = lines
+    .map(line => {
+      const [address, status] = line.split('\t')
+      return { address, status }
+    })
+    .filter(({ status }) => status === 'device')
+
+  return connected.map(({ address }) => ({
+    uuid: '',
+    address,
+    status: 'available',
+    adbPath: defaultAdbPath,
+    config: 'General',
+  }))
 }

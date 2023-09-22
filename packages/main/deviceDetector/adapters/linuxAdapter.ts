@@ -1,6 +1,9 @@
 import { Singleton } from '@common/function/singletonDecorator'
+import { $ } from '@main/utils/shell'
 import type { Device, Emulator, EmulatorAdapter } from '@type/device'
 import psList from 'ps-list'
+
+import { defaultAdbPath, getDeviceUuid, parseAdbDevice } from '../utils'
 
 @Singleton
 class LinuxEmulator implements EmulatorAdapter {
@@ -13,7 +16,14 @@ class LinuxEmulator implements EmulatorAdapter {
   protected async getLd(): Promise<void> {}
 
   async getAdbDevices(): Promise<Device[]> {
-    return []
+    const { stdout } = await $`${defaultAdbPath} devices`
+    const devices = parseAdbDevice(stdout)
+    return Promise.all(
+      devices.map(async d => {
+        const uuid = await getDeviceUuid(d.address, defaultAdbPath)
+        return { ...d, uuid: uuid || '' }
+      })
+    )
   }
 
   async getEmulators(): Promise<Emulator[]> {
