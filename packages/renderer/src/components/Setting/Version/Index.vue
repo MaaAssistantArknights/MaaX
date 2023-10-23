@@ -2,6 +2,7 @@
 import IconBinary from '@/assets/icons/binary.svg?component'
 import IconFolder from '@/assets/icons/folder.svg?component'
 import IconInfo from '@/assets/icons/info.svg?component'
+import IconNew from '@/assets/icons/new.svg?component'
 import IconWindowUi from '@/assets/icons/window-ui.svg?component'
 import useSettingStore from '@/store/settings'
 import { NButton, NIcon, NSpace, NText, NTooltip, useThemeVars } from 'naive-ui'
@@ -78,7 +79,12 @@ onMounted(async () => {
                 <IconBinary />
               </NIcon>
               <NText type="info"> Maa Core: </NText>
-              <span>{{ versionString(versionCore) }}</span>
+              <span>{{ versionString(versionCore) }} </span>
+              <span v-if="needUpdate(versionCore)">
+                <NIcon size="25px" color="#7CFC00">
+                  <IconNew />
+                </NIcon>
+              </span>
             </NSpace>
           </NButton>
         </template>
@@ -106,6 +112,11 @@ onMounted(async () => {
         <span>{{
           needUpdate(versionUi) ? `UI可更新至${versionUi.latest}，点击以更新` : '点击来管理'
         }}</span>
+        <span v-if="needUpdate(versionUi)">
+          <NIcon size="25px" color="#7CFC00">
+            <IconNew />
+          </NIcon>
+        </span>
       </NTooltip>
       <NTooltip>
         <template #trigger>
