@@ -37,19 +37,26 @@ function handleItemUpdate(items: { buy_first: string[]; blacklist: string[] }) {
 
 <template>
   <div class="configuration-form">
-    <NFormItem
-      label="自动购物"
-      :show-label="true"
-      size="small"
-      label-align="left"
-      label-placement="left"
-      :show-feedback="false"
-    >
+    <NFormItem size="small" label-align="left" label-placement="left" :show-feedback="false">
       <NCheckbox
         :disabled="configurationDisabled.nre"
         :checked="props.configurations.shopping"
         @update:checked="checked => handleUpdateConfiguration('shopping', checked)"
-      />
+      >
+        自动购物
+      </NCheckbox>
+    </NFormItem>
+
+    <NFormItem size="small" label-align="left" label-placement="left" :show-feedback="false">
+      <NCheckbox
+        :disabled="configurationDisabled.nre"
+        :checked="props.configurations.force_shopping_if_credit_full"
+        @update:checked="
+          checked => handleUpdateConfiguration('force_shopping_if_credit_full', checked)
+        "
+      >
+        信用溢出时无视黑名单
+      </NCheckbox>
     </NFormItem>
 
     <NFormItem

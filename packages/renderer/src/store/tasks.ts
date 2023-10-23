@@ -143,6 +143,7 @@ export const taskTemplate: {
       shopping: true,
       buy_first: ['龙门币', '招聘许可', '赤金'],
       blacklist: ['家具零件', '加急许可'],
+      force_shopping_if_credit_full: false,
     },
     results: {},
   },
