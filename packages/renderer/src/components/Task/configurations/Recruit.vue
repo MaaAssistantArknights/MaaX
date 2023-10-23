@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import _ from 'lodash'
-import { NCheckbox, NFormItem, NInputNumber } from 'naive-ui'
+import { NCheckbox, NFormItem, NInputNumber, NTooltip } from 'naive-ui'
 import { inject } from 'vue'
 
 import type { GetConfig } from './types'
@@ -104,14 +104,7 @@ function handleExpediteUpdate(value: number | null) {
         @update:value="handleExpediteUpdate"
       />
     </NFormItem>
-    <NFormItem
-      label="自动刷新3星tag"
-      :show-label="true"
-      size="small"
-      label-align="left"
-      label-placement="left"
-      :show-feedback="false"
-    >
+    <NFormItem size="small" label-align="left" label-placement="left" :show-feedback="false">
       <NCheckbox
         :disabled="configurationDisabled.re"
         :checked="configurations.refresh"
@@ -120,34 +113,29 @@ function handleExpediteUpdate(value: number | null) {
             handleUpdateConfiguration('refresh', checked)
           }
         "
-      />
+      >
+        自动刷新3星tag
+      </NCheckbox>
     </NFormItem>
-    <NFormItem
-      label="跳过小车"
-      :show-label="true"
-      size="small"
-      label-align="left"
-      label-placement="left"
-      :show-feedback="false"
-    >
-      <NCheckbox
-        :disabled="configurationDisabled.re"
-        :checked="configurations.skip_robot"
-        @update:checked="
-          checked => {
-            handleUpdateConfiguration('skip_robot', checked)
-          }
-        "
-      />
+    <NFormItem size="small" label-align="left" label-placement="left" :show-feedback="false">
+      <NTooltip trigger="hover">
+        <template #trigger>
+          <NCheckbox
+            :disabled="configurationDisabled.re"
+            :checked="configurations.skip_robot"
+            @update:checked="
+              checked => {
+                handleUpdateConfiguration('skip_robot', checked)
+              }
+            "
+          >
+            跳过小车
+          </NCheckbox>
+        </template>
+        是否在识别到小车词条时跳过
+      </NTooltip>
     </NFormItem>
-    <NFormItem
-      label="自动确认3星"
-      :show-label="true"
-      size="small"
-      label-align="left"
-      label-placement="left"
-      :show-feedback="false"
-    >
+    <NFormItem size="small" label-align="left" label-placement="left" :show-feedback="false">
       <NCheckbox
         :disabled="configurationDisabled.re"
         :checked="configurations.confirm.includes(3)"
@@ -156,16 +144,11 @@ function handleExpediteUpdate(value: number | null) {
             handleConfirmUpdate(checked, 3)
           }
         "
-      />
+      >
+        自动确认3星</NCheckbox
+      >
     </NFormItem>
-    <NFormItem
-      label="自动确认4星"
-      :show-label="true"
-      size="small"
-      label-align="left"
-      label-placement="left"
-      :show-feedback="false"
-    >
+    <NFormItem size="small" label-align="left" label-placement="left" :show-feedback="false">
       <NCheckbox
         :disabled="configurationDisabled.re"
         :checked="configurations.confirm.includes(4)"
@@ -174,16 +157,11 @@ function handleExpediteUpdate(value: number | null) {
             handleConfirmUpdate(checked, 4)
           }
         "
-      />
+      >
+        自动确认4星</NCheckbox
+      >
     </NFormItem>
-    <NFormItem
-      label="自动确认5星"
-      :show-label="true"
-      size="small"
-      label-align="left"
-      label-placement="left"
-      :show-feedback="false"
-    >
+    <NFormItem size="small" label-align="left" label-placement="left" :show-feedback="false">
       <NCheckbox
         :disabled="configurationDisabled.re"
         :checked="configurations.confirm.includes(5)"
@@ -192,7 +170,9 @@ function handleExpediteUpdate(value: number | null) {
             handleConfirmUpdate(checked, 5)
           }
         "
-      />
+      >
+        自动确认5星</NCheckbox
+      >
     </NFormItem>
   </div>
 </template>

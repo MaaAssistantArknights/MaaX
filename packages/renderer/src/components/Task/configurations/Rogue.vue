@@ -399,6 +399,24 @@ const squadOptionsSelector = computed(() => {
             是否可以是非好友助战干员，仅在勾选'开局干员使用助战'时有效
           </NTooltip>
         </NFormItem>
+        <NFormItem>
+          <NTooltip trigger="hover">
+            <template #trigger>
+              <NCheckbox
+                :disabled="
+                  configurationDisabled.re || props.configurations.theme !== RogueTheme.Mizuki
+                "
+                :checked="props.configurations.refresh_trader_with_dice"
+                @update:checked="
+                  value => handleUpdateConfiguration('refresh_trader_with_dice', value)
+                "
+              >
+                刷新商店(指路鳞)
+              </NCheckbox>
+            </template>
+            是否用骰子刷新商店购买特殊商品，例如[指路鳞]，目前只在水月主题下有效
+          </NTooltip>
+        </NFormItem>
       </NSpace>
     </NForm>
   </div>
