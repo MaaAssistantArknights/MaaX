@@ -87,13 +87,6 @@ function watchPreload(server) {
   })
 }
 
-function installKoffiBinaries() {
-  const currentDir = path.dirname(fileURLToPath(import.meta.url));
-  console.log(currentDir)
-  fs.copySync(path.resolve(currentDir, '../node_modules/koffi/build'), path.resolve(currentDir, '../node_modules/electron/dist/resources'));
-}
-
-// installKoffiBinaries()
 // bootstrap
 const server = await createServer({
   configFile: 'packages/renderer/vite.config.ts',
