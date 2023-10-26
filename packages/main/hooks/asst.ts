@@ -49,7 +49,7 @@ const hooks: IpcMainHandleEventCalleeProxy['CoreLoader'] = {
       logger.silly('core unloaded, return empty supported stages')
       return []
     }
-    const jsonPath = path.join(core.libPath, 'resource/tasks.json')
+    const jsonPath = path.join(CoreLoader.libPath, 'resource/tasks.json')
     const tasks = JSON.parse(String(fs.readFileSync(jsonPath)))
     const stages = Object.keys(tasks).filter(s => /[A-Z0-9]+-([A-Z0-9]+-?)?[0-9]/.test(s))
     return stages
@@ -58,7 +58,7 @@ const hooks: IpcMainHandleEventCalleeProxy['CoreLoader'] = {
     return core.GetImage(uuid)
   },
   getLibPath() {
-    return core.libPath
+    return CoreLoader.libPath
   },
   changeTouchMode({ mode }) {
     return core.ChangeTouchMode(mode)

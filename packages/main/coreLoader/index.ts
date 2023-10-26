@@ -25,9 +25,10 @@ const storage = new Storage()
 @Singleton
 class CoreLoader {
 
+  public static libPath: string
+
   private lib!: koffi.IKoffiLib
   private func!: MaaCoreExports
-  private static libPath: string
   private static readonly libPathKey = 'libPath'
   private static readonly defaultLibPath = path.join(getAppBaseDir(), 'core')
   private static loadStatus: boolean // core加载状态
