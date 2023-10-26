@@ -236,6 +236,7 @@ provide(
                 <NSwitch
                   v-else
                   :value="props.taskInfo.enable"
+                  @click.stop="() => {}"
                   @update:value="
                     enabled => {
                       $emit('update:enable', enabled)
