@@ -6,15 +6,15 @@
   "templateBy": "草鞋没号 <308487730@qq.com>",
   "license": "AGPL-3.0-or-later",
   "scripts": {
-    "dev": "node scripts/watch.mjs",
-    "prebuild": "vue-tsc --project packages/renderer/tsconfig.json --noEmit && node --max-old-space-size=4096 scripts/build.mjs",
-    "debug": "npm run prebuild && vite ./packages/renderer",
-    "lint": "eslint --ext .js,.ts,.vue --fix packages/main packages/renderer",
-    "make": "electron-forge make",
-    "start": "electron-forge start",
-    "package": "electron-forge package",
-    "publish": "electron-forge publish",
-    "format": "npx prettier -w ."
+    "dev": "cross-env NODE_OPTIONS=--max-old-space-size=8192 node scripts/watch.mjs",
+    "prebuild": "cross-env NODE_OPTIONS=--max-old-space-size=8192 vue-tsc --project packages/renderer/tsconfig.json --noEmit && node scripts/build.mjs",
+    "debug": "cross-env NODE_OPTIONS=--max-old-space-size=8192 npm run prebuild && vite ./packages/renderer",
+    "lint": "cross-env NODE_OPTIONS=--max-old-space-size=8192 eslint --ext .js,.ts,.vue --fix packages/main packages/renderer",
+    "make": "cross-env NODE_OPTIONS=--max-old-space-size=8192 electron-forge make",
+    "start": "cross-env NODE_OPTIONS=--max-old-space-size=8192 electron-forge start",
+    "package": "cross-env NODE_OPTIONS=--max-old-space-size=8192 electron-forge package",
+    "publish": "cross-env NODE_OPTIONS=--max-old-space-size=8192 electron-forge publish",
+    "format": "cross-env NODE_OPTIONS=--max-old-space-size=8192 npx prettier -w ."
   },
   "engines": {
     "node": ">=18.12.0"
@@ -49,6 +49,7 @@
     "clipboard": "^2.0.11",
     "color2k": "^2.0.2",
     "cron-parser": "^4.8.1",
+    "cross-env": "^7.0.3",
     "date-fns": "^2.30.0",
     "electron": "^26.0.0",
     "electron-devtools-installer": "^3.2.0",
