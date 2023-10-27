@@ -26,7 +26,7 @@ export default defineConfig({
     sourcemap: true,
     emptyOutDir: true,
     rollupOptions: {
-      external: ['electron', ...builtinModules, ...Object.keys(pkg.dependencies || {})],
+      external: ['electron', ...builtinModules, ...Object.keys(pkg.dependencies || {}), 'koffi'],
     },
   },
 })

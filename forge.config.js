@@ -20,7 +20,7 @@ module.exports = {
       }
       return true
     },
-    // asar: true,
+    asar: true,
   },
   rebuildConfig: {
     buildPath: __dirname,
