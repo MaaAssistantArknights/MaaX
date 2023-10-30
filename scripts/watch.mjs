@@ -1,6 +1,10 @@
 import { spawn } from 'child_process'
 import electron from 'electron'
 import { build, createServer } from 'vite'
+import path from 'path'
+import fs from 'fs-extra'
+import { fileURLToPath } from 'url';
+
 
 let aliveInst = 0
 let quitTimer = null
@@ -52,6 +56,7 @@ function watchMain(server) {
               startQuit()
             }
           })
+
         },
       },
     ],
