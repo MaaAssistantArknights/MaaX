@@ -64,10 +64,21 @@ const handleShowContentMenu = (e: MouseEvent) => {
 }
 
 const handleTogglePanel = (panelType: string) => {
-  if (panelType === 'configuration-panel') {
-    emit('update:showResult', false)
-  } else {
-    emit('update:showResult', true)
+  switch (panelType) {
+    case 'configuration-panel':
+      emit('update:showResult', false)
+      innerCollapse.value = false
+      break
+    case 'result-panel':
+      emit('update:showResult', true)
+      innerCollapse.value = false
+      break
+    case 'copy-task':
+      emit('copy')
+      break
+    case 'delete-task':
+      emit('delete')
+      break
   }
 }
 
@@ -126,6 +137,7 @@ provide(
     :expanded-names="_isCollapsed ? null : '1'"
     class="task-card"
     :class="props.taskInfo.status === 'idle' ? '' : 'undraggable'"
+    @contextmenu="handleShowContentMenu"
   >
     <template #arrow>
       <span />
@@ -165,42 +177,6 @@ provide(
               </div>
             </NSpace>
             <NSpace justify="end" align="center">
-              <!-- <NTooltip v-if="props.isCollapsed">
-                <template #trigger>
-                  <NButton text style="font-size: 25px" @click="() => {
-                    innerCollapse = !innerCollapse
-                  }
-                    ">
-                    <NIcon>
-                      <IconSettings />
-                    </NIcon>
-                  </NButton>
-                </template>
-                {{ _isCollapsed ? '展开' : '折叠' }}设置
-              </NTooltip> -->
-              <!-- <NTooltip>
-                <template #trigger>
-                  <NButton text style="font-size: 25px" :disabled="deviceStatus === 'tasking' && !['idle'].includes(props.taskInfo.status)
-                    " @click="() => $emit('copy')">
-                    <NIcon>
-                      <IconAdd />
-                    </NIcon>
-                  </NButton>
-                </template>
-                复制当前任务
-              </NTooltip> -->
-              <!-- <NTooltip>
-                <template #trigger>
-                  <NButton text style="font-size: 20px" type="error"
-                    :disabled="deviceStatus === 'tasking' && !['idle'].includes(props.taskInfo.status)"
-                    @click="() => $emit('delete')">
-                    <NIcon>
-                      <TrashOutline />
-                    </NIcon>
-                  </NButton>
-                </template>
-                删除当前任务
-              </NTooltip> -->
               <div class="card-progress-wrapper">
                 <span
                   v-if="
@@ -236,7 +212,8 @@ provide(
                 <NSwitch
                   v-else
                   :value="props.taskInfo.enable"
-                  @click.stop="() => {}"
+                  @click.left.stop="() => {}"
+                  @click.right.stop="() => {}"
                   @update:value="
                     enabled => {
                       $emit('update:enable', enabled)
@@ -257,7 +234,7 @@ provide(
         </div>
       </template>
       <div class="card-content">
-        <NScrollbar @contextmenu="handleShowContentMenu">
+        <NScrollbar>
           <slot />
         </NScrollbar>
         <DropdownMenu
@@ -265,7 +242,8 @@ provide(
           :x="contentMenuPosition.x"
           :y="contentMenuPosition.y"
           @select="handleTogglePanel"
-        />
+        >
+        </DropdownMenu>
       </div>
     </NCollapseItem>
   </NCollapse>

@@ -1,5 +1,7 @@
 <script lang="ts" setup>
+import AddIcon from '@/assets/icons/add.svg'
 import InProgressIcon from '@/assets/icons/in-progress.svg'
+import RemoveIcon from '@/assets/icons/remove.svg'
 import SettingsIcon from '@/assets/icons/settings.svg'
 import { NDropdown, NIcon } from 'naive-ui'
 import { h } from 'vue'
@@ -17,6 +19,16 @@ const emit = defineEmits<{
 
 const options = [
   {
+    label: '复制任务',
+    key: 'copy-task',
+    icon: () => h(NIcon, null, { default: () => h(AddIcon) }),
+  },
+  {
+    label: '删除任务',
+    key: 'delete-task',
+    icon: () => h(NIcon, null, { default: () => h(RemoveIcon) }),
+  },
+  {
     label: '配置面板',
     key: 'configuration-panel',
     icon: () => h(NIcon, null, { default: () => h(SettingsIcon) }),
@@ -26,10 +38,6 @@ const options = [
     key: 'result-panel',
     icon: () => h(NIcon, null, { default: () => h(InProgressIcon) }),
   },
-  // {
-  //   type: 'divider',
-  //   key: 'divider1'
-  // }
 ]
 
 const handleClickOutside = () => {
