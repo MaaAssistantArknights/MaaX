@@ -18,7 +18,7 @@ class Logger {
     this.log_file_ = createWriteStream(this.log_file_path_, { flags: 'a' })
 
     const formatter = createPresetFormatter(out => {
-      console.log(out.pretty)
+      console.log(out.cons[0], ...out.cons[1])
       this.log_file_.write(out.mono + '\n')
     })
 

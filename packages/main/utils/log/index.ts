@@ -69,6 +69,7 @@ export function createLogger(name: string, output: (env: TLoggerEnv) => void) {
           '',
           ...args
         ).slice(1),
+        objs: args,
       },
     }
     output(env)
@@ -83,7 +84,9 @@ export function createLogger(name: string, output: (env: TLoggerEnv) => void) {
   return [logger, ctrl] as const
 }
 
-export function createPresetFormatter(output: (out: { pretty: string; mono: string }) => void) {
+export function createPresetFormatter(
+  output: (out: { pretty: string; mono: string; cons: [prefix: string, objs: any[]] }) => void
+) {
   return (env: TLoggerEnv) => {
     const time = `${env.date.year.toString().padStart(4, '0')}-${env.date.month
       .toString()
@@ -106,6 +109,14 @@ export function createPresetFormatter(output: (out: { pretty: string; mono: stri
         `[${env.name} ${env.source.file} ${env.source.func}]`,
         env.content.mono,
       ].join('\t'),
+      cons: [
+        [
+          time,
+          chalk.bold(env.level),
+          `[${chalk.bold(env.name)} ${env.source.file} ${env.source.func}]`,
+        ].join('\t'),
+        env.content.objs,
+      ],
     })
   }
 }

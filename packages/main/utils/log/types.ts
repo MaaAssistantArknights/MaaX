@@ -37,6 +37,7 @@ export interface TLoggerEnv {
   content: {
     pretty: string
     mono: string
+    objs: any[]
   }
 }
 
