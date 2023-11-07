@@ -9,7 +9,7 @@ import { getAppBaseDir } from './path'
 class Logger {
   public constructor() {
     if (!existsSync(this.log_file_dir_)) {
-      mkdirSync(this.log_file_dir_)
+      mkdirSync(this.log_file_dir_, { recursive: true })
     }
 
     const date = format(new Date(), 'yyyyMMdd')
