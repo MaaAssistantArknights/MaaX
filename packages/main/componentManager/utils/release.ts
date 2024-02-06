@@ -1,6 +1,6 @@
 import logger from '@main/utils/logger'
 import type { ComponentType } from '@type/componentManager'
-import axios from 'axios'
+import axios, { type AxiosResponse } from 'axios'
 
 import type { ReleaseObject } from '../types'
 import { getProxy } from './proxy'
@@ -42,10 +42,16 @@ export function createGetRelease(urls: string[], component: ComponentType) {
     }
 
     for (const url of urls) {
-      const result = await tryRequest(url, component)
+      const result = await tryRequest(url, component) as AxiosResponse<ReleaseObject[] | null>
+      // 由于资源链接变更，需要 merge 资源链接里所有的 assets 数组来查找到可用的最新下载源
+      const assets = result?.data?.reduce((prev, curr) => prev.concat(curr?.assets ?? []), [] as ReleaseObject['assets'])
       if (result) {
         cache = {
-          data: result.data[0],
+          data: {
+            assets: assets!,
+            tag_name: result?.data?.[0].tag_name!,
+            published_at: result?.data?.[0].published_at!,
+          },
           updated: Date.now(),
         }
       }

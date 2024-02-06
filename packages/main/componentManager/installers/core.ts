@@ -15,28 +15,28 @@ export default class CoreInstaller extends InstallerBase {
       name: 'GitHub',
       urlReplacer: oldUrl => {
         const urlMatches =
-          /^https:\/\/(.+)\/MaaAssistantArknights\/MaaAssistantArknights\/releases\/download\/(.+)\/(.+)$/.exec(
+          /^https:\/\/(.+)\/MaaAssistantArknights\/MaaRelease\/releases\/download\/(.+)\/(.+)$/.exec(
             oldUrl
           )
         if (!urlMatches) {
           throw new Error(`Invalid update url: ${oldUrl}`)
         }
         const [, host, version, filename] = urlMatches
-        return `https://github.com/MaaAssistantArknights/MaaAssistantArknights/releases/download/${version}/${filename}`
+        return `https://github.com/MaaAssistantArknights/MaaRelease/releases/download/${version}/${filename}`
       },
     },
     {
       name: '国内镜像',
       urlReplacer: oldUrl => {
         const urlMatches =
-          /^https:\/\/(.+)\/MaaAssistantArknights\/MaaAssistantArknights\/releases\/download\/(.+)\/(.+)$/.exec(
+          /^https:\/\/(.+)\/MaaAssistantArknights\/MaaRelease\/releases\/download\/(.+)\/(.+)$/.exec(
             oldUrl
           )
         if (!urlMatches) {
           throw new Error(`Invalid update url: ${oldUrl}`)
         }
         const [, host, version, filename] = urlMatches
-        return `https://s3.maa-org.net:25240/maa-release/MaaAssistantArknights/MaaAssistantArknights/releases/download/${version}/${filename}`
+        return `https://s3.maa-org.net:25240/maa-release/MaaAssistantArknights/MaaRelease/releases/download/${version}/${filename}`
       },
     },
     // TODO: Maa R2 Bucket Replacer
