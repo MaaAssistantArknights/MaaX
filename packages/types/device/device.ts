@@ -82,4 +82,5 @@ export interface NativeDevice {
   adbPath?: string
   tag?: string
   commandLine?: string
+  config?: EmulatorName
 }

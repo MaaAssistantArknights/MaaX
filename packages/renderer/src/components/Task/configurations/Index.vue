@@ -6,6 +6,7 @@ import Fighting from './Fighting.vue'
 import Infrast from './Infrast.vue'
 import Mall from './Mall.vue'
 import NoConfiguration from './NoConfiguration.vue'
+import ReclamationAlgorithm from './ReclamationAlgorithm.vue'
 import Recruit from './Recruit.vue'
 import Rogue from './Rogue.vue'
 import Shutdown from './Shutdown.vue'
@@ -20,6 +21,7 @@ const components: Record<string, Component> = {
   Roguelike: Rogue,
   Mall: Mall,
   Shutdown: Shutdown,
+  ReclamationAlgorithm: ReclamationAlgorithm,
 }
 
 export default defineComponent({

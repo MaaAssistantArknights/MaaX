@@ -52,6 +52,7 @@ const useDeviceStore = defineStore<'device', DeviceState, {}, DeviceAction>('dev
           origin.address = device.address
           // origin.displayName = device.displayName
           origin.commandLine = device.commandLine
+          origin.config = device.config ?? 'General'
         }
       }
     },

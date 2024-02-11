@@ -272,7 +272,6 @@ class CoreLoader {
   }
 
   public GetCoreInstanceByUUID(uuid: string): any {
-    console.log('type of this.MeoAsstPtr[uuid]', typeof this.MeoAsstPtr[uuid])
     return this.MeoAsstPtr[uuid]
   }
 

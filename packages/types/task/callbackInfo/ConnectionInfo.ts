@@ -1,3 +1,5 @@
+type ConnectFailedWhy = 'ConfigNotFound' | 'Connection command failed to exec' | 'Uuid command failed to exec' | 'Display command failed to exec' | 'ConfigNotFound'
+
 export type ConnectionInfoMapper = {
   Reconnecting: {
     why: ''
@@ -22,7 +24,7 @@ export type ConnectionInfoMapper = {
     }
   }
   ConnectFailed: {
-    why: string // "ConfigNotFound" | "Connection command failed to exec" | "Uuid command failed to exec" | "Display command failed to exec"
+    why: ConnectFailedWhy
     details: {
       adb: string
       address: string
@@ -89,11 +91,13 @@ export type ConnectionInfoMapper = {
       height: number
     }
   }
+  
 }
 
 type ConnectionInfoWhat = keyof ConnectionInfoMapper
 
 type ConnectionInfoCallbackTemplate<What extends ConnectionInfoWhat> = {
+  why?: ConnectionInfoMapper[What]['why']
   uuid: string
   what: What
 }

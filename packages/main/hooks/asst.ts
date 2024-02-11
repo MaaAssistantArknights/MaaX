@@ -22,7 +22,7 @@ const hooks: IpcMainHandleEventCalleeProxy['CoreLoader'] = {
   },
   initCoreAsync(arg) {
     const createStatus = core.CreateEx(arg.uuid) ?? false
-    if (!createStatus) logger.warn(`重复创建 ${JSON.stringify(arg)}`)
+    if (!createStatus) logger.warn(`Instance already exist!  ${JSON.stringify(arg)}`)
     if (!core.SetTouchMode(arg.uuid, arg.touch_mode))
       logger.warn('Set touch mode failed', arg.touch_mode)
     return core.AsyncConnect(arg.address, arg.uuid, arg.adb_path, arg.config)

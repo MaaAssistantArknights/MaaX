@@ -41,7 +41,6 @@ type NoTemplateTask =
   | 'SSSCopilot'
   | 'Depot'
   | 'OperBox'
-  | 'ReclamationAlgorithm'
   | 'Custom'
   | 'SingleStep'
   | 'VideoRecognition'
@@ -189,17 +188,17 @@ export const taskTemplate: {
     },
     results: {},
   },
-  // ReclamationAlgorithm: {
-  //   name: 'ReclamationAlgorithm',
-  //   task_id: -1,
-  //   title: '生息演算',
-  //   status: 'idle',
-  //   enable: false,
-  //   configurations: {
-  //     mode: 0
-  //   },
-  //   results: {}
-  // }
+  ReclamationAlgorithm: {
+    name: 'ReclamationAlgorithm',
+    task_id: -1,
+    title: '生息演算',
+    status: 'idle',
+    enable: false,
+    configurations: {
+      mode: 0
+    },
+    results: {}
+  }
 }
 
 function hasTemplate(task_name: Task['name']): task_name is Exclude<Task['name'], NoTemplateTask> {
@@ -218,6 +217,7 @@ const defaultTaskConf: typeof taskTemplate = {
   Award: _.cloneDeep(taskTemplate.Award),
   Roguelike: _.cloneDeep(taskTemplate.Roguelike),
   Shutdown: _.cloneDeep(taskTemplate.Shutdown),
+  ReclamationAlgorithm: _.cloneDeep(taskTemplate.ReclamationAlgorithm)
 }
 
 export const defaultTask = Object.values(defaultTaskConf)

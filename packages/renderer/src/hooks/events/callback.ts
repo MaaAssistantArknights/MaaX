@@ -291,6 +291,20 @@ export default function useCallbackEvents(): void {
           deviceStore.updateDeviceStatus(uuid, 'disconnected')
           break
         }
+        case 'ConnectFailed': {
+          // FIXME: 这个事件中uuid是空字符串
+          // if (messages[uuid]) {
+          //   messages[uuid].destroy()
+          // }
+          // const device = deviceStore.getDevice(uuid)
+          switch (data.why) {
+            case 'ConfigNotFound': {
+              showMessage(`不支持的设备配置`, { type: 'error', duration:0, closable:true }, true)
+              // deviceStore.updateDeviceStatus(uuid, 'disconnected')
+              break
+            }
+          }
+        }
         default:
           break
       }

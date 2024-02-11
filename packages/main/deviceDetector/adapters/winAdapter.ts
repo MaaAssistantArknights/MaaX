@@ -258,7 +258,7 @@ class WindowsAdapter implements EmulatorAdapter {
   }
 
   protected async getMumu12(e: Emulator): Promise<void> {
-    e.config = 'MuMuEmulator'
+    e.config = 'MuMuEmulator12'
     e.displayName = 'MuMu模拟器12'
     const emuPath = await getPnamePath('MuMuPlayer.exe') // 模拟器启动器路径
     e.adbPath = path.resolve(emuPath, '../adb.exe') // 模拟器adb路径

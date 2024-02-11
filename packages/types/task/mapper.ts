@@ -3,6 +3,7 @@ import type {
   Facility,
   MizukiSquadType,
   PhantomSquadType,
+  ReclamationAlgorithmType,
   RolesType,
   Server,
 } from '@type/game'
@@ -122,10 +123,6 @@ export type CoreTaskObjectMapper = {
   OperBox: {
     enable?: boolean
   }
-  ReclamationAlgorithm: {
-    enable?: boolean
-    mode: 0 | 1
-  }
   Custom: {
     enable?: boolean
     task_names: string[]
@@ -152,6 +149,10 @@ export type CoreTaskObjectMapper = {
   VideoRecognition: {
     enable?: boolean
     filename: string
+  }
+  ReclamationAlgorithm: {
+    enable?: boolean
+    mode: ReclamationAlgorithmType
   }
   // Debug?
 }
