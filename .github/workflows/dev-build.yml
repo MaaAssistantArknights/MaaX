@@ -27,7 +27,7 @@ jobs:
       matrix:
         node: ["20"]
         os: [windows-latest, ubuntu-latest, macos-latest]
-        arch: ["amd64", "arm64"]
+        arch: ["x64", "arm64"]
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       NODE_OPTIONS: "--max_old_space_size=6144"
@@ -51,3 +51,8 @@ jobs:
 
       - name: Compile Electron app
         run: pnpm make
+
+      - name: Publish to mirrors
+        run: pnpm run publish --arch=${{ matrix.arch }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
