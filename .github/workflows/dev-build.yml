@@ -52,7 +52,8 @@ jobs:
       - name: Compile Electron app
         run: pnpm make
 
-      - name: Publish to mirrors
-        run: pnpm run publish --arch=${{ matrix.arch }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: maax-nightly-${{ matrix.os }}-${{ matrix.arch }}
+          path: ./out/maa-x*
