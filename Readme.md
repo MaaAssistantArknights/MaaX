@@ -16,17 +16,33 @@
 
 
 ## 下载
-### [点击前往最新Release下载](https://github.com/MaaAssistantArknights/MaaX/releases/latest)
 
+- [点击前往最新Release下载](https://github.com/MaaAssistantArknights/MaaX/releases/latest)
+- 或者自行编译以获取最新版本/dev分支
+  (以下代码针对于linux用户, 请先使用包管理器确保安装好 `cross-env`, `zip`)：
+
+  ```bash
+  git clone https://github.com/MaaAssistantArknights/MaaX.git
+  cd MaaX/
+  git submodule update --init --recursive  # 更新`submodule`
+  npm install -g pnpm  # 安装`pnpm`
+  pnpm install
+  pnpm run make
+  chown -R $(whoami) out/maa-x-linux-x64/
+  ```
+  **MaaX/out/maa-x-linux-64/maa-x** 即为可执行文件
 
 ## 开发相关
 
 ### 调试（以 VSCode 为例）
 
 * 依赖安装
-  1. 更新`submodule`: `git submodule update --init --recursive`
-  2. 安装`pnpm`: `npm install -g pnpm`
-  3. 打开终端输入`pnpm install`
+  
+  ```bash
+  git submodule update --init --recursive  # 更新`submodule`
+  npm install -g pnpm  # 安装`pnpm`
+  pnpm install
+  ```
 
 * 调试 main 进程：
   1. <kbd>Ctrl</kbd>/<kbd>Command</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> 呼出命令面板
@@ -37,7 +53,7 @@
 * 调试 renderer 进程:
   1. 按照上述步骤启动即可，会帮你打开 Chrome Devtools，且带有最新的 Vue Dev 插件
 
-### QQ 群
+## QQ 群
 
 开发群：655031753  
-内测用户体验群：232785290
+内测用户体验群：232785290 
